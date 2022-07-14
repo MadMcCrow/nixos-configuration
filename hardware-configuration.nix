@@ -46,7 +46,7 @@
     fsType = "ext4";
     };
     
- fileSystems."/home/steam" = {
+  fileSystems."/home/steam" = {
     device = "/dev/disk/by-uuid/35d071fc-963c-4025-8581-f023fbd936bd";
     fsType = "f2fs";
     };

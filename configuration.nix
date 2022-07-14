@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# this is my base configuration for Nixos
 
 { config, pkgs, lib, ... }:
 
@@ -47,14 +45,15 @@
   };
   
   # Gnome40
-  environment.gnome.excludePackages = [
-  pkgs.gnome.gnome-weather
-  pkgs.gnome-tour
-  pkgs.gnome-photos
-  pkgs.gnome.simple-scan 
-  pkgs.gnome.gnome-music
-  pkgs.gnome.epiphany
-  
+  environment.gnome.excludePackages = with pkgs; [
+  gnome.gnome-weather
+  gnome-tour
+  gnome-photos
+  gnome.simple-scan 
+  gnome.gnome-music
+  gnome.epiphany
+  gnome.totem
+  gnome.yelp
   ];
 
 
@@ -91,6 +90,17 @@
      nano
      wget
      git
+     gcc
+     clang
+     lld
+     scons
+     pkgconf
+     libexecinfo
+     xorg.libX11
+     xorg.libXcursor
+     xorg.libXinerama
+     xorg.libXi
+     xorg.libXrandr
    ];
    
   # Packages config
@@ -117,6 +127,10 @@
     '';
    };
 
+  # Git
+  programs.git = {
+    enable = true;
+  };
   
   # Zsh
   programs.zsh = {
