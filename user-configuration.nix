@@ -5,47 +5,68 @@
 { config, pkgs, ... }:
 
 {
- imports = [<home-manager/nixos> ];
-  
-  # home manager
-  
+  imports = [ <home-manager/nixos> ];
+
   # Users
   users.mutableUsers = false;
   # perard
   users.users.perard = {
+    description = "Noé Perard-Gayot";
     isNormalUser = true;
-    extraGroups = [ "wheel" "flatpak"];
-    initialHashedPassword = "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
-    home="/home/perard";
-    homeMode="700";
+    extraGroups = [ "wheel" "flatpak" "steam"];
+    initialHashedPassword =
+      "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+    home = "/home/perard";
+    homeMode = "700";
+    uid = 1000;
+    shell = pkgs.zsh;
   };
-  home-manager.users.perard = { pkgs, ... }: {
-  home.packages = with pkgs; [
-       firefox
-       chromium
-       vlc
-       gnomeExtensions.tilingnome
-       gnomeExtensions.pop-shell
-       gnome.gnome-tweaks
-       gnomeExtensions.logo-menu
-    ];
-  home.stateVersion = "22.05";
-  programs.home-manager.enable = true;
+  home-manager.users.perard = { lib, pkgs, ... }: {
+    home = {
+      packages = with pkgs; [
+        zsh-powerlevel10k
+        firefox
+        chromium
+        vlc
+        gnome.gnome-tweaks
+        gnomeExtensions.pop-shell
+        gnomeExtensions.pop-launcher-super-key
+        gnomeExtensions.caffeine
+        gnomeExtensions.appindicator
+        gnomeExtensions.dash-to-dock-for-cosmic
+        gnomeExtensions.dash-to-dock
+      ];
+      stateVersion = "22.05";
+    };
+    programs = {
+      home-manager.enable = true;
+      git = {
+        enable = true;
+        userName = "MadMcCrow";
+        lfs.enable = true;
+      };
+      zsh = {
+        enable = true;
+        oh-my-zsh = {
+          enable = true;
+          plugins = ["git"];
+          theme = "robbyrussell";
+        };
+        plugins = [{
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+        }];
+      };
+    };
   };
-  
-  
- users.users.desrumaux = {
+
+  # guest
+  users.users.guest = {
     isNormalUser = true;
-    extraGroups = ["flatpak"];
-    initialHashedPassword = "$6$/bQNXdEm.9DwhO/2$EsUPTNdhCLuUW3pdq5IncbGUaOKDo0WgYvMB6JeReoyvroTX0mV3VaM1t4kHMuqLL/.3WAAWOEm8Ut9VlJUGz.";
-    home="/home/desrumaux";
-    homeMode="755";
-  };
-  home-manager.users.desrumaux = { pkgs, ... }: {
-  home.packages = with pkgs; [
-       chromium
-    ];
-  home.stateVersion = "22.05";
-  programs.home-manager.enable = true;
+    extraGroups = [ "guests" ];
+    home = "/home/guest";
+    homeMode = "764";
+    uid = 1001;
   };
 }
