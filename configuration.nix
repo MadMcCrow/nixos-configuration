@@ -1,5 +1,4 @@
 # this is my base configuration for Nixos
-
 { config, pkgs, lib, ... }:
 
 {
@@ -8,7 +7,9 @@
   imports = [
     ./hardware-configuration.nix
     ./user-configuration.nix
+    ./dev-configuration.nix
     ./flatpak-configuration.nix
+    ./steam-configuration.nix
   ];
 
   # Linux Kernel in use :
@@ -21,18 +22,12 @@
     systemd-boot.configurationLimit = 2;
   };
   boot.supportedFilesystems =
-    [ "btrfs" "ext2" "ext3" "ext4" "f2fs" "fat8" "fat16" "fat32" ];
+    [ "btrfs" "ext2" "ext3" "ext4" "f2fs" "fat8" "fat16" "fat32" "ntfs"];
 
   # Networking
   networking.hostName = "nixAF"; # Define your hostname.
-  networking.networkmanager.enable =
-    true; # set networking.wireless.enable to use via wpa_supplicant instead.
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # networking.firewall.enable = false; # disable the firewall altogether
-
+  networking.networkmanager.enable = true;
+  
   # Timezone
   time.timeZone = "Europe/Paris";
 
@@ -50,10 +45,10 @@
     desktopManager.xterm.enable = false;
     displayManager.gdm.enable = true;
     displayManager.gdm.wayland = true;
-    displayManager.autoLogin.enable = false;
     desktopManager.gnome.enable = true;
     libinput.enable = true;
   };
+  programs.xwayland.enable = true;
 
   # Gnome40
   environment.gnome.excludePackages = with pkgs; [
@@ -106,26 +101,13 @@
     nixfmt
     zsh
     oh-my-zsh
+    exa
     nano
-    htop
     neofetch
     wget
-    git
-    gh
-    gcc
-    clang
-    lld
-    gnumake
-    cmake
-    scons
-    pkgconf
-    libexecinfo
-    xorg.libX11 # necessary to build godot [
-    xorg.libXcursor
-    xorg.libXinerama
-    xorg.libXi
-    xorg.libXrandr # necessary to build godot ]
-    xow_dongle-firmware # for xbox controller
+    # for xbox controller
+    xow_dongle-firmware
+    linuxKernel.packages.linux_zen.xone
   ];
 
   # Packages config
@@ -133,8 +115,10 @@
     allowUnfree = true;
     chromium = { enableWideVine = true; };
     packageOverrides = pkgs: {
-      system-path =
-        pkgs.system-path.override { xterm = pkgs.gnome.gnome-terminal; };
+      system-path = pkgs.system-path.override { 
+      xterm = pkgs.gnome.gnome-terminal; 
+      ls    = pkgs.exa;
+      };
     };
   };
 
@@ -178,7 +162,7 @@
     syntaxHighlighting.enable = true;
     autosuggestions.enable = true;
     shellAliases = {
-      ll = "ls -l";
+      ls = "exa";
       update = "sudo nixos-rebuild switch";
       clean = "sudo nix-collect-garbage -d";
     };
@@ -189,13 +173,9 @@
   systemd.services.systemd-fsck.enable = false;
   #  systemd.services.systemd-fsck@dev-disk-by\x2duuid-35d071fc\x2d963c\x2d4025\x2d8581\x2df023fbd936bd.enable = false;
 
-
   # Xbox Controller Support
   hardware.xone.enable = true;
   hardware.firmware = [ pkgs.xow_dongle-firmware ];
-  
-  # Steam hardware
-  hardware.steam-hardware.enable = true;
 
   # etc/current-system-packages
   environment.etc."current-system-packages".text = let

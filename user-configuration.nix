@@ -1,19 +1,20 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# this is the configuration for users
 
 { config, pkgs, ... }:
-
-{
-  imports = [ <home-manager/nixos> ];
+let
+  home-manager = builtins.fetchTarball
+    "https://github.com/nix-community/home-manager/archive/release-22.05.tar.gz";
+in {
+  imports = [ (import "${home-manager}/nixos") ];
 
   # Users
   users.mutableUsers = false;
+
   # perard
   users.users.perard = {
     description = "Noé Perard-Gayot";
     isNormalUser = true;
-    extraGroups = [ "wheel" "flatpak" "steam"];
+    extraGroups = [ "wheel" "flatpak" "steam" ];
     initialHashedPassword =
       "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
     home = "/home/perard";
@@ -24,41 +25,74 @@
   home-manager.users.perard = { lib, pkgs, ... }: {
     home = {
       packages = with pkgs; [
+        home-manager
         zsh-powerlevel10k
         firefox
         chromium
         vlc
+        dconf
+        dconf2nix
+        gnome.dconf-editor
         gnome.gnome-tweaks
         gnomeExtensions.pop-shell
-        gnomeExtensions.pop-launcher-super-key
         gnomeExtensions.caffeine
         gnomeExtensions.appindicator
-        gnomeExtensions.dash-to-dock-for-cosmic
         gnomeExtensions.dash-to-dock
+        gnomeExtensions.dock-from-dash
+        gnomeExtensions.dash-from-panel
+	gnomeExtensions.application-volume-mixer
+	gnomeExtensions.mpris-indicator-button
+	gnomeExtensions.dash-to-panel
+	gnomeExtensions.advanced-alttab-window-switcher
+	gnomeExtensions.top-bar-organizer
       ];
       stateVersion = "22.05";
     };
     programs = {
-      home-manager.enable = true;
+      zsh = {
+        enable = true;
+        initExtra = "[[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh";
+        oh-my-zsh = {
+          enable = true;
+          plugins = [ "git" ];
+          theme = "robbyrussell";
+        };
+	shellAliases = {
+      		ls = "exa";
+      	};
+        plugins = [
+          {
+            name = "powerlevel10k";
+            src = pkgs.zsh-powerlevel10k;
+            file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+          }
+          {
+            name = "powerlevel10k-config";
+            src = lib.cleanSource "/home/perard/.p10k/";
+            file = ".p10k.zsh";
+          }
+        ];
+      };
       git = {
         enable = true;
         userName = "MadMcCrow";
+    	userEmail = "noe.perard@live.ru";
         lfs.enable = true;
+        
       };
-      zsh = {
+      gh = {
         enable = true;
-        oh-my-zsh = {
-          enable = true;
-          plugins = ["git"];
-          theme = "robbyrussell";
-        };
-        plugins = [{
-          name = "powerlevel10k";
-          src = pkgs.zsh-powerlevel10k;
-          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-        }];
+        enableGitCredentialHelper = true;
+        settings.git_protocol = "https";
       };
+
     };
+  };
+  
+ fileSystems."/home/perard/Documents" = {
+    device = "/home/documents";
+    fsType = "none";
+    options = [ "bind" ];
   };
 
   # guest
