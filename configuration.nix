@@ -105,6 +105,7 @@
     nano
     neofetch
     wget
+    openssl
     # for xbox controller
     xow_dongle-firmware
     linuxKernel.packages.linux_zen.xone
@@ -176,13 +177,6 @@
   # Xbox Controller Support
   hardware.xone.enable = true;
   hardware.firmware = [ pkgs.xow_dongle-firmware ];
-
-  # etc/current-system-packages
-  environment.etc."current-system-packages".text = let
-    packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
-    sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-    formatted = builtins.concatStringsSep "\n" sortedUnique;
-  in formatted;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
