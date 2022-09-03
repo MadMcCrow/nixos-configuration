@@ -1,7 +1,6 @@
 # configuration for software development
-{ config, lib, pkgs, modulesPath, ... }:
-{
- environment.systemPackages = with pkgs; [
+{ config, lib, pkgs, modulesPath, ... }: {
+  environment.systemPackages = with pkgs; [
     git
     gh
     gcc

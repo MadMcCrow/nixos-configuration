@@ -1,4 +1,5 @@
 # this is the configuration for users
+# TODO: move this to home
 
 { config, pkgs, ... }:
 let
@@ -40,11 +41,11 @@ in {
         gnomeExtensions.dash-to-dock
         gnomeExtensions.dock-from-dash
         gnomeExtensions.dash-from-panel
-	gnomeExtensions.application-volume-mixer
-	gnomeExtensions.mpris-indicator-button
-	gnomeExtensions.dash-to-panel
-	gnomeExtensions.advanced-alttab-window-switcher
-	gnomeExtensions.top-bar-organizer
+        gnomeExtensions.application-volume-mixer
+        gnomeExtensions.mpris-indicator-button
+        gnomeExtensions.dash-to-panel
+        gnomeExtensions.advanced-alttab-window-switcher
+        gnomeExtensions.top-bar-organizer
       ];
       stateVersion = "22.05";
     };
@@ -57,28 +58,44 @@ in {
           plugins = [ "git" ];
           theme = "robbyrussell";
         };
-	shellAliases = {
-      		ls = "exa";
-      	};
+        shellAliases = { ls = "exa"; };
         plugins = [
+          {
+            name = "zsh-autosuggestions";
+            src = pkgs.fetchFromGitHub {
+              owner = "zsh-users";
+              repo = "zsh-autosuggestions";
+              rev = "v0.6.4";
+              sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
+            };
+          }
+          {
+            name = "fast-syntax-highlighting";
+            src = pkgs.fetchFromGitHub {
+              owner = "zdharma";
+              repo = "fast-syntax-highlighting";
+              rev = "v1.55";
+              sha256 = "0h7f27gz586xxw7cc0wyiv3bx0x3qih2wwh05ad85bh2h834ar8d";
+            };
+          }
           {
             name = "powerlevel10k";
             src = pkgs.zsh-powerlevel10k;
             file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
           }
-          {
-            name = "powerlevel10k-config";
-            src = lib.cleanSource "/home/perard/.p10k/";
-            file = ".p10k.zsh";
-          }
+          #{
+          #  name = "powerlevel10k-config";
+          #  src = lib.cleanSource ./p10k-config;
+          #  file = "p10k.zsh";
+          #}
         ];
       };
       git = {
         enable = true;
         userName = "MadMcCrow";
-    	userEmail = "noe.perard@live.ru";
+        userEmail = "noe.perard@live.ru";
         lfs.enable = true;
-        
+
       };
       gh = {
         enable = true;
@@ -88,11 +105,11 @@ in {
 
     };
   };
-  
- fileSystems."/home/perard/Documents" = {
-    device = "/home/documents";
-    fsType = "none";
-    options = [ "bind" ];
+
+  fileSystems."/home/perard/Documents" = {
+    device = "/dev/disk/by-uuid/03413941-1a7e-4cfb-9965-2d4264c1fdb5";
+    fsType = "f2fs";
+    options = [ "defaults" "rw" ];
   };
 
   # guest

@@ -3,31 +3,59 @@
 
 {
 
-  # import
+  # imports
   imports = [
     ./hardware-configuration.nix
+    ./persist.nix
     ./user-configuration.nix
     ./dev-configuration.nix
     ./flatpak-configuration.nix
     ./steam-configuration.nix
   ];
 
-  # Linux Kernel in use :
-  boot.kernelPackages = pkgs.linuxPackages_zen;
-
-  #UEFI
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-    systemd-boot.configurationLimit = 2;
+  # Boot
+  boot = {
+    # use Zen for better performance
+    kernelPackages = pkgs.linuxPackages_zen;
+    kernelParams = [ "nohibernate" ];
+    # UEFI boot loader with systemdboot
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      systemd-boot.configurationLimit = 2;
+    };
+    # custom initrd options
+    initrd = {
+      availableKernelModules =
+        [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      kernelModules = [ "dm-snapshot" "zfs" ];
+      postDeviceCommands = lib.mkAfter ''
+        zfs rollback -r nixos-pool/local/root@blank
+      '';
+    };
+    supportedFilesystems = [
+      "btrfs"
+      "ext2"
+      "ext3"
+      "ext4"
+      "f2fs"
+      "fat8"
+      "fat16"
+      "fat32"
+      "ntfs"
+      " zfs"
+    ];
+    plymouth.enable = true;
   };
-  boot.supportedFilesystems =
-    [ "btrfs" "ext2" "ext3" "ext4" "f2fs" "fat8" "fat16" "fat32" "ntfs"];
+
+  # disable zfs mount at boot
+  services.zfs.trim.enable = true;
 
   # Networking
   networking.hostName = "nixAF"; # Define your hostname.
   networking.networkmanager.enable = true;
-  
+  networking.hostId = "104e6fea";
+
   # Timezone
   time.timeZone = "Europe/Paris";
 
@@ -50,7 +78,7 @@
   };
   programs.xwayland.enable = true;
 
-  # Gnome40
+  # Gnome
   environment.gnome.excludePackages = with pkgs; [
     gnome.gnome-weather
     gnome-tour
@@ -72,10 +100,10 @@
     xkbOptions = "eurosign:e";
   };
 
-  # CUPS
+  # disable CUPS
   services.printing.enable = false;
 
-  # Sound
+  # Use Pipewire for Sound
   sound.enable = false; # disabled for pipewire
   hardware.pulseaudio.enable = false; # disabled for pipewire
   security.rtkit.enable = true; # rtkit is optional but recommended
@@ -91,8 +119,7 @@
   users.users.root = {
     #home = "/home/root"; # this does not work
     homeMode = "700";
-    initialHashedPassword =
-      "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+    hashedPassword = "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
   };
 
   # Packages
@@ -116,9 +143,9 @@
     allowUnfree = true;
     chromium = { enableWideVine = true; };
     packageOverrides = pkgs: {
-      system-path = pkgs.system-path.override { 
-      xterm = pkgs.gnome.gnome-terminal; 
-      ls    = pkgs.exa;
+      system-path = pkgs.system-path.override {
+        xterm = pkgs.gnome.gnome-terminal;
+        ls = pkgs.exa;
       };
     };
   };
@@ -157,6 +184,9 @@
     dates = "daily";
   };
 
+  # optimize storage to save space
+  nix.settings.auto-optimise-store = true;
+
   # zsh
   programs.zsh = {
     enable = true;
@@ -172,7 +202,6 @@
   # Faster boot:
   systemd.services.NetworkManager-wait-online.enable = false;
   systemd.services.systemd-fsck.enable = false;
-  #  systemd.services.systemd-fsck@dev-disk-by\x2duuid-35d071fc\x2d963c\x2d4025\x2d8581\x2df023fbd936bd.enable = false;
 
   # Xbox Controller Support
   hardware.xone.enable = true;
@@ -191,22 +220,6 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.05"; # Did you read the comment?
-
-  # machine-id is used by systemd for the journal, if you don't
-  # persist this file you won't be able to easily use journalctl to
-  # look at journals for previous boots.
-  environment.etc."machine-id".source = "/nix/persist/etc/machine-id";
-
+  # TLDR : Do not touch
+  system.stateVersion = "22.05";
 }

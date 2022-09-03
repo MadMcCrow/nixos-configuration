@@ -15,7 +15,7 @@ in {
   # this folder is where the files will be stored (don't put it in tmpfs)
   environment.persistence."/nix/persist/flatpak" = {
     directories = [
-      "/var/lib/flatpak" # bind mounted from /nix/persist/flatpak/var/lib/flatpak to /var/lib/flatpak
+      "/var/lib/flatpak" # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
     ];
   };
 
