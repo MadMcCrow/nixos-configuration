@@ -15,7 +15,6 @@
     };
     # use Gnome
     desktopManager.gnome.enable = true;
-    libinput.enable = true;
   };
   programs.xwayland.enable = true;
 
@@ -30,14 +29,18 @@
     gnome.totem
     gnome.yelp
     gnome.cheese
+    gnome.gnome-characters
+    orca
   ];
+  
+  
 
   # disable unecessary services 
   services.gnome = {
     chrome-gnome-shell.enable = false;
-    gnome-online-miners.enable = false;
     tracker-miners.enable = false;
     tracker.enable = false;
+    gnome-online-miners.enable = lib.mkForce false;
   };
 
   # enable DConf to edit gnome configuration

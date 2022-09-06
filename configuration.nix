@@ -58,6 +58,8 @@
 
   # Timezone
   time.timeZone = "Europe/Paris";
+  services.timesyncd.servers = ["fr.pool.ntp.org" "europe.pool.ntp.org"];
+  
 
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
