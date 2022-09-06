@@ -1,4 +1,6 @@
 # flatpak
+#
+# TODO : use same persisting system as in persist.nix
 { config, pkgs, ... }:
 let
   impermanence = builtins.fetchTarball

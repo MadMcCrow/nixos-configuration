@@ -8,7 +8,7 @@
     ./hardware-configuration.nix
     ./persist.nix
     ./user-configuration.nix
-    ./dev-configuration.nix
+    ./gnome-configuration.nix
     ./flatpak-configuration.nix
     ./steam-configuration.nix
   ];
@@ -43,12 +43,12 @@
       "fat16"
       "fat32"
       "ntfs"
-      " zfs"
+      "zfs"
     ];
     plymouth.enable = true;
   };
 
-  # disable zfs mount at boot
+  # zfs
   services.zfs.trim.enable = true;
 
   # Networking
@@ -65,33 +65,6 @@
     font = "Lat2-Terminus16";
     useXkbConfig = true; # use xkbOptions in tty.
   };
-
-  # Wayland
-  services.xserver = {
-    enable = true;
-    excludePackages = [ pkgs.xterm ];
-    desktopManager.xterm.enable = false;
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = true;
-    desktopManager.gnome.enable = true;
-    libinput.enable = true;
-  };
-  programs.xwayland.enable = true;
-
-  # Gnome
-  environment.gnome.excludePackages = with pkgs; [
-    gnome.gnome-weather
-    gnome-tour
-    gnome-photos
-    gnome.simple-scan
-    gnome.gnome-music
-    gnome.epiphany
-    gnome.totem
-    gnome.yelp
-    gnome.cheese
-  ];
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
-  programs.dconf.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
@@ -119,22 +92,19 @@
   users.users.root = {
     #home = "/home/root"; # this does not work
     homeMode = "700";
-    hashedPassword = "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+    hashedPassword =
+      "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
   };
 
   # Packages
   environment.systemPackages = with pkgs; [
-    firefox
     nixfmt
     zsh
-    oh-my-zsh
     exa
     nano
-    neofetch
     wget
     openssl
-    # for xbox controller
-    xow_dongle-firmware
+    xow_dongle-firmware # for xbox controller
     linuxKernel.packages.linux_zen.xone
   ];
 
@@ -178,14 +148,15 @@
     cpuFreqGovernor = "performance";
   };
 
-  # GarbageCollection
-  nix.gc = {
-    automatic = true;
-    dates = "daily";
+  nix = {
+    # GarbageCollection
+    gc = {
+      automatic = true;
+      dates = "daily";
+    };
+    settings.auto-optimise-store = true;
+    optimise.dates = " daily";
   };
-
-  # optimize storage to save space
-  nix.settings.auto-optimise-store = true;
 
   # zsh
   programs.zsh = {
@@ -206,19 +177,6 @@
   # Xbox Controller Support
   hardware.xone.enable = true;
   hardware.firmware = [ pkgs.xow_dongle-firmware ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # Default settings (no edit)
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   # TLDR : Do not touch
   system.stateVersion = "22.05";

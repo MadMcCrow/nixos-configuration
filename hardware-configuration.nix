@@ -8,8 +8,9 @@
 
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
-  boot.kernelParams = [ "quiet" ];
-
+  #boot.kernelParams = [ "quiet" ];
+  boot.extraModprobeConfig =
+    "options zfs l2arc_noprefetch=0 zfs_arc_max=1073741824";
   fileSystems."/" = {
     device = "nixos-pool/local/root";
     fsType = "zfs";
@@ -18,11 +19,13 @@
   fileSystems."/nix" = {
     device = "nixos-pool/local/nix";
     fsType = "zfs";
+    neededForBoot = true;
   };
 
   fileSystems."/nix/persist" = {
     device = "nixos-pool/safe/persist";
     fsType = "zfs";
+    neededForBoot = true;
   };
 
   fileSystems."/home" = {
@@ -32,7 +35,7 @@
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/4A84-7800";
-    fsType = "fat32";
+    fsType = "vfat";
   };
 
   swapDevices = [ ];

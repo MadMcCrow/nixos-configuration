@@ -27,8 +27,11 @@ in {
     home = {
       packages = with pkgs; [
         home-manager
+        oh-my-zsh
         zsh-powerlevel10k
-        firefox
+        git
+        gh
+        firefox-wayland
         chromium
         vlc
         dconf
@@ -39,20 +42,21 @@ in {
         gnomeExtensions.caffeine
         gnomeExtensions.appindicator
         gnomeExtensions.dash-to-dock
-        gnomeExtensions.dock-from-dash
-        gnomeExtensions.dash-from-panel
         gnomeExtensions.application-volume-mixer
         gnomeExtensions.mpris-indicator-button
-        gnomeExtensions.dash-to-panel
         gnomeExtensions.advanced-alttab-window-switcher
-        gnomeExtensions.top-bar-organizer
+        gnomeExtensions.blur-my-shell
+        gnomeExtensions.runcat
+        gnomeExtensions.forge
       ];
       stateVersion = "22.05";
     };
     programs = {
       zsh = {
         enable = true;
-        initExtra = "[[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh";
+        initExtra = ''
+          [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
+                  POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'';
         oh-my-zsh = {
           enable = true;
           plugins = [ "git" ];
@@ -83,11 +87,6 @@ in {
             src = pkgs.zsh-powerlevel10k;
             file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
           }
-          #{
-          #  name = "powerlevel10k-config";
-          #  src = lib.cleanSource ./p10k-config;
-          #  file = "p10k.zsh";
-          #}
         ];
       };
       git = {
