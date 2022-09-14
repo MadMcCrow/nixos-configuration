@@ -1,7 +1,7 @@
 # Nixos Gnome Desktop environment settings
 { config, pkgs, lib, ... }: {
 
-# enable GUI
+  # enable GUI
   services.xserver = {
     enable = true;
     excludePackages = [ pkgs.xterm ];
@@ -32,8 +32,6 @@
     gnome.gnome-characters
     orca
   ];
-  
-  
 
   # disable unecessary services 
   services.gnome = {
@@ -41,12 +39,27 @@
     tracker-miners.enable = false;
     tracker.enable = false;
     gnome-online-miners.enable = lib.mkForce false;
+    gnome-online-accounts.enable = lib.mkForce false;
+    evolution-data-server.enable =  lib.mkForce  false;
+    glib-networking.enable = true;
+    gnome-keyring.enable = true;
+    sushi.enable = true;
   };
 
   # enable DConf to edit gnome configuration
   programs.dconf.enable = true;
+  programs.seahorse.enable = true;
+  programs.kdeconnect.enable = true;
+  programs.evolution.enable = false;
 
-  # systray icons
-  environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
+  environment.systemPackages = with pkgs;
+  [ 
+  dconf				# configure gnome
+  dconf2nix 			# export dconf in nix
+  gnome.gnome-tweaks		# Gnome tweaks
+  gnomeExtensions.appindicator	# systray icons
+  gnomeExtensions.gsconnect	# KDE Connect 
+  ];
+  
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 }

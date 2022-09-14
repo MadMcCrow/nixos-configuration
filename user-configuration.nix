@@ -24,31 +24,33 @@ in {
     shell = pkgs.zsh;
   };
   home-manager.users.perard = { lib, pkgs, ... }: {
-    home = {
-      packages = with pkgs; [
+    home = with pkgs;{
+   
+      packages =  [
         home-manager
         oh-my-zsh
         zsh-powerlevel10k
         git
         gh
-        firefox-wayland
+        firefox-wayland # default firefox has issues with wayland
         chromium
+        lapce # code editor
         vlc
-        dconf
-        dconf2nix
-        gnome.dconf-editor
-        gnome.gnome-tweaks
-        gnomeExtensions.pop-shell
-        gnomeExtensions.caffeine
-        gnomeExtensions.appindicator
-        gnomeExtensions.dash-to-dock
-        gnomeExtensions.application-volume-mixer
-        gnomeExtensions.mpris-indicator-button
-        gnomeExtensions.advanced-alttab-window-switcher
-        gnomeExtensions.blur-my-shell
-        gnomeExtensions.runcat
-        gnomeExtensions.forge
-      ];
+        fondo
+	] ++ (with gnomeExtensions; [
+        caffeine
+        appindicator
+        dash-to-dock
+        pop-shell
+        forge
+        arcmenu
+        advanced-alttab-window-switcher
+        application-volume-mixer
+        mpris-indicator-button
+        blur-my-shell
+        runcat
+      ]);
+      
       stateVersion = "22.05";
     };
     programs = {

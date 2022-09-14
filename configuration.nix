@@ -17,7 +17,7 @@
   boot = {
     # use Zen for better performance
     kernelPackages = pkgs.linuxPackages_zen;
-    kernelParams = [ "nohibernate" ];
+    kernelParams = [ "nohibernate" "quiet" ];
     # UEFI boot loader with systemdboot
     loader = {
       systemd-boot.enable = true;
@@ -46,6 +46,7 @@
       "zfs"
     ];
     plymouth.enable = true;
+    zfs.forceImportAll = false;
   };
 
   # zfs
@@ -58,8 +59,7 @@
 
   # Timezone
   time.timeZone = "Europe/Paris";
-  services.timesyncd.servers = ["fr.pool.ntp.org" "europe.pool.ntp.org"];
-  
+  services.timesyncd.servers = [ "fr.pool.ntp.org" "europe.pool.ntp.org" ];
 
   # Locale
   i18n.defaultLocale = "en_US.UTF-8";
@@ -171,6 +171,8 @@
       clean = "sudo nix-collect-garbage -d";
     };
   };
+  users.defaultUserShell = pkgs.zsh;
+  environment.shells = with pkgs; [ zsh ];
 
   # Faster boot:
   systemd.services.NetworkManager-wait-online.enable = false;
@@ -179,6 +181,9 @@
   # Xbox Controller Support
   hardware.xone.enable = true;
   hardware.firmware = [ pkgs.xow_dongle-firmware ];
+  
+  # make sure opengl is supported
+  hardware.opengl.enable = true;
 
   # TLDR : Do not touch
   system.stateVersion = "22.05";

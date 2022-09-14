@@ -8,7 +8,6 @@
 
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
-  #boot.kernelParams = [ "quiet" ];
   boot.extraModprobeConfig =
     "options zfs l2arc_noprefetch=0 zfs_arc_max=1073741824";
   fileSystems."/" = {
