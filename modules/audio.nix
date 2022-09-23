@@ -11,7 +11,8 @@ with builtins; {
   };
 
   # Pipewire
-  config = mkIf (config.sys.audio.server == "pipewire") {
+  config = mkMerge [
+  mkIf (config.sys.audio.server == "pipewire") {
     sound.enable = false; # disabled for pipewire
     hardware.pulseaudio.enable = false; # disabled for pipewire
     security.rtkit.enable = true; # rtkit is optional but recommended
@@ -22,13 +23,14 @@ with builtins; {
       pulse.enable = true;
       jack.enable = true;
     };
-  };
+  }
 
   # Pulseaudio
-  config = mkIf (cfg.server == "pulse") {
+  mkIf (cfg.server == "pulse") {
     sound.enable = true;
     hardware.pulseaudio.enable = true;
     hardware.pulseaudio.support32Bit = true;
     hardware.pulseaudio.package = pkgs.pulseaudioFull;
-  };
+  }
+  ];
 }
