@@ -40,7 +40,7 @@
     tracker.enable = false;
     gnome-online-miners.enable = lib.mkForce false;
     gnome-online-accounts.enable = lib.mkForce false;
-    evolution-data-server.enable =  lib.mkForce  false;
+    evolution-data-server.enable = lib.mkForce false;
     glib-networking.enable = true;
     gnome-keyring.enable = true;
     sushi.enable = true;
@@ -52,14 +52,13 @@
   programs.kdeconnect.enable = true;
   programs.evolution.enable = false;
 
-  environment.systemPackages = with pkgs;
-  [ 
-  dconf				# configure gnome
-  dconf2nix 			# export dconf in nix
-  gnome.gnome-tweaks		# Gnome tweaks
-  gnomeExtensions.appindicator	# systray icons
-  gnomeExtensions.gsconnect	# KDE Connect 
+  environment.systemPackages = with pkgs; [
+    dconf # configure gnome
+    dconf2nix # export dconf in nix
+    gnome.gnome-tweaks # Gnome tweaks
+    gnomeExtensions.appindicator # systray icons
+    gnomeExtensions.gsconnect # KDE Connect
   ];
-  
+
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 }
