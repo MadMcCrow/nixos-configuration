@@ -22,10 +22,6 @@
       modules = [
         ./modules/default.nix
         ./systems/AF/configuration.nix
-        {
-          sys.audio.server = "pulse";
-          # sys.shell.zsh.enable = true; # todo
-        }
       ];
     };
   };

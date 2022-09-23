@@ -1,8 +1,6 @@
 # this is my base configuration for Nixos
 { config, pkgs, lib, ... }:
-
 {
-
   # imports
   imports = [
     ./hardware-configuration.nix
