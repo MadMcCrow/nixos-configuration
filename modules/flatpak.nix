@@ -1,7 +1,9 @@
 # flatpak
 #
 # TODO : use same persisting system as in persist.nix
-{ inputs, lib, config, pkgs, ... }: {
+{ config, pkgs, impermanence, ...}: {
+
+imports = [ impermanence.nixosModules.impermanence ];
   services.flatpak.enable = true;
   xdg.portal = {
     enable = true;

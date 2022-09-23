@@ -19,6 +19,7 @@
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      specialArgs = inputs;
       modules = [
         ./modules/default.nix
         ./systems/AF/configuration.nix
