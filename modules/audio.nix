@@ -12,25 +12,29 @@ with builtins; {
 
   # Pipewire
   config = mkMerge [
-  mkIf (config.sys.audio.server == "pipewire") {
-    sound.enable = false; # disabled for pipewire
-    hardware.pulseaudio.enable = false; # disabled for pipewire
-    security.rtkit.enable = true; # rtkit is optional but recommended
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
-  }
+    mkIf
+    (config.sys.audio.server == "pipewire")
+    {
+      sound.enable = false; # disabled for pipewire
+      hardware.pulseaudio.enable = false; # disabled for pipewire
+      security.rtkit.enable = true; # rtkit is optional but recommended
+      services.pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        jack.enable = true;
+      };
+    }
 
-  # Pulseaudio
-  mkIf (cfg.server == "pulse") {
-    sound.enable = true;
-    hardware.pulseaudio.enable = true;
-    hardware.pulseaudio.support32Bit = true;
-    hardware.pulseaudio.package = pkgs.pulseaudioFull;
-  }
+    # Pulseaudio
+    mkIf
+    (cfg.server == "pulse")
+    {
+      sound.enable = true;
+      hardware.pulseaudio.enable = true;
+      hardware.pulseaudio.support32Bit = true;
+      hardware.pulseaudio.package = pkgs.pulseaudioFull;
+    }
   ];
 }

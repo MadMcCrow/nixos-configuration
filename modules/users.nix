@@ -1,9 +1,5 @@
 # this is the configuration for users
-
-{ config, pkgs, ... }:
-
-  imports = [ (import "${home-manager}/nixos") ];
-
+{ inputs, lib, config, pkgs, ... }: {
   # Users
   users.mutableUsers = false;
 
@@ -20,8 +16,8 @@
     shell = pkgs.zsh;
   };
   home-manager.users.perard = { lib, pkgs, ... }: {
-    home = with pkgs;{
-      packages =  [
+    home = with pkgs; {
+      packages = [
         home-manager
         oh-my-zsh
         zsh-powerlevel10k
@@ -31,7 +27,7 @@
         #chromium
         lapce # code editor
         vlc
-	] ++ (with gnomeExtensions; [
+      ] ++ (with gnomeExtensions; [
         caffeine
         appindicator
         dash-to-dock
@@ -44,7 +40,7 @@
         blur-my-shell
         runcat
       ]);
-      
+
       stateVersion = "22.05";
     };
     programs = {

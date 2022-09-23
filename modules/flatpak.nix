@@ -1,10 +1,7 @@
 # flatpak
 #
 # TODO : use same persisting system as in persist.nix
-{ config, pkgs, lib, ... }:
-{
-
-
+{ inputs, lib, config, pkgs, ... }: {
   services.flatpak.enable = true;
   xdg.portal = {
     enable = true;
@@ -17,5 +14,4 @@
       "/var/lib/flatpak" # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
     ];
   };
-
 }
