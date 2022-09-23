@@ -3,7 +3,7 @@
 {
   imports = [
     # List your module files here
-    ./audio.nix
+    ./audio
     ./flatpak.nix
     ./gnome.nix
     ./nix.nix
