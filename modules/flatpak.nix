@@ -2,12 +2,6 @@
 #
 # TODO : use same persisting system as in persist.nix
 { config, pkgs, lib, ... }:
-let
-  impermanence = builtins.fetchTarball
-    "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-in {
-  imports = [ "${impermanence}/nixos.nix" ];
-
   services.flatpak.enable = true;
   xdg.portal = {
     enable = true;

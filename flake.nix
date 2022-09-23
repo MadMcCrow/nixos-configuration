@@ -7,6 +7,9 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    # impermanence
+    impermanence.url = "github:nix-community/impermanence";
+
     # Utilities for building our flake
     #flake-utils.url = "github:numtide/flake-utils";
   };
