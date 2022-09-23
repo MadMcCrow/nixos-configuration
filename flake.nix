@@ -13,14 +13,11 @@
 
   outputs = { self, nixpkgs, home-manager }@inputs: {
 
-    # the modules shared by all my systems
-    nixosModules = import ./modules;
-
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        nixosModules
+        ./modules
         ./systems/configuration-AF.nix
         {
           sys.audio.server = "pulse";
