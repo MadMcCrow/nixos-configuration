@@ -6,11 +6,6 @@
   # imports
   imports = [
     ./hardware-configuration.nix
-    ./persist.nix
-    ./user-configuration.nix
-    ./gnome-configuration.nix
-    ./flatpak-configuration.nix
-    ./steam-configuration.nix
   ];
 
   # Boot
@@ -78,18 +73,6 @@
   # disable CUPS
   services.printing.enable = false;
 
-  # Use Pipewire for Sound
-  sound.enable = false; # disabled for pipewire
-  hardware.pulseaudio.enable = false; # disabled for pipewire
-  security.rtkit.enable = true; # rtkit is optional but recommended
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
-
   # root user
   users.users.root = {
     #home = "/home/root"; # this does not work
@@ -122,20 +105,6 @@
     };
   };
 
-  # auto update
-  system.autoUpgrade = {
-    enable = true;
-    dates = "daily";
-    persistent = true;
-  };
-
-  # Nix
-  nix = {
-    package = pkgs.nixFlakes; # or versioned attributes like nixVersions.nix_2_8
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  };
 
   # Documentation
   documentation = {
@@ -148,16 +117,6 @@
   powerManagement = {
     enable = true;
     cpuFreqGovernor = "performance";
-  };
-
-  nix = {
-    # GarbageCollection
-    gc = {
-      automatic = true;
-      dates = "daily";
-    };
-    settings.auto-optimise-store = true;
-    optimise.dates = " daily";
   };
 
   # zsh
@@ -173,7 +132,7 @@
   };
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
-
+  
   # Faster boot:
   systemd.services.NetworkManager-wait-online.enable = false;
   systemd.services.systemd-fsck.enable = false;

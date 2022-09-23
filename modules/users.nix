@@ -1,11 +1,7 @@
 # this is the configuration for users
-# TODO: move this to home
 
 { config, pkgs, ... }:
-let
-  home-manager = builtins.fetchTarball
-    "https://github.com/nix-community/home-manager/archive/release-22.05.tar.gz";
-in {
+
   imports = [ (import "${home-manager}/nixos") ];
 
   # Users
@@ -25,7 +21,6 @@ in {
   };
   home-manager.users.perard = { lib, pkgs, ... }: {
     home = with pkgs;{
-   
       packages =  [
         home-manager
         oh-my-zsh
