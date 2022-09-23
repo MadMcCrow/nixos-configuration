@@ -28,18 +28,17 @@
         git
         gh
         firefox-wayland # default firefox has issues with wayland
-        chromium
+        #chromium
         lapce # code editor
         vlc
-        fondo
 	] ++ (with gnomeExtensions; [
         caffeine
         appindicator
         dash-to-dock
         pop-shell
-        forge
-        arcmenu
-        advanced-alttab-window-switcher
+        #forge
+        #arcmenu
+        #advanced-alttab-window-switcher
         application-volume-mixer
         mpris-indicator-button
         blur-my-shell

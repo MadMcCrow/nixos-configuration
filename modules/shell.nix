@@ -1,4 +1,5 @@
-# Here we configure some basic nixos features
+# Here we configure our default shell (zsh)
+# TODO : add power10k, move to a folder with the p10k default config
 { pkgs, config, lib, ... }: {
 
   # Packages
