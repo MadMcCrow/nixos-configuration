@@ -1,5 +1,8 @@
 # this is the configuration for users
-{ inputs, lib, config, pkgs, ... }: {
+{ config, pkgs, home-manager, ... }: {
+
+imports = [ home-manager.nixosModule ];
+
   # Users
   users.mutableUsers = false;
 
