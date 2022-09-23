@@ -20,7 +20,7 @@
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        ./modules
+        ./modules/default.nix
         ./systems/AF/configuration.nix
         {
           sys.audio.server = "pulse";
