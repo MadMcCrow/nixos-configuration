@@ -14,7 +14,7 @@
     #flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, home-manager }@inputs: {
+  outputs = { self, nixpkgs, home-manager, impermanence} @inputs: {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
