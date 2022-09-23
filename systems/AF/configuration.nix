@@ -83,12 +83,6 @@
 
   # Packages
   environment.systemPackages = with pkgs; [
-    nixfmt
-    zsh
-    exa
-    nano
-    wget
-    openssl
     xow_dongle-firmware # for xbox controller
     linuxKernel.packages.linux_zen.xone
   ];
@@ -100,7 +94,6 @@
     packageOverrides = pkgs: {
       system-path = pkgs.system-path.override {
         xterm = pkgs.gnome.gnome-terminal;
-        ls = pkgs.exa;
       };
     };
   };
@@ -118,20 +111,6 @@
     enable = true;
     cpuFreqGovernor = "performance";
   };
-
-  # zsh
-  programs.zsh = {
-    enable = true;
-    syntaxHighlighting.enable = true;
-    autosuggestions.enable = true;
-    shellAliases = {
-      ls = "exa";
-      update = "sudo nixos-rebuild switch";
-      clean = "sudo nix-collect-garbage -d";
-    };
-  };
-  users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [ zsh ];
   
   # Faster boot:
   systemd.services.NetworkManager-wait-online.enable = false;

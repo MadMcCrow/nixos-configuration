@@ -102,12 +102,6 @@
     };
   };
 
-  fileSystems."/home/perard/Documents" = {
-    device = "/dev/disk/by-uuid/03413941-1a7e-4cfb-9965-2d4264c1fdb5";
-    fsType = "f2fs";
-    options = [ "defaults" "rw" ];
-  };
-
   # guest
   users.users.guest = {
     isNormalUser = true;

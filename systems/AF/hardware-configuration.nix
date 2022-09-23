@@ -42,7 +42,15 @@
     fsType = "f2fs";
     options = [ "defaults" "rw" ];
   };
+  
+  # maybe use a bind instead to allow having documents on a separate drive/partition/standard
+  fileSystems."/home/perard/Documents" = {
+    device = "/dev/disk/by-uuid/03413941-1a7e-4cfb-9965-2d4264c1fdb5";
+    fsType = "f2fs";
+    options = [ "defaults" "rw" ];
+  };
 
+  # maybe consider adding swap ?
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

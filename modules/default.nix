@@ -6,7 +6,10 @@
     ./audio.nix
     ./flatpak.nix
     ./gnome.nix
-    ./nixos.nix
+    ./nix.nix
     ./persist.nix
+    ./shell.nix
+    ./steam.nix
+    ./users.nix
   ];
 }
