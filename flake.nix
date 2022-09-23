@@ -21,7 +21,7 @@
       system = "x86_64-linux";
       modules = [
         ./modules
-        ./systems/configuration-AF.nix
+        ./systems/AF/configuration.nix
         {
           sys.audio.server = "pulse";
           # sys.shell.zsh.enable = true; # todo
