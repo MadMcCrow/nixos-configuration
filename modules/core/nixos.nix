@@ -26,8 +26,10 @@
       "/nix/persist/etc/NetworkManager/system-connections/";
   };
   
-  # cachix
-  environment.systemPackages = [
-    pkgs.cachix
+  # absolutely required packages
+  environment.systemPackages = with pkgs; [
+    git
+    git-crypt
+    cachix
   ];
 }
