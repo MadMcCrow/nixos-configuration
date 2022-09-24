@@ -25,4 +25,9 @@
     "NetworkManager/system-connections".source =
       "/nix/persist/etc/NetworkManager/system-connections/";
   };
+  
+  # cachix
+  environment.systemPackages = [
+    pkgs.cachix
+  ];
 }
