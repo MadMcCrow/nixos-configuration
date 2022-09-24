@@ -1,4 +1,4 @@
-# shell.nix
+# core/shell.nix
 # 	set default shell (zsh)
 #	Todo : add power10k, move to a folder with the p10k default config
 { pkgs, config, lib, ... }: {
@@ -20,15 +20,12 @@
       update = "sudo nixos-rebuild switch";
       clean = "sudo nix-collect-garbage -d";
     };
-    
-     ohMyZsh = {
-          enable = true;
-          plugins = [ 
-          "git"
-          "zsh-nix-shell"
-          ];
-          theme = "robbyrussell";
-        };
+
+    ohMyZsh = {
+      enable = true;
+      plugins = [ "git" "zsh-nix-shell" ];
+      theme = "robbyrussell";
+    };
   };
 
   # make users default to zsh

@@ -1,10 +1,18 @@
 # flatpak.nix
 # 	Flatpak support for nixos
-#	Todo : move to a conditional setup
-{ config, pkgs, impermanence, ...}: {
+{ config, pkgs, impermanence, ... }:
+let cfg = config.apps.flatpak;
+in {
 
-# import thanks to specialArgs
-imports = [ impermanence.nixosModules.impermanence ];
+  # interface
+  options.apps.flatpak.enable = lib.mkOption {
+    type = types.bool;
+    default = true;
+    description = "make flatpak available to our system";
+  };
+
+  # import thanks to specialArgs
+  imports = [ impermanence.nixosModules.impermanence ];
 
   services.flatpak.enable = true;
   xdg.portal = {
@@ -19,6 +27,6 @@ imports = [ impermanence.nixosModules.impermanence ];
   # this folder is where the files will be stored (don't put it in tmpfs/zfs clean partition)
   # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
   environment.persistence."/nix/persist/flatpak" = {
-    directories = ["/var/lib/flatpak"];
+    directories = [ "/var/lib/flatpak" ];
   };
 }

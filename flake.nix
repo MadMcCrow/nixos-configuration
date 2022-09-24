@@ -10,11 +10,11 @@
     # impermanence
     impermanence.url = "github:nix-community/impermanence";
 
-    # Utilities for building our flake
-    #flake-utils.url = "github:numtide/flake-utils";
+    # gaming 
+    nix-gaming.url = "github:numtide/fufexan/nix-gaming";
   };
 
-  outputs = { self, nixpkgs, home-manager, impermanence} @inputs: {
+  outputs = { self, nixpkgs, home-manager, impermanence }@inputs: {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
@@ -23,6 +23,13 @@
       modules = [
         ./modules/default.nix
         ./systems/AF/configuration.nix
+        {
+          basic.core.enable = true;
+          desktop.fonts.enable = true;
+          desktop.gnome.enable = true;
+          apps.vscode.enable = true;
+          sys.audio.server = "pulse";
+        }
       ];
     };
   };

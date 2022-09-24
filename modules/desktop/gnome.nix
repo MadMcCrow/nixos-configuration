@@ -1,7 +1,8 @@
 # gnome.nix
 # 	Nixos Gnome Desktop environment settings
-#	Todo : implement Dconf2nix (possibly in a separate module)
-{config, pkgs, lib , ...}: {
+#	todo : implement Dconf2nix (possibly in a separate module)
+#	todo : make an option for enabling gnome
+{ config, pkgs, lib, ... }: {
 
   # enable GUI
   services.xserver = {
@@ -17,8 +18,16 @@
     };
     # use Gnome
     desktopManager.gnome.enable = true;
+    # remove xterm
+    excludePackages = with pkgs; [ xterm ];
   };
   programs.xwayland.enable = true;
+
+  # replace xterm by gnome terminal
+  nixpkgs.config.packageOverrides = pkgs: {
+    system-path =
+      pkgs.system-path.override { xterm = pkgs.gnome.gnome-terminal; };
+  };
 
   # Gnome
   environment.gnome.excludePackages = with pkgs; [
