@@ -1,5 +1,5 @@
 # configuration for steam etc ...
-{ config, lib, pkgs, modulesPath, ... }: {
+{ config, lib, pkgs, ... }: {
 
   hardware.steam-hardware.enable = true; # Steam udev rules
 
