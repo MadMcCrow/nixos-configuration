@@ -23,7 +23,7 @@
 
     ohMyZsh = {
       enable = true;
-      plugins = [ "git" "zsh-nix-shell" ];
+      plugins = [ "git"];
       theme = "robbyrussell";
     };
   };
