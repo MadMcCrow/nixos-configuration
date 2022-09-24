@@ -1,8 +1,8 @@
-# configuration for steam etc ...
+# gaming/steam.nix
+#	Make steam works on your system
 { config, lib, pkgs, ... }: {
 
   hardware.steam-hardware.enable = true; # Steam udev rules
-
   # steam 
   programs.steam = {
     enable = true;

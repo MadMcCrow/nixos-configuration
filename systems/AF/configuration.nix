@@ -1,37 +1,35 @@
 # configuration.nix
 # 	base configuration for Nixos on my desktop
-{ config, pkgs, lib, ...}:
-{
+{ config, pkgs, lib, ... }: {
   # import Hardware configuration
-  imports = [./hardware-configuration.nix];
+  imports = [ ./hardware-configuration.nix ];
 
   # boot and kernel
   boot = {
-  
+
     # use Zen for better performance
-    
+
     kernelPackages = pkgs.linuxPackages_xanmod;
-    extraModulePackages = with pkgs.linuxPackages_xanmod; [asus-wmi-sensors];
+    extraModulePackages = with pkgs.linuxPackages_xanmod; [ asus-wmi-sensors ];
     kernelParams = [ "nohibernate" "quiet" ];
-    
-    
+
     # UEFI boot loader with systemdboot
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
       systemd-boot.configurationLimit = 2;
     };
-    
+
     # custom initrd options
     initrd = {
       availableKernelModules =
         [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "dm-snapshot"];
+      kernelModules = [ "dm-snapshot" ];
       postDeviceCommands = lib.mkAfter ''
         zfs rollback -r nixos-pool/local/root@blank
       '';
     };
-    
+
     # filesystems
     supportedFilesystems = [
       "btrfs"
@@ -45,12 +43,12 @@
       "ntfs"
       "zfs"
     ];
-    
+
     plymouth.enable = true;
     zfs = {
-    	forceImportRoot = false;
-    	forceImportAll = false;
-    	enableUnstable = false;
+      forceImportRoot = false;
+      forceImportAll = false;
+      enableUnstable = false;
     };
   };
 
@@ -87,7 +85,8 @@
   users.users.root = {
     #home = "/home/root"; # this does not work
     homeMode = "700";
-    hashedPassword = "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+    hashedPassword =
+      "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
   };
 
   # Packages
@@ -101,9 +100,8 @@
     allowUnfree = true;
     chromium = { enableWideVine = true; };
     packageOverrides = pkgs: {
-      system-path = pkgs.system-path.override {
-        xterm = pkgs.gnome.gnome-terminal;
-      };
+      system-path =
+        pkgs.system-path.override { xterm = pkgs.gnome.gnome-terminal; };
     };
   };
 
@@ -112,7 +110,7 @@
     enable = true;
     cpuFreqGovernor = "performance";
   };
-  
+
   # Faster boot:
   systemd.services.NetworkManager-wait-online.enable = false;
   systemd.services.systemd-fsck.enable = false;
@@ -120,7 +118,7 @@
   # Xbox Controller Support
   hardware.xone.enable = true;
   hardware.firmware = [ pkgs.xow_dongle-firmware ];
-  
+
   # make sure opengl is supported
   hardware.opengl.enable = true;
 
