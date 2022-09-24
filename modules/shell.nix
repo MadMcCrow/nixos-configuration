@@ -1,5 +1,6 @@
-# Here we configure our default shell (zsh)
-# TODO : add power10k, move to a folder with the p10k default config
+# shell.nix
+# 	set default shell (zsh)
+#	Todo : add power10k, move to a folder with the p10k default config
 { pkgs, config, lib, ... }: {
 
   # Packages
@@ -20,7 +21,7 @@
       clean = "sudo nix-collect-garbage -d";
     };
     
-     oh-my-zsh = {
+     ohMyZsh = {
           enable = true;
           plugins = [ 
           "git"

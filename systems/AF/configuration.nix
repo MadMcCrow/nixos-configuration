@@ -1,12 +1,11 @@
-# this is my base configuration for Nixos
-{ config, pkgs, lib, ... }:
+# configuration.nix
+# 	base configuration for Nixos on my desktop
+{ config, pkgs, lib}:
 {
-  # imports
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  # import Hardware configuration
+  imports = [./hardware-configuration.nix];
 
-  # Boot
+  # boot and kernel
   boot = {
     # use Zen for better performance
     kernelPackages = pkgs.linuxPackages_zen;
@@ -21,7 +20,7 @@
     initrd = {
       availableKernelModules =
         [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "dm-snapshot" "zfs" ];
+      kernelModules = [ "dm-snapshot"];
       postDeviceCommands = lib.mkAfter ''
         zfs rollback -r nixos-pool/local/root@blank
       '';
@@ -39,7 +38,10 @@
       "zfs"
     ];
     plymouth.enable = true;
-    zfs.forceImportAll = false;
+    zfs = {
+    	forceImportRoot = false;
+    	forceImportAll = false;
+    };
   };
 
   # zfs
@@ -75,8 +77,7 @@
   users.users.root = {
     #home = "/home/root"; # this does not work
     homeMode = "700";
-    hashedPassword =
-      "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+    hashedPassword = "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
   };
 
   # Packages
@@ -94,14 +95,6 @@
         xterm = pkgs.gnome.gnome-terminal;
       };
     };
-  };
-
-
-  # Documentation
-  documentation = {
-    nixos.enable = true;
-    man.enable = true;
-    doc.enable = false;
   };
 
   # PowerManagement

@@ -1,6 +1,7 @@
-# Here we configure some basic nixos features
-{ pkgs, config, lib, ... }: {
-  # Nix
+# nix.nix
+# 	Nix and nix store settings for nixos.
+{ pkgs, config}: {
+  # Nix and flake support
   nix = {
     package = pkgs.nixFlakes; # or versioned attributes like nixVersions.nix_2_8
     extraOptions = ''

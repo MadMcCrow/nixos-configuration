@@ -1,5 +1,7 @@
-# All the things that must be persistant across reboots
-{ config, lib, pkgs, modulesPath, ... }: {
+# persist.nix
+# 	opt-in persistance.
+#	All the things that must not be erased across reboots
+{config}: {
 
   # symlinks :
   environment.etc = {
