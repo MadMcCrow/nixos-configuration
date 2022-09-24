@@ -120,14 +120,8 @@
         userName = "MadMcCrow";
         userEmail = "noe.perard@live.ru";
         lfs.enable = true;
-        programs.git.extraConfig = ''
-          {
-                  help = 
-          		{
-          			autocorrect = 10;
-          		}
-                  }'';
-
+	# does not work with gh
+        # extraConfig = "{help.autocorrect = 10;}";
       };
 
       # github cli tool

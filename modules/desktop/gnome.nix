@@ -7,6 +7,7 @@
   # enable GUI
   services.xserver = {
     enable = true;
+    # remove xterm
     excludePackages = [ pkgs.xterm ];
     desktopManager.xterm.enable = false;
     # GDM :
@@ -18,8 +19,6 @@
     };
     # use Gnome
     desktopManager.gnome.enable = true;
-    # remove xterm
-    excludePackages = with pkgs; [ xterm ];
   };
   programs.xwayland.enable = true;
 
