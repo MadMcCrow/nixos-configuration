@@ -1,6 +1,6 @@
 # configuration.nix
 # 	base configuration for Nixos on my desktop
-{ config, pkgs, lib}:
+{ config, pkgs, lib, ...}:
 {
   # import Hardware configuration
   imports = [./hardware-configuration.nix];
