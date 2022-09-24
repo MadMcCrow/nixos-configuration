@@ -7,15 +7,21 @@
 
   # boot and kernel
   boot = {
+  
     # use Zen for better performance
-    kernelPackages = pkgs.linuxPackages_zen;
+    
+    kernelPackages = pkgs.linuxPackages_xanmod;
+    extraModulePackages = with pkgs.linuxPackages_xanmod; [asus-wmi-sensors];
     kernelParams = [ "nohibernate" "quiet" ];
+    
+    
     # UEFI boot loader with systemdboot
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
       systemd-boot.configurationLimit = 2;
     };
+    
     # custom initrd options
     initrd = {
       availableKernelModules =
@@ -25,6 +31,8 @@
         zfs rollback -r nixos-pool/local/root@blank
       '';
     };
+    
+    # filesystems
     supportedFilesystems = [
       "btrfs"
       "ext2"
@@ -37,10 +45,12 @@
       "ntfs"
       "zfs"
     ];
+    
     plymouth.enable = true;
     zfs = {
     	forceImportRoot = false;
     	forceImportAll = false;
+    	enableUnstable = false;
     };
   };
 
