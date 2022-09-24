@@ -1,7 +1,7 @@
 # persist.nix
 # 	opt-in persistance.
 #	All the things that must not be erased across reboots
-{config}: {
+{config, ...}: {
 
   # symlinks :
   environment.etc = {
