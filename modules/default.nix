@@ -11,6 +11,6 @@
     ./persist.nix
     ./shell.nix
     ./steam.nix
-    ./users.nix
+    ./users
   ];
 }
