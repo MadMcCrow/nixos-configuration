@@ -1,2 +1,4 @@
 # ignore any result from flake evaluation :
 result
+# flake lock : avoid commiting it
+flake.lock
