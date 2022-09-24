@@ -9,12 +9,12 @@
 
     # impermanence
     impermanence.url = "github:nix-community/impermanence";
-
-    # gaming 
-    nix-gaming.url = "github:numtide/fufexan/nix-gaming";
+    
+    # gaming
+    nix-gaming.url = "github:fufexan/nix-gaming";
   };
 
-  outputs = { self, nixpkgs, home-manager, impermanence }@inputs: {
+  outputs = { self, nixpkgs, home-manager, impermanence , nix-gaming }@inputs: {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
