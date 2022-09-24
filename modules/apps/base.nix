@@ -1,10 +1,12 @@
 # apps/base.nix
 # 	the apps we "always" want on our system
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+with builtins;
+with lib;
 let
   cfg = config.apps.base;
   firefox-compat =
-    if config.programs.xwayland.enable then firefox-wayland else firefox;
+    if config.programs.xwayland.enable then pkgs.firefox-wayland else pkgs.firefox;
 in {
 
   # interface
@@ -21,7 +23,7 @@ in {
       curl
       zip
       neofetch
-      firefox-compatible
+      firefox-compat
     ];
   };
 }

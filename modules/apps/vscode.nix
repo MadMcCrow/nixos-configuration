@@ -1,6 +1,8 @@
 # apps/vscode.nix
 # 	vs-code with its extensions
 { pkgs, config, lib, ... }:
+with builtins;
+with lib;
 let cfg = config.apps.vscode;
 in {
   options.apps.vscode.enable = lib.mkOption {

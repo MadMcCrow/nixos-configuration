@@ -1,6 +1,8 @@
 # apps/multimedia.nix
 # 	the multimedia apps : vlc, mellowplayer, etc
-{ config, pkgs }:
+{ config, pkgs, lib, ... }:
+with builtins;
+with lib;
 let cfg = config.apps.multimedia;
 in {
   # interface
