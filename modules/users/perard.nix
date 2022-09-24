@@ -1,23 +1,28 @@
-# this is the configuration for users
+# perard.nix
+# 	my user available on all my hosts
 { config, pkgs, home-manager, ... }: {
 
-imports = [ home-manager.nixosModule ];
-
-  # Users
-  users.mutableUsers = false;
+  imports = [ home-manager.nixosModule ];
 
   # perard
   users.users.perard = {
     description = "Noé Perard-Gayot";
+
     isNormalUser = true;
+    # I am admin, I can install flatpak apps and I'm a gamer :)
     extraGroups = [ "wheel" "flatpak" "steam" ];
+
     initialHashedPassword =
       "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+
+    # home folder
     home = "/home/perard";
     homeMode = "700";
     uid = 1000;
     shell = pkgs.zsh;
   };
+
+  # home manager configuration :
   home-manager.users.perard = { lib, pkgs, ... }: {
     home = with pkgs; {
       packages = [
@@ -30,6 +35,7 @@ imports = [ home-manager.nixosModule ];
         #chromium
         lapce # code editor
         vlc
+        mellowplayer
       ] ++ (with gnomeExtensions; [
         caffeine
         appindicator
@@ -43,21 +49,33 @@ imports = [ home-manager.nixosModule ];
         blur-my-shell
         runcat
       ]);
-
+      # just like for the base nixos configuration, do not touch
       stateVersion = "22.05";
     };
+
+    # home manager programs settings 
     programs = {
+
+      # zsh is a modern shell
       zsh = {
         enable = true;
+        # source PowerLevel10k into my zsh config for a cool theme
+        #	TODO : make this configuration from the flake
         initExtra = ''
           [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
-                  POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'';
+                            POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'';
+
+        # Oh-my-zsh is a tool improving shell usage
         oh-my-zsh = {
           enable = true;
           plugins = [ "git" ];
           theme = "robbyrussell";
         };
+
+        # replace ls by it's far superior alternative "exa"
         shellAliases = { ls = "exa"; };
+
+        # zsh plugins
         plugins = [
           {
             name = "zsh-autosuggestions";
@@ -77,6 +95,17 @@ imports = [ home-manager.nixosModule ];
               sha256 = "0h7f27gz586xxw7cc0wyiv3bx0x3qih2wwh05ad85bh2h834ar8d";
             };
           }
+          #  # required to get zsh working in nix-shell
+          {
+            name = "zsh-nix-shell";
+            file = "nix-shell.plugin.zsh";
+            src = pkgs.fetchFromGitHub {
+              owner = "chisui";
+              repo = "zsh-nix-shell";
+              rev = "v0.5.0";
+              sha256 = "0za4aiwwrlawnia4f29msk822rj9bgcygw6a8a6iikiwzjjz0g91";
+            };
+          }
           {
             name = "powerlevel10k";
             src = pkgs.zsh-powerlevel10k;
@@ -84,6 +113,8 @@ imports = [ home-manager.nixosModule ];
           }
         ];
       };
+
+      # git settings
       git = {
         enable = true;
         userName = "MadMcCrow";
@@ -91,6 +122,8 @@ imports = [ home-manager.nixosModule ];
         lfs.enable = true;
 
       };
+
+      # github cli tool
       gh = {
         enable = true;
         enableGitCredentialHelper = true;
@@ -98,14 +131,5 @@ imports = [ home-manager.nixosModule ];
       };
 
     };
-  };
-
-  # guest
-  users.users.guest = {
-    isNormalUser = true;
-    extraGroups = [ "guests" ];
-    home = "/home/guest";
-    homeMode = "764";
-    uid = 1001;
   };
 }

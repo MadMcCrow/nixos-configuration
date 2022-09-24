@@ -1,7 +1,7 @@
 # gnome.nix
 # 	Nixos Gnome Desktop environment settings
 #	Todo : implement Dconf2nix (possibly in a separate module)
-{config, pkgs, lib}: {
+{config, pkgs, lib , ...}: {
 
   # enable GUI
   services.xserver = {
