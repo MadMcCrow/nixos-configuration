@@ -3,6 +3,7 @@
 #	todo : implement Dconf2nix (possibly in a separate module)
 #	todo : make an option for enabling gnome
 #	todo : make an option to enable online accounts
+
 { config, pkgs, lib, ... }: {
 
   # enable GUI
@@ -50,9 +51,8 @@
     tracker-miners.enable = false;
     tracker.enable = false;
     gnome-online-miners.enable = lib.mkForce false;
-    # disable online accounts if it causes slowdown
-    #gnome-online-accounts.enable = lib.mkForce false;
-    #evolution-data-server.enable = lib.mkForce false;
+    # gnome-online-accounts.enable = lib.mkForce false;
+    # evolution-data-server.enable = lib.mkForce false;
     glib-networking.enable = true;
     gnome-keyring.enable = true;
     sushi.enable = true;

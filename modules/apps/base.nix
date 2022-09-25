@@ -24,8 +24,6 @@ in {
       zip
       neofetch
       firefox-compat
-      # for gpg key handling
-      gnome.seahorse
     ];
   };
 }
