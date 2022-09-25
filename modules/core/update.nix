@@ -9,7 +9,7 @@ let
   ${pkgs.git}/bin/git fetch --all
   ${pkgs.git}/bin/git checkout -B run
   ${pkgs.git}/bin/git rebase origin/main
-  ${pkgs.nixos-rebuild}/bin/nixos-rebuild update flake --update-input nixpkgs --commit-lock-file
+  ${pkgs.nix}/bin/nix flake update --commit-lock-file
   ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake .# 
   ''
   };

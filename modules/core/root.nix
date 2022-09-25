@@ -1,6 +1,7 @@
 # core/root.nix
 # 	keep some root user settings
-{ pkgs, config, lib, ... }:
+{ config, pkgs, lib, impermanence, ... }:
+with builtins;
 with lib;
 {
   # import thanks to specialArgs
