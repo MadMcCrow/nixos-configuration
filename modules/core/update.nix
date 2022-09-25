@@ -12,7 +12,6 @@ let
   ${pkgs.nix}/bin/nix flake update --commit-lock-file
   ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake .# 
   ''
-  };
   cfg = config.services.autoUpdate;
 
 in {
