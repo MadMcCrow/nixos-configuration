@@ -6,6 +6,7 @@ with lib;
 let
   AutoUpdateScript = pkgs.writeShellScriptBin "autoUpdate"
   ''
+  ${pkgs.git}/bin/git fetch --all
   ${pkgs.git}/bin/git checkout -B run
   ${pkgs.git}/bin/git rebase origin/main
   ${pkgs.nixos-rebuild}/bin/nixos-rebuild update flake --update-input nixpkgs --commit-lock-file
