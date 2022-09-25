@@ -20,10 +20,11 @@
 
     # Nixos configuration files (ie. this)
     "nixos".source = "/nix/persist/etc/nixos/";
-
+ 
+    # this yields a warning and might not be necessary anymore
     # some NetworkManager configuration
-    "NetworkManager/system-connections".source =
-      "/nix/persist/etc/NetworkManager/system-connections/";
+    #"NetworkManager/system-connections".source =
+    #  "/nix/persist/etc/NetworkManager/system-connections/";
   };
   
   # absolutely required packages

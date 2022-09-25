@@ -25,7 +25,7 @@
         ./systems/AF/configuration.nix
         {
           apps.flatpak.enable = true;
-          apps.multimedia.enable = true;
+          apps.multimedia.enable = false;
           apps.vscode.enable = true;
         }
       ];

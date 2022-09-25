@@ -10,7 +10,7 @@
     # use Zen for better performance
 
     kernelPackages = pkgs.linuxPackages_xanmod;
-    extraModulePackages = with pkgs.linuxPackages_xanmod; [ asus-wmi-sensors ];
+    extraModulePackages = with boot.kernelPackages; [ zfs asus-wmi-sensors ];
     kernelParams = [ "nohibernate" "quiet" ];
 
     # UEFI boot loader with systemdboot
@@ -83,7 +83,6 @@
 
   # root user
   users.users.root = {
-    #home = "/home/root"; # this does not work
     homeMode = "700";
     hashedPassword =
       "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
@@ -92,18 +91,8 @@
   # Packages
   environment.systemPackages = with pkgs; [
     xow_dongle-firmware # for xbox controller
-    linuxKernel.packages.linux_zen.xone
+    boot.kernelPackages.xone
   ];
-
-  # Packages config
-  nixpkgs.config = {
-    allowUnfree = true;
-    chromium = { enableWideVine = true; };
-    packageOverrides = pkgs: {
-      system-path =
-        pkgs.system-path.override { xterm = pkgs.gnome.gnome-terminal; };
-    };
-  };
 
   # PowerManagement
   powerManagement = {

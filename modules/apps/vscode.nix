@@ -13,8 +13,10 @@ in {
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs;
       [
+        rnix-lsp
         (vscode-with-extensions.override {
           vscodeExtensions = with vscode-extensions; [
+            jnoortheen.nix-ide
             ms-python.python
             github.copilot
             rust-lang.rust-analyzer

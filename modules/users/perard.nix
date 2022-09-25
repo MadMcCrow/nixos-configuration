@@ -35,7 +35,7 @@
         #chromium
         lapce # code editor
         vlc
-        mellowplayer
+        gtg
       ] ++ (with gnomeExtensions; [
         caffeine
         appindicator
@@ -48,6 +48,7 @@
         mpris-indicator-button
         blur-my-shell
         runcat
+        timepp
       ]);
       # just like for the base nixos configuration, do not touch
       stateVersion = "22.05";
@@ -93,17 +94,6 @@
               repo = "fast-syntax-highlighting";
               rev = "v1.55";
               sha256 = "0h7f27gz586xxw7cc0wyiv3bx0x3qih2wwh05ad85bh2h834ar8d";
-            };
-          }
-          #  # required to get zsh working in nix-shell
-          {
-            name = "zsh-nix-shell";
-            file = "nix-shell.plugin.zsh";
-            src = pkgs.fetchFromGitHub {
-              owner = "chisui";
-              repo = "zsh-nix-shell";
-              rev = "v0.5.0";
-              sha256 = "0za4aiwwrlawnia4f29msk822rj9bgcygw6a8a6iikiwzjjz0g91";
             };
           }
           {
