@@ -91,7 +91,7 @@
   # Packages
   environment.systemPackages = with pkgs; [
     xow_dongle-firmware # for xbox controller
-    boot.kernelPackages.xone
+    linuxKernel.packages.linux_xanmod.xone # todo : make the finding of the kernel dynamic
   ];
   
   # allow xow dongle firmware
