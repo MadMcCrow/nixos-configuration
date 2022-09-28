@@ -4,7 +4,7 @@
 
   # nix
   nix = {
-    package = nixVersions.unstable; # or versioned attributes like nixVersions.nix_2_8
+    package = pkgs.nixVersions.unstable; # or versioned attributes like nixVersions.nix_2_8
     extraOptions = "experimental-features = nix-command flakes";
     # GarbageCollection
     gc = {
