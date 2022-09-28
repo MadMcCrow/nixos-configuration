@@ -93,6 +93,10 @@
     xow_dongle-firmware # for xbox controller
     boot.kernelPackages.xone
   ];
+  
+  # allow xow dongle firmware
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["xow_dongle-firmware"];
+
 
   # PowerManagement
   powerManagement = {
