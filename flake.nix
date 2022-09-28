@@ -14,7 +14,7 @@
     nix-gaming.url = "github:fufexan/nix-gaming";
   };
 
-  outputs = { self, nixpkgs, home-manager, impermanence, nix-gaming }@inputs: {
+  outputs = { stdenv, self, nixpkgs, home-manager, impermanence, nix-gaming }@inputs: {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {

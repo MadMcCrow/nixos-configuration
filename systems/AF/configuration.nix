@@ -10,7 +10,7 @@
     # use Zen for better performance
 
     kernelPackages = pkgs.linuxPackages_xanmod;
-    extraModulePackages = with boot.kernelPackages; [ zfs asus-wmi-sensors ];
+    extraModulePackages = with config.boot.kernelPackages; [ zfs asus-wmi-sensors ];
     kernelParams = [ "nohibernate" "quiet" ];
 
     # UEFI boot loader with systemdboot
