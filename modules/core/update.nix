@@ -4,7 +4,7 @@
 with builtins;
 with lib;
 let
-  AutoUpdateScript = pkgs.writeShellScriptBin "autoUpdate"
+  updateScript = pkgs.writeShellScriptBin "autoUpdate"
   ''
   ${pkgs.git}/bin/git fetch --all
   ${pkgs.git}/bin/git checkout -B run
@@ -15,10 +15,11 @@ let
   cfg = config.services.autoUpdate;
 
 in {
-  stdenv.mkDerivation rec {
-  name = "autoUpdate";
+  # update "program"
+  update = stdenv.mkDerivation {
+  name = "update";
   # Add the derivation to the PATH
-  buildInputs = [ AutoUpdateScript pkgs.git pkgs.nixos-rebuild ];
+  buildInputs = [ updateScript pkgs.git pkgs.nixos-rebuild ];
 }
 
   options = {
@@ -47,7 +48,7 @@ in {
       serviceConfig = {
         Type = "oneshot";
         User = "root";
-        ExecStart = ${pkgs.AutoUpdate}/bin/AutoUpdate';         
+        ExecStart = ${pkgs.update}/bin/update';         
       };
    };
 }

@@ -5,14 +5,24 @@
   # imported thanks to specialArgs
   imports = [ home-manager.nixosModule ];
 
+  # User on tmpfs
+  fileSystems."/home/guest" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = [ "defaults" "size=2G" "mode=764" ];
+  };
+
+  # user setup
   users.users.guest = {
-    isNormalUser = true;
+    description = "Guest";
     extraGroups = [ "guests" ];
+    isNormalUser = true;
+    initialPassword = "";
     home = "/home/guest";
-    homeMode = "764";
     uid = 1001;
   };
 
+  # home manager setup
   home-manager.users.guest = { lib, pkgs, ... }: {
     home = with pkgs; {
       packages = [ home-manager firefox-wayland ];
