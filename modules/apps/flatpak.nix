@@ -29,7 +29,7 @@ in {
 
     # this folder is where the files will be stored (don't put it in tmpfs/zfs clean partition)
     # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
-    environment.persistence."/nix/persist/flatpak" = {
+    environment.persistence."/nix/persist" = {
       directories = [ "/var/lib/flatpak" ];
     };
   };
