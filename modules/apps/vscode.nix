@@ -26,7 +26,17 @@ in {
           ];
         })
       ];
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["vscode-with-extensions"];
-
+  # does not work
+  # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+  #  "jnoortheen.nix-ide"
+  #  "ms-python.python"
+  #  "github.copilot"
+  #  "rust-lang.rust-analyzer"
+  #  "ms-vscode.cpptools"
+  #  "xaver.clang-format"
+  #  "llvm-vs-code-extensions.vscode-clangd"
+  #];
+  # works but is not cool
+  nixpkgs.config.allowUnfree = true; 
   };
 }
