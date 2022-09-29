@@ -36,7 +36,7 @@
   persistent = true; # apply if missed
   flake =  "github:MadMcCrow/nixos-configuration"; # this flake
   flags = [ "--update-input" "nixpkgs" "--commit-lock-file" ]; # update inputs
-  dates = daily;
+  dates = "daily";
   };
   
   # root git config
