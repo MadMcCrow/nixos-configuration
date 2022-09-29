@@ -17,8 +17,6 @@
     # useful aliases
     shellAliases = {
       ls = "exa";
-      update = "sudo nixos-rebuild switch --flake .#";
-      clean = "sudo nix-collect-garbage -d";
     };
 
     ohMyZsh = {
