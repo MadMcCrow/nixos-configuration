@@ -1,5 +1,5 @@
 # apps/default.nix
 # 	all the apps we want on our systems
 { config, pkgs, lib, ... }: {
-  imports = [ ./base.nix ./multimedia.nix ./vscode.nix ./flatpak.nix ];
+  imports = [ ./base.nix ./multimedia.nix ./vscode.nix ./flatpak.nix ./brave.nix];
 }

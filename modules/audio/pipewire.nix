@@ -1,8 +1,19 @@
 # audio/pipewire.nix
 #	set configuration for use with pipewire
-{ pkgs, config, lib, ... }: {
-  # Pipewire
-  config = {
+# audio/pulse.nix
+#	set configuration for use with pulseaudio
+{ pkgs, config, lib, ... }:
+with builtins;
+with lib;
+let cfg = config.audio.pipewire;
+in {
+  options.audio.pipewire.enable = lib.mkOption {
+    type = types.bool;
+    default = true;
+    description = "enable pipewire if true";
+  };
+  # pipewire
+  config = lib.mkIf cfg.enable {
     sound.enable = false; # disabled for pipewire
     hardware.pulseaudio.enable = false; # disabled for pipewire
     security.rtkit.enable = true; # rtkit is optional but recommended

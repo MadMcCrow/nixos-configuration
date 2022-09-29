@@ -1,8 +1,17 @@
 # audio/pulse.nix
 #	set configuration for use with pulseaudio
-{ pkgs, config, lib, ... }: {
+{ pkgs, config, lib, ... }:
+with builtins;
+with lib;
+let cfg = config.audio.pulse;
+in {
+  options.audio.pulse.enable = lib.mkOption {
+    type = types.bool;
+    default = false;
+    description = "enable pulseaudio if true";
+  };
   # Pulse
-  config = {
+  config = lib.mkIf cfg.enable {
     sound.enable = true;
     hardware.pulseaudio.enable = true;
   };

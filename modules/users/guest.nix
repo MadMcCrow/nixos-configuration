@@ -3,7 +3,7 @@
 { config, pkgs, home-manager, ... }: {
 
   # imported thanks to specialArgs
-  imports = [ home-manager.nixosModule ];
+  #imports = [ home-manager.nixosModule ];
 
   # User on tmpfs
   fileSystems."/home/guest" = {
@@ -20,14 +20,5 @@
     initialPassword = "";
     home = "/home/guest";
     uid = 1001;
-  };
-
-  # home manager setup
-  home-manager.users.guest = { lib, pkgs, ... }: {
-    home = with pkgs; {
-      packages = [ home-manager firefox-wayland ];
-      # just like for the base nixos configuration, do not touch
-      stateVersion = "22.05";
-    };
   };
 }
