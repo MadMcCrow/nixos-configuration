@@ -11,8 +11,6 @@ in {
     default = false;
     description = "enable the brave browser if true";
   };
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
-      [ brave ];
-        };
+  config =
+    lib.mkIf cfg.enable { environment.systemPackages = with pkgs; [ brave ]; };
 }

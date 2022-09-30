@@ -110,7 +110,7 @@
         userName = "MadMcCrow";
         userEmail = "noe.perard@live.ru";
         lfs.enable = true;
-	# does not work with gh
+        # does not work with gh
         # extraConfig = "{help.autocorrect = 10;}";
       };
 

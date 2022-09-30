@@ -27,6 +27,16 @@ in {
       # gtkUsePortal = true;
     };
 
+    environment.systemPackages = with pkgs; [
+      libportal
+      libportal-gtk3
+      gnome.gnome-packagekit
+      packagekit
+    ];
+    
+    # enable package kit
+    services.packagekit.enable = true;
+    
     # this folder is where the files will be stored (don't put it in tmpfs/zfs clean partition)
     # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
     environment.persistence."/nix/persist" = {

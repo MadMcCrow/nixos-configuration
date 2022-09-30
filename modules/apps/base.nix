@@ -5,8 +5,10 @@ with builtins;
 with lib;
 let
   cfg = config.apps.base;
-  firefox-compat =
-    if config.programs.xwayland.enable then pkgs.firefox-wayland else pkgs.firefox;
+  firefox-compat = if config.programs.xwayland.enable then
+    pkgs.firefox-wayland
+  else
+    pkgs.firefox;
 in {
 
   # interface

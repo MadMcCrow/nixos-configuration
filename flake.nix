@@ -27,6 +27,8 @@
           apps.flatpak.enable = true;
           apps.multimedia.enable = false;
           apps.vscode.enable = true;
+          users.guest.enable = false;
+          apps.discord.enable = true;
         }
       ];
     };
