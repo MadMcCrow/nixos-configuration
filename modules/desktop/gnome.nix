@@ -67,9 +67,11 @@
   environment.systemPackages = with pkgs; [
     dconf # configure gnome
     dconf2nix # export dconf in nix
+    gnome.gnome-notes # simple note app
     gnome.gnome-tweaks # Gnome tweaks
     gnomeExtensions.appindicator # systray icons
     gnomeExtensions.gsconnect # KDE Connect
+    gnomeExtensions.note # easy add things to gnome notes
   ];
 
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
