@@ -8,5 +8,6 @@
     ./flatpak.nix
     ./brave.nix
     ./discord.nix
+    ./chess.nix
   ];
 }

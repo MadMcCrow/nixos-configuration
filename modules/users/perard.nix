@@ -29,23 +29,16 @@
         home-manager
         oh-my-zsh
         zsh-powerlevel10k
-        git
-        gh
-        firefox-wayland # default firefox has issues with wayland
-        #chromium
+        gh    # github
         lapce # code editor
-        vlc
-        gtg
+        nevimer
+        sysprof
       ] ++ (with gnomeExtensions; [
-        caffeine
-        appindicator
         dash-to-dock
         pop-shell
         #forge
         #arcmenu
         #advanced-alttab-window-switcher
-        application-volume-mixer
-        mpris-indicator-button
         blur-my-shell
         runcat
         timepp

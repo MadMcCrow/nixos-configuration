@@ -24,7 +24,7 @@ in {
         ];
       })
     ];
-    # does not work
+    # does not work somehow
     # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     #  "jnoortheen.nix-ide"
     #  "ms-python.python"
@@ -34,7 +34,7 @@ in {
     #  "xaver.clang-format"
     #  "llvm-vs-code-extensions.vscode-clangd"
     #];
-    # works but is not cool
+    # works but is not cool : it pollutes the settings and would conflict with other allowUnfree
     nixpkgs.config.allowUnfree = true;
   };
 }

@@ -10,7 +10,10 @@
     # use Zen for better performance
 
     kernelPackages = pkgs.linuxPackages_xanmod;
-    extraModulePackages = with config.boot.kernelPackages; [ zfs asus-wmi-sensors ];
+    extraModulePackages = with config.boot.kernelPackages; [
+      zfs
+      asus-wmi-sensors
+    ];
     kernelParams = [ "nohibernate" "quiet" ];
 
     # UEFI boot loader with systemdboot
@@ -93,10 +96,10 @@
     xow_dongle-firmware # for xbox controller
     linuxKernel.packages.linux_xanmod.xone # todo : make the finding of the kernel dynamic
   ];
-  
-  # allow xow dongle firmware
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["xow_dongle-firmware"];
 
+  # allow xow dongle firmware
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [ "xow_dongle-firmware" ];
 
   # PowerManagement
   powerManagement = {

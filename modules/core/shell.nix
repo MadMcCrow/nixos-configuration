@@ -15,9 +15,7 @@
     autosuggestions.enable = true;
 
     # useful aliases
-    shellAliases = {
-      ls = "exa";
-    };
+    shellAliases = { ls = "exa"; };
 
     ohMyZsh = {
       enable = true;
