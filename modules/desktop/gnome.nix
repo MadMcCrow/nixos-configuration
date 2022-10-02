@@ -15,10 +15,9 @@ let
     gnome-boxes   # remote or virtual systems
     gnome-weather # get weather infos
     gnome-calendar # the calendar app
-    gnome-documents # manages documents collection
     gnome-logs     # systemd logs
   ];
-  
+
   # apps that you will not need
   superExtraApps = with pkgs; [
     baobab         # disk usage analyzer
@@ -30,9 +29,13 @@ let
     drawing        # a Paint-like app
   ];
 
+  ## other potential candidates are :
+  ## gnome.gnome-documents # manages documents collection(broken)
+  ## commit # a nice commit editor (not in nixpkgs)
+
   # extra gnome extensions
   ## you will need to enable them in the gnome extension app
-  extraExtension = with pkgs.gnomeExtensions; [
+  extraExtensions = with pkgs.gnomeExtensions; [
     caffeine     # prevent lockscreen
     appindicator # add systray icon support
     gsconnect    # KDE Connect in the top-bar

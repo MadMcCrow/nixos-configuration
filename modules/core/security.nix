@@ -1,6 +1,6 @@
 # core/nixos.nix
 #	setting nixos and nix-store
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 with builtins;
 with lib;
 let cfg = config.core.enhancedSecurity;

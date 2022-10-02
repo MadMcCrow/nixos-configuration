@@ -31,17 +31,19 @@
         zsh-powerlevel10k
         gh    # github
         lapce # code editor
-        nevimer
+        nemiver
         sysprof
       ] ++ (with gnomeExtensions; [
         dash-to-dock
         pop-shell
-        #forge
-        #arcmenu
-        #advanced-alttab-window-switcher
+        just-perfection
         blur-my-shell
         runcat
         timepp
+        tiling-assistant
+        #forge
+        #arcmenu
+        #advanced-alttab-window-switcher
       ]);
       # just like for the base nixos configuration, do not touch
       stateVersion = "22.05";

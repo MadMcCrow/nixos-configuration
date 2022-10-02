@@ -17,7 +17,7 @@ in {
     environment.systemPackages = with pkgs; [
       gnome.gnome-chess
       stockfish
-      uchesss
+      uchess
     ];
   };
 }
