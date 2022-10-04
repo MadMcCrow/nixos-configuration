@@ -9,24 +9,24 @@ let
 
   # extra gnome apps
   extraApps = with pkgs.gnome; [
-    gnome-notes   # simple note app
-    gnome-todo    # quick todo app
-    gnome-tweaks  # Gnome tweaks
-    gnome-boxes   # remote or virtual systems
+    gnome-notes # simple note app
+    gnome-todo # quick todo app
+    gnome-tweaks # Gnome tweaks
+    gnome-boxes # remote or virtual systems
     gnome-weather # get weather infos
     gnome-calendar # the calendar app
-    gnome-logs     # systemd logs
+    gnome-logs # systemd logs
   ];
 
   # apps that you will not need
   superExtraApps = with pkgs; [
-    baobab         # disk usage analyzer
-    gitg           # git GUI client
-    gnome-usage    # cpu/gpu/mem usage monitor
-    gnome-recipes  # a cool recipe cookbook
-    deja-dup       # a backup tool
-    gnome-keysign  # GnuPG app
-    drawing        # a Paint-like app
+    baobab # disk usage analyzer
+    gitg # git GUI client
+    gnome-usage # cpu/gpu/mem usage monitor
+    gnome-recipes # a cool recipe cookbook
+    deja-dup # a backup tool
+    gnome-keysign # GnuPG app
+    drawing # a Paint-like app
   ];
 
   ## other potential candidates are :
@@ -36,13 +36,13 @@ let
   # extra gnome extensions
   ## you will need to enable them in the gnome extension app
   extraExtensions = with pkgs.gnomeExtensions; [
-    caffeine     # prevent lockscreen
+    caffeine # prevent lockscreen
     appindicator # add systray icon support
-    gsconnect    # KDE Connect in the top-bar
-    note         # easy add things to gnome notes
-    weather      # weather info on your top bar
+    gsconnect # KDE Connect in the top-bar
+    weather-in-the-clock # weather in top bar
+    note # easy add things to gnome notes
     application-volume-mixer # per-applicaion volume mixer
-    mpris-indicator-button   # show what's playing
+    mpris-indicator-button # show what's playing
   ];
 
 in {
@@ -68,7 +68,7 @@ in {
       default = true;
       description = "Some (useful) curated gnome apps";
     };
-    
+
     # useful gnome apps
     superExtraApps = lib.mkOption {
       type = types.bool;

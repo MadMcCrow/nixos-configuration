@@ -1,121 +1,284 @@
 # perard.nix
 # 	my user available on all my hosts
-{ config, pkgs, home-manager, ... }: {
+{ config, pkgs, home-manager, ... }:
+with builtins;
+with lib;
+let cfg = config.users.perard;
+in {
+
+  # interface
+  options.users.perard = {
+    enable = lib.mkOption {
+      type = types.bool;
+      default = true;
+      description = "enable perard (me) user";
+    };
+    useDconf = lib.mkOption {
+      type = types.bool;
+      default = false;
+      description = "use nix dconf settings";
+    };
+  };
 
   imports = [ home-manager.nixosModule ];
 
-  # perard
-  users.users.perard = {
-    description = "Noé Perard-Gayot";
+  # conditional config
+  config = lib.mkIf cfg.enable {
+    # perard
+    users.users.perard = {
+      description = "Noé Perard-Gayot";
 
-    isNormalUser = true;
-    # I am admin, I can install flatpak apps and I'm a gamer :)
-    extraGroups = [ "wheel" "flatpak" "steam" ];
+      isNormalUser = true;
+      # I am admin, I can install flatpak apps and I'm a gamer :)
+      extraGroups = [ "wheel" "flatpak" "steam" ];
 
-    initialHashedPassword =
-      "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+      initialHashedPassword =
+        "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
 
-    # home folder
-    home = "/home/perard";
-    homeMode = "700";
-    uid = 1000;
-    shell = pkgs.zsh;
-  };
-
-  # home manager configuration :
-  home-manager.users.perard = { lib, pkgs, ... }: {
-    home = with pkgs; {
-      packages = [
-        home-manager
-        oh-my-zsh
-        zsh-powerlevel10k
-        gh    # github
-        lapce # code editor
-        nemiver
-        sysprof
-      ] ++ (with gnomeExtensions; [
-        dash-to-dock
-        pop-shell
-        just-perfection
-        blur-my-shell
-        runcat
-        timepp
-        tiling-assistant
-        #forge
-        #arcmenu
-        #advanced-alttab-window-switcher
-      ]);
-      # just like for the base nixos configuration, do not touch
-      stateVersion = "22.05";
+      # home folder
+      home = "/home/perard";
+      homeMode = "700";
+      uid = 1000;
+      shell = pkgs.zsh;
     };
 
-    # home manager programs settings 
-    programs = {
+    # home manager configuration :
+    home-manager.users.perard = { lib, pkgs, ... }: {
+      home = with pkgs; {
+        packages = [
+          home-manager
+          oh-my-zsh
+          zsh-powerlevel10k
+          gh # github
+          lapce # code editor
+          nemiver
+          sysprof
+        ] ++ (with gnomeExtensions; [
+          dash-to-dock
+          pop-shell
+          just-perfection
+          blur-my-shell
+          runcat
+          timepp
+          tiling-assistant
+          #forge
+          #arcmenu
+          #advanced-alttab-window-switcher
+        ]);
+        # just like for the base nixos configuration, do not touch
+        stateVersion = "22.05";
+      };
 
-      # zsh is a modern shell
-      zsh = {
-        enable = true;
-        # source PowerLevel10k into my zsh config for a cool theme
-        #	TODO : make this configuration from the flake
-        initExtra = ''
-          [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
-                            POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'';
+      # home manager programs settings 
+      programs = {
 
-        # Oh-my-zsh is a tool improving shell usage
-        oh-my-zsh = {
+        # zsh is a modern shell
+        zsh = {
           enable = true;
-          plugins = [ "git" ];
-          theme = "robbyrussell";
+          # source PowerLevel10k into my zsh config for a cool theme
+          #	TODO : make this configuration from the flake
+          initExtra = ''
+            [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
+                              POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'';
+
+          # Oh-my-zsh is a tool improving shell usage
+          oh-my-zsh = {
+            enable = true;
+            plugins = [ "git" ];
+            theme = "robbyrussell";
+          };
+
+          # replace ls by it's far superior alternative "exa"
+          shellAliases = { ls = "exa"; };
+
+          # zsh plugins
+          plugins = [
+            {
+              name = "zsh-autosuggestions";
+              src = pkgs.fetchFromGitHub {
+                owner = "zsh-users";
+                repo = "zsh-autosuggestions";
+                rev = "v0.6.4";
+                sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
+              };
+            }
+            {
+              name = "fast-syntax-highlighting";
+              src = pkgs.fetchFromGitHub {
+                owner = "zdharma";
+                repo = "fast-syntax-highlighting";
+                rev = "v1.55";
+                sha256 = "0h7f27gz586xxw7cc0wyiv3bx0x3qih2wwh05ad85bh2h834ar8d";
+              };
+            }
+            {
+              name = "powerlevel10k";
+              src = pkgs.zsh-powerlevel10k;
+              file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+            }
+          ];
         };
 
-        # replace ls by it's far superior alternative "exa"
-        shellAliases = { ls = "exa"; };
+        # git settings
+        git = {
+          enable = true;
+          userName = "MadMcCrow";
+          userEmail = "noe.perard@live.ru";
+          lfs.enable = true;
+          # does not work with gh
+          # extraConfig = "{help.autocorrect = 10;}";
+        };
 
-        # zsh plugins
-        plugins = [
-          {
-            name = "zsh-autosuggestions";
-            src = pkgs.fetchFromGitHub {
-              owner = "zsh-users";
-              repo = "zsh-autosuggestions";
-              rev = "v0.6.4";
-              sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
-            };
-          }
-          {
-            name = "fast-syntax-highlighting";
-            src = pkgs.fetchFromGitHub {
-              owner = "zdharma";
-              repo = "fast-syntax-highlighting";
-              rev = "v1.55";
-              sha256 = "0h7f27gz586xxw7cc0wyiv3bx0x3qih2wwh05ad85bh2h834ar8d";
-            };
-          }
-          {
-            name = "powerlevel10k";
-            src = pkgs.zsh-powerlevel10k;
-            file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-          }
+        # github cli tool
+        gh = {
+          enable = true;
+          enableGitCredentialHelper = true;
+          settings.git_protocol = "https";
+        };
+
+      };
+    };
+
+    # generated by dconf2nix
+    dconf.settings = mkIf cfg.useDconf {
+      "org/gnome/TextEditor" = { show-line-numbers = true; };
+
+      "org/gnome/calculator" = {
+        accuracy = 9;
+        angle-units = "degrees";
+        base = 10;
+        button-mode = "advanced";
+        number-format = "automatic";
+        show-thousands = false;
+        show-zeroes = true;
+        source-currency = "euro";
+        source-units = "degree";
+        target-currency = "dollar";
+        target-units = "radian";
+        word-size = 64;
+      };
+
+      "org/gnome/desktop/app-folders/folders/cfc0e181-cc15-4acb-ab06-4452228eb365" =
+        {
+          apps = [
+            "org.kde.kdeconnect.app.desktop"
+            "org.kde.kdeconnect.nonplasma.desktop"
+            "org.kde.kdeconnect.sms.desktop"
+            "org.kde.kdeconnect-settings.desktop"
+          ];
+          name = "KDE Connect";
+          translate = false;
+        };
+
+      "org/gnome/desktop/input-sources" = {
+        sources = [ (mkTuple [ "xkb" "us+intl" ]) ];
+        xkb-options = [ "eurosign:e" ];
+      };
+
+      "org/gnome/desktop/interface" = {
+        clock-show-weekday = true;
+        color-scheme = "prefer-dark";
+        font-antialiasing = "rgba";
+        font-hinting = "slight";
+      };
+
+      "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
+
+      "org/gnome/desktop/wm/preferences" = {
+        button-layout = "appmenu:minimize,maximize,close";
+      };
+
+      "org/gnome/mutter" = {
+        attach-modal-dialogs = true;
+        dynamic-workspaces = true;
+        edge-tiling = true;
+        focus-change-on-pointer-rest = true;
+        overlay-key = "Super_L";
+        workspaces-only-on-primary = true;
+      };
+
+      "org/gnome/shell" = {
+        disable-user-extensions = false;
+        enabled-extensions = [
+          "caffeine@patapon.info"
+          "volume-mixer@evermiss.net"
+          "appindicatorsupport@rgcjonas.gmail.com"
+          "blur-my-shell@aunetx"
+          "runcat@kolesnikov.se"
+          "windowsNavigator@gnome-shell-extensions.gcampax.github.com"
+          "dash-to-dock@micxgx.gmail.com"
+          "mprisindicatorbutton@JasonLG1979.github.io"
+          "gsconnect@andyholmes.github.io"
+          "user-theme@gnome-shell-extensions.gcampax.github.com"
+          "forge@jmmaranan.com"
         ];
+        favorite-apps = [
+          "org.gnome.Nautilus.desktop"
+          "firefox.desktop"
+          "com.discordapp.Discord.desktop"
+          "org.gnome.Console.desktop"
+          "steam.desktop"
+        ];
+        welcome-dialog-last-shown-version = "42.2";
       };
 
-      # git settings
-      git = {
-        enable = true;
-        userName = "MadMcCrow";
-        userEmail = "noe.perard@live.ru";
-        lfs.enable = true;
-        # does not work with gh
-        # extraConfig = "{help.autocorrect = 10;}";
+      "org/gnome/shell/extensions/blur-my-shell" = {
+        appfolder-blur = true;
+        appfolder-dialog-opacity = 0.28;
+        applications-blur = true;
+        applications-whitelist = "gnome.gnome-terminal";
+        dash-to-dock-blur = false;
+        dash-to-dock-override-background = true;
+        dash-to-dock-unblur-in-overview = false;
+        hacks-level = 1;
+        hidetopbar-compatibility = false;
+        overview-style-components = 2;
       };
 
-      # github cli tool
-      gh = {
-        enable = true;
-        enableGitCredentialHelper = true;
-        settings.git_protocol = "https";
+      "org/gnome/shell/extensions/caffeine" = {
+        nightlight-control = "never";
+        user-enabled = true;
       };
 
+      "org/gnome/shell/extensions/dash-to-dock" = {
+        apply-custom-theme = false;
+        apply-glossy-effect = false;
+        background-color = "rgb(0,0,0)";
+        background-opacity = 0.0;
+        custom-background-color = true;
+        custom-theme-customize-running-dots = false;
+        custom-theme-shrink = true;
+        customize-alphas = true;
+        dash-max-icon-size = 48;
+        disable-overview-on-startup = false;
+        dock-fixed = true;
+        dock-position = "LEFT";
+        extend-height = true;
+        height-fraction = 0.9;
+        icon-size-fixed = true;
+        isolate-monitors = false;
+        isolate-workspaces = false;
+        max-alpha = 0.8;
+        preferred-monitor = -2;
+        preferred-monitor-by-connector = "DP-3";
+        running-indicator-dominant-color = true;
+        running-indicator-style = "DOTS";
+        show-apps-at-top = true;
+        show-mounts = false;
+        show-mounts-only-mounted = true;
+        show-trash = false;
+        transparency-mode = "FIXED";
+        unity-backlit-items = false;
+      };
+
+      "org/gnome/shell/extensions/forge" = {
+        css-last-update = mkUint32 37;
+        dnd-center-layout = "stacked";
+        stacked-tiling-mode-enabled = false;
+        tabbed-tiling-mode-enabled = false;
+        tiling-mode-enabled = true;
+        window-gap-hidden-on-single = true;
+      };
     };
   };
 }

@@ -24,10 +24,13 @@
         ./modules/default.nix
         ./systems/AF/configuration.nix
         {
+          core.enhancedSecurity = false;
+          users.guest.enable = false;
+          gnome.enable = true;
+          gnome.superExtraApps = true;
           apps.flatpak.enable = true;
           apps.multimedia.enable = false;
           apps.vscode.enable = true;
-          users.guest.enable = false;
           apps.discord.enable = true;
         }
       ];

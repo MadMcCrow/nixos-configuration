@@ -9,5 +9,6 @@
     ./brave.nix
     ./discord.nix
     ./chess.nix
+    ./rustdesk.nix
   ];
 }
