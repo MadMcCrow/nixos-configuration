@@ -28,7 +28,7 @@ in {
     ];
 
     # may be necessary
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [ ];
+    # nixpkgs.config.allowUnfreePredicate = pkg:
+    #  builtins.elem (lib.getName pkg) [ ];
   };
 }
