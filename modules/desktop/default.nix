@@ -2,5 +2,5 @@
 # 	Nixos Desktop Environment settings
 #	todo : add KDE as another module
 { config, pkgs, lib, ... }: {
-  imports = [ ./gnome.nix ];
+  imports = [ ./gnome.nix ./hyprland.nix ./pantheon.nix ];
 }

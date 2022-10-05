@@ -17,7 +17,7 @@ in {
       vlc # maybe gnome video would be better
       mellowplayer # allow deezer and spotify streaming
       chromium # for netflix, etc...
-      pitivi   # video editor
+      pitivi # video editor
     ];
 
     # make sure chromium has widevine (L1 - SD support only)

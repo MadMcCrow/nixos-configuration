@@ -7,6 +7,7 @@
     ./vscode.nix
     ./flatpak.nix
     ./brave.nix
+    ./pidgin.nix
     ./discord.nix
     ./chess.nix
     ./rustdesk.nix

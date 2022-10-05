@@ -27,6 +27,7 @@ let
     deja-dup # a backup tool
     gnome-keysign # GnuPG app
     drawing # a Paint-like app
+    mousetweaks # a tool to tweak mouse setup
   ];
 
   ## other potential candidates are :
