@@ -1,6 +1,6 @@
 # hyprland.nix
 #	A neat looking DE
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hyprland, ... }:
 with builtins;
 with lib;
 let
@@ -17,8 +17,17 @@ in {
       description = "enable hyprland Desktop environment";
     };
     };
+    
+      imports = [
+    hyprland.nixosModules.default
+  ];
 
-  config = mkIf cfg.enable;  {
-  modules = [ hyprland.nixosModules.default { programs.hyprland.enable = true} ];
+  config = mkIf cfg.enable {
+
+  
+  programs.hyprland = {
+    enable = true;
+    package = hyprland.packages.${pkgs.system}.default;
+  };
   };
 }

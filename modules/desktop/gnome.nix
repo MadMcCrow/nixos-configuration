@@ -40,7 +40,6 @@ let
     caffeine # prevent lockscreen
     appindicator # add systray icon support
     gsconnect # KDE Connect in the top-bar
-    weather-in-the-clock # weather in top bar
     note # easy add things to gnome notes
     application-volume-mixer # per-applicaion volume mixer
     mpris-indicator-button # show what's playing
