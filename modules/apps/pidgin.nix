@@ -11,21 +11,30 @@ in {
     description = "enable pidgin :a multi protocol chat client";
   };
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      pidgin
-      pidgin-skypeweb
-      pidgin-opensteamworks
-      signald
-    ];
+    environment.systemPackages = with pkgs;
+      [
+        signald
+        #pidgin
+      ];
 
-    services.bitlbee.libpurple_plugins = with pkgs; [
-      purple-slack
-      purple-discord
-      purple-matrix
-      telegram-purple
-      purple-matrix
-      libpurple-signald
-    ];
+    nixpkgs.config.packageOverrides = pkgs:
+      with pkgs; {
+        pidgin = pkgs.pidgin.override {
+          ## Add whatever plugins are desired (see nixos.org package listing).
+          plugins = [
+            pidgin-skypeweb
+            pidgin-opensteamworks
+            pidgin-otr
+            purple-plugin-pack
+            purple-slack
+            purple-discord
+            purple-matrix
+            tdlib-purple
+            purple-matrix
+            purple-signald
+          ];
+        };
+      };
 
     # may be necessary
     # nixpkgs.config.allowUnfreePredicate = pkg:

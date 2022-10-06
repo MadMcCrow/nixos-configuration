@@ -1,32 +1,50 @@
 # gaming/steam.nix
 #	Make steam works on your system
-{ config, lib, pkgs, ... }: {
+{ config, pkgs, lib, ... }:
+with builtins;
+with lib;
+let cfg = config.gaming.steam;
 
-  hardware.steam-hardware.enable = true; # Steam udev rules
-  # steam 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall =
-      true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall =
-      true; # Open ports in the firewall for Source Dedicated Server
+in {
+  options.gaming.steam = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        enable steam, the PC Gaming platform
+      '';
+    };
   };
 
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "steam"
-      "steam-original"
-      "steam-runtime"
-    ];
+  config = mkIf cfg.enable {
 
-  # Steam user
-  users.users.steam = {
-    isSystemUser = true;
-    home = "/home/steam";
-    useDefaultShell = false;
-    createHome = false;
-    group = "users"; # allow users to access steam folder
-    homeMode = "770";
+    hardware.steam-hardware.enable = true; # Steam udev rules
+    # steam 
+    programs.steam = {
+      enable = true;
+      remotePlay.openFirewall =
+        true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall =
+        true; # Open ports in the firewall for Source Dedicated Server
+    };
+
+    nixpkgs.config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "steam"
+        "steam-original"
+        "steam-runtime"
+        "steam-run"
+      ];
+
+    # Steam user
+    users.users.steam = {
+      isSystemUser = true;
+      home = "/home/steam";
+      useDefaultShell = false;
+      createHome = false;
+      group = "users"; # allow users to access steam folder
+      homeMode = "770";
+    };
   };
 }
 
