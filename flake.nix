@@ -52,7 +52,6 @@
 
           # gaming
           gaming.steam.enable = true;
-          gaming.ratbag.enable = true;
         }
       ];
     };

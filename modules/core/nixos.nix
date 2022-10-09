@@ -15,6 +15,9 @@ with lib; {
     };
     settings.auto-optimise-store = true;
     optimise.dates = " daily";
+    
+    # pin nixpkgs to the one installed on the system
+    registry.nixpkgs.flake = nixpkgs;
   };
 
   # persist:

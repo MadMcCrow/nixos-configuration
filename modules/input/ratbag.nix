@@ -3,10 +3,10 @@
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.gaming.ratbag;
+let cfg = config.input.ratbag;
 
 in {
-  options.gaming.ratbag = {
+  options.input.ratbag = {
     enable = mkOption {
       type = types.bool;
       default = false;
