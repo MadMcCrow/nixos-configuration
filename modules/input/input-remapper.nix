@@ -3,8 +3,9 @@
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.input.input-remapper
-
+let
+  cfg = config.input.input-remapper;
+  pkg = pkgs.input-remapper;
 in {
   options.input.input-remapper = {
     enable = mkOption {
@@ -17,14 +18,12 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ input-remapper ];
+    environment.systemPackages = [ pkg ];
     services.input-remapper = {
-    enable = true;
-    package = pkgs.input-remapper
-    enableUdevRules = true;
-    }; 
-
+      enable = true;
+      package = pkg;
+      enableUdevRules = true;
+    };
   };
-
 }
 

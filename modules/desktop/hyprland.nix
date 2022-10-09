@@ -3,8 +3,7 @@
 { config, pkgs, lib, hyprland, ... }:
 with builtins;
 with lib;
-let
-  cfg = config.hyprland;
+let cfg = config.hyprland;
 
 in {
 
@@ -16,18 +15,15 @@ in {
       default = false;
       description = "enable hyprland Desktop environment";
     };
-    };
-    
-      imports = [
-    hyprland.nixosModules.default
-  ];
+  };
+
+  imports = [ hyprland.nixosModules.default ];
 
   config = mkIf cfg.enable {
 
-  
-  programs.hyprland = {
-    enable = true;
-    package = hyprland.packages.${pkgs.system}.default;
-  };
+    programs.hyprland = {
+      enable = true;
+      package = hyprland.packages.${pkgs.system}.default;
+    };
   };
 }

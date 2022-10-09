@@ -1,8 +1,7 @@
 # core/nixos.nix
 #	setting nixos and nix-store
-{ pkgs, config, ... }:
-with builtins;
-with lib; {
+{ pkgs, config, nixpkgs, ... }:
+{ 
   # nix
   nix = {
     package =
@@ -15,7 +14,7 @@ with lib; {
     };
     settings.auto-optimise-store = true;
     optimise.dates = " daily";
-    
+
     # pin nixpkgs to the one installed on the system
     registry.nixpkgs.flake = nixpkgs;
   };
