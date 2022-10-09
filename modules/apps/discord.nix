@@ -14,5 +14,9 @@ in {
     environment.systemPackages = with pkgs; [ discord ];
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [ "discord" ];
+
+    pkgs.discord.override {
+    nss = pkgs.nss_3_83;
+    }
   };
 }
