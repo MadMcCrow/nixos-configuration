@@ -4,13 +4,13 @@
 with builtins;
 with lib;
 let
-  cfg = config.input.input-remapper;
+  cfg = config.input.remapper;
   pkg = pkgs.input-remapper;
 in {
-  options.input.input-remapper = {
+  options.input.remapper = {
     enable = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = ''
         whether to enable ratbag a tool to customise your gaming mouse
       '';

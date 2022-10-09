@@ -45,13 +45,13 @@
 
           # apps
           apps.flatpak.enable = true;
-          apps.multimedia.enable = false;
           apps.vscode.enable = true;
           apps.discord.enable = true;
           apps.pidgin.enable = true;
+          apps.steam.enable = true;
 
-          # gaming
-          gaming.steam.enable = true;
+          # input
+          input.remapper.enable = true;
         }
       ];
     };

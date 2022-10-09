@@ -3,10 +3,10 @@
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.gaming.steam;
+let cfg = config.apps.steam;
 
 in {
-  options.gaming.steam = {
+  options.apps.steam = {
     enable = mkOption {
       type = types.bool;
       default = false;
