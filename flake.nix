@@ -37,7 +37,7 @@
           core.enhancedSecurity.enable = false;
 
           # users
-          users.guest.enable = false;
+          users.guest.enable = true;
 
           # gnome
           gnome.enable = true;

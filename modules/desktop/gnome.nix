@@ -146,7 +146,7 @@ in {
     # gnome services :
     services.gnome = {
       # used for getting extensions from the web, prefer ExtensionManager or nixpkgs directly
-      chrome-gnome-shell.enable = false;
+      gnome-browser-connector.enable = false;
       tracker.enable = false; # trackers are indexation services for your files.
       tracker-miners.enable = false;
       gnome-online-miners.enable = lib.mkForce false;
