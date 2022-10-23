@@ -37,6 +37,7 @@ let
   # extra gnome extensions
   ## you will need to enable them in the gnome extension app
   extraExtensions = with pkgs.gnomeExtensions; [
+    dash-to-dock # turn the dash into a dock, always visible
     caffeine # prevent lockscreen
     appindicator # add systray icon support
     gsconnect # KDE Connect in the top-bar

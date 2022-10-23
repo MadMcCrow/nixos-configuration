@@ -62,9 +62,9 @@ in {
           runcat
           timepp
           tiling-assistant
-          #forge
-          #arcmenu
-          #advanced-alttab-window-switcher
+          forge
+          arcmenu
+          advanced-alttab-window-switcher
         ]);
         # just like for the base nixos configuration, do not touch
         stateVersion = "22.05";

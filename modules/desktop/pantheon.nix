@@ -23,24 +23,18 @@ in {
       description = "enable pantheon Desktop environment";
     };
 
-    wayland = lib.mkOption {
-      type = types.bool;
-      default = true;
-      description = "Wayland is the new standard meant to replace Xorg";
-    };
-
     # useful apps
     extraApps = lib.mkOption {
       type = types.bool;
       default = true;
-      description = "Some (useful) curated gnome apps";
+      description = "Some (useful) curated elementary apps";
     };
 
-    # somewhat useful optional apps apps
+    # somewhat useful optional apps
     superExtraApps = lib.mkOption {
       type = types.bool;
       default = false;
-      description = "Some curated gnome apps that are fun but not useful";
+      description = "Some curated elementary apps that are fun but not useful";
     };
 
   };
@@ -57,16 +51,10 @@ in {
       desktopManager.xterm.enable = false;
 
       # GDM :
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = cfg.wayland; # Wayland
-        };
-      };
-      # use Gnome
+      displayManager = { lightdm = { enable = true; }; };
+      # use pantheon
       desktopManager.pantheon.enable = true;
     };
-    programs.xwayland.enable = cfg.wayland;
     programs.pantheon-tweaks.enable = true;
   };
 }
