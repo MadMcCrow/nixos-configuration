@@ -45,27 +45,9 @@ in {
     # home manager configuration :
     home-manager.users.perard = { lib, pkgs, ... }: {
       home = with pkgs; {
-        packages = [
-          home-manager
-          oh-my-zsh
-          zsh-powerlevel10k
-          gh # github
-          lapce # code editor
-          nemiver
-          sysprof
-          piper # mouse setting app
-        ] ++ (with gnomeExtensions; [
-          dash-to-dock
-          pop-shell
-          just-perfection
-          blur-my-shell
-          runcat
-          timepp
-          tiling-assistant
-          forge
-          arcmenu
-          advanced-alttab-window-switcher
-        ]);
+        packages = [ home-manager oh-my-zsh zsh-powerlevel10k ]
+          ++ (with gnomeExtensions; [ advanced-alttab-window-switcher forge ]);
+
         # just like for the base nixos configuration, do not touch
         stateVersion = "22.05";
       };

@@ -2,9 +2,10 @@
 # 	all the apps we want on our systems
 { config, pkgs, lib, ... }: {
   imports = [
+    ./unfree.nix
     ./base.nix
     ./multimedia.nix
-    ./vscode.nix
+    ./development.nix
     ./flatpak.nix
     ./brave.nix
     ./pidgin.nix

@@ -37,13 +37,14 @@ let
   # extra gnome extensions
   ## you will need to enable them in the gnome extension app
   extraExtensions = with pkgs.gnomeExtensions; [
+    runcat # the best gnome extension
     dash-to-dock # turn the dash into a dock, always visible
-    caffeine # prevent lockscreen
+    caffeine # prevents lockscreen
     appindicator # add systray icon support
     gsconnect # KDE Connect in the top-bar
-    note # easy add things to gnome notes
-    application-volume-mixer # per-applicaion volume mixer
-    mpris-indicator-button # show what's playing
+    quick-settings-tweaker # Gnome43 quick settings editor
+    tiling-assistant # Windows-like tiling update
+    blur-my-shell # some nice blur effect
   ];
 
 in {

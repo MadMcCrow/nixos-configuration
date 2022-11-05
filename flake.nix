@@ -45,10 +45,10 @@
 
           # apps
           apps.flatpak.enable = true;
-          apps.vscode.enable = true;
           apps.discord.enable = true;
           apps.pidgin.enable = true;
           apps.steam.enable = true;
+          apps.development.enable = true;
 
           # input
           input.remapper.enable = true;
