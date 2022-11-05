@@ -15,6 +15,9 @@ let
   # when updating discord
   # ForceUpdate = self: super: { discord = super.discord.overrideAttrs (_: { src = builtins.fetchTarball <link-to-tarball>;});};
 in {
+  # import unfree to allow programs
+  imports = [ ../unfree.nix ];
+
   # interface
   options.apps.discord.enable = lib.mkOption {
     type = types.bool;
@@ -22,12 +25,10 @@ in {
     description = "enable discord : voice and text chat for gamers";
 
   };
-  # import unfree to allow programs
-  imports = [ ./unfree.nix ];
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ discord nss_latest ];
     nixpkgs.overlays = [ OpenASAR ];
-    unfree.allowedUnfree = [ "discord" ];
+    unfree.unfreePackages = [ "discord" ];
   };
 }

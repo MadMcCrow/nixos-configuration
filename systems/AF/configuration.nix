@@ -91,16 +91,6 @@
       "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
   };
 
-  # Packages
-  environment.systemPackages = with pkgs; [
-    xow_dongle-firmware # for xbox controller
-    linuxKernel.packages.linux_xanmod.xone # todo : make the finding of the kernel dynamic
-  ];
-
-  # allow xow dongle firmware
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [ "xow_dongle-firmware" ];
-
   # PowerManagement
   powerManagement = {
     enable = true;
@@ -110,10 +100,6 @@
   # Faster boot:
   systemd.services.NetworkManager-wait-online.enable = false;
   systemd.services.systemd-fsck.enable = false;
-
-  # Xbox Controller Support
-  hardware.xone.enable = true;
-  hardware.firmware = [ pkgs.xow_dongle-firmware ];
 
   # make sure opengl is supported
   hardware.opengl.enable = true;

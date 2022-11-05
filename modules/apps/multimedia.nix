@@ -5,10 +5,13 @@ with builtins;
 with lib;
 let cfg = config.apps.multimedia;
 in {
+
+  imports = [ ../unfree.nix ];
+
   # interface
   options.apps.multimedia.enable = lib.mkOption {
     type = types.bool;
-    default = true;
+    default = false;
     description = "wether to have multimedia apps";
   };
 
@@ -22,6 +25,9 @@ in {
 
     # make sure chromium has widevine (L1 - SD support only)
     nixpkgs.config.chromium = { enableWideVine = true; };
+
+    unfree.unfreePackages = [ "chromium" ];
+
   };
 }
 

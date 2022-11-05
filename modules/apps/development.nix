@@ -6,6 +6,7 @@
 with builtins;
 with lib;
 let
+  inherit imports;
   cfg = config.apps.development;
   # debug tools
   debugtools.enable = cfg.debugTools.enable;
@@ -36,6 +37,7 @@ let
   lapce.packages = with pkgs; [ lapce ];
 
 in {
+  imports = [ ../unfree.nix ];
   # interface
   options.apps.development = {
     enable = lib.mkOption {
@@ -66,7 +68,7 @@ in {
     };
 
   };
-  imports = [ ./unfree.nix ];
+
   config = lib.mkIf cfg.enable {
     environment.systemPackages =
       (if vscode.enable then vscode.packages else [ ])
@@ -75,8 +77,9 @@ in {
 
     # todo : make this work
 
-    unfree.allowedUnfree = if vscode.enable then [
+    unfree.unfreePackages = if vscode.enable then [
       "vscode"
+      "vscode-with-extensions"
       "jnoortheen.nix-ide"
       "ms-python.python"
       "github.copilot"
@@ -84,6 +87,7 @@ in {
       "ms-vscode.cpptools"
       "xaver.clang-format"
       "llvm-vs-code-extensions.vscode-clangd"
+      "vscode-extension-ms-vscode-cpptools"
     ] else
       [ ];
     #nixpkgs.config.allowUnfree = true;

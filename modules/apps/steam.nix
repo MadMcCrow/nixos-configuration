@@ -4,7 +4,6 @@
 with builtins;
 with lib;
 let cfg = config.apps.steam;
-
 in {
   options.apps.steam = {
     enable = mkOption {
@@ -15,6 +14,9 @@ in {
       '';
     };
   };
+
+  # import unfree to allow programs
+  imports = [ ../unfree.nix ];
 
   config = mkIf cfg.enable {
 
@@ -28,13 +30,8 @@ in {
         true; # Open ports in the firewall for Source Dedicated Server
     };
 
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "steam"
-        "steam-original"
-        "steam-runtime"
-        "steam-run"
-      ];
+    unfree.unfreePackages =
+      [ "steam" "steam-original" "steam-runtime" "steam-run" ];
 
     # Steam user
     users.users.steam = {

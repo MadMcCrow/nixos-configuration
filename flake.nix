@@ -51,6 +51,7 @@
           apps.development.enable = true;
 
           # input
+          input.xone.enable = true;
           input.remapper.enable = true;
         }
       ];
