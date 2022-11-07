@@ -1,12 +1,10 @@
 # apps/multimedia.nix
 # 	the multimedia apps : vlc, mellowplayer, etc
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
 let cfg = config.apps.multimedia;
 in {
-
-  imports = [ ../unfree.nix ];
 
   # interface
   options.apps.multimedia.enable = lib.mkOption {

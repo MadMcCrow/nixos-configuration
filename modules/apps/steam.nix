@@ -1,6 +1,6 @@
 # gaming/steam.nix
 #	Make steam works on your system
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
 let cfg = config.apps.steam;
@@ -14,9 +14,6 @@ in {
       '';
     };
   };
-
-  # import unfree to allow programs
-  imports = [ ../unfree.nix ];
 
   config = mkIf cfg.enable {
 

@@ -2,7 +2,7 @@
 # 	Add development tools to your system
 #   TODO : make this capable of only adding to the user
 #          via Home-manager
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
 let

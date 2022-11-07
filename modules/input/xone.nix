@@ -1,15 +1,12 @@
 # xone.nix
 # 	a driver for the xbox one controller and its dongle
-{ config, pkgs, lib, boot, ... }:
+{ config, pkgs, lib, boot, unfree, ... }:
 with builtins;
 with lib;
 let
   cfg = config.input.xone;
   kernel = config.boot.kernelPackages;
 in {
-  # import unfree to allow programs
-  imports = [ ../unfree.nix ];
-
   # interface
   options.input.xone = {
     enable = lib.mkOption {
