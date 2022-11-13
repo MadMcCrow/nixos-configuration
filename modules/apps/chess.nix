@@ -1,6 +1,6 @@
 # chess.nix
 # 	Add gnome-chess to your system
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, apps, ... }:
 with builtins;
 with lib;
 let cfg = config.apps.chess;

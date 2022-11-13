@@ -1,10 +1,10 @@
 # apps/default.nix
 # 	all the apps we want on our systems
-{ config, pkgs, lib, ... }: {
+{ pkgs, config, nixpkgs, lib, unfree, ... }: {
   imports = [
+    ./development # separate folder
     ./base.nix
     ./multimedia.nix
-    ./development.nix
     ./flatpak.nix
     ./brave.nix
     ./pidgin.nix
