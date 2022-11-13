@@ -46,13 +46,13 @@
           # apps
           apps.flatpak.enable = true;
           apps.discord.enable = true;
-          apps.pidgin.enable = true;
+          apps.pidgin.enable = false;
           apps.steam.enable = true;
           apps.development.enable = true;
 
           # input
           input.xone.enable = true;
-          input.remapper.enable = true;
+          input.remapper.enable = false;
         }
       ];
     };

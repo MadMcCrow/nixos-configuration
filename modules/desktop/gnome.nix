@@ -23,11 +23,9 @@ let
     baobab # disk usage analyzer
     gitg # git GUI client
     gnome-usage # cpu/gpu/mem usage monitor
-    gnome-recipes # a cool recipe cookbook
     deja-dup # a backup tool
     gnome-keysign # GnuPG app
     drawing # a Paint-like app
-    mousetweaks # a tool to tweak mouse setup
   ];
 
   ## other potential candidates are :
