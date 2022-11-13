@@ -9,7 +9,7 @@ with lib;
 let
   cfg = config.unfree;
   allowed = cfg.unfreePackages;
-in rec {
+in {
 
   # interface : option for unfree modules
   options.unfree = {
