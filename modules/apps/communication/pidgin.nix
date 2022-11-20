@@ -1,6 +1,6 @@
 # apps/pidgin.nix
 # 	pidgin chat app
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, unfree, ... }:
 with builtins;
 with lib;
 let cfg = config.apps.pidgin;
@@ -36,8 +36,7 @@ in {
         };
       };
 
-    # may be necessary
-    # nixpkgs.config.allowUnfreePredicate = pkg:
-    #  builtins.elem (lib.getName pkg) [ ];
+    # purple discord might be unfree
+    # unfree.unfreePackages = [ "purple-discord" ];
   };
 }

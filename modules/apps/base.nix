@@ -20,14 +20,7 @@ in {
 
   # config
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      git
-      wget
-      curl
-      zip
-      neofetch
-      firefox-compat
-    ];
+    environment.systemPackages = with pkgs; [ git wget curl zip neofetch ];
   };
 }
 

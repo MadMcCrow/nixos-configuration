@@ -43,7 +43,10 @@
           gnome.enable = true;
           gnome.superExtraApps = true;
 
-          # apps
+          apps.firefox.enable = true;
+          apps.firefox.wayland = true;
+
+          # other apps
           apps.flatpak.enable = true;
           apps.discord.enable = true;
           apps.pidgin.enable = false;

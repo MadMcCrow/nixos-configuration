@@ -1,5 +1,6 @@
 # development.nix
 # 	Add development tools to your system
+# todo : simplify and improve
 { config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
