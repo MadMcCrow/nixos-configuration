@@ -4,7 +4,13 @@
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.apps.firefox;
+
+let
+  cfg = config.apps.firefox;
+  firefox-compat = if config.programs.xwayland.enable then
+    pkgs.firefox-wayland
+  else
+    pkgs.firefox;
 in {
   options.apps.firefox = {
     enable = lib.mkOption {
@@ -14,12 +20,10 @@ in {
     };
     wayland = lib.mkOption {
       type = types.bool;
-      default = false;
+      default = config.programs.xwayland.enable;
       description = "if true, use the wayland compatible version";
     };
   };
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
-      if cfg.wayland then [ firefox-compat ] else [ firefox ];
-  };
+  config =
+    lib.mkIf cfg.enable { environment.systemPackages = [ firefox-compat ]; };
 }
