@@ -51,6 +51,7 @@
           apps.discord.enable = true;
           apps.pidgin.enable = false;
           apps.steam.enable = true;
+          apps.gamemode.enable = true;
           apps.development.enable = true;
 
           # input
