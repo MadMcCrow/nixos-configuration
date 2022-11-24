@@ -33,20 +33,6 @@
       '';
     };
 
-    # filesystems
-    supportedFilesystems = [
-      "btrfs"
-      "ext2"
-      "ext3"
-      "ext4"
-      "f2fs"
-      "fat8"
-      "fat16"
-      "fat32"
-      "ntfs"
-      "zfs"
-    ];
-
     plymouth.enable = true;
     zfs = {
       forceImportRoot = false;
