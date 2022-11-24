@@ -1,6 +1,6 @@
 # vscode.nix
 # 	Setup vscode and all it's things 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
 with pkgs.vscode-utils;
@@ -23,23 +23,25 @@ let
   ];
 
 in {
-  # final package
-  packages = with pkgs;
-    [
-      (vscode-with-extensions.override {
-        vscodeExtensions = nixVsCodeExtensions ++ [ vsCodeGodotTools ];
-      })
+
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = with pkgs;
+      [
+        (vscode-with-extensions.override {
+          vscodeExtensions = nixVsCodeExtensions ++ [ vsCodeGodotTools ];
+        })
+      ];
+    # unfree predicate
+    unfree.unfreePackages = [
+      "vscode"
+      "vscode-with-extensions"
+      "jnoortheen.nix-ide"
+      "ms-python.python"
+      "rust-lang.rust-analyzer"
+      "ms-vscode.cpptools"
+      "xaver.clang-format"
+      "llvm-vs-code-extensions.vscode-clangd"
+      "vscode-extension-ms-vscode-cpptools"
     ];
-  # unfree predicate
-  unfree = [
-    "vscode"
-    "vscode-with-extensions"
-    "jnoortheen.nix-ide"
-    "ms-python.python"
-    "rust-lang.rust-analyzer"
-    "ms-vscode.cpptools"
-    "xaver.clang-format"
-    "llvm-vs-code-extensions.vscode-clangd"
-    "vscode-extension-ms-vscode-cpptools"
-  ];
+  };
 }
