@@ -3,18 +3,19 @@
 { config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
-let cfg = config.apps.steam;
+let
+  gms = config.apps.games;
+  cfg = gms.steam;
 in {
-  options.apps.steam = {
+  options.apps.games.steam = {
     enable = mkOption {
       type = types.bool;
-      default = false;
+      default = gms.enable;
       description = ''
         enable steam, the PC Gaming platform
       '';
     };
   };
-
   config = mkIf cfg.enable {
 
     hardware.steam-hardware.enable = true; # Steam udev rules

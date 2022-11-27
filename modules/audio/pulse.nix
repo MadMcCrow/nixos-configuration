@@ -5,13 +5,13 @@ with builtins;
 with lib;
 let cfg = config.audio.pulse;
 in {
-  options.audio.pulse.enable = lib.mkOption {
+  options.audio.pulse.enable = mkOption {
     type = types.bool;
     default = false;
     description = "enable pulseaudio if true";
   };
   # Pulse
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     sound.enable = true;
     hardware.pulseaudio.enable = true;
   };

@@ -5,6 +5,7 @@
 # unfree packages : use list to have a single unfree predicate
 #
 { pkgs, config, nixpkgs, lib, ... }:
+with builtins;
 with lib;
 let
   cfg = config.unfree;
@@ -34,5 +35,5 @@ in {
   };
 
   # submodules
-  imports = [ ./core ./apps ./audio ./desktop ./users ./input ];
+  imports = [ ./apps ./audio ./core ./desktop ./input ./users ];
 }

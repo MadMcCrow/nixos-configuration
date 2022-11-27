@@ -1,19 +1,21 @@
 # chess.nix
 # 	Add gnome-chess to your system
-{ config, pkgs, lib, apps, ... }:
+{ config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.apps.chess;
+let
+  gms = config.apps.games;
+  cfg = gms.chess;
 in {
 
   # interface
-  options.apps.chess.enable = lib.mkOption {
+  options.apps.games.chess.enable = mkOption {
     type = types.bool;
     default = false;
     description = "Add a chess game to your system";
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       gnome.gnome-chess
       stockfish

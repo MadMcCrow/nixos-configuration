@@ -3,9 +3,11 @@
 { pkgs, config, lib, unfree, ... }:
 with builtins;
 with lib;
-let cfg = config.apps.pidgin;
+let
+  web = config.apps.web;
+  cfg = web.pidgin;
 in {
-  options.apps.pidgin.enable = lib.mkOption {
+  options.apps.web.pidgin.enable = lib.mkOption {
     type = types.bool;
     default = false;
     description = "enable pidgin :a multi protocol chat client";

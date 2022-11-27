@@ -87,9 +87,6 @@
   systemd.services.NetworkManager-wait-online.enable = false;
   systemd.services.systemd-fsck.enable = false;
 
-  # make sure opengl is supported
-  hardware.opengl.enable = true;
-
   # TLDR : Do not touch
   system.stateVersion = "22.05";
 }

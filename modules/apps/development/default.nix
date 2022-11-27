@@ -1,26 +1,28 @@
 # development.nix
 # 	Add development tools to your system
-# todo : simplify and improve
-{ config, pkgs, lib, unfree, ... }:
+{ config, pkgs, lib, ... }:
 with builtins;
+with lib;
 let
-  # cfg
-  cfg = config.apps.development;
+  aps = config.apps;
+  cfg = aps.development;
 in {
-  # imports
-  imports = [ ./debugtools.nix ./github.nix ./vscode.nix ./lapce.nix ];
-
   # interface
-  options.apps.development = {
-    enable = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description = "Add development tools to your system";
-    };
+  options.apps.development.enable = mkOption {
+    type = types.bool;
+    default = false;
+    description = ''
+      Add development tools to your system
+    '';
   };
+  # config
+  config =
+    mkIf cfg.enable { environment.systemPackages = (with pkgs; [ rnix-lsp ]); };
 
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = (with pkgs; [ rnix-lsp ]);
-  };
-
+  imports = [
+    #  ./debugtools.nix
+    #  ./github.nix 
+    #  ./vscode.nix
+    #  ./lapce.nix
+  ];
 }

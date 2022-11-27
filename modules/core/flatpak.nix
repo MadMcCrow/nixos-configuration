@@ -1,21 +1,19 @@
 # flatpak.nix
 # 	Flatpak support for nixos
-{ config, pkgs, lib, impermanence, ... }:
+{ pkgs, config, lib, impermanence, ... }:
 with builtins;
 with lib;
-let cfg = config.apps.flatpak;
+let cfg = config.core.flatpak;
 in {
-
   # interface
-  options.apps.flatpak.enable = lib.mkOption {
+  options.core.flatpak.enable = lib.mkOption {
     type = types.bool;
     default = false;
     description = "make flatpak available to our system";
   };
-
   # import thanks to specialArgs
   imports = [ impermanence.nixosModules.impermanence ];
-
+  # configs
   config = lib.mkIf cfg.enable {
     services.flatpak.enable = true;
     xdg.portal = {

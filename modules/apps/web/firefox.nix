@@ -4,18 +4,19 @@
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
-
 let
-  cfg = config.apps.firefox;
+  web = config.apps.web;
+  cfg = web.firefox;
+  # compat with wayland
   firefox-compat = if config.programs.xwayland.enable then
     pkgs.firefox-wayland
   else
     pkgs.firefox;
 in {
-  options.apps.firefox = {
+  options.apps.web.firefox = {
     enable = lib.mkOption {
       type = types.bool;
-      default = false;
+      default = web.enable;
       description = "enable the firefox browser if true";
     };
     wayland = lib.mkOption {
@@ -24,6 +25,17 @@ in {
       description = "if true, use the wayland compatible version";
     };
   };
-  config =
-    lib.mkIf cfg.enable { environment.systemPackages = [ firefox-compat ]; };
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = [ firefox-compat widevine-cdm ];
+    # 22.11 channel !
+    # programs.firefox = {
+    #   enable = true;
+    #   package = firefox-compat;
+    #   policies = {
+    #     DisablePocket = true;
+    #     NetworkPrediction = true;
+    #     SanitizeOnShutdown = true;
+    #   };
+    # };
+  };
 }

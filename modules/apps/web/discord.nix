@@ -4,7 +4,8 @@
 with builtins;
 with lib;
 let
-  cfg = config.apps.discord;
+  web = config.apps.web;
+  cfg = web.discord;
   # use OpenASAR for faster start-up times
   OpenASAR = self: super: {
     discord = super.discord.override { withOpenASAR = true; };
@@ -16,13 +17,12 @@ let
   # ForceUpdate = self: super: { discord = super.discord.overrideAttrs (_: { src = builtins.fetchTarball <link-to-tarball>;});};
 in {
   # interface
-  options.apps.discord.enable = lib.mkOption {
+  options.apps.web.discord.enable = lib.mkOption {
     type = types.bool;
     default = false;
     description = "enable discord : voice and text chat for gamers";
-
   };
-
+  #config
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ discord nss_latest ];
     nixpkgs.overlays = [ OpenASAR ];

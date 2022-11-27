@@ -3,7 +3,7 @@
 { config, lib, pkgs, modulesPath, ... }: {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelModules = [ "kvm-amd" "amdgpu" ];
   boot.extraModulePackages = [ ];
   boot.extraModprobeConfig =
     "options zfs l2arc_noprefetch=0 zfs_arc_max=1073741824";

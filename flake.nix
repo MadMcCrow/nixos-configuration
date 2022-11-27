@@ -34,30 +34,30 @@
         ./systems/AF/configuration.nix
         {
           # core
-          core.enhancedSecurity.enable = false;
-
+          core = {
+            enhancedSecurity.enable = false;
+            flatpak.enable = true;
+            opengl.enable = true;
+          };
           # users
           users.guest.enable = true;
-
           # gnome
           gnome.enable = true;
           gnome.superExtraApps = true;
-
-          # firefox
-          apps.firefox.enable = true;
-          apps.firefox.wayland = true;
-
-          # other apps
-          apps.flatpak.enable = true;
-          apps.discord.enable = true;
-          apps.pidgin.enable = true;
-          apps.steam.enable = true;
-          apps.gamemode.enable = true;
-          apps.development.enable = true;
-
+          #apps
+          apps = {
+            enable = true;
+            #graphics.enable    = true;
+            #development.enable = true;
+            #games.enable       = true;
+            #web.enable         = true;
+            #web.discord.enable = true;
+            #web.pidgin.enable  = true;
+          };
           # input
           input.xone.enable = true;
-          input.remapper.enable = false;
+          #audio
+          audio.pipewire.enable = true;
         }
       ];
     };

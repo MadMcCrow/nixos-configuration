@@ -3,11 +3,12 @@
 { config, pkgs, lib, impermanence, ... }:
 with builtins;
 with lib;
-let cfg = config.apps.rustdesk;
+let
+  web = config.apps.web;
+  cfg = web.rustdesk;
 in {
-
   # interface
-  options.apps.rustdesk = {
+  options.apps.web.rustdesk = {
     enable = lib.mkOption {
       type = types.bool;
       default = false;
@@ -20,7 +21,7 @@ in {
       description = "should we deploy rustdesk with docker";
     };
   };
-
+  #config
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs;
       [ rustdesk ] ++ (if cfg.server then [ docker-compose docker ] else [ ]);

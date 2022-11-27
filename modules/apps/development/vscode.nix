@@ -3,8 +3,11 @@
 { config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
-with pkgs.vscode-utils;
+with pkgs.vscode-utils; # for extensionFromVscodeMarketplace
 let
+  # config interface
+  dev = config.apps.development;
+  cfg = dev.vsCode;
   # marketplace extensions
   vsCodeGodotTools = (extensionFromVscodeMarketplace {
     name = "godot-tools";
@@ -23,8 +26,16 @@ let
   ];
 
 in {
+  # interface
+  options.apps.development.vsCode = mkOption {
+    type = types.bool;
+    default = false;
+    description = ''
+      Add vscode and extensions
+    '';
+  };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs;
       [
         (vscode-with-extensions.override {

@@ -2,15 +2,16 @@
 # 	Add development tools to your system
 { config, pkgs, lib, ... }:
 with builtins;
+with lib;
 let
   # cfg shortcut
   dev = config.apps.development.enable;
-  cfg = config.apps.development.github;
+  cfg = dev.github;
 in {
   #
   # interface
   # 
-  options.apps.development.github = lib.mkOption {
+  options.apps.development.github = mkOption {
     type = types.bool;
     default = dev;
     description = ''
@@ -19,7 +20,7 @@ in {
   };
 
   # add github tools
-  config = lib.mkIf cfg {
+  config = mkIf cfg {
     environment.systemPackages = with pkgs; [ git gh gh-eco gh-cal gh-dash ];
   };
 

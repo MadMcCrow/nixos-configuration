@@ -7,13 +7,13 @@ with builtins;
 with lib;
 let cfg = config.audio.pipewire;
 in {
-  options.audio.pipewire.enable = lib.mkOption {
+  options.audio.pipewire.enable = mkOption {
     type = types.bool;
     default = true;
     description = "enable pipewire if true";
   };
   # pipewire
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     sound.enable = false; # disabled for pipewire
     hardware.pulseaudio.enable = false; # disabled for pipewire
     security.rtkit.enable = true; # rtkit is optional but recommended

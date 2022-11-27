@@ -1,25 +1,23 @@
-# flatpak.nix
-# 	Flatpak support for nixos
-{ config, pkgs, lib, impermanence, ... }:
+# filesystems.nix
+# 	set the supported filesystem on my nix systems
+{ config, pkgs, lib, ... }:
 with builtins;
 with lib;
 let
-  cfg = config.core.filesystem;
+  cfg = config.core.filesystems;
   defaultFilesystems =
     [ "btrfs" "ext2" "ext3" "ext4" "f2fs" "fat8" "fat16" "fat32" "ntfs" "zfs" ];
-
 in {
-
   # interface
   options.core.filesystems = {
     # force replace override
-    enable = lib.mkOption {
+    enable = mkOption {
       type = types.bool;
       default = true;
       description = "override default Supported filesystem types. ";
     };
     # overridable list
-    list = lib.mkOption {
+    list = mkOption {
       type = types.listOf types.str;
       default = defaultFilesystems;
       description = "Supported filesystem types. ";
@@ -27,5 +25,5 @@ in {
   };
 
   # override config
-  config = lib.mkIf cfg.enable { boot.supportedFilesystems = cfg.list; };
+  config = mkIf cfg.enable { boot.supportedFilesystems = cfg.list; };
 }
