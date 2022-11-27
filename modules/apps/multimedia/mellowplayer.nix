@@ -5,7 +5,7 @@ with builtins;
 with lib;
 let
   mma = config.apps.multimedia;
-  cfg = mma.mellowPlayer.enable;
+  cfg = mma.mellowPlayer;
 in {
   # interface
   options.apps.multimedia.mellowPlayer.enable = lib.mkOption {

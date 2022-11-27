@@ -30,7 +30,7 @@
       system = "x86_64-linux";
       specialArgs = inputs;
       modules = [
-        ./modules/default.nix
+        ./modules
         ./systems/AF/configuration.nix
         {
           # core
@@ -47,12 +47,12 @@
           #apps
           apps = {
             enable = true;
-            #graphics.enable    = true;
-            #development.enable = true;
-            #games.enable       = true;
-            #web.enable         = true;
-            #web.discord.enable = true;
-            #web.pidgin.enable  = true;
+            graphics.enable = true;
+            development.enable = true;
+            games.enable = true;
+            web.firefox.enable = true;
+            web.discord.enable = true;
+            web.pidgin.enable = true;
           };
           # input
           input.xone.enable = true;

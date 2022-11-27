@@ -7,7 +7,7 @@ let
   web = config.apps.web;
   cfg = web.signal;
 in {
-  options.apps.signal.enable = lib.mkOption {
+  options.apps.web.signal.enable = lib.mkOption {
     type = types.bool;
     default = false;
     description = "enable signal, the messaging app ";

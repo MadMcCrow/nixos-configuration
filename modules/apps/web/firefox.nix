@@ -26,16 +26,17 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ firefox-compat widevine-cdm ];
+    environment.systemPackages = [ firefox-compat ];
     # 22.11 channel !
-    # programs.firefox = {
-    #   enable = true;
-    #   package = firefox-compat;
-    #   policies = {
-    #     DisablePocket = true;
-    #     NetworkPrediction = true;
-    #     SanitizeOnShutdown = true;
-    #   };
-    # };
+    programs.firefox = {
+      enable = true;
+      package = firefox-compat;
+      policies = {
+        DisablePocket = true;
+        NetworkPrediction = true;
+        SanitizeOnShutdown = true;
+      };
+    };
+    unfree.unfreePackages = [ "widevine-cdm" ];
   };
 }
