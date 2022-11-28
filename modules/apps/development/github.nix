@@ -1,27 +1,26 @@
-# debugtools.nix
-# 	Add development tools to your system
+# github.nix
+# 	Add github cli tools to your system
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
 let
-  # cfg shortcut
-  dev = config.apps.development.enable;
+  # config interface
+  dev = config.apps.development;
   cfg = dev.github;
 in {
-  #
   # interface
-  # 
-  options.apps.development.github = mkOption {
-    type = types.bool;
-    default = dev;
-    description = ''
-      Add Github tools to your path
-    '';
+  options.apps.development.github = {
+    enable = mkOption {
+      type = types.bool;
+      default = dev.enable;
+      description = ''
+        Add Github tools to your path
+      '';
+    };
   };
-
-  # add github tools
-  config = mkIf cfg {
-    environment.systemPackages = with pkgs; [ git gh gh-eco gh-cal gh-dash ];
+  #config
+  config = mkIf cfg.enable {
+    apps.packages = with pkgs; [ git gh gh-eco gh-cal gh-dash ];
   };
 
 }

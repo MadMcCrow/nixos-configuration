@@ -4,21 +4,28 @@
 with builtins;
 with lib;
 let
-  # cfg shortcut
-  dev = config.apps.development.enable;
+  # config interface
+  dev = config.apps.development;
   cfg = dev.debugtools;
 in {
   # interface
-  options.apps.development.debugtools.enable = mkOption {
-    type = types.bool;
-    default = dev;
-    description = ''
-      Debug tools are GUI tools to help with debugging and performance measures
-    '';
+  options.apps.development.debugtools = {
+    enable = mkOption {
+      type = types.bool;
+      default = dev.enable;
+      description = ''
+        Debug tools are GUI tools to help with debugging and performance measures
+      '';
+    };
+    list = mkOption {
+      type = types.listOf types.package;
+      default = dev.enable;
+      description = ''
+        Debug tools are GUI tools to help with debugging and performance measures
+      '';
+    };
   };
   # add debug programs
-  config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ nemiver sysprof ];
-  };
+  config = mkIf cfg.enable { apps.packages = with pkgs; [ nemiver sysprof ]; };
 
 }

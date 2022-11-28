@@ -3,13 +3,12 @@
 { config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
-with pkgs.vscode-utils; # for extensionFromVscodeMarketplace
 let
   # config interface
   dev = config.apps.development;
   cfg = dev.vsCode;
   # marketplace extensions
-  vsCodeGodotTools = (extensionFromVscodeMarketplace {
+  vsCodeGodotTools = (pkgs.vscode-utils.extensionFromVscodeMarketplace {
     name = "godot-tools";
     publisher = "geequlim";
     version = "1.3.1";
@@ -24,24 +23,38 @@ let
     xaver.clang-format
     llvm-vs-code-extensions.vscode-clangd
   ];
-
-in {
-  # interface
-  options.apps.development.vsCode = mkOption {
-    type = types.bool;
-    default = false;
-    description = ''
-      Add vscode and extensions
-    '';
-  };
-
-  config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
+  # pakages to install
+  packages = if cfg.extensions then
+    (with pkgs;
       [
         (vscode-with-extensions.override {
           vscodeExtensions = nixVsCodeExtensions ++ [ vsCodeGodotTools ];
         })
-      ];
+      ])
+  else
+    [ vscode ];
+
+in {
+  # interface
+  options.apps.development.vsCode = {
+    enable = mkOption {
+      type = types.bool;
+      default = dev.enable;
+      description = ''
+        Add vscode.
+      '';
+    };
+    extensions = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Add vscode extensions.
+      '';
+    };
+  };
+  # config
+  config = mkIf cfg.enable {
+    apps.packages = packages;
     # unfree predicate
     unfree.unfreePackages = [
       "vscode"

@@ -4,19 +4,22 @@
 with builtins;
 with lib;
 let
-  # cfg shortcut
-  dev = config.apps.development;
+  # config interface
+  aps = config.apps;
+  dev = aps.development;
   cfg = dev.lapce;
 in {
   # interface
-  options.apps.development.lapce = mkOption {
-    type = types.bool;
-    default = false;
-    description = ''
-      Add the new lapce editor
-    '';
+  options.apps.development.lapce = {
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Add the new lapce editor
+      '';
+    };
   };
   # add github tools
-  config = mkIf cfg { environment.systemPackages = with pkgs; [ lapce ]; };
+  config = mkIf cfg.enable { apps.packages = with pkgs; [ lapce ]; };
 
 }

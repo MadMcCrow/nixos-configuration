@@ -16,13 +16,10 @@ in {
     '';
   };
   # config
-  config =
-    mkIf cfg.enable { environment.systemPackages = (with pkgs; [ rnix-lsp ]); };
+  config = mkIf cfg.enable {
+    # add nix language support
+    apps.packages = with pkgs; [ rnix-lsp ];
+  };
 
-  imports = [
-    #  ./debugtools.nix
-    #  ./github.nix 
-    #  ./vscode.nix
-    #  ./lapce.nix
-  ];
+  imports = [ ./debugtools.nix ./github.nix ./vscode.nix ./lapce.nix ];
 }
