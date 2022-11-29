@@ -123,10 +123,10 @@ in {
     programs.xwayland.enable = cfg.wayland;
 
     # replace xterm by gnome terminal
-    nixpkgs.config.packageOverrides = pkgs: {
-      system-path =
-        pkgs.system-path.override { xterm = pkgs.gnome.gnome-terminal; };
-    };
+    #nixpkgs.config.packageOverrides = pkgs: {
+    #  system-path =
+    #    pkgs.system-path.override { xterm = pkgs.gnome.gnome-terminal; };
+    #};
 
     # Gnome useless apps :
     environment.gnome.excludePackages = with pkgs; [

@@ -22,6 +22,15 @@ in {
         list of nixpkgs package to install.
       '';
     };
+    # list of packages Overrrides
+    overrides = mkOption {
+      type = types.set;
+      default = { };
+      description = ''
+        set of package override
+      '';
+    };
+
     # home manager setting
     home-manager = mkOption {
       type = types.bool;
@@ -39,6 +48,10 @@ in {
   config = lib.mkIf (cfg.enable && cfg.packages != [ ]) {
     environment.systemPackages = with pkgs;
       [ git wget curl zip neofetch ] ++ config.apps.packages;
+
+    # not working as such
+    #nixpkgs.config.packageOverrides = pkgs: config.apps.overrides;
+
   };
 
 }

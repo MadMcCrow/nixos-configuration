@@ -7,54 +7,40 @@ let
   # config interface
   web = config.apps.web;
   cfg = web.pidgin;
+
+  pidginPlugins = with pkgs; [
+    pidgin-skypeweb
+    pidgin-opensteamworks
+    pidgin-otr
+    purple-slack
+    purple-discord
+    purple-matrix
+    purple-matrix
+    purple-signald
+  ];
+
+  # pidgin-with-plugins
+  pidgin-with-plugins = pkgs.pidgin.override { plugins = pidginPlugins; };
+
 in {
   # interface
   options.apps.web.pidgin.enable = lib.mkOption {
     type = types.bool;
-    default = false;
+    default = web.enable;
     description = "enable pidgin :a multi protocol chat client";
   };
   #config
   config = lib.mkIf cfg.enable {
-    apps.packages = with pkgs; [
-      signald
-      pidgin
-      # we cannot merge this list with
-      # the one used in nixpkgs.config.packageOverrides
-      # because it creates and infinite recursion
-      pidgin-skypeweb
-      pidgin-opensteamworks
-      pidgin-otr
-      purple-plugin-pack
-      purple-slack
-      purple-discord
-      purple-matrix
-      tdlib-purple
-      purple-matrix
-      purple-signald
-    ];
+    apps.packages = with pkgs; [ signald pidgin ] ++ pidginPlugins;
 
+    # not working (yet)
     # set plugins
-    nixpkgs.config.packageOverrides = pkgs:
-      with pkgs; {
-        pidgin = pkgs.pidgin.override {
-          ## Add whatever plugins are desired (see nixos.org package listing).
-          plugins = [
-            pidgin-skypeweb
-            pidgin-opensteamworks
-            pidgin-otr
-            purple-plugin-pack
-            purple-slack
-            purple-discord
-            purple-matrix
-            tdlib-purple
-            purple-matrix
-            purple-signald
-          ];
-        };
-      };
+    #apps.overrides = {
+    #  pkgs.pidgin = pidgin-with-plugins; 
+    #};
+    #nixpkgs.config.packageOverrides = pkgs: { pkgs.pidgin = pidgin-with-plugins; };
 
     # purple discord might be unfree
-    # unfree.unfreePackages = [ "purple-discord" ];
+    unfree.unfreePackages = [ "purple-slack" "purple-discord" "pidgin-otr" ];
   };
 }
