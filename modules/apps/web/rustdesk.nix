@@ -23,7 +23,7 @@ in {
   };
   #config
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
+    apps.packages = with pkgs;
       [ rustdesk ] ++ (if cfg.server then [ docker-compose docker ] else [ ]);
     virtualisation.docker.enable = cfg.server;
   };

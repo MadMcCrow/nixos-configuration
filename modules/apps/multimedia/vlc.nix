@@ -10,11 +10,10 @@ in {
   # interface
   options.apps.multimedia.vlc.enable = lib.mkOption {
     type = types.bool;
-    default = false;
+    default = mma.enable;
     description = "VLC media player";
   };
   # config
-  config =
-    lib.mkIf cfg.enable { environment.systemPackages = with pkgs; [ vlc ]; };
+  config = lib.mkIf cfg.enable { apps.packages = with pkgs; [ vlc ]; };
 }
 

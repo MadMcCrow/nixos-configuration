@@ -15,7 +15,7 @@ in {
   };
   #config
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ chromium widevine-cdm ];
+    apps.packages = with pkgs; [ chromium widevine-cdm ];
     # make sure chromium has widevine (L1 - SD support only)
     nixpkgs.config.chromium = { enableWideVine = true; };
     unfree.unfreePackages = [ "chromium" ];

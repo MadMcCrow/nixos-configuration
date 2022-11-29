@@ -28,7 +28,7 @@ in {
   };
   #config
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
+    apps.packages = with pkgs;
       if cfg.useHIP then [ blender-hip ] else [ blender ];
   };
 }

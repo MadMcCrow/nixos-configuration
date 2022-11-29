@@ -10,12 +10,10 @@ in {
   # interface
   options.apps.multimedia.mellowPlayer.enable = lib.mkOption {
     type = types.bool;
-    default = false;
+    default = mma.enable;
     description = "mellowPlayer allows deezer and spotify streaming";
   };
   # config
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ mellowplayer ];
-  };
+  config = lib.mkIf cfg.enable { apps.packages = with pkgs; [ mellowplayer ]; };
 }
 

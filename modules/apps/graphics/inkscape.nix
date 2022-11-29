@@ -21,7 +21,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
+    apps.packages = with pkgs;
       [
         (inkscape-with-extensions.override { inkscapeExtensions = extensions; })
       ];

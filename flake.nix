@@ -50,9 +50,7 @@
             graphics.enable = true;
             development.enable = true;
             games.enable = true;
-            web.firefox.enable = true;
-            web.discord.enable = true;
-            web.pidgin.enable = true;
+            web.enable = true;
           };
           # input
           input.xone.enable = true;

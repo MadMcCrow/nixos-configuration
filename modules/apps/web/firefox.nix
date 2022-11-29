@@ -1,10 +1,10 @@
-# apps/brave.nix
-# 	brave browser
-#       todo : build nightly
+# apps/firefox.nix
+# 	firefox web browser
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
 let
+  #config interface
   web = config.apps.web;
   cfg = web.firefox;
   # compat with wayland
@@ -26,7 +26,7 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ firefox-compat ];
+    apps.packages = [ firefox-compat ];
     # 22.11 channel !
     programs.firefox = {
       enable = true;
@@ -34,7 +34,6 @@ in {
       policies = {
         DisablePocket = true;
         NetworkPrediction = true;
-        SanitizeOnShutdown = true;
       };
     };
     unfree.unfreePackages = [ "widevine-cdm" ];

@@ -19,12 +19,12 @@ in {
   # interface
   options.apps.web.discord.enable = lib.mkOption {
     type = types.bool;
-    default = false;
+    default = web.enable;
     description = "enable discord : voice and text chat for gamers";
   };
   #config
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ discord nss_latest ];
+    apps.packages = with pkgs; [ discord nss_latest ];
     nixpkgs.overlays = [ OpenASAR ];
     unfree.unfreePackages = [ "discord" ];
   };

@@ -16,10 +16,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      gnome.gnome-chess
-      stockfish
-      uchess
-    ];
+    apps.packages = with pkgs; [ gnome.gnome-chess stockfish uchess ];
   };
 }

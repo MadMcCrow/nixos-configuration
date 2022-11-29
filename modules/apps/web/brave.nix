@@ -14,7 +14,7 @@ in {
     description = "enable the brave browser if true";
   };
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [ brave widevine-cdm ];
+    apps.packages = with pkgs; [ brave widevine-cdm ];
     nixpkgs.config.chromium = { enableWideVine = true; };
   };
 }

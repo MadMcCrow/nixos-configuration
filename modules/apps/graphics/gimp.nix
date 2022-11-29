@@ -22,7 +22,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs;
+    apps.packages = with pkgs;
       [ (gimp-with-plugins.override { plugins = extensions; }) ];
   };
 }
