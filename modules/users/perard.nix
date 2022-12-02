@@ -100,6 +100,15 @@ in {
               file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
             }
           ];
+
+          history = {
+            size = 100;
+            ignoreDups = true;
+            ignoreSpace = true;
+            extended = false;
+            share = true;
+          };
+
         };
 
         # git settings
