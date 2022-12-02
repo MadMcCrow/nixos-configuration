@@ -62,7 +62,12 @@ in {
           #	TODO : make this configuration from the flake
           initExtra = ''
             [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
-                              POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true'';
+                              POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+
+            zprof'';
+
+          #enable profiling
+          initExtraFirst = "zmodload zsh/zprof";
 
           # Oh-my-zsh is a tool improving shell usage
           oh-my-zsh = {
@@ -100,7 +105,7 @@ in {
               file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
             }
           ];
-
+          # smaller history
           history = {
             size = 100;
             ignoreDups = true;
