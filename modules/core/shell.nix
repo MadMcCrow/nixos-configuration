@@ -4,7 +4,10 @@
 { pkgs, config, lib, ... }: {
 
   # Packages
-  environment.systemPackages = with pkgs; [ nixfmt zsh exa nano wget openssl ];
+  environment = {
+    systemPackages = with pkgs; [ nixfmt zsh exa nano wget openssl ];
+    pathsToLink = [ "/share/zsh" ];
+  };
 
   # enable zsh for all
   programs.zsh = {
@@ -13,6 +16,7 @@
     enableCompletion = true;
     syntaxHighlighting.enable = true;
     autosuggestions.enable = true;
+    histSize = 100;
 
     # useful aliases
     shellAliases = { ls = "exa"; };

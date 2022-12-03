@@ -59,29 +59,6 @@ in {
         zsh = {
           enable = true;
 
-          initExtraFirst = ''
-            setopt extendedglob
-            if [[ $ZSH_DISABLE_COMPFIX != true ]]; then
-            if ! compaudit &>/dev/null; then
-                handle_completion_insecurities
-            else
-            if [[ -n "${ZSH_COMPDUMP}"(#qN.mh+24) ]]; then
-                  compinit -d "${ZSH_COMPDUMP}"
-                  compdump
-            else
-                  compinit -C
-            fi
-            fi
-            else
-            if [[ -n "${ZSH_COMPDUMP}"(#qN.mh+24) ]]; then
-                compinit -i -d "${ZSH_COMPDUMP}"
-                compdump
-            else
-                compinit -C
-            fi
-            fi
-          '';
-
           # source PowerLevel10k into my zsh config for a cool theme
           #	TODO : make this configuration from the flake
           initExtra = ''
@@ -107,21 +84,11 @@ in {
           plugins = [
             {
               name = "zsh-autosuggestions";
-              src = pkgs.fetchFromGitHub {
-                owner = "zsh-users";
-                repo = "zsh-autosuggestions";
-                rev = "v0.6.4";
-                sha256 = "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6";
-              };
+              src = pkgs.zsh-autosuggestions;
             }
             {
               name = "fast-syntax-highlighting";
-              src = pkgs.fetchFromGitHub {
-                owner = "zdharma";
-                repo = "fast-syntax-highlighting";
-                rev = "v1.55";
-                sha256 = "0h7f27gz586xxw7cc0wyiv3bx0x3qih2wwh05ad85bh2h834ar8d";
-              };
+              src = pkgs.zsh-fast-syntax-highlighting;
             }
             {
               name = "powerlevel10k";
