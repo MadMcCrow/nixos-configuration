@@ -60,22 +60,38 @@ in {
           enable = true;
 
           initExtraFirst = ''
-            autoload -Uz compinit
-            for dump in ~/.zcompdump(N.mh+24); do
-              compinit
-            done
-            compinit -C'';
+            setopt extendedglob
+            if [[ $ZSH_DISABLE_COMPFIX != true ]]; then
+            if ! compaudit &>/dev/null; then
+                handle_completion_insecurities
+            else
+            if [[ -n "${ZSH_COMPDUMP}"(#qN.mh+24) ]]; then
+                  compinit -d "${ZSH_COMPDUMP}"
+                  compdump
+            else
+                  compinit -C
+            fi
+            fi
+            else
+            if [[ -n "${ZSH_COMPDUMP}"(#qN.mh+24) ]]; then
+                compinit -i -d "${ZSH_COMPDUMP}"
+                compdump
+            else
+                compinit -C
+            fi
+            fi
+          '';
 
           # source PowerLevel10k into my zsh config for a cool theme
           #	TODO : make this configuration from the flake
           initExtra = ''
             [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
                               POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
-
           '';
 
           #enable profiling
           #initExtraFirst = "zmodload zsh/zprof";
+          # initExtra = "zprof"
 
           # Oh-my-zsh is a tool improving shell usage
           oh-my-zsh = {
