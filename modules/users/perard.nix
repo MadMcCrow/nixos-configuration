@@ -58,16 +58,24 @@ in {
         # zsh is a modern shell
         zsh = {
           enable = true;
+
+          initExtraFirst = ''
+            autoload -Uz compinit
+            for dump in ~/.zcompdump(N.mh+24); do
+              compinit
+            done
+            compinit -C'';
+
           # source PowerLevel10k into my zsh config for a cool theme
           #	TODO : make this configuration from the flake
           initExtra = ''
             [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
                               POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
-            zprof'';
+          '';
 
           #enable profiling
-          initExtraFirst = "zmodload zsh/zprof";
+          #initExtraFirst = "zmodload zsh/zprof";
 
           # Oh-my-zsh is a tool improving shell usage
           oh-my-zsh = {
