@@ -38,7 +38,7 @@ in {
     #apps.overrides = {
     #  pkgs.pidgin = pidgin-with-plugins; 
     #};
-    #nixpkgs.config.packageOverrides = pkgs: { pkgs.pidgin = pidgin-with-plugins; };
+    #nixpkgs.config.packageOverrides = { pkgs.pidgin = pidgin-with-plugins; };
 
     # purple discord might be unfree
     unfree.unfreePackages = [ "purple-slack" "purple-discord" "pidgin-otr" ];

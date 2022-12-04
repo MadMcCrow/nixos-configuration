@@ -50,7 +50,7 @@ in {
       [ git wget curl zip neofetch ] ++ config.apps.packages;
 
     # not working as such
-    #nixpkgs.config.packageOverrides = pkgs: config.apps.overrides;
+    #nixpkgs.config.packageOverrides = pkgs : rec { apps.overrides };
 
   };
 
