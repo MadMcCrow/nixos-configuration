@@ -44,12 +44,47 @@ let
     version = "1.2.29";
     sha256 = "sha256-Wl++d7mCOjgL7vmVVAKPQQgWRSFlqL4ry7v0wob1OyU=";
   };
+  # intellicode examples
+  intellicode-api-usage = vsMarketplace {
+    name = "intellicode-api-usage-examples";
+    publisher = "VisualStudioExptTeam";
+    version = "0.2.6";
+    sha256 = "sha256-vXka5gTPW/UozFUqRaklhaio8s1kouEdDrzsE3w891k=";
+  };
+  # mutable AI code completion
+  mutable-ai = vsMarketplace {
+    name = "mutable-ai";
+    publisher = "mutable-ai";
+    version = "1.2.4";
+    sha256 = "sha256-7csm30aRvb2a8FV3n8VgcO8+/OY6adQfz/u34bl3D7E=";
+  };
+  # codiga AI
+  codiga = vsMarketplace {
+    name = "vscode-plugin";
+    publisher = "codiga";
+    version = "0.8.8";
+    sha256 = "sha256-eaC03cZa8uVuZPmhOw7qgwrvbci+I0pWhT3DsNkMs9U=";
+  };
   # pull-request support for PRs
   gh-pullrequest = vsMarketplace {
     name = "vscode-pull-request-github";
     publisher = "github";
     version = "0.54.1";
     sha256 = "sha256-AhsKTjIhyhGW9KcqAhWAzYAOv/wuQvNFKWlPmiK7hUQ=";
+  };
+  # git graph so view branches
+  git-graph = vsMarketplace {
+    name = "git-graph";
+    publisher = "mhutchie";
+    version = "1.30.0";
+    sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
+  };
+  # git history viewer
+  git-history = vsMarketplace {
+    name = "githistory";
+    publisher = "donjayamanne";
+    version = "0.6.19";
+    sha256 = "sha256-YyEr4XRI2zzkzDXX2oS+jVnm5dggoZcS4Vc8mNSuQpc=";
   };
   # vscode-icons fir better icons
   vscode-icons = vsMarketplace {
@@ -72,19 +107,12 @@ let
     version = "4.22.0";
     sha256 = "sha256-U9P9BcuZi+SUcvTg/fC2SkjGRD4CvgJEc1i+Ft2OOUc=";
   };
-  # mutable AI code completion
-  mutable-ai = vsMarketplace {
-    name = "mutable-ai";
-    publisher = "mutable-ai";
-    version = "1.2.4";
-    sha256 = "sha256-7csm30aRvb2a8FV3n8VgcO8+/OY6adQfz/u34bl3D7E=";
-  };
-  # codiga AI
-  codiga = vsMarketplace {
-    name = "vscode-plugin";
-    publisher = "codiga";
-    version = "0.8.8";
-    sha256 = "sha256-eaC03cZa8uVuZPmhOw7qgwrvbci+I0pWhT3DsNkMs9U=";
+  # Sync settings via 
+  sync-settings = vsMarketplace {
+    name = "code-settings-sync";
+    publisher = "Shan";
+    version = "3.4.3";
+    sha256 = "sha256-qmWL/IjPeoW57SpU0T9w1KMWuTlV6WTIlzB6vchwtHE=";
   };
 
   # marketplace extensions
@@ -94,12 +122,16 @@ let
     vs-shader
     shader-ed
     intellicode
-    gh-pullrequest
-    vscode-icons
-    jtlowe-icons
-    material-icons
+    intellicode-api-usage
     mutable-ai
     codiga
+    gh-pullrequest
+    git-graph
+    git-history
+    #vscode-icons
+    #jtlowe-icons
+    material-icons
+    sync-settings
   ];
 
   # nixos extensions
