@@ -16,22 +16,46 @@ let
       sha256 = "sha256-wJICDW8bEBjilhjhoaSddN63vVn6l6aepPtx8VKTdZA=";
     })
     (pkgs.vscode-utils.extensionFromVscodeMarketplace {
-      name = "github-vscode-theme";
-      publisher = "GitHub";
-      version = "6.3.2";
-      sha256 = "sha256-CbFZsoRiiwSWL7zJdnBcfrxuhE7E9Au2AlQjqYXW+Nc=";
-    })
-    (pkgs.vscode-utils.extensionFromVscodeMarketplace {
-      name = "vscode-pull-request-github";
-      publisher = "GitHub";
-      version = "0.55.2022120509";
-      sha256 = "sha256-48C9g+ij5YuZSgcNvwltx+xVuaAnpV/f4uMmWV66NtM=";
+      name = "vscode-glsllint";
+      publisher = "dtoplak";
+      version = "1.8.0";
+      sha256 = "sha256-imB+S7N6TIuyhMw/tfLdtGnLTgLv6BL9IAxKrOzICj8=";
     })
     (pkgs.vscode-utils.extensionFromVscodeMarketplace {
       name = "vscodeintellicode";
       publisher = "VisualStudioExptTeam";
       version = "1.2.29";
       sha256 = "sha256-Wl++d7mCOjgL7vmVVAKPQQgWRSFlqL4ry7v0wob1OyU=";
+    })
+    (pkgs.vscode-utils.extensionFromVscodeMarketplace {
+      name = "vscode-pull-request-github";
+      publisher = "github";
+      version = "0.54.1";
+      sha256 = "sha256-AhsKTjIhyhGW9KcqAhWAzYAOv/wuQvNFKWlPmiK7hUQ=";
+    })
+    (pkgs.vscode-utils.extensionFromVscodeMarketplace {
+      name = "shader";
+      publisher = "slevesque";
+      version = "1.1.5";
+      sha256 = "sha256-Pf37FeQMNlv74f7LMz9+CKscF6UjTZ7ZpcaZFKtX2ZM=";
+    })
+    (pkgs.vscode-utils.extensionFromVscodeMarketplace {
+      name = "shadered";
+      publisher = "dfranx";
+      version = "0.0.5";
+      sha256 = "sha256-0X6D7jhJ54DOVjw+M5D6Z4YbaZnp5/l2ACPyQj3xywo=";
+    })
+    (pkgs.vscode-utils.extensionFromVscodeMarketplace {
+      name = "vscode-icons";
+      publisher = "vscode-icons-team";
+      version = "12.0.1";
+      sha256 = "sha256-zxKD+8PfuaBaNoxTP1IHwG+25v0hDkYBj4RPn7mSzzU=";
+    })
+    (pkgs.vscode-utils.extensionFromVscodeMarketplace {
+      name = "stepsize";
+      publisher = "Stepsize";
+      version = "0.72.0";
+      sha256 = "sha256-XTWuYQIuDeb+aZVTeWdfxJLnLs+5BKxBrJC5IjYgBQU=";
     })
   ];
   # nixos extensions
@@ -41,7 +65,10 @@ let
     rust-lang.rust-analyzer
     ms-vscode.cpptools
     xaver.clang-format
+    yzhang.markdown-all-in-one
     llvm-vs-code-extensions.vscode-clangd
+    github.github-vscode-theme
+    github.codespaces
   ];
   # pakages to install
   packages = if cfg.extensions then
@@ -79,13 +106,8 @@ in {
     unfree.unfreePackages = [
       "vscode"
       "vscode-with-extensions"
-      "jnoortheen.nix-ide"
-      "ms-python.python"
-      "rust-lang.rust-analyzer"
-      "ms-vscode.cpptools"
-      "xaver.clang-format"
-      "llvm-vs-code-extensions.vscode-clangd"
       "vscode-extension-ms-vscode-cpptools"
+      "vscode-extension-github-codespaces"
     ];
   };
 }
