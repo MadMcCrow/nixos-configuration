@@ -43,7 +43,12 @@ let
     quick-settings-tweaker # Gnome43 quick settings editor
     tiling-assistant # Windows-like tiling update
     blur-my-shell # some nice blur effect
+    mmod-panel # Customise top bar
+    gtile # tile with grid
+    unite # some ubuntu unity shell modification
   ];
+  # some nice themes
+  themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme ];
 
 in {
 
@@ -81,6 +86,13 @@ in {
       type = types.bool;
       default = true;
       description = "Some (useful) curated gnome extensions";
+    };
+
+    # theming
+    themes = lib.mkOption {
+      type = types.bool;
+      default = true;
+      description = "add gnome/gtk themes";
     };
 
     # gnome online accounts sync
@@ -177,7 +189,8 @@ in {
     environment.systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
       ++ (if cfg.extraApps then extraApps else [ ])
       ++ (if cfg.superExtraApps then superExtraApps else [ ])
-      ++ (if cfg.extraExtensions then extraExtensions else [ ]);
+      ++ (if cfg.extraExtensions then extraExtensions else [ ])
+      ++ (if cfg.themes then themes else [ ]);
 
     # enable gnome settings daemon
     services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
