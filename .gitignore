@@ -2,3 +2,6 @@
 result
 # flake lock : avoid commiting it
 # flake.lock
+
+# ignore macos files
+.DS_Store

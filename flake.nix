@@ -1,7 +1,12 @@
+# flake.nix
+# the flake responsible for all my systems and apps
 {
+  description = "MadMcCrow Systems configurations ";
+
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+
 
     # Home manager
     home-manager = {
@@ -15,6 +20,15 @@
     # gaming
     nix-gaming.url = "github:fufexan/nix-gaming";
 
+    # macOS
+    darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # nixpkgs for MacOS
+    nixpkgs-darwin = { url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin"; };
+
     # hyprland DE
     hyprland = {
       url = "github:hyprwm/Hyprland";
@@ -23,7 +37,8 @@
 
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
+  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
+  {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
@@ -60,5 +75,20 @@
       ];
     };
   };
+
+  darwinConfigurations.Noes-MacBook-Air = darwin.lib.darwinSystem {
+    system = "aarch64-darwin";
+    modules = [
+      ./modules
+      ./systems/MBA/configuration.nix
+      {
+        apps = {
+          enable = true;
+          development.enable = true;
+        };
+      }
+    ];
+  };
+
 }
 
