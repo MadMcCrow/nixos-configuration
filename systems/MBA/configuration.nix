@@ -1,17 +1,14 @@
 # Nix configuration of MacBook Air
-{ pkgs, lib, ... }:
-{
+{ pkgs, lib, ... }: {
 
   nix = {
-    binaryCaches = [
-      "https://cache.nixos.org/"
-    ];
-    binaryCachePublicKeys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    ];
-    trustedUsers = [
-      "@admin"
-    ];
+    settings = {
+      trusted-users = [ "@admin" ];
+      substituters = [ "https://cache.nixos.org/" ];
+      trusted-public-keys =
+        [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+    };
+    configureBuildUsers = true;
 
     package = pkgs.nixUnstable;
 
@@ -23,17 +20,13 @@
     '';
   };
 
-  users.nix.configureBuildUsers = true;
-
   programs = {
     zsh.enable = true;
     nix-index.enable = true;
   };
 
   # Auto upgrade nix package and the daemon service.
-  services = {
-     nix-daemon.enable = true;
-  };
+  services = { nix-daemon.enable = true; };
 
   # https://github.com/nix-community/home-manager/issues/423
   #environment.variables = {
@@ -42,18 +35,14 @@
 
   # Fonts
   fonts = {
-  enableFontDir = true;
-  fonts = with pkgs; [
-     recursive
-     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-   ];
-   };
-
-  system = {
-    keyboard.enableKeyMapping = true;
+    fontDir.enable = true;
+    fonts = with pkgs; [
+      recursive
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    ];
   };
 
-  security = {
-    pam.enableSudoTouchIdAuth = true;
-  };
+  system = { keyboard.enableKeyMapping = true; };
+
+  security = { pam.enableSudoTouchIdAuth = true; };
 }

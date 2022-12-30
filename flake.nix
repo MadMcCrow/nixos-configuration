@@ -7,7 +7,6 @@
     # Nixpkgs
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
 
-
     # Home manager
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -37,8 +36,7 @@
 
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
-  {
+  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs: {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
@@ -74,20 +72,11 @@
         }
       ];
     };
-  };
 
-  darwinConfigurations.Noes-MacBook-Air = darwin.lib.darwinSystem {
-    system = "aarch64-darwin";
-    modules = [
-      ./modules
-      ./systems/MBA/configuration.nix
-      {
-        apps = {
-          enable = true;
-          development.enable = true;
-        };
-      }
-    ];
+    darwinSystems.Noes-MacBook-Air = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      modules = [ ./systems/MBA/configuration.nix ];
+    };
   };
 
 }
