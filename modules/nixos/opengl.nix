@@ -1,12 +1,15 @@
 # core/opengl.nix
 # 	make sure to enable support for opengl/vulkan and other Khronos APIs
+#   todo : check relevancy for MacOS
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.core.opengl;
+let
+  nos = config.nixos;
+  cfg = nos.opengl;
 in {
   # interface
-  options.core.opengl = {
+  options.nixos.opengl = {
     # base
     enable = mkOption {
       type = types.bool;
@@ -25,7 +28,7 @@ in {
     };
   };
   # config
-  config = mkIf cfg.enable {
+  config = mkIf (nos.enable && cfg.enable) {
     # vulkan support
     hardware.opengl = {
       enable = true;

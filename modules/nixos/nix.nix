@@ -3,7 +3,9 @@
 { pkgs, config, nixpkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.nixos.nix;
+let
+  nos = config.nixos;
+  cfg = nos.nix;
 in {
   #interface
   options.nixos.nix = {
@@ -19,7 +21,7 @@ in {
     };
   };
 
-  config = {
+  config = mkIf nos.enable {
     # nix
     nix = {
       package =

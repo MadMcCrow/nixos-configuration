@@ -47,17 +47,12 @@
         ./modules
         ./systems/AF/configuration.nix
         {
-          # core
-          nixos = {
-            flatpak.enable = true;
-            opengl.enable = true;
-          };
-          # gnome
-          gnome = {
+          # desktop env
+          desktop.gnome = {
             enable = true;
             superExtraApps = true;
           };
-          #apps
+          # apps
           apps = {
             enable = true;
             graphics.enable = true;
@@ -68,7 +63,7 @@
           };
           # input
           input.xone.enable = true;
-          #audio
+          # audio
           audio.pipewire.enable = true;
         }
       ];
@@ -82,6 +77,8 @@
         {
           audio.enable = false;
           nixos.enable = false;
+          input.enable = false;
+          desktop.enable = false;
         }
       ];
     };

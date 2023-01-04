@@ -6,11 +6,10 @@ with builtins;
 with lib;
 let
   cfg = config.desktop;
-  submodules = [ ./gnome.nix ./hyprland.nix ./pantheon.nix ];
+  submodules = [ ./gnome.nix ./hyprland.nix ];
 in {
-  option.desktop.enable = mkEnableOption {
-    name = mdDoc "desktop";
+  options.desktop.enable = mkEnableOption (mdDoc "desktop") // {
     default = true;
   };
-  imports = if cfg.enable then submodules else [ ];
+  imports = submodules;
 }

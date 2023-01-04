@@ -4,22 +4,15 @@
 with builtins;
 with lib;
 let
-  cfg = config.input.xone;
+  ipt = config.input;
+  cfg = ipt.xone;
   kernel = config.boot.kernelPackages;
 in {
   # interface
-  options.input.xone = {
-    enable = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        xone is a kernel level driver for the xbox one controller from Microsoft,
-        as well as the official Microsoft dongle
-      '';
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
+  options.input.xone.enable = mkEnableOption (mdDoc
+    "xone, a kernel level driver for the xbox one controller from Microsoft, as well as the official Microsoft dongle ");
+  # config
+  config = lib.mkIf (ipt.enable && cfg.enable) {
     # allow xow dongle firmware
     unfree.unfreePackages = [ "xow_dongle-firmware" ];
     # Xbox Controller Support

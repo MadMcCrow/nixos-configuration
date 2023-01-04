@@ -7,13 +7,8 @@ let cfg = config.apps;
 in {
   # interface
   options.apps = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        add user-level apps to your system 
-      '';
-    };
+    # enable
+    enable = mkEnableOption (mdDoc "apps") // { default = true; };
     # list of packages to install
     packages = mkOption {
       type = types.listOf types.package;

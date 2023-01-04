@@ -5,7 +5,8 @@
 with builtins;
 with lib;
 let
-  cfg = config.gnome;
+  dsk = config.desktop;
+  cfg = dsk.gnome;
 
   # extra gnome apps
   extraApps = with pkgs.gnome; [
@@ -53,66 +54,41 @@ let
 in {
 
   # interface
-  options.gnome = {
+  options.desktop.gnome = {
     # do you want gnome Desktop environment
-    enable = lib.mkOption {
-      type = types.bool;
-      default = true;
-      description = "enable gnome Desktop environment";
-    };
-
-    wayland = lib.mkOption {
-      type = types.bool;
-      default = true;
-      description = "Wayland is the new standard meant to replace Xorg";
-    };
-
+    enable = mkEnableOption (mdDoc "gnome, the default desktop environment");
+    # wayland support
+    wayland =
+      mkEnableOption (mdDoc "Wayland, the new standard meant to replace Xorg")
+      // {
+        default = true;
+      };
     # useful gnome apps
-    extraApps = lib.mkOption {
-      type = types.bool;
+    extraApps = mkEnableOption (mdDoc "(useful) curated gnome apps") // {
       default = true;
-      description = "Some (useful) curated gnome apps";
     };
-
     # useful gnome apps
-    superExtraApps = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description = "Some curated gnome apps that are fun but not useful";
-    };
-
+    superExtraApps =
+      mkEnableOption (mdDoc "curated gnome apps that are fun but not useful");
     # useful gnome extension
-    extraExtensions = lib.mkOption {
-      type = types.bool;
+    extraExtensions = mkEnableOption (mdDoc "curated gnome extensions") // {
       default = true;
-      description = "Some (useful) curated gnome extensions";
     };
-
     # theming
-    themes = lib.mkOption {
-      type = types.bool;
-      default = true;
-      description = "add gnome/gtk themes";
-    };
-
+    themes = mkEnableOption (mdDoc "gnome/gtk themes") // { default = true; };
     # gnome online accounts sync
-    onlineAccounts = lib.mkOption {
-      type = types.bool;
-      default = true;
-      description =
-        "use online accounts for nextcloud/freecloud/google/ms-exchange";
-    };
-
+    onlineAccounts = mkEnableOption
+      (mdDoc "online accounts for nextcloud/freecloud/google/ms-exchange") // {
+        default = true;
+      };
     # gsconnect is KDE connect for gnome
-    gSConnect = lib.mkOption {
-      type = types.bool;
+    gSConnect = mkEnableOption (mdDoc "gsconnect, KDE connect for gnome") // {
       default = true;
-      description = "gsconnect is KDE connect for gnome";
     };
   };
 
   # base config for gnome 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (dsk.enable && cfg.enable) {
 
     services.xserver = {
       # enable GUI

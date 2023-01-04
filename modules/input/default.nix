@@ -4,12 +4,11 @@
 with builtins;
 with lib;
 let
-  cfg = config.inputs;
+  cfg = config.input;
   submodules = [ ./ratbag.nix ./input-remapper.nix ./xone.nix ];
 in {
-  option.inputs.enable = mkEnableOption {
-    name = mdDoc "inputs";
+  options.input.enable = mkEnableOption (mdDoc "custom inputs") // {
     default = true;
   };
-  imports = if cfg.enable then submodules else [ ];
+  imports = submodules;
 }

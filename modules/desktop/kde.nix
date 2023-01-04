@@ -4,7 +4,8 @@
 with builtins;
 with lib;
 let
-  cfg = config.desktop.kde;
+  dsk = config.desktop;
+  cfg = dsk.kde;
 
   # extra kde apps
   extraApps = with pkgs.libsForQt5; [ ];
@@ -59,7 +60,7 @@ in {
   };
 
   # base config for kde 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (dsk.enable && cfg.enable) {
 
     services.xserver = {
       # enable GUI

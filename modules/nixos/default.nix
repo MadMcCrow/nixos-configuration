@@ -3,21 +3,19 @@
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.nixos;
-in {
-  # enable nixos systems
-  option.nixos.enable = mkEnableOption {
-    name = mdDoc "Nixos";
-    default = true;
-  };
-  # limit imports to nixos systems
-  imports = if cfg.enable then [
+let
+  cfg = config.nixos;
+  submodules = [
     ./filesystems.nix
     ./flatpak.nix
-    ./nixos.nix
+    ./nix.nix
     ./opengl.nix
     ./security.nix
     ./shell.nix
-  ] else
-    [ ];
+  ];
+in {
+  # enable nixos systems
+  options.nixos.enable = mkEnableOption (mdDoc "nixos") // { default = true; };
+  # limit imports to nixos systems
+  imports = submodules;
 }

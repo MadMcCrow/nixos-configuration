@@ -8,6 +8,7 @@
 with builtins;
 with lib;
 let
+
   cfg = config.unfree;
   allowed = cfg.unfreePackages;
 in {
@@ -35,5 +36,5 @@ in {
   };
 
   # submodules
-  imports = [ ./apps ./audio ./core ./desktop ./input ./users ];
+  imports = [ ./apps ./audio ./nixos ./desktop ./input ./users ];
 }

@@ -4,20 +4,16 @@
 with builtins;
 with lib;
 let
-  cfg = config.input.remapper;
+  ipt = config.input;
+  cfg = ipt.remapper;
   pkg = pkgs.input-remapper;
 in {
-  options.input.remapper = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        whether to enable ratbag a tool to customise your gaming mouse
-      '';
-    };
-  };
-
-  config = mkIf cfg.enable {
+  #interface
+  options.input.remapper.enable = mkEnableOption (mdDoc ''
+    input-remapper, a tool to remap your mouse and/or keyboard
+  '');
+  # config
+  config = mkIf (ipt.enable && cfg.enable) {
     environment.systemPackages = [ pkg ];
     services.input-remapper = {
       enable = true;

@@ -3,24 +3,19 @@
 { config, pkgs, lib, hyprland, ... }:
 with builtins;
 with lib;
-let cfg = config.hyprland;
-
+let
+  dsk = config.desktop;
+  cfg = dsk.hyprland;
 in {
-
   # interface
-  options.hyprland = {
+  options.desktop.hyprland = {
     # do you want hyprland Desktop environment
-    enable = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description = "enable hyprland Desktop environment";
-    };
+    enable = mkEnableOption (mdDoc "hyperland, a tiling desktop environment");
   };
-
+  # imports
   imports = [ hyprland.nixosModules.default ];
-
-  config = mkIf cfg.enable {
-
+  # config
+  config = mkIf (dsk.enable && cfg.enable) {
     programs.hyprland = {
       enable = true;
       package = hyprland.packages.${pkgs.system}.default;

@@ -4,17 +4,16 @@
 with builtins;
 with lib;
 let
-  cfg = config.nixos.filesystems;
+  nos = config.nixos;
+  cfg = nos.filesystems;
   defaultFilesystems =
     [ "btrfs" "ext2" "ext3" "ext4" "f2fs" "fat8" "fat16" "fat32" "ntfs" "zfs" ];
 in {
   # interface
   options.nixos.filesystems = {
     # force replace override
-    enable = mkOption {
-      type = types.bool;
+    enable = mkEnableOption (mdDoc " default Supported filesystem types") // {
       default = true;
-      description = "override default Supported filesystem types. ";
     };
     # overridable list
     list = mkOption {
@@ -25,5 +24,6 @@ in {
   };
 
   # override config
-  config = mkIf cfg.enable { boot.supportedFilesystems = cfg.list; };
+  config =
+    mkIf (nos.enable && cfg.enable) { boot.supportedFilesystems = cfg.list; };
 }

@@ -8,9 +8,6 @@ let
   cfg = config.audio;
   submodules = [ ./pipewire.nix ./pulse.nix ];
 in {
-  option.audio.enable = mkEnableOption {
-    name = mdDoc "audio";
-    default = true;
-  };
-  imports = if cfg.enable then submodules else [ ];
+  options.audio.enable = mkEnableOption (mdDoc "audio") // { default = true; };
+  imports = submodules;
 }

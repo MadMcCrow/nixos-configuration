@@ -4,7 +4,8 @@
 with builtins;
 with lib;
 let
-  cfg = config.pantheon;
+  dsk = config.desktop;
+  cfg = dsk.pantheon;
 
   extraApps = with pkgs;
     [
@@ -15,7 +16,7 @@ let
 in {
 
   # interface
-  options.pantheon = {
+  options.desktop.pantheon = {
     # do you want pantheon Desktop environment
     enable = lib.mkOption {
       type = types.bool;
@@ -40,7 +41,7 @@ in {
   };
 
   # base config for gnome 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (dsk.enable && cfg.enable) {
 
     services.xserver = {
       # enable GUI

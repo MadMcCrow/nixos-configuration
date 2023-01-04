@@ -3,15 +3,14 @@
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.audio.pulse;
+let
+  aud = config.audio;
+  cfg = aud.pulse;
 in {
-  options.audio.pulse.enable = mkOption {
-    type = types.bool;
-    default = false;
-    description = "enable pulseaudio if true";
-  };
+  #interface
+  options.audio.pulse.enable = mkEnableOption (mdDoc "audio with pulseaudio");
   # Pulse
-  config = mkIf cfg.enable {
+  config = mkIf (aud.enable && cfg.enable) {
     sound.enable = true;
     hardware.pulseaudio.enable = true;
   };

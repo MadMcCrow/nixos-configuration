@@ -1,16 +1,13 @@
 # users/default.nix
 # 	Each user is in a separate module
-{ config, ... }:
+{ config, lib, ... }:
 with builtins;
 with lib;
 let
   cfg = config.users;
   submodules = [ ./perard.nix ./guest.nix ];
 in {
-  option.users.enable = mkEnableOption {
-    name = mdDoc "users";
-    default = true;
-  };
-  imports = if cfg.enable then submodules else [ ];
-  users.mutableUsers = cfg.enable;
+  options.users.enable = mkEnableOption (mdDoc "users") // { default = true; };
+  imports = submodules;
+  config.users.mutableUsers = cfg.enable;
 }
