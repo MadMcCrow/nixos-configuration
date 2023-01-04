@@ -63,4 +63,6 @@
     lib.mkDefault config.hardware.enableRedistributableFirmware;
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
+
+  hardware.opengl.extraPackages = with pkgs; [ amdvlk ];
 }
