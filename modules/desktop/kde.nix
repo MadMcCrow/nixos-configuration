@@ -8,9 +8,9 @@ let
 
   # extra kde apps
   extraApps = with pkgs.libsForQt5; [ ];
- 
+
   # some nice themes
-  themes = with pkgs; [kde-gruvbox kde-rounded-corners];
+  themes = with pkgs; [ kde-gruvbox kde-rounded-corners ];
 
 in {
 
@@ -46,15 +46,15 @@ in {
     themes = lib.mkOption {
       type = types.bool;
       default = true;
-      description = "add gnome/gtk themes";
+      description = "add kde themes";
     };
 
     # KDE connect
-    # todo : allow enabling without kde
     kdeconnect = lib.mkOption {
       type = types.bool;
       default = true;
-      description = "KDE connect allows having a connection between your devices";
+      description =
+        "KDE connect allows having a connection between your devices";
     };
   };
 

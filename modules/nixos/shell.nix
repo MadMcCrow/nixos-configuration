@@ -1,6 +1,7 @@
-# core/shell.nix
+# nixos/shell.nix
 # 	set default shell (zsh)
 #	Todo : add power10k, move to a folder with the p10k default config
+# Todo : move this out of nixos to enable it in MacOS
 { pkgs, config, lib, ... }: {
 
   # Packages

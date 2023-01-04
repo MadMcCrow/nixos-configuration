@@ -1,12 +1,12 @@
-# core/nixos.nix
+# nixos/nix.nix
 #	settings for nixos and nix-store
 { pkgs, config, nixpkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.core.nixos;
+let cfg = config.nixos.nix;
 in {
-  # interface
-  options.core.nixos = {
+  #interface
+  options.nixos.nix = {
     updateDates = mkOption {
       type = types.str;
       default = "04:40";

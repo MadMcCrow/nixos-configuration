@@ -1,8 +1,9 @@
 # flake.nix
 # the flake responsible for all my systems and apps
 {
-  description = "MadMcCrow Systems configurations ";
+  description = "MadMcCrow Systems configurations";
 
+  # flake inputs :
   inputs = {
     # Nixpkgs
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
@@ -47,16 +48,15 @@
         ./systems/AF/configuration.nix
         {
           # core
-          core = {
-            enhancedSecurity.enable = false;
+          nixos = {
             flatpak.enable = true;
             opengl.enable = true;
           };
-          # users
-          users.guest.enable = true;
           # gnome
-          gnome.enable = true;
-          gnome.superExtraApps = true;
+          gnome = {
+            enable = true;
+            superExtraApps = true;
+          };
           #apps
           apps = {
             enable = true;
@@ -64,6 +64,7 @@
             development.enable = true;
             games.enable = true;
             web.enable = true;
+            multimedia.enable = true;
           };
           # input
           input.xone.enable = true;
@@ -75,7 +76,14 @@
 
     darwinSystems.Noes-MacBook-Air = darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      modules = [ ./systems/MBA/configuration.nix ];
+      modules = [
+        ./systems/MBA/configuration.nix
+        ./modules
+        {
+          audio.enable = false;
+          nixos.enable = false;
+        }
+      ];
     };
   };
 

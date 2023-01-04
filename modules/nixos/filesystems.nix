@@ -4,12 +4,12 @@
 with builtins;
 with lib;
 let
-  cfg = config.core.filesystems;
+  cfg = config.nixos.filesystems;
   defaultFilesystems =
     [ "btrfs" "ext2" "ext3" "ext4" "f2fs" "fat8" "fat16" "fat32" "ntfs" "zfs" ];
 in {
   # interface
-  options.core.filesystems = {
+  options.nixos.filesystems = {
     # force replace override
     enable = mkOption {
       type = types.bool;

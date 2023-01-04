@@ -1,11 +1,11 @@
-# core/nixos.nix
+# nixos/security.nix
 #	setting nixos and nix-store
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.core.enhancedSecurity;
+let cfg = config.nixos.enhancedSecurity;
 in {
-  options.core.enhancedSecurity = {
+  options.nixos.enhancedSecurity = {
     enable = mkOption {
       type = types.bool;
       default = false;

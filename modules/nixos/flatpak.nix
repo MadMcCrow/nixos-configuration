@@ -3,12 +3,12 @@
 { pkgs, config, lib, impermanence, ... }:
 with builtins;
 with lib;
-let cfg = config.core.flatpak;
+let cfg = config.nixos.flatpak;
 in {
   # interface
-  options.core.flatpak.enable = lib.mkOption {
+  options.nixos.flatpak.enable = lib.mkOption {
     type = types.bool;
-    default = false;
+    default = true;
     description = "make flatpak available to our system";
   };
   # import thanks to specialArgs

@@ -1,6 +1,15 @@
-# default.nix
+# input/default.nix
 #	Collection of modules to enable
-#	Add your NixOS modules to this directory, on their own file (https://nixos.wiki/wiki/Module).
-{ pkgs, config, nixpkgs, lib, unfree, ... }: {
-  imports = [ ./ratbag.nix ./input-remapper.nix ./xone.nix ];
+{ pkgs, config, nixpkgs, lib, unfree, ... }:
+with builtins;
+with lib;
+let
+  cfg = config.inputs;
+  submodules = [ ./ratbag.nix ./input-remapper.nix ./xone.nix ];
+in {
+  option.inputs.enable = mkEnableOption {
+    name = mdDoc "inputs";
+    default = true;
+  };
+  imports = if cfg.enable then submodules else [ ];
 }
