@@ -19,10 +19,10 @@ in {
     xdg.portal = {
       enable = true;
       # you might want to only enable one or the other
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-kde
-      ];
+      # extraPortals = with pkgs; [
+      #  xdg-desktop-portal-gtk
+      #  xdg-desktop-portal-kde
+      #];
     };
 
     environment.systemPackages = with pkgs; [
