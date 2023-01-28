@@ -27,7 +27,7 @@
     initrd = {
       availableKernelModules =
         [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      kernelModules = [ "dm-snapshot" ];
+      kernelModules = [ "dm-snapshot" "amdgpu" ];
       postDeviceCommands = lib.mkAfter ''
         zfs rollback -r nixos-pool/local/root@blank
       '';
@@ -60,8 +60,11 @@
     useXkbConfig = true; # use xkbOptions in tty.
   };
 
-  # Configure keymap in X11
+  #X11  
   services.xserver = {
+    enable = true;
+    videoDrivers = [ "amdgpu" "radeon" ];
+    # keymap in X11
     layout = "us";
     xkbVariant = "intl";
     xkbOptions = "eurosign:e";

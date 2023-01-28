@@ -10,23 +10,18 @@ let
 in {
   # interface
   options.nixos.opengl = {
-    # base
-    enable = mkOption {
-      type = types.bool;
+    # OGL support
+    enable = mkEnableOption (mdDoc ''
+      OpenGL drivers. This is needed to enable OpenGL support in X11 systems,
+      as well as for Wayland compositors like sway and Weston.
+    '') // {
       default = true;
-      description = ''
-        Whether to enable OpenGL drivers. This is needed to enable OpenGL support in X11 systems,
-        as well as for Wayland compositors like sway and Weston.
-      '';
     };
-    amd = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        set and optimise for Advanced Micro Devices GPUs. (not implemented yet)
-      '';
-    };
+    # AMD specificities
+    amd = mkEnableOption (mdDoc
+      "Advanced Micro Devices GPUs optimisations. (not implemented yet)");
   };
+
   # config
   config = mkIf (nos.enable && cfg.enable) {
     # vulkan support

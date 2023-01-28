@@ -8,7 +8,11 @@ let
   gfx = config.apps.graphics;
   cfg = gfx.inkscape;
   # inkscape extensions
-  extensions = with pkgs.inkscape-extensions; [ inkcut applytransforms ];
+  extensions = with pkgs.inkscape-extensions;
+    [
+      # inkcut # fails to build
+      applytransforms
+    ];
 in {
   options.apps.graphics.inkscape = {
     enable = mkOption {

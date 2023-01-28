@@ -115,6 +115,21 @@ let
     sha256 = "sha256-qmWL/IjPeoW57SpU0T9w1KMWuTlV6WTIlzB6vchwtHE=";
   };
 
+  # Python
+  ms-python = vsMarketplace {
+    name = "python";
+    publisher = "ms-python";
+    version = "2023.1.10271009";
+    sha256 = "sha256-5IEHqOI7yPffPcREGs+aLjAjvKDlzrwpCRlxwsCLC+E=";
+  };
+  # pylance for better python
+  ms-pylance = vsMarketplace {
+    name = "pylance";
+    publisher = "ms-python";
+    version = "2023.1.41";
+    sha256 = "";
+  };
+
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
@@ -132,12 +147,12 @@ let
     #jtlowe-icons
     material-icons
     sync-settings
+    ms-python
   ];
 
   # nixos extensions
   nixVsCodeExtensions = with pkgs.vscode-extensions; [
     jnoortheen.nix-ide
-    ms-python.python
     rust-lang.rust-analyzer
     ms-vscode.cpptools
     xaver.clang-format
