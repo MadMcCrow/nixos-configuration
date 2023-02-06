@@ -37,7 +37,11 @@
 
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs: 
+  let 
+    inherit (darwin.lib) darwinSystem;
+  in
+  {
 
     # desktop configuration
     nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
@@ -69,20 +73,24 @@
       ];
     };
 
-    darwinSystems.Noes-MacBook-Air = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules = [
-        ./systems/MBA/configuration.nix
-        ./modules
-        {
-          audio.enable = false;
-          nixos.enable = false;
-          input.enable = false;
-          desktop.enable = false;
-        }
-      ];
+    darwinSystems = rec {
+      Noes-MacBook-Air = darwinSystem {
+        system = "aarch64-darwin";
+        modules = self.darwinModules ++ [ ./systems/MBA/configuration.nix ];
+      };
     };
-  };
 
+    overlays = {
+      # Overlay useful on Macs with Apple Silicon
+        apple-silicon = final: prev: (prev.stdenv.system == "aarch64-darwin") {
+          # Add access to x86 packages system is running Apple Silicon
+          pkgs-x86 = import inputs.nixpkgs-unstable {
+            system = "x86_64-darwin";
+            inherit (nixpkgs) config;
+          };
+        }; 
+      };
+  };
 }
+
 
