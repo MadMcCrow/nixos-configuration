@@ -39,7 +39,6 @@
     fsType = "zfs";
     neededForBoot=false;
   };
-  };
 
   # maybe consider adding swap ?
   swapDevices = [ ];
