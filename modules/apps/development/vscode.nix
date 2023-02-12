@@ -1,5 +1,6 @@
 # vscode.nix
 # 	Setup vscode and all it's things 
+# todo : use Home manager
 { config, pkgs, lib, unfree, ... }:
 with builtins;
 with lib;
@@ -50,13 +51,6 @@ let
     publisher = "VisualStudioExptTeam";
     version = "0.2.6";
     sha256 = "sha256-vXka5gTPW/UozFUqRaklhaio8s1kouEdDrzsE3w891k=";
-  };
-  # mutable AI code completion
-  mutable-ai = vsMarketplace {
-    name = "mutable-ai";
-    publisher = "mutable-ai";
-    version = "1.2.4";
-    sha256 = "sha256-7csm30aRvb2a8FV3n8VgcO8+/OY6adQfz/u34bl3D7E=";
   };
   # codiga AI
   codiga = vsMarketplace {
@@ -115,21 +109,6 @@ let
     sha256 = "sha256-qmWL/IjPeoW57SpU0T9w1KMWuTlV6WTIlzB6vchwtHE=";
   };
 
-  # Python
-  ms-python = vsMarketplace {
-    name = "python";
-    publisher = "ms-python";
-    version = "2023.1.10271009";
-    sha256 = "sha256-5IEHqOI7yPffPcREGs+aLjAjvKDlzrwpCRlxwsCLC+E=";
-  };
-  # pylance for better python
-  ms-pylance = vsMarketplace {
-    name = "pylance";
-    publisher = "ms-python";
-    version = "2023.1.41";
-    sha256 = "";
-  };
-
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
@@ -138,16 +117,11 @@ let
     shader-ed
     intellicode
     intellicode-api-usage
-    mutable-ai
     codiga
     gh-pullrequest
     git-graph
     git-history
-    #vscode-icons
-    #jtlowe-icons
     material-icons
-    sync-settings
-    ms-python
   ];
 
   # nixos extensions
@@ -155,6 +129,7 @@ let
     jnoortheen.nix-ide
     rust-lang.rust-analyzer
     ms-vscode.cpptools
+    ms-python.python
     xaver.clang-format
     yzhang.markdown-all-in-one
     llvm-vs-code-extensions.vscode-clangd
