@@ -13,6 +13,7 @@
     extraModulePackages = with config.boot.kernelPackages; [
       zfs
       asus-wmi-sensors
+      asus-ec-sensors
     ];
     kernelParams = [ "nohibernate" "quiet" ];
 
