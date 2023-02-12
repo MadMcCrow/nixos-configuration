@@ -45,8 +45,7 @@ in {
     # home manager configuration :
     home-manager.users.perard = { lib, pkgs, ... }: {
       home = with pkgs; {
-        packages = [ home-manager oh-my-zsh zsh-powerlevel10k ]
-          ++ (with gnomeExtensions; [ advanced-alttab-window-switcher forge ]);
+        packages = [ home-manager oh-my-zsh zsh-powerlevel10k ];
 
         # just like for the base nixos configuration, do not touch
         stateVersion = "22.05";
@@ -111,7 +110,7 @@ in {
         git = {
           enable = true;
           userName = "MadMcCrow";
-          userEmail = "noe.perard@live.ru";
+          userEmail = "noe.perard@live.ru"; #todo : switch to google email
           lfs.enable = true;
           # does not work with gh
           # extraConfig = "{help.autocorrect = 10;}";

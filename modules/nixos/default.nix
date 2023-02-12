@@ -12,6 +12,7 @@ let
     ./opengl.nix
     ./security.nix
     ./shell.nix
+    ./utils.nix
   ];
 in {
   # enable nixos systems

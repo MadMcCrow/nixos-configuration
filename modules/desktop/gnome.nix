@@ -44,9 +44,9 @@ let
     quick-settings-tweaker # Gnome43 quick settings editor
     tiling-assistant # Windows-like tiling update
     blur-my-shell # some nice blur effect
-    mmod-panel # Customise top bar
     gtile # tile with grid
     unite # some ubuntu unity shell modification
+    gtk4-desktop-icons-ng-ding # add desktop icons
   ];
   # some nice themes
   themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme ];
