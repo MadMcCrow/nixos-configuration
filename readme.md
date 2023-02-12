@@ -8,6 +8,8 @@ This config is now working with flakes, allowing a more modular, reproducible an
 find all usefull commands in the [manual](https://nixos.org/manual/nix/unstable/command-ref/new-cli/nix3-flake-update.html)
 
 ```bash
+# to install it to a machine
+> nixos-install --flake github:MadMcCrow/nixos-configuration.#hostname
 # to test if it will produce a valid generation
 > nixos-rebuild dry-activate --flake .#
 # to update all inputs in flake.lock
