@@ -26,8 +26,9 @@ systems are specific configuration based on specific hardware. It's the configur
 
 ## TODO
 these would be the next improvements for this repo :
-[] building with github actions
-[] caching with cachix
-[] moving apps to home-manager
-[] adding support for aarch64-darwin (for my macbook air 2020).
-
+ - [ ] building with github actions
+ - [ ] caching with cachix
+ - [ ] moving apps to home-manager
+ - [ ] adding support for aarch64-darwin (for my macbook air 2020).
+ - [ ] Setup my server, Dreamcloud with it
+ - [ ] Support KDE desktop environment
