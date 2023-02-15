@@ -129,7 +129,7 @@ let
     jnoortheen.nix-ide
     rust-lang.rust-analyzer
     ms-vscode.cpptools
-    ms-python.python
+    # ms-python.python # still broken
     xaver.clang-format
     yzhang.markdown-all-in-one
     llvm-vs-code-extensions.vscode-clangd
