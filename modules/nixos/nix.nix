@@ -38,19 +38,29 @@ in {
 
       # pin nixpkgs to the one installed on the system
       registry.nixpkgs.flake = nixpkgs;
+
+    settings = {
+      substituters = [
+        "https://nixos-configuration.cachix.org"
+        "https://nix-community.cachix.org"
+        "https://cache.nixos.org/"
+      ];
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "nixos-configuration.cachix.org-1:+cdx4shbJ7HirATcMWiz4bS7OldYtCwtD1yZ1DBJW7w="
+      ];
+    };
     };
 
-    # persist:
-    environment.etc = {
-
-      # Nixos configuration files (ie. this)
-      "nixos".source = "/nix/persist/etc/nixos/";
-
-      # this yields a warning and might not be necessary anymore
-      # some NetworkManager configuration
-      #"NetworkManager/system-connections".source =
-      #  "/nix/persist/etc/NetworkManager/system-connections/";
-    };
+    # it is not necessary to keep the nixos configuration locally
+    #environment.etc = {
+    # Nixos configuration files (ie. this)
+    #"nixos".source = "/nix/persist/etc/nixos/";
+    # this yields a warning and might not be necessary anymore
+    # some NetworkManager configuration
+    #"NetworkManager/system-connections".source =
+    #  "/nix/persist/etc/NetworkManager/system-connections/";
+    #};
 
     # absolutely required packages
     environment.systemPackages = with pkgs; [ git git-crypt cachix vulnix ];
@@ -68,8 +78,7 @@ in {
       enable = true; # enable auto upgrades
       persistent = true; # apply if missed
       flake = "github:MadMcCrow/nixos-configuration"; # this flake
-      flags =
-        [ "--update-input" "nixpkgs" "--commit-lock-file" ]; # update inputs
+      # flags =[ "--update-input" "nixpkgs" "--commit-lock-file" ]; # only works with local flakes
       dates = cfg.updateDates;
       allowReboot = false;
     };

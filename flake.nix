@@ -43,43 +43,63 @@
   in
   {
 
-    # desktop configuration
-    nixosConfigurations.nixAF = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = inputs;
-      modules = [
-        ./modules
-        ./systems/AF/configuration.nix
-        {
-          # desktop env
-          desktop.gnome = {
-            enable = true;
-            superExtraApps = true;
-          };
-          # apps
-          apps = {
-            enable = true;
-            graphics.enable = true;
-            development.enable = true;
-            games.enable = true;
-            web.enable = true;
-            multimedia.enable = true;
-          };
-          # input
-          input.xone.enable = true;
-          # audio
-          audio.pipewire.enable = true;
-        }
-      ];
+    #Linux : Nixos
+    nixosConfigurations = {
+
+       # AF, my personal Desktop PC
+      nixAF = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = inputs;
+        modules = [
+          ./modules
+          ./systems/AF/configuration.nix
+          {
+            # desktop env
+            desktop.kde = {
+              enable = true;
+              extraApps = true;
+            };
+            # apps
+            apps = {
+              enable = true;
+              graphics.enable = true;
+              development.enable = true;
+              games.enable = true;
+              web.enable = true;
+              multimedia.enable = true;
+            };
+            # input
+            input.xone.enable = true;
+            # audio
+            audio.pipewire.enable = true;
+          }
+        ];
+      };
+
+      # DreamCloud, my personal Local Server
+      DreamCloud = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = inputs;
+        modules = [
+          ./modules
+          ./systems/DreamCloud/configuration.nix
+          {
+            nixos.enhancedSecurity.enable = true;
+          }
+        ];
+
     };
 
+    # MacOS
     darwinSystems = rec {
+      # my MBA - that I need to rename
       Noes-MacBook-Air = darwinSystem {
         system = "aarch64-darwin";
         modules = self.darwinModules ++ [ ./systems/MBA/configuration.nix ];
       };
     };
 
+    # Overlay for apple-silicon, does not apply to linux
     overlays = {
       # Overlay useful on Macs with Apple Silicon
         apple-silicon = final: prev: (prev.stdenv.system == "aarch64-darwin") {

@@ -8,8 +8,12 @@ let
   cfg = nos.enhancedSecurity;
 in {
   # interface
-  options.nixos.enhancedSecurity.enable =
-    mkEnableOption (mdDoc "extra security : AppArmor and SELinux");
+  options.nixos.enhancedSecurity = {
+    # enable AppArmor and SELinux, this makes a slower computer
+    enable = mkEnableOption (mdDoc "extra security : AppArmor and SELinux");
+    #todo : add other safety mechanisms
+  };
+
   # config
   config = lib.mkIf (nos.enable && cfg.enable) {
     # app armor :

@@ -37,7 +37,7 @@
     plymouth.enable = true;
     zfs = {
       forceImportRoot = true;
-      forceImportAll = true;
+      forceImportAll = false;
       enableUnstable = false;
     };
   };
