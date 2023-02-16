@@ -157,7 +157,10 @@ in {
     # basically gnome keyring UI
     programs.seahorse.enable = true;
     # KDE Connect is not required anymore for GSconnect to work
-    # programs.kdeconnect.enable = cfg.onlineAccounts;
+    programs.kdeconnect = {
+      enable = cfg.onlineAccounts;
+      package = pkgs.gnomeExtensions.gsconnect;
+    };
     # evolution is the email/contact/etc client for gnome
     programs.evolution.enable = false;
 

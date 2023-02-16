@@ -1,5 +1,5 @@
-# gaming/steam.nix
-#	Make steam works on your system
+# graphics/blender.nix
+#	add the blender 3d modeling software to your system
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
@@ -10,22 +10,10 @@ let
 in {
   # interface
   options.apps.graphics.blender = {
-    enable = mkOption {
-      type = types.bool;
-      default = gfx.enable;
-      description = ''
-        3D Creation/Animation/Publishing System
-      '';
+    # dis
+    enable = mkEnableOption (mdDoc "3D Creation/Animation/Publishing System");
+    useHIP = mkEnableOption (mdDoc "HIP. Software like Blender may support HIP for GPU acceleration.");
     };
-    useHIP = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Software like Blender may support HIP for GPU acceleration.
-        Most software has the HIP libraries hard-coded. You can work around it on NixOS by using: 
-      '';
-    };
-  };
   #config
   config = mkIf cfg.enable {
     apps.packages = with pkgs;

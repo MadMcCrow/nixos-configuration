@@ -18,11 +18,7 @@ in {
   # interface
   options.desktop.kde = {
     # do you want gnome Desktop environment
-    enable = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description = "enable kde Desktop environment";
-    };
+    enable = mkEnableOption (mdDoc "KDE, the QT based desktop environment");
 
     wayland = lib.mkOption {
       type = types.bool;
@@ -67,7 +63,21 @@ in {
       enable = true;
 
       # enable plasma
-      desktopManager.plasma5.enable = true;
+      desktopManager.plasma5 = {
+        enable = true;
+        # remove useless apps
+        excludePackages = with pkgs.libsForQt5; [
+          oxygen
+          khelpcenter
+          plasma-browser-integration
+          print-manager
+        ];
+
+        # enable HiDpi
+        useQtScaling = true;
+        # brightness control
+        supportDDC = true;
+      };
 
       # remove xterm
       excludePackages = [ pkgs.xterm ];
@@ -82,19 +92,27 @@ in {
       };
     };
 
-    # enable xwayland
-    programs.xwayland.enable = cfg.wayland;
-    # support gnome apps
-    programs.dconf.enable = true;
+    # QT settings
+    qt = {
+      enable = true;
+      platformTheme = "kde";
+    };
 
-    # KDE Connect
-    programs.kdeconnect = {
-      enable = cfg.kdeconnect;
+    # enable xwayland
+    programs = {
+      # support wayland
+      xwayland.enable = cfg.wayland;
+      # support gnome apps
+      dconf.enable = true;
+      # KDE Connect
+      kdeconnect.enable = cfg.kdeconnect;
+      partition-manager.enable = cfg.extraApps;
     };
 
     # packages
     environment.systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
       ++ (if cfg.extraApps then extraApps else [ ])
       ++ (if cfg.themes then themes else [ ]);
+
   };
 }
