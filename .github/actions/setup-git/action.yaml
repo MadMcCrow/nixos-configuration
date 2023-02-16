@@ -6,6 +6,6 @@ runs:
   using: "composite"
   steps:
     - name: Set up git
-        run: |
+      run: |
           git config user.email gnoe.perard+git@gmail.com
           git config user.name "Git Bot"
