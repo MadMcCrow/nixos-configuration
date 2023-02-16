@@ -14,26 +14,12 @@ jobs:
     outputs:
       packages: ${{ steps.gen_packages.outputs.packages }}
       checks: ${{ steps.gen_checks.outputs.checks }}
-<<<<<<< HEAD
-    steps :
-    - name: Setup env
-      uses: ./.github/actions/setup-env
-    - name: Generate flake.json
-      run: |
-        nix flake show --json > flake.json
-    - id: gen_packages
-      run: |
-        packages=$(jq -c '.packages."x86_64-linux" | keys' < flake.json)
-        printf "::set-output name=packages::%s" "$packages"
-    - id: gen_checks
-      run: |
-        checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
-        printf "::set-output name=checks::%s" "$checks"
-=======
       steps :
-      - id: setup-env
-        uses: ./.github/actions/setup-env
-      - id: setup-nix
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: setup-git
+        uses: ./.github/actions/setup-git
+      - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Generate flake.json
         run: |
@@ -46,19 +32,16 @@ jobs:
         run: |
           checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
           printf "::set-output name=checks::%s" "$checks"
->>>>>>> :octocat: update github actions
 
   # update flake inputs
   update_flake:
     runs-on: ubuntu-20.04
     steps:
-<<<<<<< HEAD
-      - name: setup
-=======
-      - id: setup-env
->>>>>>> :octocat: update github actions
-        uses: ./.github/actions/setup-env
-      - id: setup-nix
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: setup-git
+        uses: ./.github/actions/setup-git
+      - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Update the flake
         run: nix flake update
@@ -78,13 +61,9 @@ jobs:
       matrix:
         package: ${{fromJson(needs.generate_matrix.outputs.packages)}}
     steps:
-<<<<<<< HEAD
-      - name: setup
-=======
-      - id: setup-env
->>>>>>> :octocat: update github actions
-        uses: ./.github/actions/setup-env
-      - id: setup-nix
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
@@ -110,13 +89,9 @@ jobs:
       matrix:
         check: ${{fromJson(needs.generate_matrix.outputs.checks)}}
     steps:
-<<<<<<< HEAD
-      - name: setup
-=======
-      - id: setup-env
->>>>>>> :octocat: update github actions
-        uses: ./.github/actions/setup-env
-      - id: setup-nix
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
@@ -138,9 +113,9 @@ jobs:
     needs: [update_flake]
     continue-on-error: true
     steps:
-      - name: setup
-        uses: ./.github/actions/setup-env
-      - id: setup-nix
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Restore flake.lock
         uses: actions/download-artifact@v3
@@ -158,8 +133,6 @@ jobs:
     steps:
     - name: Clone repository
       uses: actions/checkout@v3
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
     - name: Restore flake.lock
       uses: actions/download-artifact@v3
       with:

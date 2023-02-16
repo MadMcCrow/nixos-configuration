@@ -1,0 +1,11 @@
+name: 'Setup Git'
+
+description: 'Set git user to bot'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up git
+        run: |
+          git config user.email gnoe.perard+git@gmail.com
+          git config user.name "Git Bot"
