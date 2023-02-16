@@ -17,8 +17,6 @@ jobs:
     steps :
       - name: Clone repository
         uses: actions/checkout@v3
-      - name: setup-git
-        uses: ./.github/actions/setup-git
       - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Generate flake.json
@@ -39,8 +37,6 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
-      - name: setup-git
-        uses: ./.github/actions/setup-git
       - name: setup-nix
         uses: ./.github/actions/setup-nix
       - name: Update the flake
