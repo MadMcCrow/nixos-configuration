@@ -8,6 +8,7 @@ runs:
     - name: Install nix
       uses: cachix/install-nix-action@v19
       with:
+        authToken: '${{ secrets.CACHIX_SIGNING_KEY }}'
         extra_nix_config: |
           auto-optimise-store = true
           access-tokens = github.com=${{ github.token }}

@@ -87,6 +87,11 @@ in {
     # support gnome apps
     programs.dconf.enable = true;
 
+    # KDE Connect
+    programs.kdeconnect = {
+      enable = cfg.kdeconnect;
+    };
+
     # packages
     environment.systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
       ++ (if cfg.extraApps then extraApps else [ ])
