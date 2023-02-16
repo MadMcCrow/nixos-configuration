@@ -1,37 +1,39 @@
-name: Updater
+name: Flake Update
 
-on:
+
+on: 
+  push:
   schedule:
-    - cron: "0 2 * * *"
-  workflow_dispatch: {}
+    - cron: '0 2 * * *'
 
 jobs:
 
-  # generate a json and check that we are going to build 
+  # generate JSONs for future builds and checks
   generate_matrix:
     runs-on: ubuntu-20.04
     outputs:
       packages: ${{ steps.gen_packages.outputs.packages }}
       checks: ${{ steps.gen_checks.outputs.checks }}
-      steps :
-      - id: setup
-        uses: ./.github/actions/setup-env
-      - name: Generate flake.json
-        run: |
-          nix flake show --json > flake.json
-      - id: gen_packages
-        run: |
-          packages=$(jq -c '.packages."x86_64-linux" | keys' < flake.json)
-          printf "::set-output name=packages::%s" "$packages"
-      - id: gen_checks
-        run: |
-          checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
-          printf "::set-output name=checks::%s" "$checks"
+    steps :
+    - name: Setup env
+      uses: ./.github/actions/setup-env
+    - name: Generate flake.json
+      run: |
+        nix flake show --json > flake.json
+    - id: gen_packages
+      run: |
+        packages=$(jq -c '.packages."x86_64-linux" | keys' < flake.json)
+        printf "::set-output name=packages::%s" "$packages"
+    - id: gen_checks
+      run: |
+        checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
+        printf "::set-output name=checks::%s" "$checks"
 
+  # update flake inputs
   update_flake:
     runs-on: ubuntu-20.04
     steps:
-      - id: setup
+      - name: setup
         uses: ./.github/actions/setup-env
       - name: Update the flake
         run: nix flake update
@@ -41,6 +43,7 @@ jobs:
           name: flake_lock
           path: flake.lock
 
+  # build new flake 
   build_flake:
     runs-on: ubuntu-20.04
     needs: [generate_matrix, update_flake]
@@ -50,7 +53,7 @@ jobs:
       matrix:
         package: ${{fromJson(needs.generate_matrix.outputs.packages)}}
     steps:
-      - id: setup
+      - name: setup
         uses: ./.github/actions/setup-env
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
@@ -63,8 +66,10 @@ jobs:
         with:
           name: flake_lock
       - name: Build everything
-        run: nix build .#${{ matrix.package }}
+        run: |
+          nix build .#${{ matrix.package }}
 
+  # perform the necessary checks that'll ensure we can run this config
   build_checks:
     runs-on: ubuntu-20.04
     needs: [generate_matrix, update_flake]
@@ -74,7 +79,7 @@ jobs:
       matrix:
         check: ${{fromJson(needs.generate_matrix.outputs.checks)}}
     steps:
-      - id: setup
+      - name: setup
         uses: ./.github/actions/setup-env
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
@@ -87,14 +92,16 @@ jobs:
         with:
           name: flake_lock
       - name: Build everything
-        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --no-link
+        run: |
+          nix build .#checks.x86_64-linux.${{ matrix.check }} --no-link
 
+  #
   check_flake:
     runs-on: ubuntu-20.04
     needs: [update_flake]
     continue-on-error: true
     steps:
-      - id: setup
+      - name: setup
         uses: ./.github/actions/setup-env
       - name: Restore flake.lock
         uses: actions/download-artifact@v3
@@ -103,35 +110,24 @@ jobs:
       - name: Build everything
         run: |
           nix flake check --keep-going
+
+  # Create pull request
   push_update:
     runs-on: ubuntu-20.04
     permissions: write-all
     needs: [update_flake, build_flake, build_checks, check_flake]
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Restore flake.lock
-        uses: actions/download-artifact@v3
-        with:
-          name: flake_lock
-     - name: Set up git
-        run: |
-          git config user.email gnoe.perard+git@gmail.com
-          git config user.name "Git Bot"
-      - name: Create and merge PR
-        run: |
-          git switch -c updates-${{ github.run_id }}
-          git commit -am ":snowflake: Update flake.lock"
-          git push -u origin updates-${{ github.run_id }}
-          PR=$(gh pr create \
-            --assignee MadMcCrow \
-            --base main \
-            --body "Automatic flake update on $(date -I)" \
-            --fill \
-            --label bot \
-            --title "Auto update $(date -I)")
-          gh pr merge $PR --merge --delete-branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Clone repository
+      uses: actions/checkout@v3
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+    - name: Restore flake.lock
+      uses: actions/download-artifact@v3
+      with:
+        name: flake_lock
+    - name: Set up git
+      run: |
+        git config user.email gnoe.perard+git@gmail.com
+        git config user.name "Git Bot"
+    - id: pull-request
+      uses: ./.github/actions/pull-request
