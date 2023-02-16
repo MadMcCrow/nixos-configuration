@@ -12,8 +12,7 @@ jobs:
   generate_matrix:
     runs-on: ubuntu-20.04
     outputs:
-      packages: ${{ steps.gen_packages.outputs.packages }}
-      checks: ${{ steps.gen_checks.outputs.checks }}
+      configurations: ${{ steps.gen_configs.outputs.configurations }}
     steps :
       - name: Clone repository
         uses: actions/checkout@v3
@@ -22,14 +21,11 @@ jobs:
       - name: Generate flake.json
         run: |
           nix flake show --json > flake.json
-      - id: gen_packages
+      - id: gen_configs
         run: |
-          packages=$(jq -c '.packages."x86_64-linux" | keys' < flake.json)
-          printf "::set-output name=packages::%s" "$packages"
-      - id: gen_checks
-        run: |
-          checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
-          printf "::set-output name=checks::%s" "$checks"
+          configurations=$(jq -c '.nixosConfigurations | keys' < flake.json)
+          printf "::set-output name=configurations::%s" "$configurations"
+  
 
   # update flake inputs
   update_flake:
@@ -55,7 +51,7 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix:
-        package: ${{fromJson(needs.generate_matrix.outputs.packages)}}
+        config: ${{fromJson(needs.generate_matrix.outputs.configurations)}}
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
@@ -73,37 +69,9 @@ jobs:
           name: flake_lock
       - name: Build everything
         run: |
-          nix build .#${{ matrix.package }}
+          nix build .#${{ matrix.config }}
 
-  # perform the necessary checks that'll ensure we can run this config
-  build_checks:
-    runs-on: ubuntu-20.04
-    needs: [generate_matrix, update_flake]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix:
-        check: ${{fromJson(needs.generate_matrix.outputs.checks)}}
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
-      - name: setup-nix
-        uses: ./.github/actions/setup-nix
-      - name: Set up cachix
-        uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
-        with:
-          name: MadMcCrow
-          signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
-          skipPush: true
-      - name: Restore flake.lock
-        uses: actions/download-artifact@v3
-        with:
-          name: flake_lock
-      - name: Build everything
-        run: |
-          nix build .#checks.x86_64-linux.${{ matrix.check }} --no-link
-
-  #
+  # check the flake itself
   check_flake:
     runs-on: ubuntu-20.04
     needs: [update_flake]
@@ -125,7 +93,7 @@ jobs:
   push_update:
     runs-on: ubuntu-20.04
     permissions: write-all
-    needs: [update_flake, build_flake, build_checks, check_flake]
+    needs: [update_flake, build_flake, check_flake]
     steps:
     - name: Clone repository
       uses: actions/checkout@v3
