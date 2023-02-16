@@ -45,7 +45,7 @@
   # Networking
   networking.hostName = "DreamCloud"; # Define your hostname.
   networking.networkmanager.enable = true;
-  networking.hostId = "";
+  networking.hostId = "d2eac18d";
 
   # Timezone
   time.timeZone = "Europe/Paris";

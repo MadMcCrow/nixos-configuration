@@ -25,7 +25,7 @@ jobs:
       - id: gen_configs
         run: |
           configurations=$(jq -cr '.nixosConfigurations | keys' < flake.json)
-          printf "::set-output name=configurations::%s" "$configurations"
+          printf "name=configurations::%s" "$configurations" >> $GITHUB_OUTPUT
   
 
   # update flake inputs
