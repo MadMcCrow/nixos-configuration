@@ -14,6 +14,7 @@ jobs:
     outputs:
       packages: ${{ steps.gen_packages.outputs.packages }}
       checks: ${{ steps.gen_checks.outputs.checks }}
+<<<<<<< HEAD
     steps :
     - name: Setup env
       uses: ./.github/actions/setup-env
@@ -28,13 +29,37 @@ jobs:
       run: |
         checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
         printf "::set-output name=checks::%s" "$checks"
+=======
+      steps :
+      - id: setup-env
+        uses: ./.github/actions/setup-env
+      - id: setup-nix
+        uses: ./.github/actions/setup-nix
+      - name: Generate flake.json
+        run: |
+          nix flake show --json > flake.json
+      - id: gen_packages
+        run: |
+          packages=$(jq -c '.packages."x86_64-linux" | keys' < flake.json)
+          printf "::set-output name=packages::%s" "$packages"
+      - id: gen_checks
+        run: |
+          checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
+          printf "::set-output name=checks::%s" "$checks"
+>>>>>>> :octocat: update github actions
 
   # update flake inputs
   update_flake:
     runs-on: ubuntu-20.04
     steps:
+<<<<<<< HEAD
       - name: setup
+=======
+      - id: setup-env
+>>>>>>> :octocat: update github actions
         uses: ./.github/actions/setup-env
+      - id: setup-nix
+        uses: ./.github/actions/setup-nix
       - name: Update the flake
         run: nix flake update
       - name: Store flake.lock
@@ -53,8 +78,14 @@ jobs:
       matrix:
         package: ${{fromJson(needs.generate_matrix.outputs.packages)}}
     steps:
+<<<<<<< HEAD
       - name: setup
+=======
+      - id: setup-env
+>>>>>>> :octocat: update github actions
         uses: ./.github/actions/setup-env
+      - id: setup-nix
+        uses: ./.github/actions/setup-nix
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
         with:
@@ -79,8 +110,14 @@ jobs:
       matrix:
         check: ${{fromJson(needs.generate_matrix.outputs.checks)}}
     steps:
+<<<<<<< HEAD
       - name: setup
+=======
+      - id: setup-env
+>>>>>>> :octocat: update github actions
         uses: ./.github/actions/setup-env
+      - id: setup-nix
+        uses: ./.github/actions/setup-nix
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
         with:
@@ -103,6 +140,8 @@ jobs:
     steps:
       - name: setup
         uses: ./.github/actions/setup-env
+      - id: setup-nix
+        uses: ./.github/actions/setup-nix
       - name: Restore flake.lock
         uses: actions/download-artifact@v3
         with:
@@ -131,3 +170,6 @@ jobs:
         git config user.name "Git Bot"
     - id: pull-request
       uses: ./.github/actions/pull-request
+      with: 
+        commit:   ':robot::snowflake: flake.lock : update'
+        pr_title: ':robot::snowflake: update flake lock '
