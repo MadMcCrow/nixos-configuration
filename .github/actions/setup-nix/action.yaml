@@ -2,13 +2,19 @@ name: 'Setup nix'
 
 description: 'install nix'
 
+inputs:
+  cachix_auth:
+    description: 'Personal Auth Tokens'
+    required: false
+    default: '${{ secrets.CACHIX_SIGNING_KEY }}'
+
 runs:
   using: "composite"
   steps:
     - name: Install nix
       uses: cachix/install-nix-action@v19
       with:
-        authToken: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ inputs.cachix_auth }}'
         extra_nix_config: |
           auto-optimise-store = true
           access-tokens = github.com=${{ github.token }}

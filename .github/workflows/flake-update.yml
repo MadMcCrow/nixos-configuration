@@ -14,10 +14,11 @@ jobs:
     outputs:
       configurations: ${{ steps.gen_configs.outputs.configurations }}
     steps :
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: setup-nix
         uses: ./.github/actions/setup-nix
+        with:
+          cachix_auth: '${{ secrets.CACHIX_SIGNING_KEY }}'
       - name: Generate flake.json
         run: |
           nix flake show --json > flake.json
@@ -31,10 +32,11 @@ jobs:
   update_flake:
     runs-on: ubuntu-20.04
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: setup-nix
         uses: ./.github/actions/setup-nix
+        with:
+          cachix_auth: '${{ secrets.CACHIX_SIGNING_KEY }}'
       - name: Update the flake
         run: nix flake update
       - name: Store flake.lock
@@ -53,10 +55,11 @@ jobs:
       matrix:
         config: ${{fromJson(needs.generate_matrix.outputs.configurations)}}
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: setup-nix
         uses: ./.github/actions/setup-nix
+        with:
+          cachix_auth: '${{ secrets.CACHIX_SIGNING_KEY }}'
       - name: Set up cachix
         uses: cachix/cachix-action@master # pathsToPush, please update once we have v11!
         with:
@@ -77,10 +80,11 @@ jobs:
     needs: [update_flake]
     continue-on-error: true
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: setup-nix
         uses: ./.github/actions/setup-nix
+        with:
+          cachix_auth: '${{ secrets.CACHIX_SIGNING_KEY }}'
       - name: Restore flake.lock
         uses: actions/download-artifact@v3
         with:
@@ -95,8 +99,7 @@ jobs:
     permissions: write-all
     needs: [update_flake, build_flake, check_flake]
     steps:
-    - name: Clone repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
     - name: Restore flake.lock
       uses: actions/download-artifact@v3
       with:
