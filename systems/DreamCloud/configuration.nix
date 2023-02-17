@@ -8,10 +8,8 @@
   boot = {
 
     # TODO : change this
-    kernelPackages = pkgs.linuxPackages_xanmod;
-    extraModulePackages = with config.boot.kernelPackages; [
-      zfs
-    ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    extraModulePackages = with config.boot.kernelPackages; [ zfs ];
     kernelParams = [ "quiet" ];
 
     # UEFI boot loader with systemdboot
@@ -89,5 +87,5 @@
   systemd.services.systemd-fsck.enable = true;
 
   # TLDR : Do not touch
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
 }
