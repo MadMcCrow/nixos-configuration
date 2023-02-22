@@ -18,16 +18,24 @@ find all usefull commands in the [manual](https://nixos.org/manual/nix/unstable/
 
 ## modules
 
-modules define options to enable programs and services, as well as users
+Various modules define options to enable programs and services, as well as users, to make a common environment on all my machines
 
 ## Systems
 
 systems are specific configuration based on specific hardware. It's the configuration that made the system boot originally
 
+## building and caching
+
+My configuration is automatically updated and build by a github action :
+![flake-update](https://github.com/MadMcCrow/nixos-configuration/actions/workflows/flake-update.yml/badge.svg)
+
+The artifacts of that build are cached on cachix [here](https://app.cachix.org/cache/nixos-configuration).
+
+
 ## TODO
 these would be the next improvements for this repo :
- - [ ] building with github actions (see [this setup](https://github.com/NobbZ/nixos-config/blob/main/.github/workflows/flake-update.yml))
- - [ ] caching with cachix
+ - [X] building with github actions (see [this setup](https://github.com/NobbZ/nixos-config/blob/main/.github/workflows/flake-update.yml))
+ - [X] caching with cachix
  - [ ] moving apps to home-manager
  - [ ] adding support for aarch64-darwin (for my macbook air 2020).
  - [ ] Setup my server, Dreamcloud with it
