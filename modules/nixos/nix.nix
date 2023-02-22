@@ -47,7 +47,7 @@ in {
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "nixos-configuration.cachix.org-1:+cdx4shbJ7HirATcMWiz4bS7OldYtCwtD1yZ1DBJW7w="
+        "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
       ];
     };
     };

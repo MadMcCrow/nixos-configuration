@@ -53,7 +53,7 @@
             ./systems/AF/configuration.nix
             {
               # desktop env
-              desktop.kde = {
+              desktop.gnome = {
                 enable = true;
                 extraApps = true;
               };
