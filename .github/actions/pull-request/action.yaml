@@ -26,7 +26,7 @@ runs:
     - name: Create and merge PR
       run: |
           git switch -c updates-${{ github.run_id }}
-          git commit -am "${{ inputs.commit }} "
+          git commit -am "${{ inputs.commit }}"
           git push -u origin updates-${{ github.run_id }}
           PR=$(gh pr create \
             --assignee ${{ inputs.assignee }} \
