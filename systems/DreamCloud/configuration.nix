@@ -7,8 +7,7 @@
   # boot and kernel
   boot = {
 
-    # TODO : change this
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_hardened;
     extraModulePackages = with config.boot.kernelPackages; [ zfs ];
     kernelParams = [ "quiet" ];
 

@@ -37,4 +37,5 @@ runs:
             --title "Auto update $(date -I)")
           gh pr merge $PR --merge --delete-branch
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
+      shell: bash
