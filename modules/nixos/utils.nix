@@ -16,7 +16,7 @@ in {
 
     # Packages
     environment = {
-      systemPackages = with pkgs; [ pciutils usbutils ];
+      systemPackages = with pkgs; [ pciutils usbutils psensor lm_sensors ];
     };
   };
 }

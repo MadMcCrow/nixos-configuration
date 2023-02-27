@@ -110,10 +110,8 @@ in {
         git = {
           enable = true;
           userName = "MadMcCrow";
-          userEmail = "noe.perard@live.ru"; #todo : switch to google email
+          userEmail = "noe.perard+git@gmail.com";
           lfs.enable = true;
-          # does not work with gh
-          # extraConfig = "{help.autocorrect = 10;}";
         };
 
         # github cli tool

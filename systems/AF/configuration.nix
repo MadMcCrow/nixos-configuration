@@ -9,11 +9,13 @@
 
     # use Zen for better performance
 
-    kernelPackages = pkgs.linuxPackages_xanmod;
+    kernelPackages = pkgs.linuxPackages_xanmod_latest;
     extraModulePackages = with config.boot.kernelPackages; [
       zfs
       asus-wmi-sensors
       asus-ec-sensors
+      xone
+      zenpower
     ];
     kernelParams = [ "nohibernate" "quiet" ];
 
@@ -92,5 +94,5 @@
   systemd.services.systemd-fsck.enable = false;
 
   # TLDR : Do not touch
-  system.stateVersion = "22.05";
+  system.stateVersion = "23.05";
 }

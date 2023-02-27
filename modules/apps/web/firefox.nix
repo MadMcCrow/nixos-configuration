@@ -13,18 +13,21 @@ let
   else
     pkgs.firefox;
 in {
+  #interface
   options.apps.web.firefox = {
-    enable = lib.mkOption {
-      type = types.bool;
+    enable = mkEnableOption (mdDoc "firefox browser") // {
       default = web.enable;
-      description = "enable the firefox browser if true";
     };
-    wayland = lib.mkOption {
-      type = types.bool;
+    wayland = mkEnableOption (mdDoc "the wayland compatible version") // {
       default = config.programs.xwayland.enable;
-      description = "if true, use the wayland compatible version";
     };
+    pocket = mkEnableOption (mdDoc "pocket : a tool to manage your favorites");
+    prediction = mkEnableOption (mdDoc "network prediction for faster searches")
+      // {
+        default = true;
+      };
   };
+  #config
   config = lib.mkIf cfg.enable {
     apps.packages = [ firefox-compat ];
     # 22.11 channel !
@@ -32,8 +35,8 @@ in {
       enable = true;
       package = firefox-compat;
       policies = {
-        DisablePocket = true;
-        NetworkPrediction = true;
+        DisablePocket = !cfg.pocket;
+        NetworkPrediction = cfg.prediction;
       };
     };
     unfree.unfreePackages = [ "widevine-cdm" ];

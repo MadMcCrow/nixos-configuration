@@ -1,10 +1,9 @@
 name: Flake Update
 
-
-on: 
+on:
   push:
     branches:
-      - main 
+      - main
   schedule:
     - cron: '0 2 * * *'
 

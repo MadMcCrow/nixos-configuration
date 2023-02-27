@@ -17,11 +17,10 @@ let
   # ForceUpdate = self: super: { discord = super.discord.overrideAttrs (_: { src = builtins.fetchTarball <link-to-tarball>;});};
 in {
   # interface
-  options.apps.web.discord.enable = lib.mkOption {
-    type = types.bool;
-    default = web.enable;
-    description = "enable discord : voice and text chat for gamers";
-  };
+  options.apps.web.discord.enable =
+    mkEnableOption (mdDoc "discord : voice and text chat for gamers") // {
+      default = web.enable;
+    };
   #config
   config = lib.mkIf cfg.enable {
     apps.packages = with pkgs; [ discord nss_latest ];

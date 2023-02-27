@@ -1,5 +1,6 @@
 # apps/signal.nix
 # 	signal secure messaging desktop app
+#   TODO : add server mode
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
@@ -9,10 +10,8 @@ let
   cfg = web.signal;
 in {
   #interface
-  options.apps.web.signal.enable = lib.mkOption {
-    type = types.bool;
-    default = false;
-    description = "enable signal, the messaging app ";
+  options.apps.web.signal = {
+    enable = mkEnableOption (mdDoc "signal, the messaging app");
   };
   # config
   config = lib.mkIf cfg.enable {
