@@ -9,17 +9,9 @@ let
 in {
   # interface
   options.apps.web.rustdesk = {
-    enable = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description =
-        "Rustdesk is an open source replacement for TeamViewer, build in Rust";
-    };
-    server = lib.mkOption {
-      type = types.bool;
-      default = false;
-      description = "should we deploy rustdesk with docker";
-    };
+    enable = mkEnableOption
+      (mdDoc "Rustdesk, open source replacement for TeamViewer, build in Rust");
+    server = mkEnableOption (mdDoc "hosting Rustdesk with docker server");
   };
   #config
   config = lib.mkIf cfg.enable {

@@ -36,8 +36,8 @@ in {
         vaapiVdpau # --  --
         rocm-opencl-icd # open-cl
         rocm-opencl-runtime # --  --
-        mesa      # not sure about that, but it is definitely necessary
-        amdvlk    # amdvlk for 
+#        mesa      # not sure about that, but it is definitely necessary
+#        amdvlk    # amdvlk for 
       ];
     };
 
@@ -45,7 +45,7 @@ in {
       # add vulkan tools for debugging
       systemPackages = with pkgs; [vulkan-tools];
       # force the use of mesa's radv
-      variables.AMD_VULKAN_ICD = "RADV";
+      # variables.AMD_VULKAN_ICD = "RADV";
     };
 
     # https://nixos.wiki/wiki/AMD_GPU#HIP

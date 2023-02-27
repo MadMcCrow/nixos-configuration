@@ -9,6 +9,10 @@ let
 in {
   #interface
   options.nixos.nix = {
+    # overriden for most configs
+    enable = mkEnableOption (mdDoc "nix system for nixos") // {
+      default = true;
+    };
     updateDates = mkOption {
       type = types.str;
       default = "04:40";
@@ -19,13 +23,15 @@ in {
         {manpage}`systemd.time(7)`.
       '';
     };
+    autoReboot = mkEnableOption (mdDoc "reboot post upgrade");
   };
 
-  config = mkIf nos.enable {
+  config = mkIf cfg.enable {
     # nix
     nix = {
-      package =
-        pkgs.nixVersions.unstable; # or versioned attributes like nixVersions.nix_2_8
+       # or versioned attributes like nixVersions.nix_2_8
+      package = pkgs.nixVersions.unstable;
+      # add flake support
       extraOptions = "experimental-features = nix-command flakes";
       # GarbageCollection
       gc = {
@@ -39,6 +45,7 @@ in {
       # pin nixpkgs to the one installed on the system
       registry.nixpkgs.flake = nixpkgs;
 
+    # add support for cachix
     settings = {
       substituters = [
         "https://nixos-configuration.cachix.org"
@@ -46,41 +53,23 @@ in {
         "https://cache.nixos.org/"
       ];
       trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
     };
     };
 
-    # it is not necessary to keep the nixos configuration locally
-    #environment.etc = {
-    # Nixos configuration files (ie. this)
-    #"nixos".source = "/nix/persist/etc/nixos/";
-    # this yields a warning and might not be necessary anymore
-    # some NetworkManager configuration
-    #"NetworkManager/system-connections".source =
-    #  "/nix/persist/etc/NetworkManager/system-connections/";
-    #};
-
     # absolutely required packages
     environment.systemPackages = with pkgs; [ git git-crypt cachix vulnix ];
 
-    # root git config
-    programs.git.config = {
-      user = {
-        email = "root@nix.com"; # fake email, allows to commit locally
-        name = "root"; # name
-      };
-    };
-
     # automatic updates :
+    # this flake is updated by Github actions and thus do not require manual updates
     system.autoUpgrade = {
       enable = true; # enable auto upgrades
       persistent = true; # apply if missed
       flake = "github:MadMcCrow/nixos-configuration"; # this flake
-      # flags =[ "--update-input" "nixpkgs" "--commit-lock-file" ]; # only works with local flakes
       dates = cfg.updateDates;
-      allowReboot = false;
+      allowReboot = cfg.autoReboot;
     };
   };
 }

@@ -9,12 +9,11 @@ let
   cfg = web.pidgin;
 
   pidginPlugins = with pkgs; [
-    pidgin-skypeweb
+    #pidgin-skypeweb
     pidgin-opensteamworks
     pidgin-otr
-    purple-slack
+    #purple-slack
     purple-discord
-    purple-matrix
     purple-matrix
     purple-signald
   ];
@@ -24,21 +23,17 @@ let
 
 in {
   # interface
-  options.apps.web.pidgin.enable = lib.mkOption {
-    type = types.bool;
-    default = web.enable;
-    description = "enable pidgin :a multi protocol chat client";
-  };
+  options.apps.web.pidgin.enable = mkEnableOption (mdDoc
+    "pidgin :a multi protocol chat client"); # // { default = web.enable; };
   #config
   config = lib.mkIf cfg.enable {
-    apps.packages = with pkgs; [ signald pidgin ] ++ pidginPlugins;
+    apps.packages = with pkgs; [ signald pidgin perl ] ++ pidginPlugins;
 
-    # not working (yet)
     # set plugins
     #apps.overrides = {
     #  pkgs.pidgin = pidgin-with-plugins; 
     #};
-    #nixpkgs.config.packageOverrides = { pkgs.pidgin = pidgin-with-plugins; };
+    nixpkgs.config.packageOverrides = { pkgs.pidgin = pidgin-with-plugins; };
 
     # purple discord might be unfree
     unfree.unfreePackages = [ "purple-slack" "purple-discord" "pidgin-otr" ];

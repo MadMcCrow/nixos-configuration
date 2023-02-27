@@ -11,13 +11,7 @@ let
 in {
   # interface
   options.apps.development.lapce = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Add the new lapce editor
-      '';
-    };
+    enable = mkEnableOption (mdDoc "Lapce code editor");
   };
   # add github tools
   config = mkIf cfg.enable { apps.packages = with pkgs; [ lapce ]; };

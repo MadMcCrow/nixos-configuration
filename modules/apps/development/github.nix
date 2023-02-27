@@ -21,6 +21,14 @@ in {
   #config
   config = mkIf cfg.enable {
     apps.packages = with pkgs; [ git gh gh-eco gh-cal gh-dash ];
+    programs.git = {
+      enable = true;
+      config = {
+        help.autocorrect = 10;
+        color.ui = "auto";
+      };
+      lfs = { enable = true; };
+    };
   };
 
 }
