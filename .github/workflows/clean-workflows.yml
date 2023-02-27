@@ -1,0 +1,14 @@
+name: Clean workflows
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+
+ - name: Delete workflow runs
+    uses: MajorScruffy/delete-old-workflow-runs@v0.3.0
+    with:
+      repository: MadMcCrow/nixos-configuration
+      older-than-seconds: 604800                # a week old
+      status: completed
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
