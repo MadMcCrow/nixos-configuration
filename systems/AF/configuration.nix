@@ -7,9 +7,8 @@
   # boot and kernel
   boot = {
 
-    # use Zen for better performance
-
-    kernelPackages = pkgs.linuxPackages_xanmod_latest;
+    # use Zen/xanmod for better performance
+    kernelPackages = pkgs.linuxPackages_zen;
     extraModulePackages = with config.boot.kernelPackages; [
       zfs
       asus-wmi-sensors
