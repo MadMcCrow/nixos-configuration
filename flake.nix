@@ -87,11 +87,10 @@
       };
 
       # MacOS
-      darwinSystems = rec {
-        # my MBA - that I need to rename
+       darwinSystems = rec {
         Noes-MacBook-Air = darwinSystem {
           system = "aarch64-darwin";
-          modules = self.darwinModules ++ [ ./systems/MBA/configuration.nix ];
+          modules =  [./modules/darwin ./systems/MBA/configuration.nix ];
         };
       };
 
