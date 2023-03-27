@@ -5,7 +5,7 @@ with builtins;
 with lib;
 let
   # config interface
-  cfg = config.security.pam;
+  cfg = config.darwin.security.pam;
   # Implementation Notes
   #
   # We don't use `environment.etc` because this would require that the user manually delete
@@ -37,18 +37,21 @@ let
     '';
 
 in {
+  # macOS option for security PAM
   options = {
-    security.pam.enableSudoTouchIdAuth = mkEnableOption ''
+    darwin.security.pam.enableSudoTouchIdAuth = mkEnableOption (mdDoc ''
       Enable sudo authentication with Touch ID
       When enabled, this option adds the following line to /etc/pam.d/sudo:
           auth       sufficient     pam_tid.so
       (Note that macOS resets this file when doing a system update. As such, sudo
       authentication with Touch ID won't work after a system update until the nix-darwin
       configuration is reapplied.)
-    '';
+    '') // {
+      default = true;
+    };
   };
-
-  config = {
+  # 
+  config = mkIf cfg.enable {
     system.activationScripts.extraActivation.text = ''
       # PAM settings
       echo >&2 "setting up pam..."
