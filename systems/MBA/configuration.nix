@@ -44,5 +44,4 @@
 
   system = { keyboard.enableKeyMapping = true; };
 
-  security = { pam.enableSudoTouchIdAuth = true; };
 }
