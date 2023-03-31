@@ -90,7 +90,13 @@
        darwinSystems = rec {
         Noes-MacBook-Air = darwinSystem {
           system = "aarch64-darwin";
-          modules =  [./modules/darwin ./systems/MBA/configuration.nix ];
+          modules =  [./modules/darwin ./systems/MBA/configuration.nix 
+          {
+            darwin = {
+              enable = true;
+              apps   = true;
+            };
+          }];
         };
       };
 
