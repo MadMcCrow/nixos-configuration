@@ -54,8 +54,6 @@
 
   hardware.cpu.amd.updateMicrocode =
     lib.mkDefault config.hardware.enableRedistributableFirmware;
-  # high-resolution display
-  hardware.video.hidpi.enable = lib.mkDefault true;
 
   # make sure to have amd vulkan driver
   hardware.opengl.extraPackages = with pkgs; [ amdvlk ];
