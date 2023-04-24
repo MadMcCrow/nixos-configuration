@@ -24,7 +24,7 @@ in {
 
   # config
   config = mkIf (nos.enable && cfg.enable) {
-   
+
     hardware.opengl = {
       enable = true;
       # direct rendering (necessary for vulkan)
@@ -36,14 +36,14 @@ in {
         vaapiVdpau # --  --
         rocm-opencl-icd # open-cl
         rocm-opencl-runtime # --  --
-#        mesa      # not sure about that, but it is definitely necessary
-#        amdvlk    # amdvlk for 
+        #        mesa      # not sure about that, but it is definitely necessary
+        #        amdvlk    # amdvlk for 
       ];
     };
 
     environment = {
       # add vulkan tools for debugging
-      systemPackages = with pkgs; [vulkan-tools];
+      systemPackages = with pkgs; [ vulkan-tools ];
       # force the use of mesa's radv
       # variables.AMD_VULKAN_ICD = "RADV";
     };

@@ -3,8 +3,7 @@
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let
-  cfg = config.server.nextcloud;
+let cfg = config.server.nextcloud;
 in {
 
   # interface
@@ -15,7 +14,7 @@ in {
 
   # base config for gnome 
   config = lib.mkIf cfg.enable {
-  
+
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud25;

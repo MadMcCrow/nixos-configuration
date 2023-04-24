@@ -13,18 +13,18 @@ let
   # because it fills the remote machine
   # the solution would be to build it separately 
   seLinuxKernelPatch = {
-      name = "selinux-config";
-      patch = null;
-      extraConfig = ''
-        SECURITY_SELINUX y
-        SECURITY_SELINUX_BOOTPARAM n
-        SECURITY_SELINUX_DISABLE n
-        SECURITY_SELINUX_DEVELOP y
-        SECURITY_SELINUX_AVC_STATS y
-        SECURITY_SELINUX_CHECKREQPROT_VALUE 0
-        DEFAULT_SECURITY_SELINUX n
-      '';
-    };
+    name = "selinux-config";
+    patch = null;
+    extraConfig = ''
+      SECURITY_SELINUX y
+      SECURITY_SELINUX_BOOTPARAM n
+      SECURITY_SELINUX_DISABLE n
+      SECURITY_SELINUX_DEVELOP y
+      SECURITY_SELINUX_AVC_STATS y
+      SECURITY_SELINUX_CHECKREQPROT_VALUE 0
+      DEFAULT_SECURITY_SELINUX n
+    '';
+  };
 
 in {
   # interface
@@ -32,12 +32,13 @@ in {
     # enable AppArmor and SELinux, this makes a slower computer
     enable = mkEnableOption (mdDoc "extra security");
 
-    seLinux =   mkEnableOption (mdDoc "Security Enhanced Linux")  // {
+    seLinux = mkEnableOption (mdDoc "Security Enhanced Linux") // {
       default = false; # toggled off for github-actions
     };
-    appArmor =  mkEnableOption (mdDoc "App Armor, see https://www.apparmor.net/") // {
-      default = true; 
-    };
+    appArmor = mkEnableOption (mdDoc "App Armor, see https://www.apparmor.net/")
+      // {
+        default = true;
+      };
   };
 
   # config
@@ -49,9 +50,9 @@ in {
     security.apparmor.enable = cfg.appArmor;
 
     # tell kernel to use SE Linux
-    boot.kernelParams = if cfg.seLinux then [ "security=selinux" ] else [];
+    boot.kernelParams = if cfg.seLinux then [ "security=selinux" ] else [ ];
     # compile kernel with SE Linux support - but also support for other LSM modules
-    boot.kernelPatches = if cfg.seLinux then [ seLinuxKernelPatch ] else [];
+    boot.kernelPatches = if cfg.seLinux then [ seLinuxKernelPatch ] else [ ];
     # build systemd with SE Linux support so it loads policy at boot and supports file labelling
     systemd.package = pkgs.systemd.override { withSelinux = cfg.seLinux; };
 

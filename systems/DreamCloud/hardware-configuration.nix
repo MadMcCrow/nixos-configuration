@@ -4,7 +4,7 @@
 { config, lib, pkgs, modulesPath, ... }: {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-   fileSystems."/" = {
+  fileSystems."/" = {
     device = "nixos-pool/local/root";
     fsType = "zfs";
   };

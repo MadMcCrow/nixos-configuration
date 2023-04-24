@@ -8,7 +8,8 @@ let
   cfg = config.apps.graphics;
 in {
   #interface
-  options.apps.graphics.enable = mkEnableOption (mdDoc "a suite of programs to edit 2d and 3d files");
+  options.apps.graphics.enable =
+    mkEnableOption (mdDoc "a suite of programs to edit 2d and 3d files");
   #imports
   imports = [ ./blender.nix ./gimp.nix ./inkscape.nix ];
 }

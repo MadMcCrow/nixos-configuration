@@ -1,11 +1,9 @@
 # darwin/nix-index.nix
 #   Additional configuration for `nix-index` to enable `command-not-found` functionality with Fish.
-{ config, lib, pkgs, ... }: 
+{ config, lib, pkgs, ... }:
 with lib;
-let 
-cfg = config.programs.nix-index;
-in 
-{
+let cfg = config.programs.nix-index;
+in {
   config = mkIf cfg.enable {
     programs.fish.interactiveShellInit = ''
       function __fish_command_not_found_handler --on-event="fish_command_not_found"

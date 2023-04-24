@@ -37,7 +37,7 @@
   fileSystems."/run/media/steam" = {
     device = "nixos-pool/local/steam";
     fsType = "zfs";
-    neededForBoot=false;
+    neededForBoot = false;
   };
 
   # maybe consider adding swap ?
