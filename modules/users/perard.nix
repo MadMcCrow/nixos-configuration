@@ -106,6 +106,14 @@ in {
 
         };
 
+          # direnv the environment switcher
+        direnv = {
+          enable = true;
+          nix-direnv.enable = true;
+          enableBashIntegration = true;
+          enableZshIntegration = true; 
+        };
+
         # git settings
         git = {
           enable = true;
