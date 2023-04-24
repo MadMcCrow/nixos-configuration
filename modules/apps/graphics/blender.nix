@@ -12,8 +12,9 @@ in {
   options.apps.graphics.blender = {
     # dis
     enable = mkEnableOption (mdDoc "3D Creation/Animation/Publishing System");
-    useHIP = mkEnableOption (mdDoc "HIP. Software like Blender may support HIP for GPU acceleration.");
-    };
+    useHIP = mkEnableOption (mdDoc
+      "HIP. Software like Blender may support HIP for GPU acceleration.");
+  };
   #config
   config = mkIf cfg.enable {
     apps.packages = with pkgs;

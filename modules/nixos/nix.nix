@@ -29,7 +29,7 @@ in {
   config = mkIf cfg.enable {
     # nix
     nix = {
-       # or versioned attributes like nixVersions.nix_2_8
+      # or versioned attributes like nixVersions.nix_2_8
       package = pkgs.nixVersions.unstable;
       # add flake support
       extraOptions = "experimental-features = nix-command flakes";
@@ -45,18 +45,18 @@ in {
       # pin nixpkgs to the one installed on the system
       registry.nixpkgs.flake = nixpkgs;
 
-    # add support for cachix
-    settings = {
-      substituters = [
-        "https://nixos-configuration.cachix.org"
-        "https://nix-community.cachix.org"
-        "https://cache.nixos.org/"
-      ];
-      trusted-public-keys = [
-        "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      ];
-    };
+      # add support for cachix
+      settings = {
+        substituters = [
+          "https://nixos-configuration.cachix.org"
+          "https://nix-community.cachix.org"
+          "https://cache.nixos.org/"
+        ];
+        trusted-public-keys = [
+          "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        ];
+      };
     };
 
     # absolutely required packages

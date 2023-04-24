@@ -16,5 +16,5 @@ in {
       '';
     };
   };
-  imports = [ ./chess.nix ./steam.nix ./gamemode.nix ];
+  imports = [ ./steam.nix ./gamemode.nix ];
 }

@@ -3,8 +3,7 @@
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let
-  cfg = config.darwin.apps;
+let cfg = config.darwin.apps;
 in {
   options.darwin.apps.enable = mkEnableOption (mdDoc "Darwin (MacOS)");
   # TODO : config

@@ -57,7 +57,7 @@
                 enable = true;
                 extraApps = true;
               };
-              # apps
+              # TODO : clean this
               apps = {
                 enable = true;
                 graphics.enable = true;
@@ -70,33 +70,46 @@
               input.xone.enable = true;
               # audio
               audio.pipewire.enable = true;
+              myusers.list = [{
+                name = "perard";
+                uid = 1000;
+                description = "Noé Perard-Gayot";
+                extraGroups = [ "wheel" "flatpak" "steam" ];
+                initialHashedPassword =
+                  "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+                #gitEmail = "noe.perard+git@gmail.com";
+                #gitUser = "MadMcCrow";
+              }];
             }
           ];
         };
 
         # DreamCloud, my personal Local Server
-        DreamCloud = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = inputs;
-          modules = [
-            ./modules
-            ./systems/DreamCloud/configuration.nix
-            { nixos.enhancedSecurity.enable = true; }
-          ];
-        };
+        #DreamCloud = nixpkgs.lib.nixosSystem {
+        #  system = "x86_64-linux";
+        #  specialArgs = inputs;
+        #  modules = [
+        #    ./modules
+        #    ./systems/DreamCloud/configuration.nix
+        #    { nixos.enhancedSecurity.enable = true; }
+        #  ];
+        #};
       };
 
       # MacOS
-       darwinSystems = rec {
+      darwinSystems = rec {
         Noes-MacBook-Air = darwinSystem {
           system = "aarch64-darwin";
-          modules =  [./modules/darwin ./systems/MBA/configuration.nix 
-          {
-            darwin = {
-              enable = true;
-              apps   = true;
-            };
-          }];
+          modules = [
+            ./modules/darwin
+            ./systems/MBA/configuration.nix
+            {
+              darwin = {
+                enable = true;
+                apps = true;
+              };
+            }
+          ];
         };
       };
 

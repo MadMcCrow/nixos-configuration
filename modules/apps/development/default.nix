@@ -21,5 +21,5 @@ in {
     apps.packages = with pkgs; [ rnix-lsp ];
   };
 
-  imports = [ ./debugtools.nix ./github.nix ./vscode.nix ./lapce.nix ];
+  imports = [ ./debugtools.nix ./github.nix ./vscode.nix ];
 }
