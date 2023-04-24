@@ -37,15 +37,12 @@ in {
     };
   };
   # imports
-  imports = [ ./development ./web ./multimedia ./games ./graphics ];
+  imports = [ ./development ./web ./games ./graphics ];
 
   # config
   config = lib.mkIf (cfg.enable && cfg.packages != [ ]) {
     environment.systemPackages = with pkgs;
       [ git wget curl zip neofetch ] ++ config.apps.packages;
-
-    # not working as such
-    #nixpkgs.config.packageOverrides = pkgs : rec { apps.overrides };
 
   };
 
