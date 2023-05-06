@@ -7,6 +7,7 @@ with lib;
 let
   dsk = config.desktop;
   cfg = dsk.gnome;
+  fpk = config.nixos.flatpak.enable;
 
   # extra gnome apps
   extraApps = with pkgs.gnome; [
@@ -17,7 +18,7 @@ let
     gnome-weather # get weather infos
     gnome-calendar # the calendar app
     gnome-logs # systemd logs
-  ];
+  ]++ (if fpk then [gnome.gnome-software] else []);
 
   # apps that you will not need
   superExtraApps = with pkgs; [
