@@ -4,7 +4,10 @@ args@{ pkgs, ... }:
 with builtins;
 let
   lib = pkgs.lib;
-  submodules = [ ./shell.nix ./git.nix ];
+  submodules = [
+     ./shell.nix 
+     ./git.nix ];
+     #./vs-code.nix ];
 
   # get all modules :
   imports = map (p: import p args) submodules;
@@ -20,8 +23,7 @@ let
 in {
 
   # merge all packages
-  packages = [ home-manager ]
-    ++ concatLists (listWithAttr "packages" [ ] imports);
+  packages = [ home-manager ] ++ concatLists (listWithAttr "packages" [ ] imports);
 
   # merge all programs
   programs = mergePrograms (listWithAttr "programs" { } imports);

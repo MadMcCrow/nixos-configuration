@@ -4,26 +4,25 @@
 with builtins;
 with lib;
 let
-  web = config.apps.web;
-  cfg = web.discord;
+  cfg = config.apps.discord;
   # use OpenASAR for faster start-up times
   OpenASAR = self: super: {
     discord = super.discord.override { withOpenASAR = true; };
   };
-  # Make sure to always download the latest tarball
   # this cannnot work in pure evaluation because 
   # you would need to know the sha256 in advance 
   # when updating discord
   # ForceUpdate = self: super: { discord = super.discord.overrideAttrs (_: { src = builtins.fetchTarball <link-to-tarball>;});};
 in {
   # interface
-  options.apps.web.discord.enable =
+  options.apps.discord.enable =
     mkEnableOption (mdDoc "discord : voice and text chat for gamers") // {
-      default = web.enable;
+      default = true;
     };
   #config
   config = lib.mkIf cfg.enable {
     apps.packages = with pkgs; [ discord nss_latest ];
+    # TODO : switch to using nixoverlays to allow for multiple overlays 
     nixpkgs.overlays = [ OpenASAR ];
     unfree.unfreePackages = [ "discord" ];
   };

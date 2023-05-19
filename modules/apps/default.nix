@@ -1,5 +1,6 @@
 # apps/default.nix
-# 	all the apps we want on our systems
+# 	apps that are provided directly, either because not present on home manager
+#   or because the HM-configuration is lacking for them
 { pkgs, config, lib, ... }:
 with builtins;
 with lib;
@@ -25,19 +26,9 @@ in {
         set of package override
       '';
     };
-
-    # home manager setting
-    home-manager = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        use home manager instead of <literal>environment.systemPackages</literal>.
-        not implemented yet.
-      '';
-    };
   };
   # imports
-  imports = [ ./development ./web ./games ./graphics ];
+  imports = [ ./discord.nix ./firefox.nix ./steam.nix ];
 
   # config
   config = lib.mkIf (cfg.enable && cfg.packages != [ ]) {
