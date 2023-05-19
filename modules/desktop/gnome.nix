@@ -7,8 +7,6 @@ with lib;
 let
   dsk = config.desktop;
   cfg = dsk.gnome;
-  fpk = config.nixos.flatpak.enable;
-
   fpk = config.nixos.flatpak.enable; 
 
   # extra gnome apps

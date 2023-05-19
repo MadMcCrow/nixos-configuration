@@ -66,17 +66,8 @@ in {
       desktopManager.plasma5 = {
         enable = true;
         # remove useless apps
-        excludePackages = with pkgs.libsForQt5; [
-          oxygen
-          khelpcenter
-          plasma-browser-integration
-          print-manager
-        ];
-
-        # enable HiDpi
+                # enable HiDpi
         useQtScaling = true;
-        # brightness control
-        supportDDC = true;
       };
 
       # remove xterm
@@ -91,6 +82,13 @@ in {
         };
       };
     };
+
+    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+          oxygen
+          khelpcenter
+          plasma-browser-integration
+          print-manager
+        ];
 
     # QT settings
     qt = {

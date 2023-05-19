@@ -5,8 +5,7 @@ with builtins;
 with lib;
 let
   #config interface
-  web = config.apps.web;
-  cfg = web.firefox;
+  cfg = config.apps.firefox;
   # compat with wayland
   firefox-compat = if config.programs.xwayland.enable then
     pkgs.firefox-wayland
@@ -14,9 +13,9 @@ let
     pkgs.firefox;
 in {
   #interface
-  options.apps.web.firefox = {
+  options.apps.firefox = {
     enable = mkEnableOption (mdDoc "firefox browser") // {
-      default = web.enable;
+      default = true;
     };
     wayland = mkEnableOption (mdDoc "the wayland compatible version") // {
       default = config.programs.xwayland.enable;
@@ -30,7 +29,6 @@ in {
   #config
   config = lib.mkIf cfg.enable {
     apps.packages = [ firefox-compat ];
-    # 22.11 channel !
     programs.firefox = {
       enable = true;
       package = firefox-compat;

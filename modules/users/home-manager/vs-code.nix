@@ -1,14 +1,8 @@
-# vscode.nix
-# 	Setup vscode and all it's things 
-# todo : use Home manager
-{ config, pkgs, lib, unfree, ... }:
-with builtins;
-with lib;
+# home-manager/vs-code.nix
+# 	vs code and all the extensions I Like
+{pkgs, useVSCode ? true , ...}: 
 let
-  # config interface
-  dev = config.apps.development;
-  cfg = dev.vsCode;
-  # Market place getter
+# Market place getter
   vsMarketplace = pkgs.vscode-utils.extensionFromVscodeMarketplace;
   # godot support
   godot-tools = vsMarketplace {
@@ -45,27 +39,6 @@ let
     version = "1.2.29";
     sha256 = "sha256-Wl++d7mCOjgL7vmVVAKPQQgWRSFlqL4ry7v0wob1OyU=";
   };
-  # intellicode examples
-  intellicode-api-usage = vsMarketplace {
-    name = "intellicode-api-usage-examples";
-    publisher = "VisualStudioExptTeam";
-    version = "0.2.6";
-    sha256 = "sha256-vXka5gTPW/UozFUqRaklhaio8s1kouEdDrzsE3w891k=";
-  };
-  # codiga AI
-  codiga = vsMarketplace {
-    name = "vscode-plugin";
-    publisher = "codiga";
-    version = "0.8.8";
-    sha256 = "sha256-eaC03cZa8uVuZPmhOw7qgwrvbci+I0pWhT3DsNkMs9U=";
-  };
-  # pull-request support for PRs
-  gh-pullrequest = vsMarketplace {
-    name = "vscode-pull-request-github";
-    publisher = "github";
-    version = "0.54.1";
-    sha256 = "sha256-AhsKTjIhyhGW9KcqAhWAzYAOv/wuQvNFKWlPmiK7hUQ=";
-  };
   # git graph so view branches
   git-graph = vsMarketplace {
     name = "git-graph";
@@ -79,20 +52,6 @@ let
     publisher = "donjayamanne";
     version = "0.6.19";
     sha256 = "sha256-YyEr4XRI2zzkzDXX2oS+jVnm5dggoZcS4Vc8mNSuQpc=";
-  };
-  # vscode-icons fir better icons
-  vscode-icons = vsMarketplace {
-    name = "vscode-icons";
-    publisher = "vscode-icons-team";
-    version = "12.0.1";
-    sha256 = "sha256-zxKD+8PfuaBaNoxTP1IHwG+25v0hDkYBj4RPn7mSzzU=";
-  };
-  # other nice icon
-  jtlowe-icons = vsMarketplace {
-    name = "vscode-icon-theme";
-    publisher = "jtlowe";
-    version = "1.6.6";
-    sha256 = "sha256-zB4xBoCgdTyIegwrvu2Od4/QK4ZttV1OXWfo0MMKhLA=";
   };
   # material-icons
   material-icons = vsMarketplace {
@@ -108,7 +67,6 @@ let
     version = "3.4.3";
     sha256 = "sha256-qmWL/IjPeoW57SpU0T9w1KMWuTlV6WTIlzB6vchwtHE=";
   };
-
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
@@ -116,9 +74,6 @@ let
     vs-shader
     shader-ed
     intellicode
-    intellicode-api-usage
-    codiga
-    gh-pullrequest
     git-graph
     git-history
     material-icons
@@ -129,51 +84,21 @@ let
     jnoortheen.nix-ide
     rust-lang.rust-analyzer
     ms-vscode.cpptools
-    # ms-python.python # still broken
     xaver.clang-format
     yzhang.markdown-all-in-one
     llvm-vs-code-extensions.vscode-clangd
     github.github-vscode-theme
     github.codespaces
   ];
-  # pakages to install
-  packages = if cfg.extensions then
-    (with pkgs;
-      [
-        (vscode-with-extensions.override {
-          vscodeExtensions = nixVsCodeExtensions ++ marketPlaceExtensions;
-        })
-      ])
-  else
-    [ vscode ];
-
-in {
-  # interface
-  options.apps.development.vsCode = {
-    enable = mkOption {
-      type = types.bool;
-      default = dev.enable;
-      description = ''
-        Add vscode.
-      '';
+in 
+mkIf useVSCode {
+  programs = {
+    vscode = {
+      enable = true;
+      enableUpdateCheck = false;
+      package = pkgs.vscodium;
+      mutableExtensionsDir = true;
+      extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
     };
-    extensions = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Add vscode extensions.
-      '';
     };
-  };
-  # config
-  config = mkIf cfg.enable {
-    apps.packages = packages;
-    # unfree predicate
-    unfree.unfreePackages = [
-      "vscode"
-      "vscode-with-extensions"
-      "vscode-extension-ms-vscode-cpptools"
-      "vscode-extension-github-codespaces"
-    ];
-  };
 }

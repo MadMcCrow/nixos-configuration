@@ -17,9 +17,6 @@
     # impermanence
     impermanence.url = "github:nix-community/impermanence";
 
-    # gaming
-    nix-gaming.url = "github:fufexan/nix-gaming";
-
     # macOS
     darwin = {
       url = "github:LnL7/nix-darwin";
@@ -29,16 +26,26 @@
     # nixpkgs for MacOS
     nixpkgs-darwin = { url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin"; };
 
-    # hyprland DE
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
   };
 
   outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
-    let inherit (darwin.lib) darwinSystem;
+    let 
+    inherit (darwin.lib) darwinSystem;
+    # various users on the system
+    # TODO : move this to a separate file (JSON ?) or separate folder
+    flakeUsers = {
+      perard = {
+                name = "perard";
+                uid = 1000;
+                description = "Noé Perard-Gayot";
+                extraGroups = [ "wheel" "flatpak" "steam" ];
+                initialHashedPassword =
+                  "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+                gitEmail = "noe.perard+git@gmail.com";
+                gitUser = "MadMcCrow";
+              };
+    };
+
     in {
 
       #Linux : Nixos
@@ -53,33 +60,10 @@
             ./systems/AF/configuration.nix
             {
               # desktop env
-              desktop.gnome = {
-                enable = true;
-                extraApps = true;
-              };
-              # TODO : clean this
-              apps = {
-                enable = true;
-                graphics.enable = true;
-                development.enable = true;
-                games.enable = true;
-                web.enable = true;
-                multimedia.enable = true;
-              };
-              # input
+              desktop.kde.enable = true;
               input.xone.enable = true;
-              # audio
               audio.pipewire.enable = true;
-              myusers.list = [{
-                name = "perard";
-                uid = 1000;
-                description = "Noé Perard-Gayot";
-                extraGroups = [ "wheel" "flatpak" "steam" ];
-                initialHashedPassword =
-                  "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
-                #gitEmail = "noe.perard+git@gmail.com";
-                #gitUser = "MadMcCrow";
-              }];
+              userList = [flakeUsers.perard];
             }
           ];
         };

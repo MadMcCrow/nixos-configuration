@@ -66,7 +66,6 @@
   services.xserver = {
     enable = true;
     videoDrivers = [ "amdgpu" "radeon" ];
-    # keymap in X11
     layout = "us";
     xkbVariant = "intl";
     xkbOptions = "eurosign:e";
