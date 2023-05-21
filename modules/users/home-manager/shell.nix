@@ -87,6 +87,7 @@ in
         numeric-exit-codes = true;
         cwd-max-depth = 3;
         git-mode = "compact";
+        priority = ["root" "cwd" "user" "nix-shell" "gitlite"];
         # duration needs a way to get last command time and there's no explaination on how to do it.
         #duration = "1";
         #duration-low-precision = true;
