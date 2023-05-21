@@ -51,24 +51,24 @@ let
   git-history = vsMarketplace {
     name = "githistory";
     publisher = "donjayamanne";
-    version = "0.6.19";
-    sha256 = "sha256-YyEr4XRI2zzkzDXX2oS+jVnm5dggoZcS4Vc8mNSuQpc=";
+    version = "0.6.20";
+    sha256 = "sha256-nEdYS9/cMS4dcbFje23a47QBZr9eDK3dvtkFWqA+OHU=";
   };
 
   # material-icons
   material-icons = vsMarketplace {
     name = "material-icon-theme";
     publisher = "PKief";
-    version = "4.22.0";
-    sha256 = "sha256-U9P9BcuZi+SUcvTg/fC2SkjGRD4CvgJEc1i+Ft2OOUc=";
+    version = "4.27.0";
+    sha256 = "sha256-cu+d6pyXVil2+Ng/ze+DjiWRQiECz9ef+T6sWFav578=";
   };
 
-  # github-theme:  https://marketplace.visualstudio.com/items?itemName=GitHub.github-vscode-theme
-  github-theme = vsMarketplace {
-    name = "github-vscode-theme";
-    publisher = "GitHub";
-    version = "6.3.4";
-    sha256 = "sha256-JbI0B7jxt/2pNg/hMjAE5pBBa3LbUdi+GF0iEZUDUDM=";
+  # material-theme
+  material-theme = vsMarketplace {
+    name = "vsc-community-material-theme";
+    publisher = "Equinusocio";
+    version = "1.4.6";
+    sha256 = "sha256-DVgyE9CAB7m8VzupUKkYIu3fk63UfE+cqoJbrUbdZGw=";
   };
 
   # Sync settings
@@ -128,7 +128,7 @@ let
     git-graph
     git-history
     material-icons
-    github-theme
+    material-theme
     prettier
     intellicode
     ms-python
@@ -173,6 +173,7 @@ in {
         "editor.fontSize" = 13;
         "editor.fontLigatures" = true;
         "editor.fontFamily" =  "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace";
+        "workbench.colorTheme" = "GitHub Dark Dimmed";
       };
     };
   };
