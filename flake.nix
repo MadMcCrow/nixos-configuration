@@ -6,11 +6,11 @@
   # flake inputs :
   inputs = {
     # Nixpkgs
-    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-22.11"; };
 
     # Home manager
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-22.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -29,22 +29,24 @@
   };
 
   outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
-    let 
-    inherit (darwin.lib) darwinSystem;
-    # various users on the system
-    # TODO : move this to a separate file (JSON ?) or separate folder
-    flakeUsers = {
-      perard = {
-                name = "perard";
-                uid = 1000;
-                description = "Noé Perard-Gayot";
-                extraGroups = [ "wheel" "flatpak" "steam" ];
-                initialHashedPassword =
-                  "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
-                gitEmail = "noe.perard+git@gmail.com";
-                gitUser = "MadMcCrow";
-              };
-    };
+    let
+      inherit (darwin.lib) darwinSystem;
+      # various users on the system
+      # TODO : move this to a separate file (JSON ?) or separate folder
+      flakeUsers = {
+        perard = {
+          name = "perard";
+          uid = 1000;
+          description = "Noé Perard-Gayot";
+          extraGroups = [ "wheel" "flatpak" "steam" ];
+          initialHashedPassword =
+            "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+          extraOptions = {
+            gitEmail = "noe.perard+git@gmail.com";
+            gitUser = "MadMcCrow";
+          };
+        };
+      };
 
     in {
 
@@ -60,10 +62,10 @@
             ./systems/AF/configuration.nix
             {
               # desktop env
-              desktop.kde.enable = true;
+              desktop.gnome.enable = true;
               input.xone.enable = true;
               audio.pipewire.enable = true;
-              userList = [flakeUsers.perard];
+              userList = [ flakeUsers.perard ];
             }
           ];
         };

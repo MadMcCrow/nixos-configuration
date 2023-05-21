@@ -64,12 +64,17 @@ in {
 
     # automatic updates :
     # this flake is updated by Github actions and thus do not require manual updates
-    system.autoUpgrade = {
+    system = {
+      autoUpgrade = {
       enable = true; # enable auto upgrades
       persistent = true; # apply if missed
       flake = "github:MadMcCrow/nixos-configuration"; # this flake
       dates = cfg.updateDates;
       allowReboot = cfg.autoReboot;
     };
+    # this would need to have some script running before update :
+    # one way to do so would be to wrap nixos-rebuild. not sure about purity though.
+    #nixos.label = "$today.$branch-${revision:0:7}" + (concatStringsSep "-" ((sort (x: y: x < y) config.system.nixos.tags)));
+  };
   };
 }

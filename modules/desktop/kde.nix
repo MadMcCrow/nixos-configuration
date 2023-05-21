@@ -58,6 +58,8 @@ in {
   # base config for kde 
   config = lib.mkIf (dsk.enable && cfg.enable) {
 
+    system.nixos.tags = [ "KDE" ];
+
     services.xserver = {
       # enable GUI
       enable = true;
@@ -66,7 +68,7 @@ in {
       desktopManager.plasma5 = {
         enable = true;
         # remove useless apps
-                # enable HiDpi
+        # enable HiDpi
         useQtScaling = true;
       };
 
@@ -83,18 +85,19 @@ in {
       };
     };
 
-    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
-          oxygen
-          khelpcenter
-          plasma-browser-integration
-          print-manager
-        ];
+    # only in unstable : environment.plasma5.excludePackages 
+    services.xserver.desktopManager.plasma5.excludePackages = with pkgs.libsForQt5; [
+      oxygen
+      khelpcenter
+      plasma-browser-integration
+      print-manager
+    ];
 
-    # QT settings
-    qt = {
-      enable = true;
-      platformTheme = "kde";
-    };
+    # QT settings (unstable only)
+    #qt = {
+    #  enable = true;
+    #  platformTheme = "kde";
+    #};
 
     # enable xwayland
     programs = {

@@ -1,48 +1,52 @@
 # home-manager/zsh.nix
 #   a modern shell
-{ pkgs, useZsh ? true, omz ? true, p10k ? true, useDirenv ? true, useExa ? true
-, debug ? false }:
+{ pkgs, lib, useZsh ? true, useDirenv ? true, useExa ? true, ... }:
+with builtins;
+with pkgs;
+with lib;
 let
-  lib = pkgs.lib;
-  mkCondStr = b: v: if b then v else "";
-  # source PowerLevel10k into my zsh config for a cool theme
-  parseP10k = ''
-    [[ ! -f ~/.p10k/.p10k.zsh ]] || source ~/.p10k/.p10k.zsh
-                      POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
-  '';
-in {
-  packages = if useZsh then [ oh-my-zsh zsh-powerlevel10k exa ] else [ ];
 
-  program = {
+autosuggestions = {
+   name = "zsh-autosuggestions";
+   src =  pkgs.zsh-autosuggestions;
+   };
+syntax-highlighting = {
+   name = "zsh-syntax-highlighting";
+   src =  pkgs.zsh-syntax-highlighting;
+   };
+
+# powerline go for bash in every shell
+powerline-go-bash-init = ''
+          # Workaround for nix-shell --pure
+      if [ "$IN_NIX_SHELL" == "pure" ]; then
+          if [ -x "$HOME/.nix-profile/bin/powerline-go" ]; then
+              alias powerline-go="$HOME/.nix-profile/bin/powerline-go"
+          elif [ -x "/run/current-system/sw/bin/powerline-go" ]; then
+              alias powerline-go="/run/current-system/sw/bin/powerline-go"
+          fi
+      fi
+    '';
+in
+{
+  packages = if useZsh then [
+    exa
+    powerline-go
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+  ]else [];
+
+  programs = {
     zsh = {
       enable = useZsh;
-      initExtra = mkCondStr debug ''
-        zprof
-      '' + (mkCondStr p10k parseP10k);
-      initExtraFirst = mkCondStr debug "zmodload zsh/zprof";
-
-      oh-my-zsh = {
-        enable = omz;
-        plugins = [ "git" ];
-        theme = "robbyrussell";
-      };
-      shellAliases = { ls = "exa"; };
-      # zsh plugins
-      plugins = [
-        {
-          name = "zsh-autosuggestions";
-          src = pkgs.zsh-autosuggestions;
-        }
-        {
-          name = "fast-syntax-highlighting";
-          src = pkgs.zsh-fast-syntax-highlighting;
-        }
-        {
-          name = "powerlevel10k";
-          src = pkgs.zsh-powerlevel10k;
-          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-        }
-      ];
+      dotDir = ".config/zsh";
+      enableSyntaxHighlighting = true;
+      
+      # better navigation
+      #shellAliases = { 
+        # already done by exa.enableAliases = true;
+        #  ls = "exa";
+      #};
+      autocd = true;
 
       # smaller history
       history = {
@@ -52,20 +56,66 @@ in {
         extended = false;
         share = true;
       };
+
+      # manual plugins setup
+      plugins = [
+        autosuggestions
+        syntax-highlighting
+      ];
+
+      #initExtra = ''
+      #  source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+      #  source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+      #'';
+
     };
 
+    # Bash And Zsh shell history suggest box
+    # hstr.enable = true; #only in 23.05
+
+    # Powerline go is another alternative
+    # supposedly faster than omz and omp
+    powerline-go = {
+      enable = useZsh;
+      # modules : aws, bzr, cwd, direnv, docker, docker-context, dotenv, duration, exit, fossil, gcp, git, gitlite, goenv, hg, host, jobs, kube, load, newline, nix-shell, node, perlbrew, perms, plenv, rbenv, root, rvm, shell-var, shenv, ssh, svn, termtitle, terraform-workspace, time, user, venv, vgo, vi-mode, wsl)
+      # (default "venv,user,host,ssh,cwd,perms,git,hg,jobs,exit,root")
+      #modules-right : aws, bzr, cwd, direnv, docker, docker-context, dotenv, duration, exit, fossil, gcp, git, gitlite, goenv, hg, host, jobs, kube, load, newline, nix-shell, node, perlbrew, perms, plenv, rbenv, root, rvm, shell-var, shenv, ssh, svn, termtitle, terraform-workspace, time, user, venv, vgo, wsl)
+      modules = [ "user" "host" "nix-shell" "cwd"  "gitlite" "root" ];
+      modulesRight = ["exit" "time"];
+      settings = {
+        hostname-only-if-ssh = true;
+        numeric-exit-codes = true;
+        cwd-max-depth = 3;
+        git-mode = "compact";
+        # duration needs a way to get last command time and there's no explaination on how to do it.
+        #duration = "1";
+        #duration-low-precision = true;
+        #duration-min = "1";
+      };
+    };
+
+    # bash is used in nix-shell
+    bash = {
+      # enable powerline-go in bash
+      bashrcExtra = powerline-go-bash-init;
+      # historyFile = ".bash"
+    };
+
+    # exa is ls but improved
     exa = {
-      enable = useExa;
+      enable =  useExa;
       enableAliases = true;
-      git = true;
-      extraOptions = [ "--group-directories-first" "--header" ];
+      # only in HM 23.05
+      #git = true;
+      # extraOptions = [ "--group-directories-first" "--header" ];
     };
 
+    # environment switcher
     direnv = {
       enable = useDirenv;
       nix-direnv.enable = true;
       enableBashIntegration = true;
-      enableZshIntegration = useZsh;
+      enableZshIntegration = true;
     };
   };
 }

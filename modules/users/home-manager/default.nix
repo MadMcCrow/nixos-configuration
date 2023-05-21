@@ -4,10 +4,7 @@ args@{ pkgs, ... }:
 with builtins;
 let
   lib = pkgs.lib;
-  submodules = [
-     ./shell.nix 
-     ./git.nix ];
-     #./vs-code.nix ];
+  submodules = [ ./shell.nix ./git.nix ./vs-code.nix ];
 
   # get all modules :
   imports = map (p: import p args) submodules;
@@ -17,13 +14,15 @@ let
   listWithAttr = n: d: l: map (v: condGet n d v) l;
 
   # takes a property name and all the values and get 
-  #mergePrograms = l: lib.fold (attrset: acc: lib.recursiveUpdate attrset acc) {} l;
-  mergePrograms = l: foldl' (x: y: x // y) { } l;
+  mergePrograms = l:
+    lib.fold (attrset: acc: lib.recursiveUpdate attrset acc) { } l;
+  #mergePrograms = l: foldl' (x: y: x // y) { } l;
 
 in {
 
   # merge all packages
-  packages = [ home-manager ] ++ concatLists (listWithAttr "packages" [ ] imports);
+  packages = [ pkgs.home-manager ]
+    ++ concatLists (listWithAttr "packages" [ ] imports);
 
   # merge all programs
   programs = mergePrograms (listWithAttr "programs" { } imports);
