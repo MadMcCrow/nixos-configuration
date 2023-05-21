@@ -1,7 +1,6 @@
 # home-manager/zsh.nix
 #   a modern shell
-{ pkgs, useFirefox ? true,  }:
-{
+{ pkgs, useFirefox ? true, }: {
   programs = {
     firefox = {
       enable = true;

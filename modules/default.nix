@@ -17,18 +17,18 @@ in {
   # interface : option for unfree modules
   options = {
     unfree = {
-    all = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Allow any unfree package";
+      all = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Allow any unfree package";
+      };
+      unfreePackages = mkOption {
+        type = types.listOf types.string;
+        default = [ ];
+        description = "list of allowed unfree packages";
+      };
     };
-    unfreePackages = mkOption {
-      type = types.listOf types.string;
-      default = [ ];
-      description = "list of allowed unfree packages";
-    };
-  };
-  nixOverlays = mkOption {
+    nixOverlays = mkOption {
       type = with types; listOf (functionTo (functionTo attrs));
       default = [ ];
       description = "list of overlays";
@@ -36,16 +36,16 @@ in {
   };
 
   # submodules
-  imports = [ ./apps ./audio ./nixos ./desktop ./input ./users];
+  imports = [ ./apps ./audio ./nixos ./desktop ./input ./users ];
 
   # unfree packages Predicate
   config = {
     nixpkgs = {
       #overlays = nixovls; 
-      config =  mkIf (cfg.all || allowed != [ ]) {
-      allowUnfreePredicate = (pkg: builtins.elem (lib.getName pkg) allowed);
-      allowUnfree = cfg.all;
+      config = mkIf (cfg.all || allowed != [ ]) {
+        allowUnfreePredicate = (pkg: builtins.elem (lib.getName pkg) allowed);
+        allowUnfree = cfg.all;
+      };
     };
-  };
   };
 }

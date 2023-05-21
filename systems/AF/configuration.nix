@@ -6,8 +6,6 @@
 
   # boot and kernel
   boot = {
-
-    # use Zen/xanmod for better performance
     kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
     extraModulePackages = with config.boot.kernelPackages; [
       zfs
@@ -22,7 +20,7 @@
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
-      systemd-boot.configurationLimit = 2;
+      systemd-boot.configurationLimit = 3;
     };
 
     # custom initrd options
@@ -92,5 +90,5 @@
   systemd.services.systemd-fsck.enable = false;
 
   # TLDR : Do not touch
-  system.stateVersion = "23.05";
+  system.stateVersion = "22.11";
 }

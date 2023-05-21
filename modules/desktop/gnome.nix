@@ -7,18 +7,19 @@ with lib;
 let
   dsk = config.desktop;
   cfg = dsk.gnome;
-  fpk = config.nixos.flatpak.enable; 
+  fpk = config.nixos.flatpak.enable;
 
   # extra gnome apps
-  extraApps = with pkgs.gnome; [
-    gnome-notes # simple note app
-    gnome-todo # quick todo app
-    gnome-tweaks # Gnome tweaks
-    gnome-boxes # remote or virtual systems
-    gnome-weather # get weather infos
-    gnome-calendar # the calendar app
-    gnome-logs # systemd logs
-  ] ++ (if fpk then [gnome.gnome-software] else []);
+  extraApps = with pkgs.gnome;
+    [
+      gnome-notes # simple note app
+      gnome-todo # quick todo app
+      gnome-tweaks # Gnome tweaks
+      gnome-boxes # remote or virtual systems
+      gnome-weather # get weather infos
+      gnome-calendar # the calendar app
+      gnome-logs # systemd logs
+    ] ++ (if fpk then [ pkgs.gnome.gnome-software ] else [ ]);
 
   # apps that you will not need
   superExtraApps = with pkgs; [
@@ -90,6 +91,8 @@ in {
 
   # base config for gnome 
   config = lib.mkIf (dsk.enable && cfg.enable) {
+
+    system.nixos.tags = [ "Gnome" ];
 
     services.xserver = {
       # enable GUI

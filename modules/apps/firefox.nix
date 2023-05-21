@@ -14,9 +14,7 @@ let
 in {
   #interface
   options.apps.firefox = {
-    enable = mkEnableOption (mdDoc "firefox browser") // {
-      default = true;
-    };
+    enable = mkEnableOption (mdDoc "firefox browser") // { default = true; };
     wayland = mkEnableOption (mdDoc "the wayland compatible version") // {
       default = config.programs.xwayland.enable;
     };

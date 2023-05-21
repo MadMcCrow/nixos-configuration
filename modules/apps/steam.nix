@@ -2,19 +2,23 @@
 #	Make steam works on your system
 { config, pkgs, lib, unfree, ... }:
 with builtins;
-with lib;
 let
   # config interface
   cfg = config.apps.steam;
+  # TODO : add all of steamPackages
+  mySteam = with pkgs; [steam steam-run steamcmd steamPackages.steam steamPackages.steam-runtime];
+  steamUnfree = [ "steam" "steam-run" "steamcmd" "steam-original" "steam-runtime" ]; #map (p : (lib.getName p)) mySteam;
 in {
   #interface
   options.apps.steam = {
-    enable = mkEnableOption (mdDoc "steam, the PC Gaming platform") // {
+    enable = lib.mkEnableOption (mdDoc "steam, the PC Gaming platform") // {
       default = true;
     };
   };
   # config
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
+    apps.packages = mySteam ++ [pkgs.libglvnd];
+
     hardware.steam-hardware.enable = true; # Steam udev rules
     # steam 
     programs.steam = {
@@ -31,8 +35,7 @@ in {
     };
 
     # unfree packages
-    unfree.unfreePackages =
-      [ "steam" "steam-original" "steam-runtime" "steam-run" ];
+    unfree.unfreePackages = steamUnfree;
   };
 }
 

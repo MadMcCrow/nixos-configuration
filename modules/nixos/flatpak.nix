@@ -9,7 +9,7 @@ let
 in {
   # interface
   options.nixos.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
-    default = false;
+    default = true;
   };
   # import thanks to specialArgs
   imports = [ impermanence.nixosModules.impermanence ];

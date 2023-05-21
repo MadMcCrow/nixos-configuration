@@ -86,5 +86,5 @@
   systemd.services.systemd-fsck.enable = true;
 
   # TLDR : Do not touch
-  system.stateVersion = "23.05";
+  system.stateVersion = "22.11";
 }
