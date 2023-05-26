@@ -6,11 +6,12 @@
   # flake inputs :
   inputs = {
     # Nixpkgs
-    nixpkgs = { url = "github:nixos/nixpkgs/nixos-22.11"; };
-
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+  
     # Home manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-22.11";
+      # use /release-22.11 for stable
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -105,7 +106,7 @@
         apple-silicon = final: prev:
           (prev.stdenv.system == "aarch64-darwin") {
             # Add access to x86 packages system is running Apple Silicon
-            pkgs-x86 = import inputs.nixpkgs-unstable {
+            pkgs-x86 = import inputs.nixpkgs {
               system = "x86_64-darwin";
               inherit (nixpkgs) config;
             };
