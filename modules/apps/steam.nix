@@ -3,6 +3,11 @@
 { config, pkgs, lib, unfree, ... }:
 with builtins;
 let
+  # stable steam installation :
+  # environment.systemPackages = let
+  # stable = import nixpkgs-unstable { allowUnfree = true; };
+  # in 
+  # [ stable.steam ];
   # config interface
   cfg = config.apps.steam;
   # TODO : add all of steamPackages

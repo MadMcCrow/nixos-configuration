@@ -7,7 +7,11 @@
   inputs = {
     # Nixpkgs
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
-  
+    
+    # old version for apps that fails to work properly on unstable
+    # nixpkgs-stable = { url = "github:nixos/nixpkgs/nixos-22.11"; };
+    # then use : stable-pkgs = inputs.nixpkgs-stable.legacyPackages.${pkgs.system}
+
     # Home manager
     home-manager = {
       # use /release-22.11 for stable
