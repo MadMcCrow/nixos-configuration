@@ -7,7 +7,8 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
-defaults:
+# TODO : replace by secrets
+env:
   commit:      ':robot::snowflake: flake.lock : update'
   pr_title:    ':robot::snowflake: update flake lock '
   pr_assignee: 'MadMcCrow'
@@ -27,6 +28,7 @@ jobs:
       - name: Generate flake.json
         run: |
           nix flake show --json > flake.json
+      # TODO : replace by parametrized jq command to work with every repo !
       - id: gen_configs
         run: |
           configurations=$(jq -c '.nixosConfigurations | keys' < flake.json)
@@ -111,15 +113,15 @@ jobs:
     - id: pull-request
       run: |
           git switch -c updates-${{ github.run_id }}
-          git commit -am "${{ defaults.commit }}"
+          git commit -am "${{ env.commit }}"
           git push -u origin updates-${{ github.run_id }}
           PR=$(gh pr create \
-            --assignee ${{ defaults.assignee }} \
+            --assignee ${{ env.assignee }} \
             --base main \
-            --body "${{defaults.pr_message}}" \
+            --body "${{env.pr_message}}" \
             --fill \
             --label bot \
-            --title ${{ defaults.pr_title }})
+            --title ${{ env.pr_title }})
           gh pr merge $PR --merge --delete-branch
       env:
         GITHUB_TOKEN: ${{ github.token }}
