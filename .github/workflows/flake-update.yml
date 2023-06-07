@@ -7,6 +7,12 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+defaults:
+  commit:      ':robot::snowflake: flake.lock : update'
+  pr_title:    ':robot::snowflake: update flake lock '
+  pr_assignee: 'MadMcCrow'
+  pr_message:  ':robot: github action on $(date -I)'
+
 jobs:
 
   # generate JSONs for future builds and checks
@@ -103,7 +109,19 @@ jobs:
         git config user.email gnoe.perard+git@gmail.com
         git config user.name "Git Bot"
     - id: pull-request
-      uses: ./.github/actions/pull-request
-      with: 
-        commit:   ':robot::snowflake: flake.lock : update'
-        pr_title: ':robot::snowflake: update flake lock '
+      run: |
+          git switch -c updates-${{ github.run_id }}
+          git commit -am "${{ defaults.commit }}"
+          git push -u origin updates-${{ github.run_id }}
+          PR=$(gh pr create \
+            --assignee ${{ defaults.assignee }} \
+            --base main \
+            --body "${{defaults.pr_message}}" \
+            --fill \
+            --label bot \
+            --title ${{ defaults.pr_title }})
+          gh pr merge $PR --merge --delete-branch
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      shell: bash
+        
