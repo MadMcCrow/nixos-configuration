@@ -48,7 +48,7 @@ jobs:
       - name: Store flake.lock
         uses: actions/upload-artifact@v3
         with:
-          name: flake_lock
+          name: flake-lock
           path: flake.lock
 
   # build new flake 
@@ -73,7 +73,7 @@ jobs:
       - name: Restore flake.lock
         uses: actions/download-artifact@v3
         with:
-          name: flake_lock
+          name: flake-lock
       - name: Build everything
         run: |
           nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel
@@ -90,7 +90,7 @@ jobs:
       - name: Restore flake.lock
         uses: actions/download-artifact@v3
         with:
-          name: flake_lock
+          name: flake-lock
       - name: Check everything
         run: |
           nix flake check --keep-going
@@ -105,7 +105,7 @@ jobs:
     - name: Restore flake.lock
       uses: actions/download-artifact@v3
       with:
-        name: flake_lock
+        name: flake-lock
     - name: Set up git
       run: |
         git config user.email gnoe.perard+git@gmail.com
