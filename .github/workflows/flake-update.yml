@@ -113,15 +113,15 @@ jobs:
     - id: pull-request
       run: |
           git switch -c updates-${{ github.run_id }}
-          git commit -am "${{ env.commit }}"
+          git commit -am "Automated : Flake update"
           git push -u origin updates-${{ github.run_id }}
           PR=$(gh pr create \
-            --assignee ${{ env.assignee }} \
+            --assignee MadMcCrow \
             --base main \
-            --body "${{env.pr_message}}" \
+            --body "Automated Flake update by Github Action" \
             --fill \
             --label bot \
-            --title ${{ env.pr_title }})
+            --title "Auto update $(date -I)")
           gh pr merge $PR --merge --delete-branch
       env:
         GITHUB_TOKEN: ${{ github.token }}
