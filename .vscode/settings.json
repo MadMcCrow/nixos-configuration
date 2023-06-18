@@ -1,4 +1,10 @@
 {
     "editor.tabCompletion": "on",
-    "diffEditor.codeLens": true
-}
+    "diffEditor.codeLens": true,
+    // make everything more noticeable
+    "workbench.colorCustomizations": {
+        "activityBar.activeBorder" : "#7EBAE4", 
+        "statusBar.background": "#752827",
+        "statusBar.foreground": "#ffffff",
+      }
+}      

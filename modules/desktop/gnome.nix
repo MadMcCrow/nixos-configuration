@@ -29,6 +29,7 @@ let
     deja-dup # a backup tool
     gnome-keysign # GnuPG app
     drawing # a Paint-like app
+    eyedropper # a color picker
   ];
 
   ## other potential candidates are :

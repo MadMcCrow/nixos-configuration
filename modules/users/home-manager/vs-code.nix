@@ -4,6 +4,17 @@
 with builtins;
 with lib;
 let
+
+  # Json settings for VS Code
+  settings = {
+    "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace";
+    "editor.fontLigatures" = true;
+    "editor.fontSize" = 13;
+    "update.mode" = "none";
+    "workbench.iconTheme" = "material-icon-theme";
+    "workbench.colorTheme" = "GitHub Dark Dimmed";
+  };
+
   # Market place getter
   vsMarketplace = pkgs.vscode-utils.extensionFromVscodeMarketplace;
 
@@ -59,8 +70,8 @@ let
   material-icons = vsMarketplace {
     name = "material-icon-theme";
     publisher = "PKief";
-    version = "4.27.0";
-    sha256 = "sha256-cu+d6pyXVil2+Ng/ze+DjiWRQiECz9ef+T6sWFav578=";
+    version = "4.28.0";
+    sha256 = "sha256-DO3dcJPk+TMhfb0IJ/eTB7nIKfyCXIiyhZFBpZjJzsM=";
   };
 
   # material-theme
@@ -85,6 +96,14 @@ let
     publisher = "esbenp";
     version = "9.12.0";
     sha256 = "sha256-b7EaYYJNZQBqhyKJ04tytmD9DDRcvA68HTo5JHTr9Fo=";
+  };
+
+  # Peacock : https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock
+  peacock =  vsMarketplace {
+    name = "vscode-peacock";
+    publisher = "johnpapa";
+    version = "4.2.2";
+    sha256 = "sha256-VTRTQpIiFUxc3qF+E1py1+ns93i918QeTAoWAf7NLP0=";
   };
 
   # MS intellicode
@@ -119,6 +138,15 @@ let
     sha256 = "sha256-9jJ9qkjs+OX8m9nQA+/0leTWJPKqX/9L/F1bbfVosMM=";
   };
 
+  # github action : https://marketplace.visualstudio.com/items?itemName=github.vscode-github-actions
+  github-action = vsMarketplace {
+    name = "vscode-github-actions";
+    publisher = "GitHub";
+    version = "0.25.7";
+    sha256 = "sha256-MZrpaWe9PE+S4pRcSxLA417gQL0/oXvnZv+vSrb9nec=";
+  };
+
+
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
@@ -131,9 +159,11 @@ let
     material-theme
     prettier
     intellicode
+    peacock
     ms-python
     ms-cpp
     ms-dotnet
+    github-action
   ];
 
   # nixos extensions
@@ -168,12 +198,7 @@ in {
 
       # JSon settings 
       userSettings = {
-        "update.mode" = "none";
-        "workbench.iconTheme" = "material-icon-theme";
-        "editor.fontSize" = 13;
-        "editor.fontLigatures" = true;
-        "editor.fontFamily" =  "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace";
-        "workbench.colorTheme" = "GitHub Dark Dimmed";
+       
       };
     };
   };
