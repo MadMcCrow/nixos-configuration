@@ -174,6 +174,13 @@ let
     sha256 = "sha256-MZrpaWe9PE+S4pRcSxLA417gQL0/oXvnZv+vSrb9nec=";
   };
 
+ github-markdown = vsMarketplace {
+    name = "github-markdown-preview";
+    publisher = "bierner";
+    version = "0.3.0";
+    sha256 = "sha256-7pbl5OgvJ6S0mtZWsEyUzlg+lkUhdq3rkCCpLsvTm4g=";
+  };
+
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
@@ -181,18 +188,19 @@ let
     vs-shader
     shader-ed
     git-graph
-    git-history
+    # git-history
     material-icons
     # material-theme
     #an-old-hope
+    # peacock
     prettier
     intellicode
-    peacock
     ms-python
     ms-cpp
     ms-dotnet
     ms-anycode
     github-action
+    github-markdown
   ];
 
   # nixos extensions
@@ -200,7 +208,6 @@ let
     jnoortheen.nix-ide
     rust-lang.rust-analyzer
     xaver.clang-format
-    yzhang.markdown-all-in-one
     llvm-vs-code-extensions.vscode-clangd
     github.github-vscode-theme
   ];
