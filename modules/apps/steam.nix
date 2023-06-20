@@ -11,8 +11,20 @@ let
   # config interface
   cfg = config.apps.steam;
   # TODO : add all of steamPackages
-  mySteam = with pkgs; [steam steam-run steamcmd steamPackages.steam steamPackages.steam-runtime];
-  steamUnfree = [ "steam" "steam-run" "steamcmd" "steam-original" "steam-runtime" ]; #map (p : (lib.getName p)) mySteam;
+  mySteam = with pkgs; [
+    steam
+    steam-run
+    steamcmd
+    steamPackages.steam
+    steamPackages.steam-runtime
+  ];
+  steamUnfree = [
+    "steam"
+    "steam-run"
+    "steamcmd"
+    "steam-original"
+    "steam-runtime"
+  ]; # map (p : (lib.getName p)) mySteam;
 in {
   #interface
   options.apps.steam = {
@@ -22,7 +34,7 @@ in {
   };
   # config
   config = lib.mkIf cfg.enable {
-    apps.packages = mySteam ++ [pkgs.libglvnd];
+    apps.packages = mySteam ++ [ pkgs.libglvnd ];
 
     hardware.steam-hardware.enable = true; # Steam udev rules
     # steam 

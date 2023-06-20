@@ -6,13 +6,25 @@ with lib;
 let
 
   # Json settings for VS Code
-  settings = {
-    "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace";
+  vsSettings = {
+    "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', monospace";
     "editor.fontLigatures" = true;
     "editor.fontSize" = 13;
+    "editor.tabCompletion" = "on";
+    "diffEditor.codeLens" = true;
     "update.mode" = "none";
+    "window.titleBarStyle" = "native"; # use "custom" for vs-code title bar
+    "window.restoreWindows" = "none";
+    "workbench.colorTheme" = "GitHub Dark";
     "workbench.iconTheme" = "material-icon-theme";
-    "workbench.colorTheme" = "GitHub Dark Dimmed";
+    "workbench.colorCustomizations" = {
+      "activityBar.activeBackground" = "#0000002C";
+      "tab.inactiveBackground" = "#00000041"; # make tabs pop more
+    };
+    "anycode.language.features" = {
+        "folding" = true;
+        "diagnostics" = true;
+      };
   };
 
   # Market place getter
@@ -82,6 +94,14 @@ let
     sha256 = "sha256-DVgyE9CAB7m8VzupUKkYIu3fk63UfE+cqoJbrUbdZGw=";
   };
 
+  # an old hope theme : https://marketplace.visualstudio.com/items?itemName=dustinsanders.an-old-hope-theme-vscode;
+  an-old-hope = vsMarketplace {
+    name = "an-old-hope-theme-vscode";
+    publisher = "dustinsanders";
+    version = "4.4.0";
+    sha256 = "sha256-G4JecJhVciNy9I4WW3Wkf/QVyxXatJ+FasBikWsYeRk=";
+  };
+
   # Sync settings
   sync-settings = vsMarketplace {
     name = "code-settings-sync";
@@ -99,7 +119,7 @@ let
   };
 
   # Peacock : https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock
-  peacock =  vsMarketplace {
+  peacock = vsMarketplace {
     name = "vscode-peacock";
     publisher = "johnpapa";
     version = "4.2.2";
@@ -138,6 +158,14 @@ let
     sha256 = "sha256-9jJ9qkjs+OX8m9nQA+/0leTWJPKqX/9L/F1bbfVosMM=";
   };
 
+  # Anycode code searches : https://marketplace.visualstudio.com/items?itemName=ms-vscode.anycode
+  ms-anycode = vsMarketplace {
+    name = "anycode";
+    publisher = "ms-vscode";
+    version = "0.0.72";
+    sha256 = "sha256-LV3kyLWRd+yLtIOKB7zOdlCX5NO5RiGcBab09lyeO6A=";
+  };
+
   # github action : https://marketplace.visualstudio.com/items?itemName=github.vscode-github-actions
   github-action = vsMarketplace {
     name = "vscode-github-actions";
@@ -145,7 +173,6 @@ let
     version = "0.25.7";
     sha256 = "sha256-MZrpaWe9PE+S4pRcSxLA417gQL0/oXvnZv+vSrb9nec=";
   };
-
 
   # marketplace extensions
   marketPlaceExtensions = [
@@ -156,13 +183,15 @@ let
     git-graph
     git-history
     material-icons
-    material-theme
+    # material-theme
+    #an-old-hope
     prettier
     intellicode
     peacock
     ms-python
     ms-cpp
     ms-dotnet
+    ms-anycode
     github-action
   ];
 
@@ -177,7 +206,7 @@ let
   ];
 in {
   # jetbrains mono font
-  packages = [pkgs.jetbrains-mono];
+  packages = [ pkgs.jetbrains-mono ];
 
   # vscode
   programs = {
@@ -189,17 +218,15 @@ in {
 
       # use vscodium as vscode
       package = pkgs.vscodium;
-      
+
       # allow installing extensions from marketplace
       mutableExtensionsDir = true;
-      
+
       # enable extensions
       extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
 
       # JSon settings 
-      userSettings = {
-       
-      };
+      userSettings = vsSettings;
     };
   };
 }

@@ -3,10 +3,9 @@
     "diffEditor.codeLens": true,
     // make everything more noticeable
     "workbench.colorCustomizations": {
-        "activityBar.background": "#752827",
-        "activityBar.inactiveForeground": "#CDD9E5",
-        "activityBar.activeBorder" : "#7EBAE4",
-        "statusBar.background": "#752827",
-        "statusBar.foreground": "#ffffff"
+      "activityBarBadge.background": "#752827",
+      "activityBar.activeBorder" : "#752827",
+      "statusBar.background": "#752827",
+      "statusBar.foreground": "#ffffff"
       }
 }      

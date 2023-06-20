@@ -6,45 +6,45 @@ with pkgs;
 with lib;
 let
 
-autosuggestions = {
-   name = "zsh-autosuggestions";
-   src =  pkgs.zsh-autosuggestions;
-   };
-syntax-highlighting = {
-   name = "zsh-syntax-highlighting";
-   src =  pkgs.zsh-syntax-highlighting;
-   };
+  autosuggestions = {
+    name = "zsh-autosuggestions";
+    src = pkgs.zsh-autosuggestions;
+  };
+  syntax-highlighting = {
+    name = "zsh-syntax-highlighting";
+    src = pkgs.zsh-syntax-highlighting;
+  };
 
-# powerline go for bash in every shell
-powerline-go-bash-init = ''
-          # Workaround for nix-shell --pure
-      if [ "$IN_NIX_SHELL" == "pure" ]; then
-          if [ -x "$HOME/.nix-profile/bin/powerline-go" ]; then
-              alias powerline-go="$HOME/.nix-profile/bin/powerline-go"
-          elif [ -x "/run/current-system/sw/bin/powerline-go" ]; then
-              alias powerline-go="/run/current-system/sw/bin/powerline-go"
-          fi
-      fi
-    '';
-in
-{
+  # powerline go for bash in every shell
+  powerline-go-bash-init = ''
+        # Workaround for nix-shell --pure
+    if [ "$IN_NIX_SHELL" == "pure" ]; then
+        if [ -x "$HOME/.nix-profile/bin/powerline-go" ]; then
+            alias powerline-go="$HOME/.nix-profile/bin/powerline-go"
+        elif [ -x "/run/current-system/sw/bin/powerline-go" ]; then
+            alias powerline-go="/run/current-system/sw/bin/powerline-go"
+        fi
+    fi
+  '';
+in {
   packages = if useZsh then [
     exa
     powerline-go
     zsh-autosuggestions
     zsh-syntax-highlighting
-  ]else [];
+  ] else
+    [ ];
 
   programs = {
     zsh = {
       enable = useZsh;
       dotDir = ".config/zsh";
       enableSyntaxHighlighting = true;
-      
+
       # better navigation
       #shellAliases = { 
-        # already done by exa.enableAliases = true;
-        #  ls = "exa";
+      # already done by exa.enableAliases = true;
+      #  ls = "exa";
       #};
       autocd = true;
 
@@ -58,10 +58,7 @@ in
       };
 
       # manual plugins setup
-      plugins = [
-        autosuggestions
-        syntax-highlighting
-      ];
+      plugins = [ autosuggestions syntax-highlighting ];
 
       #initExtra = ''
       #  source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -80,14 +77,14 @@ in
       # modules : aws, bzr, cwd, direnv, docker, docker-context, dotenv, duration, exit, fossil, gcp, git, gitlite, goenv, hg, host, jobs, kube, load, newline, nix-shell, node, perlbrew, perms, plenv, rbenv, root, rvm, shell-var, shenv, ssh, svn, termtitle, terraform-workspace, time, user, venv, vgo, vi-mode, wsl)
       # (default "venv,user,host,ssh,cwd,perms,git,hg,jobs,exit,root")
       #modules-right : aws, bzr, cwd, direnv, docker, docker-context, dotenv, duration, exit, fossil, gcp, git, gitlite, goenv, hg, host, jobs, kube, load, newline, nix-shell, node, perlbrew, perms, plenv, rbenv, root, rvm, shell-var, shenv, ssh, svn, termtitle, terraform-workspace, time, user, venv, vgo, wsl)
-      modules = [ "user" "host" "nix-shell" "cwd"  "gitlite" "root" ];
-      modulesRight = ["exit" "time"];
+      modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
+      modulesRight = [ "exit" "time" ];
       settings = {
         hostname-only-if-ssh = true;
         numeric-exit-codes = true;
         cwd-max-depth = 3;
         git-mode = "compact";
-        priority = ["root" "cwd" "user" "nix-shell" "gitlite"];
+        priority = [ "root" "cwd" "user" "nix-shell" "gitlite" ];
         # duration needs a way to get last command time and there's no explaination on how to do it.
         #duration = "1";
         #duration-low-precision = true;
@@ -104,7 +101,7 @@ in
 
     # exa is ls but improved
     exa = {
-      enable =  useExa;
+      enable = useExa;
       enableAliases = true;
       # only in HM 23.05
       #git = true;

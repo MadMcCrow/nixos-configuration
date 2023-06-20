@@ -86,12 +86,13 @@ in {
     };
 
     # only in unstable : environment.plasma5.excludePackages 
-    services.xserver.desktopManager.plasma5.excludePackages = with pkgs.libsForQt5; [
-      oxygen
-      khelpcenter
-      plasma-browser-integration
-      print-manager
-    ];
+    services.xserver.desktopManager.plasma5.excludePackages =
+      with pkgs.libsForQt5; [
+        oxygen
+        khelpcenter
+        plasma-browser-integration
+        print-manager
+      ];
 
     # QT settings (unstable only)
     #qt = {
@@ -114,6 +115,5 @@ in {
     environment.systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
       ++ (if cfg.extraApps then extraApps else [ ])
       ++ (if cfg.themes then themes else [ ]);
-
   };
 }

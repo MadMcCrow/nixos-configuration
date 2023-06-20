@@ -7,7 +7,7 @@
   inputs = {
     # Nixpkgs
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
-    
+
     # old version for apps that fails to work properly on unstable
     # nixpkgs-stable = { url = "github:nixos/nixpkgs/nixos-22.11"; };
     # then use : stable-pkgs = inputs.nixpkgs-stable.legacyPackages.${pkgs.system}
@@ -68,6 +68,7 @@
             {
               # desktop env
               desktop.gnome.enable = true;
+              desktop.gnome.superExtraApps = true;
               input.xone.enable = true;
               audio.pipewire.enable = true;
               userList = [ flakeUsers.perard ];
