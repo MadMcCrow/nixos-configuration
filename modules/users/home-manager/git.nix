@@ -12,6 +12,8 @@
       extraConfig = {
         help.autocorrect = 10;
         color.ui = "auto";
+        core.whitespace = "trailing-space,space-before-tab";
+        apply.whitespace = "fix";
       };
     };
 
