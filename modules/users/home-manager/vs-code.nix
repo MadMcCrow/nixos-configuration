@@ -188,11 +188,10 @@ let
     vs-shader
     shader-ed
     git-graph
-    # git-history
+    #git-history
     material-icons
-    # material-theme
-    #an-old-hope
-    # peacock
+    #material-theme
+    #peacock
     prettier
     intellicode
     ms-python
@@ -227,7 +226,7 @@ in {
       package = pkgs.vscodium;
 
       # allow installing extensions from marketplace
-      mutableExtensionsDir = true;
+      mutableExtensionsDir = false;
 
       # enable extensions
       extensions = marketPlaceExtensions ++ nixVsCodeExtensions;

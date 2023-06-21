@@ -1,6 +1,4 @@
 {
-    "editor.tabCompletion": "on",
-    "diffEditor.codeLens": true,
     // make everything more noticeable
     "workbench.colorCustomizations": {
       "activityBarBadge.background": "#752827",
