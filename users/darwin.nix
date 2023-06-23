@@ -5,7 +5,7 @@ with builtins;
 with pkgs.lib;
 let
   # me !
-  perard = import ./perard.nix { inherit pkgs; };
+  perard = import ./perard { inherit pkgs; };
   userList = [ perard ];
 
   # helper functions

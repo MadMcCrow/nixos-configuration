@@ -6,15 +6,19 @@
 with builtins;
 with pkgs.lib;
 let
+
   # me !
-  perard = import ./perard.nix { inherit pkgs; };
+  perard = import ./perard { inherit pkgs; };
   userList = [ perard ];
 
+
   # helper functions
-  mapFilter = k: l: map (x: getAttr k x) (filter (x: hasAttr k x) l);
-  mergeSubSets = k: l:
-    listToAttrs
-    (builtins.mapAttrs (name: value: { inherit name value; }) (mapFilter k l));
+  recurseHas = list: index: set: if ((length list) <= index) then true else if (hasAttr (elemAt list index) set) then (recurse list (index + 1) set) else false;
+  recurseGet = list: index: set: if ((length list) <= index) then set  else if (hasAttr (elemAt list index) set) then (recurseGet list (index + 1) (getAttr (elemAt list index) set)) else {};
+
+  listOfUserAttributes = key : list : map (x : recurseGet key 0 x) list;
+
+  mergeSubSets =  key : list : listToAttrs ( map ( { x, y } @ value: { name = x; inherit value; } ) (listOfUserAttributes key list) ); 
 
 in {
 
@@ -24,7 +28,7 @@ in {
   # implementation
   config = {
     # merge all users
-    users.users = mergeSubSets "users.users" userList;
+    users.users = listOfUserAttributes "users.users";
 
     # should we allow this ?
     users.mutableUsers = true; # allow manually adding users
