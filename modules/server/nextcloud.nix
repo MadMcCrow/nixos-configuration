@@ -12,7 +12,7 @@ in {
     enable = lib.mkEnableOption "Nextcloud service";
   };
 
-  # base config for gnome 
+  # base config for nextcloud 
   config = lib.mkIf cfg.enable {
 
     services.nextcloud = {

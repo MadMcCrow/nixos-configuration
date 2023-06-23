@@ -1,8 +1,11 @@
-# home-manager/git.nix
+# git.nix
 #   git and github settings
 # TODO : switch to email through accounts.email
-{ pkgs, gitEmail, gitUser, useGit ? true, ... }: {
-  packages = if useGit then (with pkgs; [ git gh ]) else [ ];
+# TODO : share  with other users
+{ pkgs, gitEmail, gitUser }: {
+
+  packages = with pkgs; [ git gh ];
+
   programs = {
     git = {
       enable = true;

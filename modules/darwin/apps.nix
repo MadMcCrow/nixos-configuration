@@ -5,6 +5,8 @@ with builtins;
 with lib;
 let cfg = config.darwin.apps;
 in {
-  options.darwin.apps.enable = mkEnableOption (mdDoc "Darwin (MacOS)");
-  # TODO : config
+  options.darwin.apps = {
+    # add system apps here
+    enable = mkEnableOption (mdDoc "Darwin (MacOS)");
+  };
 }

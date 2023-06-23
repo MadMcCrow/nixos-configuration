@@ -45,10 +45,12 @@
   networking.hostId = "d2eac18d";
 
   # Timezone
+  # TODO : Move To modules
   time.timeZone = "Europe/Paris";
   services.timesyncd.servers = [ "fr.pool.ntp.org" "europe.pool.ntp.org" ];
 
   # Locale
+  # TODO : move to modules
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
     font = "Lat2-Terminus16";
@@ -56,14 +58,12 @@
   };
 
   # Configure keymap in X11
+  # TODO : move to modules
   services.xserver = {
     layout = "us";
     xkbVariant = "intl";
     xkbOptions = "eurosign:e";
   };
-
-  # disable CUPS
-  services.printing.enable = false;
 
   # root user
   users.users.root = {
@@ -86,5 +86,5 @@
   systemd.services.systemd-fsck.enable = true;
 
   # TLDR : Do not touch
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.05";
 }

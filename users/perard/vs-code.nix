@@ -1,8 +1,8 @@
 # home-manager/vs-code.nix
 # 	vs code and all the extensions I Like
-{ pkgs, lib, useVSCode ? true, ... }:
+{ pkgs }:
 with builtins;
-with lib;
+with pkgs.lib;
 let
 
   # Json settings for VS Code
@@ -22,9 +22,9 @@ let
       "tab.inactiveBackground" = "#00000041"; # make tabs pop more
     };
     "anycode.language.features" = {
-        "folding" = true;
-        "diagnostics" = true;
-      };
+      "folding" = true;
+      "diagnostics" = true;
+    };
   };
 
   # Market place getter
@@ -174,7 +174,7 @@ let
     sha256 = "sha256-MZrpaWe9PE+S4pRcSxLA417gQL0/oXvnZv+vSrb9nec=";
   };
 
- github-markdown = vsMarketplace {
+  github-markdown = vsMarketplace {
     name = "github-markdown-preview";
     publisher = "bierner";
     version = "0.3.0";

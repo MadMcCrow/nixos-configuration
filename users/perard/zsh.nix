@@ -1,9 +1,10 @@
 # home-manager/zsh.nix
 #   a modern shell
-{ pkgs, lib, useZsh ? true, useDirenv ? true, useExa ? true, ... }:
+# TODO : share  with other users
+{ pkgs }:
 with builtins;
 with pkgs;
-with lib;
+with pkgs.lib;
 let
 
   autosuggestions = {
@@ -68,7 +69,7 @@ in {
     };
 
     # Bash And Zsh shell history suggest box
-    # hstr.enable = true; #only in 23.05
+    hstr.enable = true; # only in 23.05
 
     # Powerline go is another alternative
     # supposedly faster than omz and omp
@@ -96,21 +97,20 @@ in {
     bash = {
       # enable powerline-go in bash
       bashrcExtra = powerline-go-bash-init;
-      # historyFile = ".bash"
+      #historyFile = ".bash"
     };
 
     # exa is ls but improved
     exa = {
-      enable = useExa;
+      enable = true;
       enableAliases = true;
-      # only in HM 23.05
-      #git = true;
-      # extraOptions = [ "--group-directories-first" "--header" ];
+      git = true;
+      extraOptions = [ "--group-directories-first" "--header" ];
     };
 
     # environment switcher
     direnv = {
-      enable = useDirenv;
+      enable = true;
       nix-direnv.enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;

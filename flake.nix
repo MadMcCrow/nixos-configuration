@@ -36,22 +36,14 @@
   outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
     let
       inherit (darwin.lib) darwinSystem;
-      # various users on the system
-      # TODO : move this to a separate file (JSON ?) or separate folder
-      flakeUsers = {
-        perard = {
-          name = "perard";
-          uid = 1000;
-          description = "Noé Perard-Gayot";
-          extraGroups = [ "wheel" "flatpak" "steam" ];
-          initialHashedPassword =
-            "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
-          extraOptions = {
-            gitEmail = "noe.perard+git@gmail.com";
-            gitUser = "MadMcCrow";
-          };
+
+      nixOSx86 = args:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = inputs;
+          modules =
+            [ ./modules ./users/nixos.nix ./systems/AF/configuration.nix args ];
         };
-      };
 
     in {
 
@@ -59,46 +51,29 @@
       nixosConfigurations = {
 
         # AF, my personal Desktop PC
-        nixAF = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = inputs;
-          modules = [
-            ./modules
-            ./systems/AF/configuration.nix
-            {
-              # desktop env
-              desktop.gnome.enable = true;
-              desktop.gnome.superExtraApps = true;
-              input.xone.enable = true;
-              audio.pipewire.enable = true;
-              userList = [ flakeUsers.perard ];
-            }
-          ];
+        nixAF = nixOSx86 {
+          # desktop env
+          desktop.gnome.enable = true;
+          desktop.gnome.superExtraApps = true;
+          input.xone.enable = true;
+          audio.pipewire.enable = true;
         };
-
-        # DreamCloud, my personal Local Server
-        #DreamCloud = nixpkgs.lib.nixosSystem {
-        #  system = "x86_64-linux";
-        #  specialArgs = inputs;
-        #  modules = [
-        #    ./modules
-        #    ./systems/DreamCloud/configuration.nix
-        #    { nixos.enhancedSecurity.enable = true; }
-        #  ];
-        #};
+        # my NUC acting as a headless server
+        NUC-Cloud = nixOSx86 { };
       };
 
       # MacOS
-      darwinSystems = rec {
+      darwinSystems = {
         Noes-MacBook-Air = darwinSystem {
           system = "aarch64-darwin";
           modules = [
             ./modules/darwin
+            ./users/darwin.nix
             ./systems/MBA/configuration.nix
             {
               darwin = {
                 enable = true;
-                apps = true;
+                apps.enable = true;
               };
             }
           ];
