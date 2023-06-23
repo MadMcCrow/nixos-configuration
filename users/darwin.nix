@@ -9,10 +9,10 @@ let
   userList = [ perard ];
 
   # helper functions
-  mapFilter = k: l: map (x: getAttr k x) (filter (x: hasAttr k) l);
-  mergeSubSets = s: l:
+  mapFilter = k: l: map (x: getAttr k x) (filter (x: hasAttr k x) l);
+  mergeSubSets = k: l:
     listToAttrs
-    (builtins.mapAttrs (name: value: { inherit name value; }) (mapFilter s l));
+    (builtins.mapAttrs (name: value: { inherit name value; }) (mapFilter k l));
 
 in {
 

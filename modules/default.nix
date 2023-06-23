@@ -36,7 +36,7 @@ in {
   };
 
   # submodules
-  imports = [ ./apps ./audio ./nixos ./desktop ./input ./users ];
+  imports = [ ./apps ./audio ./nixos ./desktop ./input ./server ];
 
   # unfree packages Predicate
   config = {
