@@ -9,16 +9,12 @@ let
 
   # me !
   perard = import ./perard { inherit pkgs; };
+
   userList = [ perard ];
 
+  # merge list of Attribute sets (of users)
+  mergeSubSets = import ./merge.nix;
 
-  # helper functions
-  recurseHas = list: index: set: if ((length list) <= index) then true else if (hasAttr (elemAt list index) set) then (recurse list (index + 1) set) else false;
-  recurseGet = list: index: set: if ((length list) <= index) then set  else if (hasAttr (elemAt list index) set) then (recurseGet list (index + 1) (getAttr (elemAt list index) set)) else {};
-
-  listOfUserAttributes = key : list : map (x : recurseGet key 0 x) list;
-
-  mergeSubSets =  key : list : listToAttrs ( map ( { x, y } @ value: { name = x; inherit value; } ) (listOfUserAttributes key list) ); 
 
 in {
 
@@ -28,7 +24,7 @@ in {
   # implementation
   config = {
     # merge all users
-    users.users = listOfUserAttributes "users.users";
+    users.users = mergeSubSets "users.users" userList;
 
     # should we allow this ?
     users.mutableUsers = true; # allow manually adding users
