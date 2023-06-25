@@ -15,7 +15,7 @@ let
 
   # modules values
   home-manager =  map (x: import x { inherit pkgs; }) modules;
-  packages = map (x: x.name) (merge (filterMap "packages" home-manager));
+  packages = merge (filterMap "packages" home-manager);
   programs = merge (filterMap "programs" home-manager);
 
 in {
@@ -24,9 +24,12 @@ in {
   users.users.perard = {
     uid = 1000;
     description = "Noé Perard-Gayot";
+    group = "users";
     extraGroups = [ "wheel" "flatpak" "steam" ];
     initialHashedPassword =
       "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+    isNormalUser = true;
+
   };
 
   # home manager

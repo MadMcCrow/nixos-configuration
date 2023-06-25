@@ -37,7 +37,7 @@ in {
 
   programs = {
     zsh = {
-      enable = useZsh;
+      enable = true;
       dotDir = ".config/zsh";
       enableSyntaxHighlighting = true;
 

@@ -217,7 +217,7 @@ in {
   # vscode
   programs = {
     vscode = {
-      enable = useVSCode;
+      enable = true;
 
       # disable update check and notification
       enableUpdateCheck = false;
