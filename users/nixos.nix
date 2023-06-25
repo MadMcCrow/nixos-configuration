@@ -3,18 +3,9 @@
 #   TODO : add option for each user
 #   TODO : add back option for guest user
 { config, pkgs, home-manager, ... }:
-with builtins;
-with pkgs.lib;
 let
-
-  # me !
-  perard = import ./perard { inherit pkgs; };
-
-  userList = [ perard ];
-
   # merge list of Attribute sets (of users)
-  mergeSubSets = import ./merge.nix;
-
+  users = import ./users.nix {inherit pkgs;};
 
 in {
 
@@ -24,12 +15,11 @@ in {
   # implementation
   config = {
     # merge all users
-    users.users = mergeSubSets "users.users" userList;
-
-    # should we allow this ?
-    users.mutableUsers = true; # allow manually adding users
-
+    users = {
+      users = users.configUsers;
+      mutableUsers = true; # allow manually adding users
+    };
     # merge all the home-manager configs
-    home-manager.users = mergeSubSets "home-manager.users" userList;
+    home-manager.users = users.home-managerUsers;
   };
 }

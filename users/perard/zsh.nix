@@ -28,13 +28,12 @@ let
     fi
   '';
 in {
-  packages = if useZsh then [
+  packages =  [
     exa
     powerline-go
     zsh-autosuggestions
     zsh-syntax-highlighting
-  ] else
-    [ ];
+  ];
 
   programs = {
     zsh = {
@@ -74,7 +73,7 @@ in {
     # Powerline go is another alternative
     # supposedly faster than omz and omp
     powerline-go = {
-      enable = useZsh;
+      enable = true;
       # modules : aws, bzr, cwd, direnv, docker, docker-context, dotenv, duration, exit, fossil, gcp, git, gitlite, goenv, hg, host, jobs, kube, load, newline, nix-shell, node, perlbrew, perms, plenv, rbenv, root, rvm, shell-var, shenv, ssh, svn, termtitle, terraform-workspace, time, user, venv, vgo, vi-mode, wsl)
       # (default "venv,user,host,ssh,cwd,perms,git,hg,jobs,exit,root")
       #modules-right : aws, bzr, cwd, direnv, docker, docker-context, dotenv, duration, exit, fossil, gcp, git, gitlite, goenv, hg, host, jobs, kube, load, newline, nix-shell, node, perlbrew, perms, plenv, rbenv, root, rvm, shell-var, shenv, ssh, svn, termtitle, terraform-workspace, time, user, venv, vgo, wsl)

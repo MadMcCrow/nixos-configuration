@@ -5,24 +5,18 @@ with builtins;
 with pkgs.lib;
 let
   # submodules
-  args = { inherit pkgs; };
-  git = import ./git.nix args // {
-    gitEmail = "noe.perard+git@gmail.com";
-    gitUser = "MadMcCrow";
-  };
-  firefox = import ./firefox.nix args;
-  vs-code = import ./vs-code.nix args;
-  zsh = import ./zsh.nix args;
-  modules = [ firefox vs-code zsh git ];
+  modules = [ ./git.nix ./firefox.nix ./vs-code.nix ./zsh.nix ];
+  
+  # helper functions
+  cat = a : b : if (isAttrs a) then (a // b) else if (isList a) then concatLists [a b] else b;
+  recMerge = l : i: s : if (i < (length l)) then recMerge l (i + 1) (cat s (elemAt l i)) else s;
+  merge = l : recMerge l 0 (elemAt l 0);
+  filterMap = k: l :  map (x : getAttr k x) (filter (x : hasAttr k x) l);
 
-  # helper function
-  mapFilter = k: l: map (x: getAttr k x) (filter (x: hasAttr k) l);
-  # get packages from sets
-  mergePackages = l: concatLists (mapFilter "packages" l);
-  # get programs from sets
-  mergePrograms = l:
-    listToAttrs (builtins.mapAttrs (name: value: { inherit name value; })
-      (mapFilter "programs" l));
+  # modules values
+  home-manager =  map (x: import x { inherit pkgs; }) modules;
+  packages = map (x: x.name) (merge (filterMap "packages" home-manager));
+  programs = merge (filterMap "programs" home-manager);
 
 in {
 
@@ -38,10 +32,10 @@ in {
   # home manager
   home-manager.users.perard = {
     home = {
-      packages = mergePackages modules;
+      inherit packages;
       stateVersion = "23.05";
     };
-    programs = mergePrograms modules;
+    inherit programs;
   };
 
 }

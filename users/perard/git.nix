@@ -1,15 +1,19 @@
 # git.nix
 #   git and github settings
-# TODO : switch to email through accounts.email
-# TODO : share  with other users
-{ pkgs, gitEmail, gitUser }: {
+{ pkgs }:
+let
+  # TODO : switch to email through accounts.email
+  gitEmail = "noe.perard+git@gmail.com";
+  gitUser = "MadMcCrow";
+in
+{
 
   packages = with pkgs; [ git gh ];
 
   programs = {
     git = {
       enable = true;
-      userName = gitUser;
+      userName  = gitUser;
       userEmail = gitEmail;
       lfs.enable = true;
       extraConfig = {

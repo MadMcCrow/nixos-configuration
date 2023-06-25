@@ -2,13 +2,8 @@
 # 	users for MacOS systems
 { config, pkgs, home-manager, ... }:
 let
-  # me !
-  perard = import ./perard { inherit pkgs; };
-
-  userList = [ perard ];
-
   # merge list of Attribute sets (of users)
-  mergeSubSets = import ./merge.nix;
+  users = import ./users.nix {inherit pkgs;};
 
 in {
 
@@ -18,6 +13,6 @@ in {
   # implementation
   config = {
     # only Home manager supported in macOS
-    home-manager.users = mergeSubSets "home-manager.users" userList;
+    home-manager.users = users.home-managerUsers;
   };
 }
