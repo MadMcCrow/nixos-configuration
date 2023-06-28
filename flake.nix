@@ -70,10 +70,10 @@
             ./modules/darwin
             ./users/darwin.nix
             ./systems/MBA/configuration.nix
+            home-manager.darwinModules.home-manager
             {
               darwin = {
                 enable = true;
-                apps.enable = true;
               };
             }
           ];

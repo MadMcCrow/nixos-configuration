@@ -1,10 +1,16 @@
 # firefox.nix
 #   firefox web browser
-{ pkgs }: {
-  programs = {
+{ pkgs }: 
+let 
+package = pkgs.firefox-devedition-bin;
+supportedPlatforms = package.meta.platforms;
+supported = builtins.elem pkgs.system supportedPlatforms;
+in
+{
+  programs = pkgs.lib.mkIf supported {
     firefox = {
       enable = true;
-      package = pkgs.firefox-devedition-bin;
+      inherit package;
     };
   };
 }

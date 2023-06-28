@@ -5,7 +5,7 @@ with builtins;
 with lib;
 let
   cfg = config.darwin;
-  submodules = [ ./pam.nix ./nix-index.nix ./apps.nix ];
+  submodules = [ ./pam.nix ./nix.nix ];
 in {
   options.darwin.enable = mkEnableOption (mdDoc "Darwin (MacOS)") // {
     default = false;
