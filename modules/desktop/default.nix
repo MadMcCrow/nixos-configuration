@@ -6,7 +6,7 @@ with builtins;
 with lib;
 let
   cfg = config.desktop;
-  submodules = [ ./gnome.nix ./kde.nix ];
+  submodules = [ ./gnome.nix ./kde.nix ./flatpak.nix];
 in {
   options.desktop.enable = mkEnableOption (mdDoc "desktop") // {
     default = true;

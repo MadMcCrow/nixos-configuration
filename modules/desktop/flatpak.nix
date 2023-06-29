@@ -4,15 +4,14 @@
 with builtins;
 with lib;
 let
-  nos = config.nixos;
-  cfg = nos.flatpak;
   dsk = config.desktop;
+  cfg = dsk.flatpak;
    # only enable if we harve a desktop environment
   hasDesktop = dsk.gnome.enable || dsk.kde.enable;
 in {
   # interface
-  options.nixos.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
-    default = false;
+  options.desktop.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
+    default = hasDesktop;
   };
   # import thanks to specialArgs
   imports = [ impermanence.nixosModules.impermanence ];

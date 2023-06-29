@@ -28,21 +28,11 @@
       availableKernelModules =
         [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       kernelModules = [ "dm-snapshot" "amdgpu" ];
-      postDeviceCommands = lib.mkAfter ''
-        zfs rollback -r nixos-pool/local/root@blank
-      '';
     };
 
     plymouth.enable = true;
-    zfs = {
-      forceImportRoot = true;
-      forceImportAll = false;
-      enableUnstable = false;
-    };
   };
 
-  # zfs
-  services.zfs.trim.enable = true;
 
   # Networking
   networking.hostName = "nixAF"; # Define your hostname.

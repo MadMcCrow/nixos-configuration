@@ -7,12 +7,12 @@ let
   cfg = config.nixos;
   submodules = [
     ./filesystems.nix
-    ./flatpak.nix
     ./nix.nix
     ./opengl.nix
     ./security.nix
     ./shell.nix
     ./utils.nix
+    ./zfs.nix
   ];
 in {
   # enable nixos systems
