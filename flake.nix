@@ -55,6 +55,7 @@
           # desktop env
           desktop.gnome.enable = true;
           desktop.gnome.superExtraApps = true;
+          nixos.flatpak.enable = true;
           input.xone.enable = true;
           audio.pipewire.enable = true;
         };
