@@ -6,6 +6,6 @@
 
   # interface
   options.server = {
-    enable = lib.mkEnableOption "enable server services";
+    enable = lib.mkEnableOption (mdDoc "server services");
   };
 }

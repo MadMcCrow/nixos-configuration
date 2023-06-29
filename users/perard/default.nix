@@ -18,6 +18,8 @@ let
   packages = merge (filterMap "packages" home-manager);
   programs = merge (filterMap "programs" home-manager);
 
+  flatpakGroup = if config.nixos.flatpak.enable then ["flatpak"] else [];
+
 in {
 
   # nixos config
@@ -25,7 +27,7 @@ in {
     uid = 1000;
     description = "Noé Perard-Gayot";
     group = "users";
-    extraGroups = [ "wheel" "flatpak" "steam" ];
+    extraGroups = [ "wheel" "steam" ] ++ flatpakGroup ;
     initialHashedPassword =
       "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
     isNormalUser = true;

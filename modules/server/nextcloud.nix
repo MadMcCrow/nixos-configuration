@@ -10,7 +10,7 @@ in {
   # interface
   options.server.nextcloud = {
     # do you want a nexcloud instance
-    enable = lib.mkEnableOption "Nextcloud service" // {default = true;};
+    enable = lib.mkEnableOption (mdDoc "Nextcloud service") // {default = true;};
   };
 
   # base config for nextcloud 
