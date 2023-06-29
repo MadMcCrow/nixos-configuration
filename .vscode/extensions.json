@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "jnoortheen.nix-ide",
-        "bbenoist.nix"
+        "jnoortheen.nix-ide"
     ]
 }

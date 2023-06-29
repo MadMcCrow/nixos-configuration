@@ -1,6 +1,6 @@
 # server/default.nix
 # 	each server service is enabled in a separate sub-module
-{ config, ... }: {
+{ config, pkgs, lib, ... }: {
   # services
   imports = [ ./nextcloud.nix ];
 
