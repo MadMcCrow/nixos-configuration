@@ -34,7 +34,7 @@ in {
 
   # home manager
   home-manager.users.perard = {
-    home = {
+    home =  {
       username = "perard";
       inherit packages;
       stateVersion = "23.05";
