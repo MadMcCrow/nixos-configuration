@@ -7,6 +7,8 @@ let
   nos = config.nixos;
   cfg = nos.flatpak;
   dsk = config.desktop;
+   # only enable if we harve a desktop environment
+  hasDesktop = dsk.gnome.enable || dsk.kde.enable;
 in {
   # interface
   options.nixos.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
@@ -15,10 +17,9 @@ in {
   # import thanks to specialArgs
   imports = [ impermanence.nixosModules.impermanence ];
   # configs
-  config = lib.mkIf (nos.enable && cfg.enable) {
-   
-    # only enable if we harve a desktop environment
-    xdg.portal.enable = dsk.gnome.enable || dsk.kde.enable;
+  config = lib.mkIf (nos.enable && cfg.enable && hasDesktop) {
+  
+    xdg.portal.enable = true;
 
     # enable package kit
     services.packagekit.enable = true;
