@@ -3,17 +3,18 @@
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
-let cfg = config.server.nextcloud;
+let srv = config.server;
+let cfg = srv.nextcloud;
 in {
 
   # interface
   options.server.nextcloud = {
     # do you want a nexcloud instance
-    enable = lib.mkEnableOption "Nextcloud service";
+    enable = lib.mkEnableOption "Nextcloud service" // {default = true;};
   };
 
   # base config for nextcloud 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (srv.enable && cfg.enable) {
 
     services.nextcloud = {
       enable = true;

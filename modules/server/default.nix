@@ -3,4 +3,9 @@
 { config, ... }: {
   # services
   imports = [ ./nextcloud.nix ];
+
+  # interface
+  options.server = {
+    enable = lib.mkEnableOption "enable server services";
+  };
 }

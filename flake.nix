@@ -60,7 +60,9 @@
           audio.pipewire.enable = true;
         };
         # my NUC acting as a headless server
-        NUC-Cloud = nixOSx86 { };
+        NUC-Cloud = nixOSx86 { 
+          server.enable = true;
+        };
       };
 
       # MacOS
