@@ -44,7 +44,11 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = inputs;
-          modules = [ ./modules ./users/nixos.nix sysArgs {nix.registry.nixpkgs.flake = nixpkgs;}] ;
+          modules = [ 
+          ./modules
+          ./users/nixos.nix
+          sysArgs
+          ] ;
         };
 
       darwinAarch64 = system : 

@@ -1,6 +1,6 @@
 # default.nix
 #	Base of modules
-{ pkgs, config, lib, inputs, ... }:
+{ pkgs, config, lib, nixpkgs, ... }:
 with builtins;
 with lib;
 let
@@ -44,9 +44,10 @@ in {
   };
 
   # submodules
-  imports = [ ./nixos ];
+  imports = [ ./nixos ./darwin ];
 
   config = {
+    nix.registry.nixpkgs.flake = nixpkgs;
     nixpkgs = {
       overlays = cfg.overlays;
       config = {

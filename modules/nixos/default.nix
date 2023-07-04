@@ -342,7 +342,6 @@ in {
 
       # this causes error :
       # nixpkgs means "our" nixpkgs
-      #registry.nixpkgs.flake = inputs.nixpkgs;
 
       # add support for cachix
       settings = {
