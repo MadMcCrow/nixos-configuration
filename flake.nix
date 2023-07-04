@@ -45,8 +45,10 @@
           inherit system;
           specialArgs = inputs;
           modules = [ 
+          home-manager.nixosModule
+          home-manager.nixosModules.home-manager
           ./modules
-          ./users/nixos.nix
+          ./users
           sysArgs
           ] ;
         };

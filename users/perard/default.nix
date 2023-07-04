@@ -1,6 +1,6 @@
 # perard.nix
 # 	my User
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   # nixos config
   users.users.perard = {
