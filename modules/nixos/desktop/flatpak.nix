@@ -4,19 +4,22 @@
 with builtins;
 with lib;
 let
-  dsk = config.desktop;
-  cfg = dsk.flatpak;
+  # config shortcuts
+  nos = config.nixos;
+  dsk = nos.desktop;
+  cfg = dsk.flatpak;  
    # only enable if we harve a desktop environment
   hasDesktop = dsk.gnome.enable || dsk.kde.enable;
+  enable = all (x : x.enable) [nos dsk cfg];
 in {
   # interface
-  options.desktop.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
+  options.nixos.desktop.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
     default = hasDesktop;
   };
   # import thanks to specialArgs
   imports = [ impermanence.nixosModules.impermanence ];
   # configs
-  config = lib.mkIf (nos.enable && cfg.enable && hasDesktop) {
+  config = lib.mkIf (enable && hasDesktop) {
   
     xdg.portal.enable = true;
 
@@ -24,7 +27,6 @@ in {
     services.packagekit.enable = true;
     # enable flatpak
     services.flatpak.enable = true;
-
 
     environment.systemPackages = with pkgs; [
       libportal

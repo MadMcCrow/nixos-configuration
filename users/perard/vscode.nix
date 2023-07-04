@@ -211,28 +211,15 @@ let
     github.github-vscode-theme
   ];
 in {
-  # jetbrains mono font
-  packages = [ pkgs.jetbrains-mono ];
-
-  # vscode
-  programs = {
-    vscode = {
       enable = true;
-
       # disable update check and notification
       enableUpdateCheck = false;
-
       # use vscodium as vscode
       package = pkgs.vscodium;
-
       # allow installing extensions from marketplace
       mutableExtensionsDir = false;
-
       # enable extensions
       extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
-
       # JSon settings 
       userSettings = vsSettings;
-    };
-  };
 }

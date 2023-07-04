@@ -1,16 +1,12 @@
-# users/nixos.nix
-# 	users for Nixos systems
-#   TODO : add option for each user
-#   TODO : add back option for guest user
-{ config, pkgs, home-manager, ... }:
+# users/repl.nix
+{}:
 let
+  config = {};
+  pkgs = import <nixpkgs> {};
   # merge list of Attribute sets (of users)
   users = import ./users.nix {inherit pkgs config;};
 
 in {
-
-  # import HM
-  imports = [ home-manager.nixosModule home-manager.nixosModules.home-manager ];
 
   # implementation
   config = {
@@ -20,8 +16,6 @@ in {
       mutableUsers = true; # allow manually adding users
     };
     # merge all the home-manager configs
-    home-manager.useGlobalPkgs = true;
-    home-manager.useUserPackages = true;
     home-manager.users = users.home-managerUsers;
   };
 }

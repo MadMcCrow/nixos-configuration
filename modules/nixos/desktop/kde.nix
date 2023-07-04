@@ -4,7 +4,7 @@
 with builtins;
 with lib;
 let
-  dsk = config.desktop;
+  dsk = config.nixos.desktop;
   cfg = dsk.kde;
 
   # extra kde apps
@@ -16,7 +16,7 @@ let
 in {
 
   # interface
-  options.desktop.kde = {
+  options.nixos.desktop.kde = {
     # do you want gnome Desktop environment
     enable = mkEnableOption (mdDoc "KDE, the QT based desktop environment");
 

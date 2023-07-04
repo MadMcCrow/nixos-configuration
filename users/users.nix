@@ -1,6 +1,6 @@
 # users/merge.nix
 # a function to help merge list of users
-{pkgs} :
+args @ {pkgs, ...} :
 with builtins;
 with pkgs;
 let
@@ -24,7 +24,7 @@ let
   keyMerge = key : list : merge (map (x : recurseGet (splitAttr key) 0 x) list);
 
   # imports
-  userList =  map (x :  import x { inherit pkgs; }) users;
+  userList =  map (x :  import x args ) users;
 
 in
 {

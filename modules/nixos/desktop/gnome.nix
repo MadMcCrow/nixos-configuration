@@ -1,13 +1,14 @@
 # gnome.nix
 # 	Nixos Gnome Desktop environment settings
-#	todo : implement Dconf2nix (possibly in a separate module)
+#	TODO : implement Dconf2nix (possibly in a separate module)
+# TODO : more curated/ personnal version of gnome 
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
 let
-  dsk = config.desktop;
+  dsk = config.nixos.desktop;
   cfg = dsk.gnome;
-  fpk = config.nixos.flatpak.enable;
+  fpk = dsk.flatpak.enable;
 
   # extra gnome apps
   extraApps = with pkgs.gnome;
@@ -57,7 +58,7 @@ let
 in {
 
   # interface
-  options.desktop.gnome = {
+  options.nixos.desktop.gnome = {
     # do you want gnome Desktop environment
     enable = mkEnableOption (mdDoc "gnome, the default desktop environment");
     # wayland support

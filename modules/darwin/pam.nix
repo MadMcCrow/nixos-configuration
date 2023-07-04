@@ -5,7 +5,9 @@ with builtins;
 with lib;
 let
   # config interface
-  cfg = config.darwin.security.pam.sudoTouchIdAuth;
+  cfg = config.darwin;
+  pam = cfg.security.pam.sudoTouchIdAuth;
+
   # Implementation Notes
   #
   # We don't use `environment.etc` because this would require that the user manually delete
@@ -47,11 +49,11 @@ in {
       authentication with Touch ID won't work after a system update until the nix-darwin
       configuration is reapplied.)
     '') // {
-      default = true;
+      default =  cfg.enable;
     };
   };
   # 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable && pam.enable {
     system.activationScripts.extraActivation.text = ''
       # PAM settings
       echo >&2 "setting up pam..."

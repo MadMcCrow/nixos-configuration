@@ -7,8 +7,6 @@ let
   cfg = config.darwin;
   submodules = [ ./pam.nix ./nix.nix ];
 in {
-  options.darwin.enable = mkEnableOption (mdDoc "Darwin (MacOS)") // {
-    default = false;
-  };
+  options.darwin.enable = mkEnableOption (mdDoc "Darwin (MacOS)");
   imports = submodules;
 }
