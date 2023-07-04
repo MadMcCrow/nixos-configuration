@@ -12,7 +12,7 @@ let
   
   # not working (cannot find inputs)
   # stable pkgs for packages being broken on instable (like steam)
-  #stable-pkgs = inputs.nixpkgs-stable.legacyPackages.${pkgs.system};
+  #stable-pkgs = nixpkgs-stable.legacyPackages.${pkgs.system};
   stable-pkgs = pkgs;
 
   # helper functions

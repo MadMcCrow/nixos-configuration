@@ -340,9 +340,6 @@ in {
         dates = [updateDates ];
       };
 
-      # this causes error :
-      # nixpkgs means "our" nixpkgs
-
       # add support for cachix
       settings = {
         substituters = [
