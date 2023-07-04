@@ -56,6 +56,7 @@
       darwinAarch64 = system : 
       darwin.lib.darwinSystem {
           system = "aarch64-darwin";
+          specialArgs = inputs;
           modules = [
           home-manager.darwinModules.home-manager
           ./modules 
@@ -75,9 +76,10 @@
       };
       
       # MacOS
-      darwinSystems = {
+      darwinConfigurations = {
+        # my MacBook Air
         Noes-MacBook-Air = darwinAarch64 ./systems/MBA.nix;
-        };
+      };
 
       overlays = {
         # Overlay useful on Macs with Apple Silicon

@@ -46,7 +46,7 @@ build()
 
 apply()
 {
-  ./result/sw/bin/darwin-rebuild switch --flake 
+  ./result/sw/bin/darwin-rebuild switch --flake .#
 }
 
 # install nix if nix is not present
