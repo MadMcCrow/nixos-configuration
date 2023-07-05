@@ -1,6 +1,9 @@
 {
     // make everything more noticeable
     "workbench.colorCustomizations": {
-      "activityBar.activeBorder": "#752827"
-    }
+      "activityBarBadge.background": "#752827",
+      "activityBar.activeBorder" : "#752827",
+      "statusBar.background": "#752827",
+      "statusBar.foreground": "#ffffff"
+      }
 }      

@@ -80,7 +80,7 @@ let
 
   # Kernel
   defaultKernelMods =
-    [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "dm-snapshot" ];
+    [ "nvme" "xhci_pci" "xhci_hcd" "ahci" "usbhid" "usb_storage" "sd_mod" "dm-snapshot" ];
   kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   kernelParams = [ "nohibernate" "quiet" ];
 

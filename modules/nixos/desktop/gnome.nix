@@ -41,17 +41,25 @@ let
   ## you will need to enable them in the gnome extension app
   extraExtensions = with pkgs.gnomeExtensions; [
     runcat # the best gnome extension
-    dash-to-dock # turn the dash into a dock, always visible
     caffeine # prevents lockscreen
+    dash-to-dock # turn the dash into a dock, always visible
+    quick-settings-tweaker # Gnome43+ quick settings editor
     appindicator # add systray icon support
     gsconnect # KDE Connect in the top-bar
-    quick-settings-tweaker # Gnome43 quick settings editor
+    valent    # replacement for GSConnect built with modern GTK
     tiling-assistant # Windows-like tiling update
     blur-my-shell # some nice blur effect
     gtile # tile with grid
     unite # some ubuntu unity shell modification
     gtk4-desktop-icons-ng-ding # add desktop icons
+    alttab-mod # improve alt-tabbing
+    advanced-alttab-window-switcher # completely replace alt-tab
+    unity-like-app-switcher # colourful alt-tab
+    weather-or-not # weather on the top top-bar
+    just-perfection # customise everything
+    wireless-hid # battery left in mouse/gamepad etc...
   ];
+
   # some nice themes
   themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme ];
 

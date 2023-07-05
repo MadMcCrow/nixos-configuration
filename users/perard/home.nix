@@ -30,9 +30,10 @@ in {
   in code // { enable = supported code.package; };
 
   # FIREFOX
-  programs.firefox = {
-    enable = supported pkgs.firefox-devedition-bin;
-    package = pkgs.firefox-devedition-bin;
+  programs.firefox = let pkg = pkgs.firefox-beta;
+  in {
+    enable = supported pkg;
+    package = pkg;
   };
 
   # GIT
