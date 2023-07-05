@@ -12,6 +12,7 @@
       enable = true;
       # use gnome
       kde.enable = true;
+      kde.displayManager = "lightdm";
       xone.enable = true;  # xbox controller
     };
 

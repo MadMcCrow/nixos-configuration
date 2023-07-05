@@ -112,13 +112,6 @@ in {
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
 
-      # GDM :
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = cfg.wayland; # Wayland
-        };
-      };
       # use Gnome
       desktopManager.gnome.enable = true;
     };
@@ -126,7 +119,6 @@ in {
 
     # Gnome useless apps :
     environment.gnome.excludePackages = with pkgs; [
-      gnome.gnome-weather
       gnome-tour
       gnome-photos
       gnome.simple-scan
