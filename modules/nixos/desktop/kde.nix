@@ -86,7 +86,7 @@ in {
     };
 
     # only in unstable : environment.plasma5.excludePackages 
-    services.xserver.desktopManager.plasma5.excludePackages =
+    environment.plasma5.excludePackages =
       with pkgs.libsForQt5; [
         oxygen
         khelpcenter

@@ -11,10 +11,7 @@
     desktop = {
       enable = true;
       # use gnome
-      gnome = { 
-        enable = true;
-        superExtraApps = true;
-      };
+      kde.enable = true;
       xone.enable = true;  # xbox controller
     };
 
