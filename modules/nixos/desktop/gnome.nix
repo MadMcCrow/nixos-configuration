@@ -91,7 +91,7 @@ in {
     # gnome online accounts sync
     onlineAccounts = mkEnableOptionDefault "online accounts for nextcloud/freecloud/google/ms-exchange" true;
     # gsconnect is KDE connect for gnome
-    gSConnect = mkBoolOpmkEnableOptionDefaulttion "gsconnect, KDE connect for gnome" true;
+    gSConnect = mkEnableOptionDefault "gsconnect, KDE connect for gnome" true;
   };
 
   # base config for gnome 
