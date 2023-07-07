@@ -103,6 +103,12 @@ in {
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
       desktopManager.gnome.enable = true;
+      # use gdm :
+      displayManager.gdm = {
+          enable = true;
+          wayland = cfg.wayland;
+      };
+
     };
     programs.xwayland.enable = cfg.wayland;
 
