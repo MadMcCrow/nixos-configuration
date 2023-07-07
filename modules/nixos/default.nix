@@ -413,6 +413,10 @@ in {
         allowReboot = cfg.upgrade.autoReboot;
       };
 
+      # disable nixos manual
+      documentation.nixos.enable = false;
+
+      # our configuration is working with "23.05"
       stateVersion = "23.05";
     };
   };

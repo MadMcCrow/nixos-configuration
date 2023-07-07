@@ -13,6 +13,7 @@
       # use gnome as it's more stable than KDE
       gnome.enable = true;
       xone.enable = true;  # xbox controller
+      logitech.enable = true;
     };
 
     # kernel packages
