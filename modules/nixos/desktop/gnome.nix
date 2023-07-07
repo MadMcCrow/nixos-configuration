@@ -116,7 +116,7 @@ in {
       gnome.totem
       gnome.yelp
       gnome.cheese
-      gnome.weather
+      gnome.gnome-weather
       gnome.gnome-characters
       orca
     ]);

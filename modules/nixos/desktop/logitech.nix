@@ -1,29 +1,28 @@
-# xone.nix
-# 	support for xbox one input
+# logitech.nix
+# 	support for logitech hardware
 {config, pkgs ,lib, ...} :
 with builtins;
 with lib;
 let
   nos = config.nixos;
   dsk = nos.desktop;
-  cfg = dsk.xone;
-
+  cfg = dsk.logitech;
   enable = all (x : x.enable) [nos dsk cfg];
 in {
 
   # interface
-  options.nixos.desktop.xone.enable = mkEnableOption (mdDoc "XBox One driver");
+  options.nixos.desktop.logitech.enable = mkEnableOption (mdDoc "logitech drivers and software");
   # config
   config = mkIf enable {
     # Xbox Controller Support
-    hardware = {
-      xone.enable = true;
-      firmware = [ pkgs.xow_dongle-firmware ];
+    hardware.logitech.wireless = {
+      enable = true;
+      enableGraphical = true;
     };
     # Packages
     environment.systemPackages = with pkgs; [
-      xow_dongle-firmware # for xbox controller
-      config.boot.kernelPackages.xone
+      logitech-udev-rules
+      solaar
     ];
     packages.unfreePackages = [ "xow_dongle-firmware" ];
   };

@@ -1,8 +1,8 @@
 # desktop/apps.nix
 # 	userspace apps that are provided directly, either because not present on home manager
 #   or because the HM-configuration is lacking for them
-#   TODO : move steam to separate module
-#   TODO : move discord to separate module
+#   TODO : move steam to separate module ?
+#   TODO : move discord to separate module ?
 { pkgs, config, lib, inputs, ... }:
 with builtins;
 with lib;

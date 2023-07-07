@@ -29,7 +29,7 @@ let
   lightdm-greeter-theme =  {
     cursorTheme = breeze-icons;
     iconTheme = breeze-icons;
-    font = noto-font;
+    #font = noto-font;
     theme = breeze-gtk;
   };
 
