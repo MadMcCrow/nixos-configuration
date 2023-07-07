@@ -10,9 +10,8 @@
     # desktop env
     desktop = {
       enable = true;
-      # use gnome
-      kde.enable = true;
-      kde.displayManager = "lightdm";
+      # use gnome as it's more stable than KDE
+      gnome.enable = true;
       xone.enable = true;  # xbox controller
     };
 
@@ -24,6 +23,9 @@
     cpu.powermode = "performance";
     gpu.vendor = "amd";
   };
+
+  # Add support for logitech drivers : 
+  hardware.logitech.wireless.enable = true;
 
   # add steam drive
   fileSystems."/run/media/steam" = {

@@ -63,62 +63,51 @@ let
   # some nice themes
   themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme ];
 
+  systemPackages =  [ pkgs.dconf pkgs.dconf2nix ]
+      ++ (if cfg.extraApps then extraApps else [ ])
+      ++ (if cfg.superExtraApps then superExtraApps else [ ])
+      ++ (if cfg.extraExtensions then extraExtensions else [ ])
+      ++ (if cfg.themes then themes else [ ]);
+
+  # helper functions
+  mkEnableOptionDefault = desc: default: mkEnableOption (mdDoc desc) // { inherit default; };
+
 in {
 
   # interface
   options.nixos.desktop.gnome = {
     # do you want gnome Desktop environment
-    enable = mkEnableOption (mdDoc "gnome, the default desktop environment");
+    enable = mkEnableOptionDefault  "gnome, the default desktop environment" false;
     # wayland support
-    wayland =
-      mkEnableOption (mdDoc "Wayland, the new standard meant to replace Xorg")
-      // {
-        default = true;
-      };
+    wayland = mkEnableOptionDefault "Wayland, the new standard meant to replace Xorg" true;
     # useful gnome apps
-    extraApps = mkEnableOption (mdDoc "(useful) curated gnome apps") // {
-      default = true;
-    };
+    extraApps = mkEnableOptionDefault "(useful) curated gnome apps" true;
     # useful gnome apps
-    superExtraApps =
-      mkEnableOption (mdDoc "curated gnome apps that are fun but not useful");
+    superExtraApps = mkEnableOptionDefault "curated gnome apps that are fun but not useful" false;
     # useful gnome extension
-    extraExtensions = mkEnableOption (mdDoc "curated gnome extensions") // {
-      default = true;
-    };
+    extraExtensions = mkEnableOptionDefault "curated gnome extensions" true;
     # theming
-    themes = mkEnableOption (mdDoc "gnome/gtk themes") // { default = true; };
+    themes = mkEnableOptionDefault "gnome/gtk themes" true;
     # gnome online accounts sync
-    onlineAccounts = mkEnableOption
-      (mdDoc "online accounts for nextcloud/freecloud/google/ms-exchange") // {
-        default = true;
-      };
+    onlineAccounts = mkEnableOptionDefault "online accounts for nextcloud/freecloud/google/ms-exchange" true;
     # gsconnect is KDE connect for gnome
-    gSConnect = mkEnableOption (mdDoc "gsconnect, KDE connect for gnome") // {
-      default = true;
-    };
+    gSConnect = mkBoolOpmkEnableOptionDefaulttion "gsconnect, KDE connect for gnome" true;
   };
 
   # base config for gnome 
   config = lib.mkIf (dsk.enable && cfg.enable) {
 
     system.nixos.tags = [ "Gnome" ];
-
     services.xserver = {
-      # enable GUI
       enable = true;
-
-      # remove xterm
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
-
-      # use Gnome
       desktopManager.gnome.enable = true;
     };
     programs.xwayland.enable = cfg.wayland;
 
-    # Gnome useless apps :
-    environment.gnome.excludePackages = with pkgs; [
+    # Remove default gnome apps unless explicitly requested
+    environment.gnome.excludePackages = filter (x : !(elem x systemPackages) ) (with pkgs; [
       gnome-tour
       gnome-photos
       gnome.simple-scan
@@ -127,9 +116,10 @@ in {
       gnome.totem
       gnome.yelp
       gnome.cheese
+      gnome.weather
       gnome.gnome-characters
       orca
-    ];
+    ]);
 
     # gnome services :
     services.gnome = {
@@ -165,11 +155,7 @@ in {
     programs.evolution.enable = false;
 
     # packages
-    environment.systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
-      ++ (if cfg.extraApps then extraApps else [ ])
-      ++ (if cfg.superExtraApps then superExtraApps else [ ])
-      ++ (if cfg.extraExtensions then extraExtensions else [ ])
-      ++ (if cfg.themes then themes else [ ]);
+    environment.systemPackages = systemPackages;
 
     # enable gnome settings daemon
     services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
