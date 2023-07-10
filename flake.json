@@ -1,1 +1,0 @@
-{"darwinSystems":{"type":"unknown"},"nixosConfigurations":{"nixAF":{"type":"nixos-configuration"}},"overlays":{"apple-silicon":{"type":"nixpkgs-overlay"}}}

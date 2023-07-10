@@ -82,7 +82,7 @@ let
   defaultKernelMods =
     [ "nvme" "xhci_pci" "xhci_hcd" "ahci" "usbhid" "usb_storage" "sd_mod" "dm-snapshot" ];
   kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  kernelParams = [ "nohibernate" "quiet loglevel=3" ];
+  kernelParams = [ "nohibernate" "quiet" "loglevel=3" ];
 
 
   # CPU
@@ -410,11 +410,11 @@ in {
         allowReboot = cfg.upgrade.autoReboot;
       };
 
-      # disable nixos manual
-      documentation.nixos.enable = false;
-
       # our configuration is working with "23.05"
       stateVersion = "23.05";
     };
+
+    # disable nixos manual : just use the web version !
+    documentation.nixos.enable = false;
   };
 }

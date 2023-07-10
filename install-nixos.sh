@@ -1,3 +1,10 @@
+#!/bin/sh
+#
+# install-nixos.sh
+#     script to streamline installation on other devices 
+#     TODO : read steps to perform
+#
+
 #variables
 POOLNAME="nixos-pool"
 DEVICE="nvme0n1" 
@@ -6,6 +13,12 @@ BOOT="nvme0n1p1"
 HOST="NUC-Cloud"
 SIZE="4GiB" 
 # format drive command
+
+
+echo_lined()
+{
+  echo -e  "---------- $1 ----------"
+}
 
 check_block_device()
 {
@@ -37,7 +50,6 @@ read -p 'boot partition size: '   SIZE
 
 format() 
 { 
-echo -e  "-------- Format drive --------"
 sfdisk --wipe   /dev/$DEVICE
 wipefs /dev/$DEVICE
 sfdisk --delete /dev/$DEVICE
@@ -50,7 +62,6 @@ mkdosfs -i 8001EF00 /dev/$BOOT
 
 clean()
 {
-echo -e  "-------- Clean and delete pool --------"
 umount /mnt/boot
 umount /mnt
 zpool destroy $POOLNAME -f
@@ -61,8 +72,6 @@ umount $DEVICE
 
 zfs_create()
 {
-echo -e  "-------- Create zfs pool --------"
-
 # create pool
 # Create a root
 zpool create $POOLNAME $PART
@@ -78,7 +87,6 @@ zfs create -p -o mountpoint=legacy $POOLNAME/safe/persist
 
 zfs_mount()
 {
-echo -e  "-------- mounting zfs pool --------"
 mount -t zfs $POOLNAME/local/root /mnt
 mkdir /mnt/boot
 mount /dev/$BOOT /mnt/boot
@@ -93,16 +101,50 @@ mount -t zfs $POOLNAME/safe/persist /mnt/persist
 # run 
 install_nixos()
 {
-echo -e  "-------- install nixos flake --------"
 cd /mnt
 nixos-install --impure --flake github:MadMcCrow/nixos-configuration#$HOST
 }
 
-# perform all actions
-#inputs
-checks
-clean
-format
-zfs_create
-zfs_mount
-install_nixos
+step()
+{
+  echo_lined "step : $1"
+  while true; do
+        read -p "Skip ? [y/n]: " yn
+        case $yn in
+            [Yy]*) return 0  ;;  
+            [Nn]*) echo "Aborted" ; return  1 ;;
+        esac
+  done
+}
+
+# if running in script mode
+if $1 == "--script" then 
+  # perform all actions
+  echo_lined "checks"
+  checks
+  echo_lined "clean drive and zfs"
+  clean
+  echo_lined "format drive"
+  format
+  echo_lined "create zfs pool"
+  zfs_create
+  echo_lined "mount zfs pool"
+  zfs_mount
+  echo_lined "install nixos"
+  install_nixos
+elif $1 == "--dry-run" then
+  echo_lined "checks"
+  echo_lined "clean drive and zfs"
+  echo_lined "format drive"
+  echo_lined "create zfs pool"
+  echo_lined "mount zfs pool"
+  echo_lined "install nixos"
+else
+  if step "input settings"; then inputs; fi
+  if step "perform checks"; then checks; fi
+  if step "clean drives  "; then clean;  fi
+  if step "format drives"; then format; fi
+  if step "create zfs pool"; then zfs_create; fi
+  if step "mount zfs pool"; then zfs_mount;  fi
+  if step "install nixos"; then install_nixos;  fi
+fi

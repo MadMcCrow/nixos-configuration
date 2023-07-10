@@ -4,8 +4,9 @@
   # our settings
   nixos = {
     enable = true;
-
     host.name = "nixAF";
+
+    rebuild.genCount = 10;
 
     # desktop env
     desktop = {

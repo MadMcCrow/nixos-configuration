@@ -1,30 +1,26 @@
 # NUC Cloud config
-{ config, lib, pkgs, ... }: 
-with config; {
-
-  # our settings
+{ pkgs, ... }: 
+{
+# our settings
   nixos = {
     enable = true;
-
     host.name = "nixNUC";
 
+    # let's be generous with ourselves
+    rebuild.genCount = 10;
+
     # desktop env
+    desktop.enable = true;
     desktop.gnome.enable = true;
-    desktop.gnome.superExtraApps = true;
 
     # kernel packages
-    kernel.extraKernelPackages = with nixos.kernel.packages; [
-      intel-speed-select
-      phc-intel
-    ];
+    kernel.extraKernelPackages = [ "intel-speed-select" "phc-intel"];
 
-    # xbox controller
-    input.xone.enable = true;
-
-    # cpu
+    # cpu/gpu
     cpu.vendor = "intel";
     cpu.powermode = "powersave";
-
+    gpu.vendor = "intel";
+    
     # server :
     server.enable = true;
   };

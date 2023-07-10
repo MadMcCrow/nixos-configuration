@@ -10,6 +10,9 @@ in {
   home.homeDirectory = "/home/perard";
   home.stateVersion = "23.05";
 
+  # add our dconf settings
+  imports = [ ./dconf.nix ];
+
   # packages to install to profile
   home.packages = with pkgs; [
     git
