@@ -250,7 +250,7 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ git git-crypt cachix vulnix  pciutils usbutils psensor lm_sensors ]  ++  
+      systemPackages = [ git git-crypt cachix vulnix  pciutils usbutils psensor lm_sensors age ]  ++  
                        (condList cfg.gpu.enable [ vulkan-tools ]) ++
                        (condList cfg.enhancedSecurity.enable [policycoreutils]);
 

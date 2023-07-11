@@ -13,6 +13,9 @@ let
       inherit default;
     };
 
+  # sadly there's no better way
+  nextcloudPkg = pkgs.nextcloud27;
+
 in {
   # interface
   options.nixos.server = {
@@ -24,10 +27,13 @@ in {
 
   config = mkIf cfg.enable {
 
+    # agenix for secrets
+    environment.systemPackages = [ agenix.packages.x86_64-linux.default ];
+
     # nextcloud 
     services.nextcloud = mkIf cfg.nextcloud.enable {
       enable = true;
-      package = pkgs.nextcloud;
+      package = nextcloudPkg;
       hostName = "localhost";
       config.adminpassFile = "${pkgs.writeText "adminpass" "test123"}";
     };
@@ -41,6 +47,18 @@ in {
 
     #seafile
     services.seafile = mkIf cfg.seafile.enable { enable = true; };
+
+    # serve nix store over ssh
+    nix.sshServe.enable = true;
+
+    services.openssh = {
+      enable = true;
+      # require public key authentication for better security
+      passwordAuthentication = false;
+      kbdInteractiveAuthentication = false;
+      #permitRootLogin = "yes";
+    };
+};
 
   };
 }

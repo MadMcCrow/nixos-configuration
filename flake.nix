@@ -6,33 +6,33 @@
   # flake inputs :
   inputs = {
     # Nixpkgs
-    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
-
-    # old version for apps that fails to work properly on unstable
-    nixpkgs-stable = { url = "github:nixos/nixpkgs/nixos-23.05"; };
-
-    # Home manager
-    home-manager = {
-      # use /release-22.11 for stable
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05";
 
     # impermanence
     impermanence.url = "github:nix-community/impermanence";
 
-    # nixpkgs for MacOS
-    nixpkgs-darwin = { url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin"; };
+    # Home manager
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # macOS
-    darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
-    };
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
+    darwin.url = "github:LnL7/nix-darwin";
+    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    
+    # sops for secret management
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Agenix for secrets
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
+    agenix.inputs.darwin.follows = "darwin";
 
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, darwin, home-manager, agenix, ... }@inputs:
     let
       # shortcut function :
       nixOSx86 = sysModule :
@@ -44,7 +44,8 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = inputs;
-          modules = [ 
+          modules = [
+          agenix.nixosModules.default
           home-manager.nixosModule
           home-manager.nixosModules.home-manager
           ./modules
