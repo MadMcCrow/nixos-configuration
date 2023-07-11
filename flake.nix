@@ -73,7 +73,7 @@
         nixAF = nixOSx86  ./systems/AF.nix;
 
         # my NUC acting as a headless server
-        NUC-Cloud = nixOSx86 ./systems/NUC.nix;
+        nixNUC = nixOSx86 ./systems/NUC.nix;
       };
       
       # MacOS

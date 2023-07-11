@@ -1,5 +1,13 @@
 # NUC Cloud config
 { pkgs, ... }: 
+let
+# todo filter broken
+#intel kernel packages can be broken sometimes
+intelKernelPackages =  [ 
+  # "intel-speed-select" # broken
+  # "phc-intel" # broken
+  ];
+in
 {
 # our settings
   nixos = {
@@ -14,7 +22,7 @@
     desktop.gnome.enable = true;
 
     # kernel packages
-    kernel.extraKernelPackages = [ "intel-speed-select" "phc-intel"];
+    # kernel.extraKernelPackages = intelKernelPackages;
 
     # cpu/gpu
     cpu.vendor = "intel";

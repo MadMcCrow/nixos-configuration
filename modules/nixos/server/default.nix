@@ -27,9 +27,6 @@ in {
 
   config = mkIf cfg.enable {
 
-    # agenix for secrets
-    environment.systemPackages = [ agenix.packages.x86_64-linux.default ];
-
     # nextcloud 
     services.nextcloud = mkIf cfg.nextcloud.enable {
       enable = true;
@@ -46,7 +43,10 @@ in {
     };
 
     #seafile
-    services.seafile = mkIf cfg.seafile.enable { enable = true; };
+    #services.seafile = mkIf cfg.seafile.enable { 
+    #  adminEmail = "noe.perard+seafile@gmail.com";
+    #  enable = true;
+    #   };
 
     # serve nix store over ssh
     nix.sshServe.enable = true;
@@ -54,11 +54,11 @@ in {
     services.openssh = {
       enable = true;
       # require public key authentication for better security
-      passwordAuthentication = false;
-      kbdInteractiveAuthentication = false;
+      settings = {
+        KbdInteractiveAuthentication = false;
+        PasswordAuthentication = false;
+      };
       #permitRootLogin = "yes";
     };
-};
-
   };
 }

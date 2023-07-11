@@ -1,6 +1,6 @@
 # linux/default.nix
 #	Nixos on linux
-{ pkgs, config, lib, inputs, ... }:
+{ pkgs, config, lib, inputs, agenix, ... }:
 with builtins;
 with lib;
 let
@@ -88,21 +88,21 @@ let
   # CPU
   # TODO : virtualisation
   cpuVendors = ["amd" "intel"];
-  cpuVendorSwitch = s: vendorSwitch s cfg.cpu.vendor gpuVendors []  "please define nixos.cpu.vendor";
-  cpuVirtualisation = cpuVendorSwitch {"amd" = {};};
+  cpuVendorSwitch = s: d: vendorSwitch s cfg.cpu.vendor gpuVendors d  "please define nixos.cpu.vendor";
+  cpuVirtualisation = cpuVendorSwitch {"amd" = {};} {};
 
   # GPU
   # TODO : Support multi-gpu
   gpuVendors = ["amd" "intel"];
-  gpuVendorSwitch = s: vendorSwitch s cfg.gpu.vendor gpuVendors []  "please define nixos.gpu.vendor";
+  gpuVendorSwitch = s: d : vendorSwitch s cfg.gpu.vendor gpuVendors d  "please define nixos.gpu.vendor";
 
-  gpuKernelModule = gpuVendorSwitch { "amd" =  ["amdgpu"]; };
-  gpuOGLPackages  = gpuVendorSwitch {"amd" = [pkgs.amdvlk]; "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel];};
-  gpuDrivers      = gpuVendorSwitch { "amd" =  ["amdgpu" "radeon"]; };
-  gpuVars         = gpuVendorSwitch { "amd" = {AMD_VULKAN_ICD = "RADV";};};
-  gpuTmpRules     = gpuVendorSwitch { "amd" =  ["L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"]; };
+  gpuKernelModule = gpuVendorSwitch { "amd" =  ["amdgpu"]; } [];
+  gpuOGLPackages  = gpuVendorSwitch {"amd" = [pkgs.amdvlk]; "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel];} [];
+  gpuDrivers      = gpuVendorSwitch { "amd" =  ["amdgpu" "radeon"]; } [];
+  gpuVars         = gpuVendorSwitch { "amd" = {AMD_VULKAN_ICD = "RADV";};} {};
+  gpuTmpRules     = gpuVendorSwitch { "amd" =  ["L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"]; } [];
   # TODO : intel override / overlay :    
-  gpuOverrides   = gpuVendorSwitch { "intel" = {vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };};};
+  gpuOverrides   = gpuVendorSwitch { "intel" = {vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };};} {};
 
   vaapi = with pkgs; [libvdpau-va-gl vaapiVdpau];
   ocl   = with pkgs; [rocm-opencl-icd rocm-opencl-runtime];
@@ -250,7 +250,8 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ git git-crypt cachix vulnix  pciutils usbutils psensor lm_sensors age ]  ++  
+      systemPackages = [ git git-crypt cachix vulnix  pciutils usbutils psensor lm_sensors ] ++
+                       [ agenix.packages.x86_64-linux.default  age]   ++  
                        (condList cfg.gpu.enable [ vulkan-tools ]) ++
                        (condList cfg.enhancedSecurity.enable [policycoreutils]);
 
