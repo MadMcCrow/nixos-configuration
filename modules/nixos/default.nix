@@ -153,7 +153,7 @@ in {
     kernel = {
       packages = mkDrvOption "kernel packages" kernelPackages;
       extraKernelPackages = mkStringsOption "Extra kernel Packages" [ ];
-      params = mkStringsOption "Extra kernel Params" kernelParams;
+      params = mkStringsOption "Extra kernel Params" [];
     };
 
     # nixos-rebuild
@@ -257,6 +257,11 @@ in {
 
       # set env-vars here
       variables = gpuVars;
+
+      # keep secrets 
+      persistence."/nix/persist" = {
+        directories = [ "/etc/nixos/secrets" ];
+    };
     };
 
     boot = {
@@ -305,7 +310,7 @@ in {
       };
 
       # boot kernel params
-      kernelParams = cfg.kernel.params;
+      kernelParams = cfg.kernel.params ++ kernelParams;
     };
 
     # mount filesystems
