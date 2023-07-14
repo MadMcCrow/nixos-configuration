@@ -82,7 +82,7 @@ let
   defaultKernelMods =
     [ "nvme" "xhci_pci" "xhci_hcd" "ahci" "usbhid" "usb_storage" "sd_mod" "dm-snapshot" ];
   kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  kernelParams = [ "nohibernate" "quiet" "loglevel=3" ];
+  kernelParams = [ "nohibernate" "quiet" ];
 
 
   # CPU
@@ -214,6 +214,7 @@ in {
     networking.hostName = cfg.host.name;
     networking.networkmanager.enable = true;
     networking.hostId = cfg.host.id;
+    networking.firewall.allowedTCPPorts = [ 22 ];
  #   networking.useDHCP = lib.mkDefault cfg.networkuseDHCP;
 
     # Locale
@@ -311,6 +312,7 @@ in {
 
       # boot kernel params
       kernelParams = cfg.kernel.params ++ kernelParams;
+      consoleLogLevel = 3; # avoid useless errors
     };
 
     # mount filesystems

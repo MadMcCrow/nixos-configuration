@@ -61,6 +61,8 @@ in {
     extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
   };
 
+  programs.git-credential-oauth.enable = true;
+
   # ZSH :
   programs.zsh = {
     enable = supported pkgs.zsh;
