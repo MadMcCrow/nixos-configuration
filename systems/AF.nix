@@ -19,7 +19,7 @@
 
     # kernel packages
     kernel.extraKernelPackages = [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower"];
-    kernel.params = ["iommu=off"];
+    kernel.params = ["pci=noats" "amd_iommu=on" "iommu=pt"];
     
     # cpu/gpu
     cpu.vendor = "amd";

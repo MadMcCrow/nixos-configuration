@@ -22,8 +22,8 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     
     # sops for secret management
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # sops-nix.url = "github:Mic92/sops-nix";
+    # sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Agenix for secrets
     agenix.url = "github:ryantm/agenix";
