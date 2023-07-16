@@ -47,6 +47,7 @@ let
       type = types.enum values;
       default = elemAt values 0;
     };
+
   condAttr = s : a : d: if hasAttr a s then getAttr a s else d; 
   condList = cond: value: if cond then value else [ ];
   condString = cond: value: if cond then value else "";
@@ -198,8 +199,9 @@ in {
 
     network = {
       # systemd-networkd-wait-online can timeout and fail if there are no network interfaces available for it to manage. 
-      waitForOnline = mkEnableOption (mdDoc "wait for networking at boot");
-      useDHCP = mkEnableOptionDefault "use DHCP" true;
+      waitForOnline = mkEnableOptionDefault "wait for networking at boot" false;
+      # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
+      wakeOnLineInterfaces = mkStringsOption "Interfaces to enable wakeOnLan" [];
     };
 
   }; 
@@ -211,11 +213,22 @@ in {
   config = mkIf cfg.enable {
 
     # Networking
-    networking.hostName = cfg.host.name;
-    networking.networkmanager.enable = true;
-    networking.hostId = cfg.host.id;
-    networking.firewall.allowedTCPPorts = [ 22 ];
- #   networking.useDHCP = lib.mkDefault cfg.networkuseDHCP;
+    networking = {
+      # unique identifier for this machine
+      hostName = cfg.host.name;
+      hostId = cfg.host.id;
+
+      # use dhcp for addresses. static adresses are given by the rooter
+      useDHCP = lib.mkDefault true;
+      enableIPv6 = true;
+
+      networkmanager.enable = true;
+      firewall.allowedTCPPorts = [ 22 ];
+      
+      interfaces = listToAttrs (map (x: {name = "${x}"; value = {wakeOnLan.enable = true;};}) cfg.network.wakeOnLineInterfaces);
+    };
+    
+
 
     # Locale
     i18n.defaultLocale = "en_US.UTF-8";
@@ -248,6 +261,11 @@ in {
         autoScrub.enable = zfsEnable;
       };
 
+    # avahi for mdns :
+    services.avahi = {
+      enable = true;
+      nssmdns = true;
+    };
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
@@ -342,7 +360,7 @@ in {
       # automate optimising the store :
       optimise = {
         automatic = true;
-        dates = [updateDates ];
+        dates = [updateDates];
       };
 
       # add support for cachix
@@ -362,8 +380,7 @@ in {
     # root user
     users.users.root = {
       homeMode = "700"; # home will be erased anyway because on /
-      hashedPassword =
-        "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+      hashedPassword = "$y$j9T$W.JAnia2yZEpLY8RwEJ4M0$eS3XjstDqU8/5gRoTHen9RDZg4E1XNKp0ncKxGs0bY.";
     };
 
     # PowerManagement

@@ -18,13 +18,16 @@
     };
 
     # kernel packages
-    kernel.extraKernelPackages = [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower"];
+    kernel.extraKernelPackages = [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
     kernel.params = ["pci=noats" "amd_iommu=on" "iommu=pt"];
     
     # cpu/gpu
     cpu.vendor = "amd";
     cpu.powermode = "performance";
     gpu.vendor = "amd";
+
+    network.waitForOnline = false;
+    network.wakeOnLineInterfaces = ["enp4s0"];
   };
 
   # Add support for logitech drivers : 

@@ -22,7 +22,7 @@ in
     desktop.gnome.enable = true;
 
     # kernel packages
-    # kernel.extraKernelPackages = intelKernelPackages;
+    kernel.extraKernelPackages = [ "acpi_call" ];
 
     # cpu/gpu
     cpu.vendor = "intel";
