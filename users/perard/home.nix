@@ -1,6 +1,6 @@
 # home.nix
 # home manager configuration for user
-{ config, pkgs, ... }:
+{ config, pkgs,  firefox-gnome-theme, ... }:
 let
   # true if this program can work
   supported = package: builtins.elem pkgs.system package.meta.platforms;
@@ -37,7 +37,19 @@ in {
   in {
     enable = supported pkg;
     package = pkg;
+    # GTK4 theme for firefox 
+    profiles.nix-user-profile = {
+    userChrome = ''@import "firefox-gnome-theme/userChrome.css";'';
+    userContent = ''@import "firefox-gnome-theme/userContent.css";'';
+    settings = {
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        "browser.uidensity" = 0;
+        "svg.context-properties.content.enabled" = true;
+        "browser.theme.dark-private-windows" = false;
+      };
+    };
   };
+  home.file.".mozilla/firefox/nix-user-profile/chrome/firefox-gnome-theme".source = firefox-gnome-theme;
 
   # GIT
   programs.git = {

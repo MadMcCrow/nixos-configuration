@@ -83,7 +83,7 @@ let
   defaultKernelMods =
     [ "nvme" "xhci_pci" "xhci_hcd" "ahci" "usbhid" "usb_storage" "sd_mod" "dm-snapshot" ];
   kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  kernelParams = [ "nohibernate" "quiet" ];
+  kernelParams = [ "nohibernate" "quiet" "idle=nomwait"];
 
 
   # CPU
@@ -386,7 +386,6 @@ in {
     # PowerManagement
     powerManagement = {
       enable = true;
-      powertop.enable = true;
       cpuFreqGovernor = cfg.cpu.powermode;
     };
 

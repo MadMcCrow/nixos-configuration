@@ -20,5 +20,5 @@ in
 
   };
     # home manager configuration
-    home-manager.users.perard = import ./home.nix;
+    home-manager.users.perard = import ./home.nix ;
 }

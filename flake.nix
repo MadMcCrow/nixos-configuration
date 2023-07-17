@@ -21,14 +21,13 @@
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     
-    # sops for secret management
-    # sops-nix.url = "github:Mic92/sops-nix";
-    # sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
     # Agenix for secrets
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.darwin.follows = "darwin";
+
+    # use GTK4 for firefox
+    firefox-gnome-theme = { url = "github:rafaelmardojai/firefox-gnome-theme"; flake = false; };
 
   };
 
@@ -40,10 +39,10 @@
         pkgs = nixpkgs;
         system = "x86_64-linux";
         sysArgs = import sysModule {inherit pkgs system;};
+        specialArgs = inputs;
       in
         nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = inputs;
+          inherit system specialArgs;
           modules = [
           agenix.nixosModules.default
           home-manager.nixosModule
