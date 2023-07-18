@@ -8,3 +8,4 @@ result
 secrets/*
 !secrets/*.nix
 !secrets/*.pub
+!secrets/*.age

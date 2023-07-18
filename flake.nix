@@ -49,6 +49,7 @@
           home-manager.nixosModules.home-manager
           ./modules
           ./users
+          ./secrets
           sysArgs
           ] ;
         };
@@ -59,7 +60,8 @@
           specialArgs = inputs;
           modules = [
           home-manager.darwinModules.home-manager
-          ./modules 
+          ./modules
+          ./secrets
           ./users/darwin.nix
           system { darwin.enable = true; darwin.apps.enable = true;}];
       };
