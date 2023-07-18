@@ -1,7 +1,10 @@
 # ignore any result from flake evaluation :
 result
-# flake lock : avoid commiting it
-# flake.lock
 
 # ignore macos files
 .DS_Store
+
+# ignore secrets private keys
+secrets/*
+!secrets/*.nix
+!secrets/*.pub
