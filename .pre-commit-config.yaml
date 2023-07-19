@@ -16,3 +16,4 @@ repos:
         entry: ./pre-commit.sh
         language: script
         pass_filenames: false
+        files: '.*\.(nix|lock)'
