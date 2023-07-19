@@ -8,8 +8,8 @@ with builtins;
 with lib;
 let
   #config interface
-  cfg = config.nixos.apps;
-  
+  cfg = config.nixos.desktop.apps;
+
   # not working (cannot find inputs)
   # stable pkgs for packages being broken on instable (like steam)
   #stable-pkgs = nixpkgs-stable.legacyPackages.${pkgs.system};
@@ -18,13 +18,13 @@ let
   # helper functions
   mkEnableOptionDefault = desc : default: (mkEnableOption (mdDoc desc)) // { inherit default;};
   mkAppOptions = list : listToAttrs (map (x : {name = x; value = {enable = mkEnableOptionDefault x  true;};}) list);
-  isAppEnabled = str : cfg."${str}".enable == true; # TODO : replace with hasAttr/GetAttr 
+  isAppEnabled = str : cfg."${str}".enable == true; # TODO : replace with hasAttr/GetAttr
   condList = cond : list : if cond then list else [];
 
   # Discord use OpenASAR for faster start-up times
   cfgDiscord = cfg.discord.enable;
   OpenASAR = self: super: { discord = super.discord.override { withOpenASAR = true; }; };
-  discordApps = ["discord" "nss_latest"]; 
+  discordApps = ["discord" "nss_latest"];
   discordUnfree = ["discord"];
 
   # final list of apps to have on our systems
@@ -42,11 +42,11 @@ let
   # generate app list for config
   appList = (filter (isAppEnabled) defaultApps) ++ (condList cfgDiscord discordApps) ++ (condList cfgSteam steamApps);
   unfreePackages = concatLists [(condList cfgDiscord discordUnfree) (condList cfgSteam steamUnfree)];
-  
-in 
+
+in
 {
   # interface
-  options.nixos.apps = {
+  options.nixos.desktop.apps = {
     enable =  mkEnableOption (mdDoc "system-wide apps") // { default = true; };
     steam.enable   = mkEnableOptionDefault "steam"   true;
     discord.enable = mkEnableOptionDefault "discord" true;

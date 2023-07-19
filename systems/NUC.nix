@@ -1,9 +1,9 @@
 # NUC Cloud config
-{ pkgs, ... }: 
+{ pkgs, ... }:
 let
 # todo filter broken
 #intel kernel packages can be broken sometimes
-intelKernelPackages =  [ 
+intelKernelPackages =  [
   # "intel-speed-select" # broken
   # "phc-intel" # broken
   ];
@@ -18,8 +18,11 @@ in
     rebuild.genCount = 10;
 
     # desktop env
-    desktop.enable = true;
-    desktop.gnome.enable = true;
+    desktop = {
+      enable = true;
+      gnome.enable = true;
+      apps.enable = false; # disable system-wide apps
+    };
 
     # kernel packages
     kernel.extraKernelPackages = [ "acpi_call" ];
@@ -28,7 +31,7 @@ in
     cpu.vendor = "intel";
     cpu.powermode = "powersave";
     gpu.vendor = "intel";
-    
+
     # server :
     server.enable = true;
   };

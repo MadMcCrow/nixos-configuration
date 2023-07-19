@@ -1,9 +1,32 @@
 # home.nix
 # home manager configuration for user
-{ config, pkgs,  firefox-gnome-theme, ... }:
+{ config, pkgs, firefox-gnome-theme, ... }:
 let
   # true if this program can work
   supported = package: builtins.elem pkgs.system package.meta.platforms;
+
+  # firefox-gnome-theme
+  firefox-gnome-theme = pkgs.stdenvNoCC.mkDerivation rec {
+    name = "firefox-gnome-theme";
+    version = "115";
+    src = pkgs.fetchurl {
+      url =
+        "https://github.com/rafaelmardojai/firefox-gnome-theme/archive/refs/tags/v115.tar.gz";
+      sha256 =
+        "c676055e1e47442a147587fa6388754b182c9df907954ff6914eaca776056b47";
+    };
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      mv icon.svg $out
+      mv user*.css $out
+      mv theme $out
+      mv scripts $out
+      mv configuration $out
+      runHook postInstall
+    '';
+  };
+
 in {
 
   home.username = "perard";
@@ -37,11 +60,11 @@ in {
   in {
     enable = supported pkg;
     package = pkg;
-    # GTK4 theme for firefox 
+    # GTK4 theme for firefox
     profiles.nix-user-profile = {
-    userChrome = ''@import "firefox-gnome-theme/userChrome.css";'';
-    userContent = ''@import "firefox-gnome-theme/userContent.css";'';
-    settings = {
+      userChrome = ''@import "firefox-gnome-theme/userChrome.css";'';
+      userContent = ''@import "firefox-gnome-theme/userContent.css";'';
+      settings = {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         "browser.uidensity" = 0;
         "svg.context-properties.content.enabled" = true;
@@ -49,7 +72,8 @@ in {
       };
     };
   };
-  home.file.".mozilla/firefox/nix-user-profile/chrome/firefox-gnome-theme".source = firefox-gnome-theme;
+  home.file.".mozilla/firefox/nix-user-profile/chrome/firefox-gnome-theme".source =
+    firefox-gnome-theme;
 
   # GIT
   programs.git = {

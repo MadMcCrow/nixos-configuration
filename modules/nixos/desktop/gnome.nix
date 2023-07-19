@@ -1,7 +1,7 @@
 # gnome.nix
 # 	Nixos Gnome Desktop environment settings
 #	TODO : implement Dconf2nix (possibly in a separate module)
-# TODO : more curated/ personnal version of gnome 
+# TODO : more curated/ personnal version of gnome
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
@@ -46,7 +46,7 @@ let
     quick-settings-tweaker # Gnome43+ quick settings editor
     appindicator # add systray icon support
     gsconnect # KDE Connect in the top-bar
-    valent    # replacement for GSConnect built with modern GTK
+    valent # replacement for GSConnect built with modern GTK
     tiling-assistant # Windows-like tiling update
     blur-my-shell # some nice blur effect
     gtile # tile with grid
@@ -60,41 +60,76 @@ let
     wireless-hid # battery left in mouse/gamepad etc...
   ];
 
-  # some nice themes
-  themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme ];
+  # adwaita gtk3 : gtk4 look for gtk3 apps
+  adw-gt3 = pkgs.stdenvNoCC.mkDerivation rec {
+    name = "adw-gtk3";
+    version = "v4-8";
+    src = fetchurl {
+      url =
+        "https://github.com/lassekongo83/adw-gtk3/releases/download/v4.8/adw-gtk3v4-8.tar.xz";
+      sha256 = "0h7p9yazixv0a0j9rq5gpvs7mzcq4vqifx2147n9fy4wnr306a3f";
+    };
+    sourceRoot = ".";
+    unpackPhase = "tar -xpf $src";
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/themes
+      cp -a adw-gtk3* $out/share/themes
+      runHook postInstall
+    '';
+    meta = with lib; {
+      description = "GTK4 theme for gt3 apps";
+      homepage = "https://github.com/lassekongo83/adw-gtk3";
+      license = lib.licenses.lgpl21Only;
+      platforms = platforms.all;
+      #maintainers = []; # no maintainer yet
+    };
+  };
 
-  systemPackages =  [ pkgs.dconf pkgs.dconf2nix ]
-      ++ (if cfg.extraApps then extraApps else [ ])
-      ++ (if cfg.superExtraApps then superExtraApps else [ ])
-      ++ (if cfg.extraExtensions then extraExtensions else [ ])
-      ++ (if cfg.themes then themes else [ ]);
+  # some nice themes
+  themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme adw-gt3 ];
+
+  systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
+    ++ (if cfg.extraApps then extraApps else [ ])
+    ++ (if cfg.superExtraApps then superExtraApps else [ ])
+    ++ (if cfg.extraExtensions then extraExtensions else [ ])
+    ++ (if cfg.themes then themes else [ ]);
 
   # helper functions
-  mkEnableOptionDefault = desc: default: mkEnableOption (mdDoc desc) // { inherit default; };
+  mkEnableOptionDefault = desc: default:
+    mkEnableOption (mdDoc desc) // {
+      inherit default;
+    };
 
 in {
 
   # interface
   options.nixos.desktop.gnome = {
     # do you want gnome Desktop environment
-    enable = mkEnableOptionDefault  "gnome, the default desktop environment" false;
+    enable =
+      mkEnableOptionDefault "gnome, the default desktop environment" false;
     # wayland support
-    wayland = mkEnableOptionDefault "Wayland, the new standard meant to replace Xorg" true;
+    wayland =
+      mkEnableOptionDefault "Wayland, the new standard meant to replace Xorg"
+      true;
     # useful gnome apps
     extraApps = mkEnableOptionDefault "(useful) curated gnome apps" true;
     # useful gnome apps
-    superExtraApps = mkEnableOptionDefault "curated gnome apps that are fun but not useful" false;
+    superExtraApps =
+      mkEnableOptionDefault "curated gnome apps that are fun but not useful"
+      false;
     # useful gnome extension
     extraExtensions = mkEnableOptionDefault "curated gnome extensions" true;
     # theming
     themes = mkEnableOptionDefault "gnome/gtk themes" true;
     # gnome online accounts sync
-    onlineAccounts = mkEnableOptionDefault "online accounts for nextcloud/freecloud/google/ms-exchange" true;
+    onlineAccounts = mkEnableOptionDefault
+      "online accounts for nextcloud/freecloud/google/ms-exchange" true;
     # gsconnect is KDE connect for gnome
     gSConnect = mkEnableOptionDefault "gsconnect, KDE connect for gnome" true;
   };
 
-  # base config for gnome 
+  # base config for gnome
   config = lib.mkIf (dsk.enable && cfg.enable) {
 
     system.nixos.tags = [ "Gnome" ];
@@ -105,27 +140,28 @@ in {
       desktopManager.gnome.enable = true;
       # use gdm :
       displayManager.gdm = {
-          enable = true;
-          wayland = cfg.wayland;
+        enable = true;
+        wayland = cfg.wayland;
       };
 
     };
     programs.xwayland.enable = cfg.wayland;
 
     # Remove default gnome apps unless explicitly requested
-    environment.gnome.excludePackages = filter (x : !(elem x systemPackages) ) (with pkgs; [
-      gnome-tour
-      gnome-photos
-      gnome.simple-scan
-      gnome.gnome-music
-      gnome.epiphany
-      gnome.totem
-      gnome.yelp
-      gnome.cheese
-      gnome.gnome-weather
-      gnome.gnome-characters
-      orca
-    ]);
+    environment.gnome.excludePackages = filter (x: !(elem x systemPackages))
+      (with pkgs; [
+        gnome-tour
+        gnome-photos
+        gnome.simple-scan
+        gnome.gnome-music
+        gnome.epiphany
+        gnome.totem
+        gnome.yelp
+        gnome.cheese
+        gnome.gnome-weather
+        gnome.gnome-characters
+        orca
+      ]);
 
     # gnome services :
     services.gnome = {

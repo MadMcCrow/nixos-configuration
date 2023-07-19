@@ -6,6 +6,7 @@ result
 
 # ignore secrets private keys
 secrets/*
+!secrets/*.sh
 !secrets/*.nix
 !secrets/*.pub
 !secrets/*.age

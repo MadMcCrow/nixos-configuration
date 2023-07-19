@@ -20,63 +20,64 @@
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
-    
+
     # Agenix for secrets
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.darwin.follows = "darwin";
-
-    # use GTK4 for firefox
-    firefox-gnome-theme = { url = "github:rafaelmardojai/firefox-gnome-theme"; flake = false; };
 
   };
 
   outputs = { self, nixpkgs, darwin, home-manager, agenix, ... }@inputs:
     let
       # shortcut function :
-      nixOSx86 = sysModule :
-      let 
-        pkgs = nixpkgs;
-        system = "x86_64-linux";
-        sysArgs = import sysModule {inherit pkgs system;};
-        specialArgs = inputs;
-      in
-        nixpkgs.lib.nixosSystem {
+      nixOSx86 = sysModule:
+        let
+          pkgs = nixpkgs;
+          system = "x86_64-linux";
+          sysArgs = import sysModule { inherit pkgs system; };
+          specialArgs = inputs;
+        in nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
           modules = [
-          agenix.nixosModules.default
-          home-manager.nixosModule
-          home-manager.nixosModules.home-manager
-          ./modules
-          ./users
-          ./secrets
-          sysArgs
-          ] ;
+            agenix.nixosModules.default
+            home-manager.nixosModule
+            home-manager.nixosModules.home-manager
+            ./modules
+            ./users
+            ./secrets
+            sysArgs
+          ];
         };
 
-      darwinAarch64 = system : 
-      darwin.lib.darwinSystem {
+      darwinAarch64 = system:
+        darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = inputs;
           modules = [
-          home-manager.darwinModules.home-manager
-          ./modules
-          ./secrets
-          ./users/darwin.nix
-          system { darwin.enable = true; darwin.apps.enable = true;}];
-      };
+            home-manager.darwinModules.home-manager
+            ./modules
+            ./secrets
+            ./users/darwin.nix
+            system
+            {
+              darwin.enable = true;
+              darwin.apps.enable = true;
+            }
+          ];
+        };
 
     in {
 
       #Linux : Nixos
       nixosConfigurations = {
         # AF, my personal Desktop PC
-        nixAF = nixOSx86  ./systems/AF.nix;
+        nixAF = nixOSx86 ./systems/AF.nix;
 
         # my NUC acting as a headless server
         nixNUC = nixOSx86 ./systems/NUC.nix;
       };
-      
+
       # MacOS
       darwinConfigurations = {
         # my MacBook Air
@@ -96,4 +97,3 @@
       };
     };
 }
-
