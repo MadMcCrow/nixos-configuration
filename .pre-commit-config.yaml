@@ -15,3 +15,4 @@ repos:
         name: pre-commit-sh
         entry: ./pre-commit.sh
         language: script
+        pass_filenames: false
