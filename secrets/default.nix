@@ -4,12 +4,12 @@
   config = {
     age = {
       # example :
-      #secrets.nextcloud = {
-      #file = ./nextcloud.age;
-      #owner = "nextcloud";
-      #group = "nextcloud";
-      #};
-      #identityPaths = ["/persist/secrets/nextcloud"];
+      secrets.nextcloud = {
+      file = ./nextcloud.age;
+      owner = "nextcloud";
+      group = "nextcloud";
+      };
+      identityPaths = ["/persist/secrets/nextcloud"];
     };
   };
 }

@@ -3,8 +3,8 @@
 #   not used in actual config
 #   TODO : use pub files instead of copying
 let
-  nextcloud = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDbznLZ5Z75GoVV5g6VrF75slMwmCRIJz6j7wqjZKgBN";
-in 
-{ 
-  "nextcloud.age".publicKeys = [ nextcloud ]; 
+  nextcloud = builtins.readFile ./nextcloud.pub;
+in
+{
+  "nextcloud.age".publicKeys = [ nextcloud ];
 }

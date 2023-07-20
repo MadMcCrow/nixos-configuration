@@ -128,7 +128,7 @@ systemd.services."nextcloud-setup" = {
       group = "nextcloud";
     };
     age.identityPaths =
-      if cfg.nextcloud.enable then [ "/persist/secrets/nextcloud" ] else [ ];
+      if cfg.nextcloud.enable then [ "/persist/nixos/secrets/nextcloud" ] else [ ];
 
     services.onlyoffice = {
       enable = true;
