@@ -20,7 +20,7 @@ let
     };
 
   # make a valid host name with prefix and suffix.
-  subHostName = sub : concatStringsSep "/" [cfg.hostName sub];
+  subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
 
 in {
   # interface
@@ -29,22 +29,32 @@ in {
     hostName = mkStringOption "server host name" "localhost";
     cockpit.enable = mkEnableOptionDefault "cockpit web-based interface" true;
     seafile.enable = mkEnableOptionDefault "seafile file manager" true;
+    data.path = mkStringOption "path to store data for the server" "/persist/database/data";
     nextcloud = {
+      enable = mkEnableOptionDefault "nextcloud" true;
       package = mkOption {
         description = "nextcloud package";
         default = pkgs.nextcloud27;
       };
-      enable = mkEnableOptionDefault "nextcloud" true;
       hostName = mkStringOption "host name for nextcloud" "nextcloud";
       onlyOffice = {
         enable = mkEnableOptionDefault "only office nextcloud integration" true;
-        documentServer = mkStringOption "host name for only office document server" "only-office";
-
+        documentServer =
+          mkStringOption "host name for only office document server"
+          "only-office";
       };
     };
   };
 
+  # server configuration
   config = mkIf cfg.enable {
+
+    # our secrets option
+    secrets = {
+      enable = true;
+      nextcloud = cfg.nextcloud.enable;
+    };
+
     # cockpit (web-based server interface )
     services.cockpit = mkIf cfg.cockpit.enable {
       enable = true;
@@ -83,60 +93,56 @@ in {
 
     # DTBs : postgresql is faster
     services.postgresql = {
-    enable = true;
+      enable = true;
+      dataDir = concatStringsSep "/" [cfg.data.path "postgresql"];
+      # No need to ensure databases
+      #ensureDatabases = [ "nextcloud" ];
+      #ensureUsers = [{
+      #  name = "nextcloud";
+      #  ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
+      #}];
+    };
+    # auto-backup
+    #services.postgresqlBackup = {
+    #  enable = false;
+    #  location = ""; # find a way to have a network location or another drive
+    #};
 
-    # Ensure the database, user, and permissions always exist
-    ensureDatabases = [ "nextcloud" ];
-    ensureUsers = [
-     { name = "nextcloud";
-       ensurePermissions."DATABASE nextcloud" = "ALL PRIVILEGES";
-     }
-    ];
-};
-systemd.services."nextcloud-setup" = {
-    requires = ["postgresql.service"];
-    after = ["postgresql.service"];
-};
+    systemd.services."nextcloud-setup" = {
+      requires = [ "postgresql.service" ];
+      after = [ "postgresql.service" ];
+    };
 
     # nextcloud and its apps (defined at nextcloud-apps.nix)
-    services.nextcloud = {
-      enable = cfg.nextcloud.enable;
+    services.nextcloud = mkIf cfg.nextcloud.enable {
+      enable = true;
       package = cfg.nextcloud.package;
       hostName = subHostName cfg.nextcloud.hostName;
       config = {
         adminuser = "admin";
         adminpassFile = config.age.secrets.nextcloud.path;
         overwriteProtocol = "https";
-        dbtype = "pgsql";
-        dbuser = "nextcloud";
-        dbhost = "/run/postgresql"; # nextcloud will add /.s.PGSQL.5432 by itself
-        dbname = "nextcloud";
-        dbpassFile = "/var/nextcloud-db-pass";
+        dbtype = "pgsql"; # hopefully dtb  is created on the correct data path
+        # not necessary thanks to createLocally
+        #dbuser = "nextcloud";
+        #dbname = "nextcloud";
+        #dbhost = "/run/postgresql"; # nextcloud will add /.s.PGSQL.5432 by itself
+        #dbpassFile = config.age.secrets.postgresql-nc.path;
       };
-      # enable https :
-      # nginx.enable = true; # not necessary anymore
+      database.createLocally = true; # only one computer, ask to generate all dtb settings
       https = true;
-      # apps :
       extraAppsEnable = true;
       extraApps = import ./nextcloud-apps.nix { inherit pkgs; };
     };
 
-    # encrypt nextcloud password
-    age.secrets.nextcloud = mkIf cfg.nextcloud.enable {
-      file = ../../../secrets/nextcloud.age; # todo : point to origin of flake
-      owner = "nextcloud";
-      group = "nextcloud";
-    };
-    age.identityPaths =
-      if cfg.nextcloud.enable then [ "/persist/nixos/secrets/nextcloud" ] else [ ];
-
+    # TODO : switch to collabora
     services.onlyoffice = {
       enable = true;
       hostname = subHostName cfg.nextcloud.onlyOffice.documentServer;
     };
 
     # probably due to only-office (Microsoft fonts)
-    packages.unfreePackages = ["corefonts"];
+    packages.unfreePackages = [ "corefonts" ];
 
   };
 }

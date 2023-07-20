@@ -1,20 +1,24 @@
 #!/usr/bin/env sh
-# Custom Pre-commit hook for nixos-configuration :
+
+# Colors for output
 GRE='\033[0;32m'
-BLU='\033[0;33m'
+BLU='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
-TYPE="-t ed25519"
+
+# sysarg variable
 KEY="$1"
 STORE="$2"
 SECRET="$3"
 
+# count characters
 ccount() {
     nc=$(echo $1  | sed 's/\\033\[[0-9;]\{1,\}m//g' )
     nn=$(echo $nc | sed 's/\\0//g')
     echo ${#nn}
 }
 
+# echo on a dotted line
 echo_line() {
   local t=" $1 "
   local l=50
@@ -33,21 +37,13 @@ echo_line() {
   echo -e "$t"
 }
 
-
-red() {
-echo -e "$RED$1$NC"
-}
-
-blue() {
-echo -e "$BLUE$1$NC"
-}
-
+# handle input
 handle_empty_input() {
   local var_name="$1"
   local default_value="$2"
   local prompt_text="$3"
   if [ -z "${!var_name}" ]; then
-    red "$RED\0No $prompt_text found$NC"
+     echo -e  "$RED\0No $prompt_text found$NC"
     read -p "$prompt_text: [${!var_name:-$default_value}] :" input
     if [ -z "$input" ]; then
       echo -e "defaulting to ${!var_name:-$default_value}"
@@ -69,7 +65,7 @@ fi
 # gen key
 echo_line "Generating key for $GRE\0$KEY\0$NC"
 if [ -e "$KEY" -a -e "$KEY.pub" ]; then
-    red "key already created, skipping"
+     echo -e  "key already created, $RED\0skipping$NC"
 else
     ssh-keygen -C $KEY -f ./$KEY  -q
     echo -e "private key generated at $BLUE\0$PWD/$KEY\0$NC"

@@ -7,7 +7,7 @@ let
   # shortcut
   cfg = config.nixos;
 
-  # submodules 
+  # submodules
   # (things to complicated or too specific to have directly in the default linux config)
   submodules = [ ./desktop ./server];
 
@@ -48,10 +48,10 @@ let
       default = elemAt values 0;
     };
 
-  condAttr = s : a : d: if hasAttr a s then getAttr a s else d; 
+  condAttr = s : a : d: if hasAttr a s then getAttr a s else d;
   condList = cond: value: if cond then value else [ ];
   condString = cond: value: if cond then value else "";
-  vendorSwitch  = s : v : l : d : err: if (any (x : x == v) l) then condAttr s v d else throw err; 
+  vendorSwitch  = s : v : l : d : err: if (any (x : x == v) l) then condAttr s v d else throw err;
   hashWithLength = str : len : elemAt (elemAt (split "(.{${toString len}})" (hashString "md5" str)) 1) 0;
 
   # ZFS
@@ -102,7 +102,7 @@ let
   gpuDrivers      = gpuVendorSwitch { "amd" =  ["amdgpu" "radeon"]; } [];
   gpuVars         = gpuVendorSwitch { "amd" = {AMD_VULKAN_ICD = "RADV";};} {};
   gpuTmpRules     = gpuVendorSwitch { "amd" =  ["L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"]; } [];
-  # TODO : intel override / overlay :    
+  # TODO : intel override / overlay :
   gpuOverrides   = gpuVendorSwitch { "intel" = {vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };};} {};
 
   vaapi = with pkgs; [libvdpau-va-gl vaapiVdpau];
@@ -198,13 +198,13 @@ in {
     };
 
     network = {
-      # systemd-networkd-wait-online can timeout and fail if there are no network interfaces available for it to manage. 
+      # systemd-networkd-wait-online can timeout and fail if there are no network interfaces available for it to manage.
       waitForOnline = mkEnableOptionDefault "wait for networking at boot" false;
       # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
       wakeOnLineInterfaces = mkStringsOption "Interfaces to enable wakeOnLan" [];
     };
 
-  }; 
+  };
 
   # imports
   imports = submodules;
@@ -224,10 +224,10 @@ in {
 
       networkmanager.enable = true;
       firewall.allowedTCPPorts = [ 22 ];
-      
+
       interfaces = listToAttrs (map (x: {name = "${x}"; value = {wakeOnLan.enable = true;};}) cfg.network.wakeOnLineInterfaces);
     };
-    
+
 
 
     # Locale
@@ -269,15 +269,15 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ git git-crypt pre-commit cachix vulnix  pciutils usbutils psensor lm_sensors ] ++
-                       [ agenix.packages.x86_64-linux.default  age]   ++  
+      systemPackages = [ git git-crypt pre-commit cachix vulnix  pciutils usbutils psensor lm_sensors exa] ++
+                       [ agenix.packages.x86_64-linux.default  age]   ++
                        (condList cfg.gpu.enable [ vulkan-tools ]) ++
                        (condList cfg.enhancedSecurity.enable [policycoreutils]);
 
       # set env-vars here
       variables = gpuVars;
 
-      # keep secrets 
+      # keep secrets
       persistence."/nix/persist" = {
         directories = [ "/etc/nixos/secrets" ];
     };
@@ -354,7 +354,7 @@ in {
         persistent = true;
       };
 
-      # detect files in the store that have identical contents, and replaces them with hard links to a single copy. 
+      # detect files in the store that have identical contents, and replaces them with hard links to a single copy.
       settings.auto-optimise-store = true;
 
       # automate optimising the store :
@@ -393,7 +393,7 @@ in {
     hardware = {
       enableRedistributableFirmware = true;
       cpu."${cfg.cpu.vendor}" = { updateMicrocode = true; };
-    
+
       opengl = mkIf cfg.gpu.enable {
         enable = true;
         # direct rendering (necessary for vulkan)
