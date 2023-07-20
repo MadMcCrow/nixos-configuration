@@ -109,8 +109,19 @@ let
   ocl   = with pkgs; [rocm-opencl-icd rocm-opencl-runtime];
 
 
-  # update date:
+  # updates:
+  flake = "github:MadMcCrow/nixos-configuration";
   updateDates = cfg.upgrade.updateDates;
+
+  nixos-update = pkgs.writeShellScriptBin "nixos-update" ''
+  if [ "$USER" != "root" ]
+  then
+    echo "Please run this as root or with sudo"
+    exit 2
+  fi
+  nixos-rebuild switch --max-jobs --flake ${flake}#$HOST
+  exit $?
+  '';
 
 
 in {
@@ -428,9 +439,9 @@ in {
 
     system = {
       autoUpgrade = {
+        inherit flake;
         enable = cfg.upgrade.enable; # enable auto upgrades
         persistent = true; # apply if missed
-        flake = "github:MadMcCrow/nixos-configuration"; # this flake
         dates = cfg.upgrade.updateDates;
         allowReboot = cfg.upgrade.autoReboot;
       };
