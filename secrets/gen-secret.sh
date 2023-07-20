@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
+# TODO :
+# - do not always edit age file
+# - better scripting interface
 
 # Colors for output
 GRE='\033[0;32m'

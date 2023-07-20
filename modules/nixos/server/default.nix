@@ -52,7 +52,7 @@ in {
     # our secrets option
     secrets = {
       enable = true;
-      nextcloud = cfg.nextcloud.enable;
+      secrets = if cfg.nextcloud.enable then [ { name = "nextcloud"; } ] else [];
     };
 
     # cockpit (web-based server interface )

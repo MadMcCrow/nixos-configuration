@@ -1,6 +1,7 @@
 # secrets/default.nix
 #   module for adding our secrets to the configurations
-{ config, lib, agenix, ... }:
+#   secrets are only used for making host variables
+{ config, pkgs, lib, agenix, ... }:
 with builtins;
 with lib;
 let
@@ -8,31 +9,29 @@ let
   cfg = config.secrets;
   # wrapped function
   mkEnableOptionDefault = desc : default: (mkEnableOption (mdDoc desc)) // { inherit default;};
-
   hostKey = concatStringsSep "/" [cfg.keyPath config.networking.hostName];
 
+  # simplify declaration of secret files
+  mkSecret = args @ {name, ... } : rec{ file = ./. + "/${name}.age"; owner = name; group=owner; } // (removeAttrs args ["name"]);
+  mkSecretList = x : {name = x.name; value = mkSecret x;};
+
+  # package secret script
+  gen-secret = pkgs.writeShellScriptBin "nixos-gen-secret" (builtins.readFile ./gen-secret.sh);
 in
 {
   options.secrets = {
     enable = mkEnableOptionDefault "secret management with age" false;
     keyPath = mkOption {description = "path to all keys"; default="/persist/secrets";};
-    # TODO : replace with generic secrets !(ie a function to build a secret based on a name only)
-    nextcloud  =  mkEnableOptionDefault "nextcloud.age secret" false;
-    postgresql-nc =  mkEnableOptionDefault "postgresql.age secret" false;
+
+    secrets = mkOption {description = "set of secrets"; type = types.listOf types.attrs; default = {}; };
   };
 
-  config = mkIf cfg.enable {
-    age = {
-      secrets.nextcloud = mkIf cfg.nextcloud {
-      file = ./nextcloud.age;
-      owner = "nextcloud";
-      group = "nextcloud";
-      };
-      #secrets.postgresql-nc = mkIf cfg.postgresql-nc {
-      #file = ./postgresql-nc.age;
-      #owner = "nextcloud";
-      #group = "nextcloud";
-      #};
+  config = {
+    # add our script
+    environment.systemPackages = [ gen-secret ];
+
+    age =  mkIf cfg.enable {
+      secrets = listToAttrs ( map mkSecretList cfg.secrets);
       identityPaths = [ hostKey ];
     };
   };
