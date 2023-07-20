@@ -112,14 +112,14 @@ let
   # updates:
   flake = "github:MadMcCrow/nixos-configuration";
   updateDates = cfg.upgrade.updateDates;
-
+  # update command to always be right
   nixos-update = pkgs.writeShellScriptBin "nixos-update" ''
   if [ "$USER" != "root" ]
   then
     echo "Please run this as root or with sudo"
     exit 2
   fi
-  nixos-rebuild switch --max-jobs --flake ${flake}#$HOST
+  nixos-rebuild switch --flake ${flake}#
   exit $?
   '';
 
@@ -281,8 +281,10 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ git git-crypt pre-commit nixos-update pciutils usbutils psensor lm_sensors exa] ++
+      systemPackages = [ pciutils usbutils psensor lm_sensors exa] ++
                        [ cachix vulnix ] ++
+                       [ git git-crypt pre-commit git-lfs ] ++
+                       [ nixos-update ] ++
                        [ agenix.packages.x86_64-linux.default  age] ++
                        (condList cfg.gpu.enable [ vulkan-tools ])   ++
                        (condList cfg.enhancedSecurity.enable [policycoreutils]);
