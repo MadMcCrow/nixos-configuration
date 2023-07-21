@@ -12,7 +12,7 @@ let
   isDarwin = pkgs.system == "aarch64-darwin";
 
   # helper functions
-  mkEnableOptionDefault = desc : default: (mkEnableOption (mdDoc desc)) // { inherit default;};
+  mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
 
   # init for fish and "command not found"
   fishInit = if config.programs.fish.useBabelfish then ''
@@ -50,11 +50,11 @@ let
         fi
       ''}
     '';
-  
+
 
 in {
 
-  # interface 
+  # interface
   options.darwin = {
     # enable MacOS
     enable = mkEnableOptionDefault  "Darwin (MacOS)" false;

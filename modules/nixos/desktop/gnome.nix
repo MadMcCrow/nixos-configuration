@@ -40,64 +40,73 @@ let
   # extra gnome extensions
   ## you will need to enable them in the gnome extension app
   extraExtensions = with pkgs.gnomeExtensions; [
-    runcat # the best gnome extension
-    caffeine # prevents lockscreen
-    dash-to-dock # turn the dash into a dock, always visible
     quick-settings-tweaker # Gnome43+ quick settings editor
     appindicator # add systray icon support
-    gsconnect # KDE Connect in the top-bar
+    blur-my-shell # some nice blur effect
+    caffeine # prevents lockscreen
+    dash-to-dock # turn the dash into a dock, always visible
+    just-perfection # customise everything
+    gtk4-desktop-icons-ng-ding # add desktop icons
+    weather-or-not # weather on the top top-bar
+    runcat # the best gnome extension
+
     valent # replacement for GSConnect built with modern GTK
     tiling-assistant # Windows-like tiling update
-    blur-my-shell # some nice blur effect
-    gtile # tile with grid
-    unite # some ubuntu unity shell modification
-    gtk4-desktop-icons-ng-ding # add desktop icons
+
     alttab-mod # improve alt-tabbing
     advanced-alttab-window-switcher # completely replace alt-tab
-    unity-like-app-switcher # colourful alt-tab
-    weather-or-not # weather on the top top-bar
-    just-perfection # customise everything
+
+    # things to try
+    arcmenu
+    forge #
+    space-bar # Activity replaced by workspaces
+    dashbar
+    dash2dock-lite
+    dash-to-panel
     wireless-hid # battery left in mouse/gamepad etc...
+    pano  # clipboard manager
+    rocketbar # some dash
   ];
 
-  # adwaita gtk3 : gtk4 look for gtk3 apps
-  adw-gt3 = pkgs.stdenvNoCC.mkDerivation rec {
-    name = "adw-gtk3";
-    version = "v4-8";
-    src = fetchurl {
-      url =
-        "https://github.com/lassekongo83/adw-gtk3/releases/download/v4.8/adw-gtk3v4-8.tar.xz";
-      sha256 = "0h7p9yazixv0a0j9rq5gpvs7mzcq4vqifx2147n9fy4wnr306a3f";
-    };
-    sourceRoot = ".";
-    unpackPhase = "tar -xpf $src";
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out/share/themes
-      cp -a adw-gtk3* $out/share/themes
-      runHook postInstall
-    '';
-    meta = with lib; {
-      description = "GTK4 theme for gt3 apps";
-      homepage = "https://github.com/lassekongo83/adw-gtk3";
-      license = lib.licenses.lgpl21Only;
-      platforms = platforms.all;
-      #maintainers = []; # no maintainer yet
-    };
-  };
+  # default gnome extensions
+  # remove unless added
+  defaultExtensions = with pkgs.gnomeExtensions; [
+    launch-new-instance
+    native-window-placement
+    places-status-indicator
+    auto-move-windows
+    applications-menu
+    window-list
+    windownavigator
+    workspace-indicator
+  ];
+
+  defaultApplications = with pkgs; [
+        gnome-tour
+        gnome-photos
+        gnome.simple-scan
+        gnome.gnome-music
+        gnome.epiphany
+        gnome.totem
+        gnome.yelp
+        gnome.cheese
+        gnome.gnome-weather
+        gnome.gnome-characters
+        orca
+  ];
 
   # some nice themes
-  themes = with pkgs; [ zuki-themes theme-obsidian2 juno-theme adw-gt3 ];
+  themes = with pkgs; [ adw-gtk3 ];
 
   systemPackages = [ pkgs.dconf pkgs.dconf2nix ]
     ++ (if cfg.extraApps then extraApps else [ ])
     ++ (if cfg.superExtraApps then superExtraApps else [ ])
     ++ (if cfg.extraExtensions then extraExtensions else [ ])
-    ++ (if cfg.themes then themes else [ ]);
+    ++ (if cfg.themes then themes else [ ])
+    ++ (if cfg.gsconnect then [ pkgs.valent ] else []);
 
   # helper functions
-  mkEnableOptionDefault = desc: default:
-    mkEnableOption (mdDoc desc) // {
+  mkEnableOptionDefault = desc: default: mkEnableOption desc // {
       inherit default;
     };
 
@@ -126,7 +135,7 @@ in {
     onlineAccounts = mkEnableOptionDefault
       "online accounts for nextcloud/freecloud/google/ms-exchange" true;
     # gsconnect is KDE connect for gnome
-    gSConnect = mkEnableOptionDefault "gsconnect, KDE connect for gnome" true;
+    gsconnect = mkEnableOptionDefault "gsconnect, KDE connect for gnome" true;
   };
 
   # base config for gnome
@@ -149,19 +158,7 @@ in {
 
     # Remove default gnome apps unless explicitly requested
     environment.gnome.excludePackages = filter (x: !(elem x systemPackages))
-      (with pkgs; [
-        gnome-tour
-        gnome-photos
-        gnome.simple-scan
-        gnome.gnome-music
-        gnome.epiphany
-        gnome.totem
-        gnome.yelp
-        gnome.cheese
-        gnome.gnome-weather
-        gnome.gnome-characters
-        orca
-      ]);
+    defaultApplications ++ defaultExtensions;
 
     # gnome services :
     services.gnome = {
@@ -184,14 +181,14 @@ in {
 
     };
 
-    # enable DConf to edit gnome configuration (TODO : DConf2nix)
+    # enable DConf to edit gnome configuration
     programs.dconf.enable = true;
     # basically gnome keyring UI
     programs.seahorse.enable = true;
     # KDE Connect is not required anymore for GSconnect to work
     programs.kdeconnect = {
       enable = cfg.onlineAccounts;
-      package = pkgs.gnomeExtensions.gsconnect;
+      package = pkgs.valent;
     };
     # evolution is the email/contact/etc client for gnome
     programs.evolution.enable = false;

@@ -1,133 +1,41 @@
+# dconf.nix
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
+# TODO : make a bit more functionnal
 { lib, ... }:
-
+with builtins;
 with lib.hm.gvariant;
+let
 
-{
+  # Clean the app folders a little bit
+  mkAppFolder = { name, apps }: {
+    inherit apps;
+    categories = [ name ];
+    name = name;
+    translate = true;
+  };
+  mkAppFolders = list:
+    listToAttrs (map (x: {
+      name = "org/gnome/desktop/app-folders/folders/${x.name}";
+      value = mkAppFolder x;
+    }) list);
+
+  # Share config between GTK3 and 4
+  fileChooser = {
+    date-format = "regular";
+    location-mode = "path-bar";
+    show-size-column = true;
+    show-type-column = true;
+    sort-column = "name";
+    sort-directories-first = true;
+    sort-order = "ascending";
+    type-format = "category";
+    view-type = "list";
+  };
+
+in {
   dconf.settings = {
 
     "org/gnome/GWeather4" = { temperature-unit = "centigrade"; };
-
-    "org/gnome/TextEditor" = { last-save-directory = "file:///home/perard"; };
-
-    "org/gnome/Weather" = {
-      locations =
-        "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
-    };
-
-    "org/gnome/baobab/ui" = {
-      is-maximized = false;
-      window-size = mkTuple [ 1280 1048 ];
-    };
-
-    "org/gnome/calculator" = {
-      accuracy = 9;
-      angle-units = "degrees";
-      base = 10;
-      button-mode = "basic";
-      number-format = "automatic";
-      show-thousands = false;
-      show-zeroes = false;
-      source-currency = "";
-      source-units = "degree";
-      target-currency = "";
-      target-units = "radian";
-      word-size = 64;
-    };
-
-    "org/gnome/control-center" = {
-      last-panel = "bluetooth";
-      window-state = mkTuple [ 2544 1032 ];
-    };
-
-    "org/gnome/deja-dup" = {
-      backend = "google";
-      prompt-check = "disabled";
-      window-height = 500;
-      window-width = 700;
-    };
-
-    "org/gnome/desktop/app-folders/folders/748c8450-5d6b-4339-b9f3-ede683cde9cd" =
-      {
-        apps = [
-          "org.gnome.Maps.desktop"
-          "org.gnome.Todo.desktop"
-          "org.gnome.Weather.desktop"
-          "org.gnome.Contacts.desktop"
-          "org.gnome.Calendar.desktop"
-          "org.gnome.Calculator.desktop"
-          "org.gnome.Notes.desktop"
-          "org.gnome.clocks.desktop"
-          "com.github.maoschanz.drawing.desktop"
-          "org.gnome.Geary.desktop"
-          "pidgin.desktop"
-          "org.gnome.Software.desktop"
-          "org.gnome.TextEditor.desktop"
-        ];
-        name = "Accessories";
-      };
-
-    "org/gnome/desktop/app-folders/folders/7b071b91-2ee0-4f3e-8b38-6b3f48404147" =
-      {
-        apps =
-          [ "org.inkscape.Inkscape.desktop" "gimp.desktop" "blender.desktop" ];
-        name = "Graphics";
-      };
-
-    "org/gnome/desktop/app-folders/folders/9981859f-c72f-4081-9b60-debc6d305f65" =
-      {
-        apps = [
-          "org.gnome.gitg.desktop"
-          "org.gnome.Sysprof.desktop"
-          "nemiver.desktop"
-          "code.desktop"
-          "codium.desktop"
-        ];
-        name = "Programming";
-      };
-
-    "org/gnome/desktop/app-folders/folders/Utilities" = {
-      apps = [
-        "gnome-abrt.desktop"
-        "gnome-system-log.desktop"
-        "nm-connection-editor.desktop"
-        "org.gnome.baobab.desktop"
-        "org.gnome.Connections.desktop"
-        "org.gnome.DejaDup.desktop"
-        "org.gnome.Dictionary.desktop"
-        "org.gnome.DiskUtility.desktop"
-        "org.gnome.eog.desktop"
-        "org.gnome.Evince.desktop"
-        "org.gnome.FileRoller.desktop"
-        "org.gnome.fonts.desktop"
-        "org.gnome.seahorse.Application.desktop"
-        "org.gnome.tweaks.desktop"
-        "org.gnome.Usage.desktop"
-        "vinagre.desktop"
-        "nixos-manual.desktop"
-        "org.gnome.Settings.desktop"
-        "org.gnome.Extensions.desktop"
-        "gnome-system-monitor.desktop"
-        "org.gnome.Boxes.desktop"
-        "psensor.desktop"
-        "solaar.desktop"
-      ];
-      categories = [ "X-GNOME-Utilities" ];
-      name = "X-GNOME-Utilities.directory";
-      translate = true;
-    };
-
-    "org/gnome/desktop/app-folders/folders/c44139e0-9372-436c-9f4d-35311e691a05" =
-      {
-        apps = [
-          "steam.desktop"
-          "net.openra.OpenRA-cnc.desktop"
-          "net.openra.OpenRA.desktop"
-          "wine-Programs-CNCOnline-C&C Online.desktop"
-          "net.openra.OpenRA-d2k.desktop"
-        ];
-        name = "Games";
-      };
 
     "org/gnome/desktop/background" = {
       color-shading-type = "solid";
@@ -181,69 +89,7 @@ with lib.hm.gvariant;
       show-banners = true;
     };
 
-    "org/gnome/desktop/notifications/application/codium" = {
-      application-id = "codium.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/discord" = {
-      application-id = "discord.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/firefox" = {
-      application-id = "firefox.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/gimp" = {
-      application-id = "gimp.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/gnome-power-panel" = {
-      application-id = "gnome-power-panel.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/info-beyondallreason-bar" = {
-      application-id = "info.beyondallreason.bar.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/org-gnome-baobab" = {
-      application-id = "org.gnome.baobab.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/org-gnome-console" = {
-      application-id = "org.gnome.Console.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/org-gnome-dejadup" = {
-      application-id = "org.gnome.DejaDup.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/org-gnome-nautilus" = {
-      application-id = "org.gnome.Nautilus.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect" =
-      {
-        application-id = "org.gnome.Shell.Extensions.GSConnect.desktop";
-      };
-
-    "org/gnome/desktop/notifications/application/org-gnome-software" = {
-      application-id = "org.gnome.Software.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/steam" = {
-      application-id = "steam.desktop";
-    };
-
     "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
-
-    "org/gnome/desktop/peripherals/touchpad" = {
-      two-finger-scrolling-enabled = true;
-    };
-
-    "org/gnome/desktop/wm/keybindings" = {
-      maximize = [ ];
-      unmaximize = [ ];
-    };
 
     "org/gnome/desktop/wm/preferences" = {
       auto-raise = true;
@@ -251,19 +97,9 @@ with lib.hm.gvariant;
       focus-new-windows = "strict";
     };
 
-    "org/gnome/evolution-data-server" = { migrated = true; };
-
     "org/gnome/file-roller/dialogs/extract" = {
       recreate-folders = true;
       skip-newer = false;
-    };
-
-    "org/gnome/gnome-system-monitor/disktreenew" = {
-      col-6-visible = true;
-      col-6-width = 0;
-      columns-order = [ 0 1 2 3 4 5 6 ];
-      sort-col = 3;
-      sort-order = 0;
     };
 
     "org/gnome/mutter" = {
@@ -277,6 +113,10 @@ with lib.hm.gvariant;
     "org/gnome/mutter/keybindings" = {
       toggle-tiled-left = [ ];
       toggle-tiled-right = [ ];
+    };
+    "org/gnome/desktop/wm/keybindings" = {
+      maximize = [ ];
+      unmaximize = [ ];
     };
 
     "org/gnome/nautilus/preferences" = {
@@ -364,46 +204,93 @@ with lib.hm.gvariant;
       last-version-installed = 41;
       overridden-settings = "{'org.gnome.mutter.edge-tiling': <false>}";
     };
+    "org/gnome/shell/overrides" = { edge-tiling = true; };
 
     "org/gnome/shell/extensions/user-theme" = { name = ""; };
 
-    "org/gnome/shell/overrides" = { edge-tiling = false; };
+    "org/gnome/shell/weather" = { automatic-location = true; };
 
-    "org/gnome/shell/weather" = {
-      automatic-location = true;
-      locations =
-        "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
-    };
-
-    "org/gnome/shell/world-clocks" = { locations = "@av []"; };
+    #"org/gnome/shell/world-clocks" = { locations = "@av []"; };
 
     "org/gnome/software" = { first-run = false; };
 
     "org/gnome/tweaks" = { show-extensions-notice = false; };
 
-    "org/gtk/gtk4/settings/file-chooser" = {
-      date-format = "regular";
-      location-mode = "path-bar";
-      show-size-column = true;
-      show-type-column = true;
+    "org/gtk/gtk4/settings/file-chooser" = fileChooser // {
       sidebar-width = 140;
-      sort-column = "name";
-      sort-directories-first = false;
-      sort-order = "ascending";
-      type-format = "category";
-      view-type = "list";
     };
+    "org/gtk/settings/file-chooser" = fileChooser;
 
-    "org/gtk/settings/file-chooser" = {
-      date-format = "regular";
-      location-mode = "path-bar";
-      show-size-column = true;
-      show-type-column = true;
-      sort-column = "name";
-      sort-directories-first = false;
-      sort-order = "ascending";
-      type-format = "category";
-    };
-
-  };
+  } // mkAppFolders [
+    # maybe it's a bit weird to have accessories split with Utilities but here we are
+    {
+      name = "Accessories";
+      apps = [
+        "org.gnome.Maps.desktop"
+        "org.gnome.Todo.desktop"
+        "org.gnome.Weather.desktop"
+        "org.gnome.Contacts.desktop"
+        "org.gnome.Calendar.desktop"
+        "org.gnome.Calculator.desktop"
+        "org.gnome.Notes.desktop"
+        "org.gnome.clocks.desktop"
+        "com.github.maoschanz.drawing.desktop"
+        "org.gnome.Geary.desktop"
+        "pidgin.desktop"
+        "org.gnome.Software.desktop"
+        "org.gnome.TextEditor.desktop"
+      ];
+    }
+    {
+      name = "Utilities";
+      apps = [
+        "org.gnome.eog.desktop"
+        "gnome-system-monitor.desktop"
+        "gnome-abrt.desktop"
+        "gnome-system-log.desktop"
+        "nm-connection-editor.desktop"
+        "org.gnome.baobab.desktop"
+        "org.gnome.Connections.desktop"
+        "org.gnome.DejaDup.desktop"
+        "org.gnome.Dictionary.desktop"
+        "org.gnome.DiskUtility.desktop"
+        "org.gnome.Evince.desktop"
+        "org.gnome.FileRoller.desktop"
+        "org.gnome.fonts.desktop"
+        "org.gnome.seahorse.Application.desktop"
+        "org.gnome.tweaks.desktop"
+        "org.gnome.Usage.desktop"
+        "vinagre.desktop"
+        "nixos-manual.desktop"
+        "org.gnome.Settings.desktop"
+        "org.gnome.Extensions.desktop"
+        "org.gnome.Boxes.desktop"
+      ];
+    }
+    {
+      name = "Graphics";
+      apps =
+        [ "org.inkscape.Inkscape.desktop" "gimp.desktop" "blender.desktop" ];
+    }
+    {
+      name = "Programming";
+      apps = [
+        "org.gnome.gitg.desktop"
+        "org.gnome.Sysprof.desktop"
+        "nemiver.desktop"
+        "code.desktop"
+        "codium.desktop"
+      ];
+    }
+    {
+      name = "Games";
+      apps = [
+        "steam.desktop"
+        "net.openra.OpenRA-cnc.desktop"
+        "net.openra.OpenRA.desktop"
+        "wine-Programs-CNCOnline-C&C Online.desktop"
+        "net.openra.OpenRA-d2k.desktop"
+      ];
+    }
+  ];
 }

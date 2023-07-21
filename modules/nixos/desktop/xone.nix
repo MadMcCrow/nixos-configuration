@@ -12,7 +12,7 @@ let
 in {
 
   # interface
-  options.nixos.desktop.xone.enable = mkEnableOption (mdDoc "XBox One driver");
+  options.nixos.desktop.xone.enable = mkEnableOption "XBox One driver";
   # config
   config = mkIf enable {
     # Xbox Controller Support

@@ -8,15 +8,14 @@ let
   cfg = config.nixos.server;
 
   # helper functions
-  mkEnableOptionDefault = desc: default:
-    mkEnableOption (mdDoc desc) // {
+  mkEnableOptionDefault = description: default:
+    (mkEnableOption description) // {
       inherit default;
     };
-  mkStringOption = desc: default:
+  mkStringOption = description: default:
     mkOption {
-      inherit default;
+      inherit default description;
       type = types.str;
-      description = mdDoc desc;
     };
 
   # make a valid host name with prefix and suffix.
@@ -39,9 +38,7 @@ in {
       hostName = mkStringOption "host name for nextcloud" "nextcloud";
       onlyOffice = {
         enable = mkEnableOptionDefault "only office nextcloud integration" true;
-        documentServer =
-          mkStringOption "host name for only office document server"
-          "only-office";
+        documentServer = mkStringOption "hostname for document server" "only-office";
       };
     };
   };

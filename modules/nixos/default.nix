@@ -13,30 +13,30 @@ let
 
   # helper functions
   mkEnableOptionDefault = desc: default:
-    mkEnableOption (mdDoc desc) // {
+    mkEnableOption (desc) // {
       inherit default;
     };
   mkStringOption = desc: default:
     mkOption {
-      description = mdDoc desc;
+      description = desc;
       inherit default;
       type = types.str;
     };
   mkStringsOption = desc: default:
     mkOption {
-      description = mdDoc desc;
+      description = desc;
       inherit default;
       type = types.listOf types.str;
     };
   mkDrvOption = desc: default:
     mkOption {
-      description = mdDoc desc;
+      description = desc;
       inherit default;
       type = types.package;
     };
   mkDrvsOption = desc: default:
     mkOption {
-      description = mdDoc desc;
+      description = desc;
       inherit default;
       type = types.listOf types.package;
     };
@@ -174,7 +174,7 @@ in {
       genCount = mkOption {
         default = 5;
         type = types.int;
-        description = (mdDoc "number of generations to keep");
+        description = "number of generations to keep";
       };
     };
 

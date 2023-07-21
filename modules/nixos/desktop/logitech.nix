@@ -11,7 +11,7 @@ let
 in {
 
   # interface
-  options.nixos.desktop.logitech.enable = mkEnableOption (mdDoc "logitech drivers and software");
+  options.nixos.desktop.logitech.enable = mkEnableOption "logitech drivers and software";
   # config
   config = mkIf enable {
     # Xbox Controller Support
