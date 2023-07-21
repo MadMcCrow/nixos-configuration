@@ -323,8 +323,8 @@ with lib.hm.gvariant;
     "org/gnome/shell" = {
       app-picker-layout = "[{'748c8450-5d6b-4339-b9f3-ede683cde9cd': <{'position': <0>}>, 'Utilities': <{'position': <1>}>}]";
       disable-user-extensions = false;
-      disabled-extensions = [ "forge@jmmaranan.com" "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "drive-menu@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "unite@hardpixel.eu" "alttab-mod@leleat-on-github" "advanced-alt-tab@G-dH.github.com" "gTile@vibou" ];
-      enabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "blur-my-shell@aunetx" "appindicatorsupport@rgcjonas.gmail.com" "quick-settings-tweaks@qwreey" "gsconnect@andyholmes.github.io" "runcat@kolesnikov.se" "user-theme@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "unite@hardpixel.eu" "tiling-assistant@leleat-on-github" "valent@andyholmes.ca" "just-perfection-desktop@just-perfection" "gtk4-ding@smedius.gitlab.com" "wireless-hid@chlumskyvaclav.gmail.com" ];
+      disabled-extensions = [ "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "unite@hardpixel.eu" "advanced-alt-tab@G-dH.github.com" "gTile@vibou" "gsconnect@andyholmes.github.io" "places-menu@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "dash-to-dock@micxgx.gmail.com" "dashbar@fthx" "apps-menu@gnome-shell-extensions.gcampax.github.com" "rocketbar@chepkun.github.com" ];
+      enabled-extensions = [ "blur-my-shell@aunetx" "appindicatorsupport@rgcjonas.gmail.com" "quick-settings-tweaks@qwreey" "gsconnect@andyholmes.github.io" "runcat@kolesnikov.se" "user-theme@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "unite@hardpixel.eu" "tiling-assistant@leleat-on-github" "dash2dock-lite@icedman.github.com" "forge@jmmaranan.com" "gtk4-ding@smedius.gitlab.com" "just-perfection-desktop@just-perfection" "pano@elhan.io" "space-bar@luchrioh" "valent@andyholmes.ca" "weatherornot@somepaulo.github.io" "wireless-hid@chlumskyvaclav.gmail.com" "dash-to-panel@jderose9.github.com" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
       welcome-dialog-last-shown-version = "43.2";
     };
@@ -386,8 +386,138 @@ with lib.hm.gvariant;
       transparency-mode = "DYNAMIC";
     };
 
+    "org/gnome/shell/extensions/dash-to-panel" = {
+      animate-appicon-hover = true;
+      animate-appicon-hover-animation-extent = "{'RIPPLE': 4, 'PLANK': 4, 'SIMPLE': 1}";
+      animate-appicon-hover-animation-travel = "{'SIMPLE': 0.10000000000000001, 'RIPPLE': 0.40000000000000002, 'PLANK': 0.0}";
+      appicon-margin = 4;
+      appicon-padding = 4;
+      available-monitors = [ 0 ];
+      dot-color-dominant = true;
+      dot-color-override = false;
+      dot-position = "LEFT";
+      dot-style-focused = "METRO";
+      dot-style-unfocused = "METRO";
+      hide-overview-on-startup = true;
+      hotkeys-overlay-combo = "TEMPORARILY";
+      intellihide = true;
+      leftbox-padding = -1;
+      leftbox-size = 0;
+      overview-click-to-exit = true;
+      panel-anchors = ''
+        {"0":"MIDDLE"}
+      '';
+      panel-lengths = ''
+        {"0":100}
+      '';
+      panel-positions = ''
+        {"0":"LEFT"}
+      '';
+      panel-sizes = ''
+        {"0":64}
+      '';
+      primary-monitor = 0;
+      secondarymenu-contains-showdetails = true;
+      show-appmenu = false;
+      show-apps-icon-file = "";
+      status-icon-padding = -1;
+      stockgs-keep-dash = false;
+      stockgs-keep-top-panel = false;
+      stockgs-panelbtn-click-only = false;
+      trans-bg-color = "#ffa348";
+      trans-gradient-bottom-opacity = 0.0;
+      trans-gradient-top-color = "#000000";
+      trans-gradient-top-opacity = 0.1;
+      trans-panel-opacity = 0.0;
+      trans-use-custom-bg = false;
+      trans-use-custom-gradient = true;
+      trans-use-custom-opacity = true;
+      trans-use-dynamic-opacity = false;
+      tray-padding = -1;
+      tray-size = 10;
+      window-preview-title-position = "TOP";
+    };
+
+    "org/gnome/shell/extensions/dash2dock-lite" = {
+      animate-icons-unmute = true;
+      animation-magnify = 0.29;
+      animation-rise = 0.57;
+      animation-spread = 0.4;
+      autohide-dash = true;
+      border-radius = 2.3195876288659796;
+      calendar-icon = false;
+      clock-icon = false;
+      customize-topbar = false;
+      debug-visual = false;
+      icon-effect = 0;
+      icon-effect-color = mkTuple [ 0.0 0.0 ];
+      icon-size = 0.0;
+      monitor-count = 1;
+      mounted-icon = true;
+      msg-to-ext = "";
+      open-app-animation = true;
+      panel-mode = false;
+      peek-hidden-icons = true;
+      pressure-sense = true;
+      scroll-sensitivity = 0.25;
+      shrink-icons = false;
+      topbar-background-color = mkTuple [ 0.6600000262260437 0.23980002105236053 ];
+      trash-icon = true;
+    };
+
     "org/gnome/shell/extensions/forge" = {
       css-last-update = mkUint32 37;
+      css-updated = "1689975168486";
+      preview-hint-enabled = false;
+      quick-settings-enabled = true;
+      stacked-tiling-mode-enabled = true;
+      tabbed-tiling-mode-enabled = false;
+      tiling-mode-enabled = true;
+      window-gap-hidden-on-single = true;
+      window-gap-size = mkUint32 2;
+      window-gap-size-increment = mkUint32 1;
+    };
+
+    "org/gnome/shell/extensions/forge/keybindings" = {
+      con-split-horizontal = [ "<Super>z" ];
+      con-split-layout-toggle = [ "<Super>g" ];
+      con-split-vertical = [ "<Super>v" ];
+      con-stacked-layout-toggle = [ "<Shift><Super>s" ];
+      con-tabbed-layout-toggle = [ "<Shift><Super>t" ];
+      con-tabbed-showtab-decoration-toggle = [ "<Control><Alt>y" ];
+      focus-border-toggle = [ "<Super>x" ];
+      prefs-tiling-toggle = [ "<Super>w" ];
+      window-focus-down = [ "<Super>j" ];
+      window-focus-left = [ "<Super>h" ];
+      window-focus-right = [ "<Super>l" ];
+      window-focus-up = [ "<Super>k" ];
+      window-gap-size-decrease = [ "<Control><Super>minus" ];
+      window-gap-size-increase = [ "<Control><Super>plus" ];
+      window-move-down = [ "<Shift><Super>j" ];
+      window-move-left = [ "<Shift><Super>h" ];
+      window-move-right = [ "<Shift><Super>l" ];
+      window-move-up = [ "<Shift><Super>k" ];
+      window-resize-bottom-decrease = [ "<Shift><Control><Super>i" ];
+      window-resize-bottom-increase = [ "<Control><Super>u" ];
+      window-resize-left-decrease = [ "<Shift><Control><Super>o" ];
+      window-resize-left-increase = [ "<Control><Super>y" ];
+      window-resize-right-decrease = [ "<Shift><Control><Super>y" ];
+      window-resize-right-increase = [ "<Control><Super>o" ];
+      window-resize-top-decrease = [ "<Shift><Control><Super>u" ];
+      window-resize-top-increase = [ "<Control><Super>i" ];
+      window-snap-center = [ "<Control><Alt>c" ];
+      window-snap-one-third-left = [ "<Control><Alt>d" ];
+      window-snap-one-third-right = [ "<Control><Alt>g" ];
+      window-snap-two-third-left = [ "<Control><Alt>e" ];
+      window-snap-two-third-right = [ "<Control><Alt>t" ];
+      window-swap-down = [ "<Control><Super>j" ];
+      window-swap-last-active = [ "<Super>Return" ];
+      window-swap-left = [ "<Control><Super>h" ];
+      window-swap-right = [ "<Control><Super>l" ];
+      window-swap-up = [ "<Control><Super>k" ];
+      window-toggle-always-float = [ "<Shift><Super>c" ];
+      window-toggle-float = [ "<Super>c" ];
+      workspace-active-tile-toggle = [ "<Shift><Super>w" ];
     };
 
     "org/gnome/shell/extensions/gsconnect" = {
@@ -424,13 +554,14 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/just-perfection" = {
       accessibility-menu = true;
-      activities-button = false;
+      activities-button = true;
+      activities-button-label = false;
       app-menu = true;
       app-menu-icon = true;
       background-menu = false;
       clock-menu = true;
       controls-manager-spacing-size = 0;
-      dash = true;
+      dash = false;
       dash-icon-size = 0;
       dash-separator = false;
       double-super-to-appgrid = true;
@@ -446,7 +577,7 @@ with lib.hm.gvariant;
       power-icon = false;
       ripple-box = false;
       search = false;
-      show-apps-button = true;
+      show-apps-button = false;
       startup-status = 1;
       theme = true;
       window-demands-attention-focus = true;
@@ -455,17 +586,37 @@ with lib.hm.gvariant;
       window-preview-close-button = true;
       workspace = true;
       workspace-background-corner-size = 0;
-      workspace-popup = true;
+      workspace-popup = false;
       workspace-wrap-around = true;
-      workspaces-in-app-grid = true;
+      workspaces-in-app-grid = false;
       world-clock = true;
+    };
+
+    "org/gnome/shell/extensions/pano" = {
+      keep-search-entry = false;
+      link-previews = true;
+      play-audio-on-copy = false;
+      send-notification-on-copy = false;
+      sync-primary = false;
     };
 
     "org/gnome/shell/extensions/quick-settings-tweaks" = {
       datemenu-remove-notifications = true;
       disable-adjust-content-border-radius = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"ServiceToggle\",\"label\":\"GSConnect\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
+      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
       notifications-use-native-controls = true;
+    };
+
+    "org/gnome/shell/extensions/rocketbar" = {
+      appbutton-backlight-dominant-color = true;
+      appbutton-backlight-intensity = 3;
+      appbutton-icon-padding = 9;
+      appbutton-icon-size = 17;
+      notification-counter-enabled = true;
+      overview-kill-dash = false;
+      taskbar-enabled = true;
+      taskbar-position = "center";
+      taskbar-position-offset = 2;
     };
 
     "org/gnome/shell/extensions/runcat" = {
@@ -513,11 +664,16 @@ with lib.hm.gvariant;
     "org/gnome/software" = {
       check-timestamp = mkInt64 1689951170;
       first-run = false;
-      flatpak-purge-timestamp = mkInt64 1689840285;
+      flatpak-purge-timestamp = mkInt64 1689973758;
     };
 
     "org/gnome/tweaks" = {
       show-extensions-notice = false;
+    };
+
+    "org/gtk/gtk4/settings/color-chooser" = {
+      custom-colors = [ (mkTuple [ 0.6600000262260437 0.23980002105236053 ]) (mkTuple [ 0.0 0.0 ]) (mkTuple [ 1.0 0.9647058844566345 ]) (mkTuple [ 0.7058823704719543 0.6549019813537598 ]) (mkTuple [ 6.666667014360428e-2 0.7803921699523926 ]) (mkTuple [ 0.9686274528503418 0.6352941393852234 ]) (mkTuple [ 0.9254902005195618 0.3686274588108063 ]) ];
+      selected-color = mkTuple [ true 1.0 ];
     };
 
     "org/gtk/gtk4/settings/file-chooser" = {
@@ -551,7 +707,7 @@ with lib.hm.gvariant;
       sort-directories-first = false;
       sort-order = "ascending";
       type-format = "category";
-      window-position = mkTuple [ 0 32 ];
+      window-position = mkTuple [ 35 32 ];
       window-size = mkTuple [ 1195 902 ];
     };
 

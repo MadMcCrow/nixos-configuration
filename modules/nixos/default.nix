@@ -250,6 +250,7 @@ in {
    # Timezone
     time.timeZone = "Europe/Paris";
     services.timesyncd.servers = [ "fr.pool.ntp.org" "europe.pool.ntp.org" ];
+    location.provider = "geoclue2";  # I don't want my address in this config
 
     # keyboard layout on desktop
     services.xserver = {
