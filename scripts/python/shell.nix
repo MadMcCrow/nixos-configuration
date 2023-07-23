@@ -1,7 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
 let
 python = import ./python.nix {inherit pkgs;};
-cython-test = python.mkPyFile ./cython-test.py;
+test = pkgs.writeText "test" ''print ("hello world")'';
+cython-test = python.mkPyScript "test_cython" test;
 in
 pkgs.mkShell {
     # nativeBuildInputs is usually what you want -- tools you need to run

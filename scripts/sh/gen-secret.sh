@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 KEY="$1"
 STORE="$2"
 SECRET="$3"
-RULES="../Secrets.nix";
+RULES="./Secrets.nix";
 
 # count characters
 ccount() {

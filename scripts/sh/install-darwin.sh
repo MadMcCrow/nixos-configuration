@@ -1,9 +1,9 @@
 #!/bin/sh
 
-clean_backup() 
-{ 
+clean_backup()
+{
 if [ -f "/etc/$1.backup-before-nix" ]; then
-  echo "reverting backup of $1" 	
+  echo "reverting backup of $1"
   sudo mv "/etc/$1.backup-before-nix" "/etc/$1"
 fi
 }
@@ -35,7 +35,7 @@ experimental_features()
   echo "experimental features already enabled"
   fi
 }
- 
+
 build()
 {
   # build nix config on Darwin

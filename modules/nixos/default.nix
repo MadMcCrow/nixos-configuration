@@ -42,8 +42,7 @@ let
     };
   mkEnumOption = desc: values:
     mkOption {
-      description =
-        mdDoc (concatStringsSep "," [ desc "one of " (toString values) ]);
+      description = concatStringsSep "," [ desc "one of " (toString values) ];
       type = types.enum values;
       default = elemAt values 0;
     };
@@ -144,7 +143,7 @@ in {
         type = types.str;
         default = "04:40";
         example = "daily";
-        description = lib.mdDoc ''
+        description = ''
           How often upgrade, optimize and garbage collection occurs.
           The format is described in
           {manpage}`systemd.time(7)`.
@@ -458,9 +457,7 @@ in {
         in
         {
         text = ''
-
         '';
-        dep = [pkgs.openssh pkgs.wget];
         };
 
       };

@@ -22,8 +22,6 @@ let
   subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
 
 in {
-  # we need impermancence in this module
-  imports = [ impermanence.nixosModules.impermanence ];
 
   # interface
   options.nixos.server = {

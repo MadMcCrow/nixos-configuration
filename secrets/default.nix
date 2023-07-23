@@ -5,6 +5,8 @@
 with builtins;
 with lib;
 let
+
+
   # shortcut
   cfg = config.secrets;
   # wrapped function
@@ -16,7 +18,8 @@ let
   mkSecretList = x : {name = x.name; value = mkSecret x;};
 
   # package secret script
-  gen-secret = pkgs.writeShellScriptBin "nixos-gen-secret" (builtins.readFile ./gen-secret.sh);
+  gen-secret = pkgs.writeShellScriptBin "nixos-gen-secret" (builtins.readFile ../scripts/sh/gen-secret.sh);
+
 in
 {
   options.secrets = {

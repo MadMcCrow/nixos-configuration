@@ -16,7 +16,7 @@ let
   stable-pkgs = pkgs;
 
   # helper functions
-  mkEnableOptionDefault = desc : default: (mkEnableOption (mdDoc desc)) // { inherit default;};
+  mkEnableOptionDefault = desc : default: (mkEnableOption (desc)) // { inherit default;};
   mkAppOptions = list : listToAttrs (map (x : {name = x; value = {enable = mkEnableOptionDefault x  true;};}) list);
   isAppEnabled = str : cfg."${str}".enable == true; # TODO : replace with hasAttr/GetAttr
   condList = cond : list : if cond then list else [];
@@ -47,7 +47,7 @@ in
 {
   # interface
   options.nixos.desktop.apps = {
-    enable =  mkEnableOption (mdDoc "system-wide apps") // { default = true; };
+    enable =  (mkEnableOption "system-wide apps") // { default = true; };
     steam.enable   = mkEnableOptionDefault "steam"   true;
     discord.enable = mkEnableOptionDefault "discord" true;
   } // mkAppOptions defaultApps;
