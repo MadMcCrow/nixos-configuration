@@ -13,6 +13,7 @@ NC='\033[0m' # No Color
 KEY="$1"
 STORE="$2"
 SECRET="$3"
+RULES="../Secrets.nix";
 
 # count characters
 ccount() {
@@ -81,7 +82,7 @@ fi
 sudo cp ./$KEY $STORE/$KEY
 # edit or create secret
 echo_line "editing secret in $GRE\0$SECRET\0$NC"
-agenix -e $SECRET -i $STORE/$KEY
+RULES=$RULES  agenix -e $SECRET -i $STORE/$KEY
 # tell user what to do next
 echo -e "you can now edit secret file $SECRET with agenix with $BLU'agenix -e $SECRET -i $STORE/$KEY'$NC"
 echo_line "$GRE\0DONE$NC"

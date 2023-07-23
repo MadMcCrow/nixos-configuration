@@ -22,13 +22,17 @@ let
   subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
 
 in {
+  # we need impermancence in this module
+  imports = [ impermanence.nixosModules.impermanence ];
+
   # interface
   options.nixos.server = {
     enable = mkEnableOptionDefault "server services" false;
     hostName = mkStringOption "server host name" "localhost";
     cockpit.enable = mkEnableOptionDefault "cockpit web-based interface" true;
     seafile.enable = mkEnableOptionDefault "seafile file manager" true;
-    data.path = mkStringOption "path to store data for the server" "/persist/database/data";
+    data.path = mkStringOption "path to store data for the server"
+      "/persist/database/data";
     nextcloud = {
       enable = mkEnableOptionDefault "nextcloud" true;
       package = mkOption {
@@ -38,7 +42,8 @@ in {
       hostName = mkStringOption "host name for nextcloud" "nextcloud";
       onlyOffice = {
         enable = mkEnableOptionDefault "only office nextcloud integration" true;
-        documentServer = mkStringOption "hostname for document server" "only-office";
+        documentServer =
+          mkStringOption "hostname for document server" "only-office";
       };
     };
   };
@@ -49,7 +54,7 @@ in {
     # our secrets option
     secrets = {
       enable = true;
-      secrets = if cfg.nextcloud.enable then [ { name = "nextcloud"; } ] else [];
+      secrets = if cfg.nextcloud.enable then [{ name = "nextcloud"; }] else [ ];
     };
 
     # cockpit (web-based server interface )
@@ -91,7 +96,7 @@ in {
     # DTBs : postgresql is faster
     services.postgresql = {
       enable = true;
-      dataDir = concatStringsSep "/" [cfg.data.path "postgresql"];
+      dataDir = concatStringsSep "/" [ cfg.data.path "postgresql" ];
       # No need to ensure databases
       #ensureDatabases = [ "nextcloud" ];
       #ensureUsers = [{
@@ -126,7 +131,8 @@ in {
         #dbhost = "/run/postgresql"; # nextcloud will add /.s.PGSQL.5432 by itself
         #dbpassFile = config.age.secrets.postgresql-nc.path;
       };
-      database.createLocally = true; # only one computer, ask to generate all dtb settings
+      database.createLocally =
+        true; # only one computer, ask to generate all dtb settings
       https = true;
       extraAppsEnable = true;
       extraApps = import ./nextcloud-apps.nix { inherit pkgs; };

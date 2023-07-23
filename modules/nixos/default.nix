@@ -110,7 +110,8 @@ let
 
 
   # updates:
-  flake = "github:MadMcCrow/nixos-configuration";
+  # this flake
+  flake = "MadMcCrow/nixos-configuration";
   updateDates = cfg.upgrade.updateDates;
   # update command to always be right
   nixos-update = pkgs.writeShellScriptBin "nixos-update" ''
@@ -119,7 +120,7 @@ let
     echo "Please run this as root or with sudo"
     exit 2
   fi
-  nixos-rebuild switch --flake ${flake}#
+  nixos-rebuild switch --flake github:${flake}#
   exit $?
   '';
 
@@ -442,8 +443,31 @@ in {
     };
 
     system = {
+
+      # script activated
+      activationScripts = {
+
+        #
+        # We get all the secrets for the config and (re-)generate them
+        # if not present or cannot be opened
+        #
+        secrets = let
+        key = elemAt config.age.identityPaths 0;
+        secrets = map (x : x.file ) (attrValues config.age.secrets);
+        secretsStr = concatStringsSep "\n" secrets;
+        in
+        {
+        text = ''
+
+        '';
+        dep = [pkgs.openssh pkgs.wget];
+        };
+
+      };
+
+      # upgrade automatically each day
       autoUpgrade = {
-        inherit flake;
+        flake = "github:${flake}";
         enable = cfg.upgrade.enable; # enable auto upgrades
         persistent = true; # apply if missed
         dates = cfg.upgrade.updateDates;

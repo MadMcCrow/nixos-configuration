@@ -45,6 +45,7 @@ in {
     zsh-autosuggestions
     zsh-syntax-highlighting
     jetbrains-mono
+    speechd
   ];
 
   # enable HM

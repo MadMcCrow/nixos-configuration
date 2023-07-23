@@ -44,28 +44,33 @@ let
     appindicator # add systray icon support
     blur-my-shell # some nice blur effect
     caffeine # prevents lockscreen
-    dash-to-dock # turn the dash into a dock, always visible
-    just-perfection # customise everything
+       just-perfection # customise everything
     gtk4-desktop-icons-ng-ding # add desktop icons
     weather-or-not # weather on the top top-bar
     runcat # the best gnome extension
 
     valent # replacement for GSConnect built with modern GTK
-    tiling-assistant # Windows-like tiling update
 
     alttab-mod # improve alt-tabbing
     advanced-alttab-window-switcher # completely replace alt-tab
 
     # things to try
-    arcmenu
-    forge #
+
+    forge     # tiling manager
+    tiling-assistant # Windows-like tiling update
+
     space-bar # Activity replaced by workspaces
-    dashbar
-    dash2dock-lite
-    dash-to-panel
+
+    arcmenu # windows like start menu
+    #dash2dock-lite # kinda buggy
+    dash-to-dock # turn the dash into a dock, always visible
+    dash-to-panel # might actually be more useful in 16:9
     wireless-hid # battery left in mouse/gamepad etc...
     pano  # clipboard manager
-    rocketbar # some dash
+
+    # these two are the same
+    # dashbar
+    # rocketbar # some dash
   ];
 
   # default gnome extensions
@@ -110,6 +115,9 @@ let
       inherit default;
     };
 
+  unwantedPackages = filter (x: !(elem x systemPackages))
+  (defaultApplications ++ defaultExtensions);
+
 in {
 
   # interface
@@ -144,7 +152,7 @@ in {
     system.nixos.tags = [ "Gnome" ];
     services.xserver = {
       enable = true;
-      excludePackages = [ pkgs.xterm ];
+      excludePackages = [ pkgs.xterm ] ++ unwantedPackages;
       desktopManager.xterm.enable = false;
       desktopManager.gnome.enable = true;
       # use gdm :
@@ -157,8 +165,7 @@ in {
     programs.xwayland.enable = cfg.wayland;
 
     # Remove default gnome apps unless explicitly requested
-    environment.gnome.excludePackages = filter (x: !(elem x systemPackages))
-    defaultApplications ++ defaultExtensions;
+    environment.gnome.excludePackages = unwantedPackages;
 
     # gnome services :
     services.gnome = {
