@@ -7,20 +7,20 @@ let
   # config shortcuts
   nos = config.nixos;
   dsk = nos.desktop;
-  cfg = dsk.flatpak;  
+  cfg = dsk.flatpak;
    # only enable if we harve a desktop environment
   hasDesktop = dsk.gnome.enable || dsk.kde.enable;
   enable = all (x : x.enable) [nos dsk cfg];
 in {
   # interface
-  options.nixos.desktop.flatpak.enable = mkEnableOption (mdDoc "flatpak") // {
+  options.nixos.desktop.flatpak.enable = (mkEnableOption "flatpak") // {
     default = hasDesktop;
   };
   # import thanks to specialArgs
   imports = [ impermanence.nixosModules.impermanence ];
   # configs
   config = lib.mkIf (enable && hasDesktop) {
-  
+
     xdg.portal.enable = true;
 
     # enable package kit

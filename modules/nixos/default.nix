@@ -9,7 +9,7 @@ let
 
   # submodules
   # (things to complicated or too specific to have directly in the default linux config)
-  submodules = [ ./desktop ./server];
+  submodules = [ ./desktop ./server ];
 
   # helper functions
   mkEnableOptionDefault = desc: default:
@@ -47,11 +47,13 @@ let
       default = elemAt values 0;
     };
 
-  condAttr = s : a : d: if hasAttr a s then getAttr a s else d;
+  condAttr = s: a: d: if hasAttr a s then getAttr a s else d;
   condList = cond: value: if cond then value else [ ];
   condString = cond: value: if cond then value else "";
-  vendorSwitch  = s : v : l : d : err: if (any (x : x == v) l) then condAttr s v d else throw err;
-  hashWithLength = str : len : elemAt (elemAt (split "(.{${toString len}})" (hashString "md5" str)) 1) 0;
+  vendorSwitch = s: v: l: d: err:
+    if (any (x: x == v) l) then condAttr s v d else throw err;
+  hashWithLength = str: len:
+    elemAt (elemAt (split "(.{${toString len}})" (hashString "md5" str)) 1) 0;
 
   # ZFS
   ## rollback command
@@ -73,40 +75,57 @@ let
   ZFSList = [
     (mkZFS "/" "${sysPool}/local/root" true)
     (mkZFS "/nix" "${sysPool}/local/nix" true)
-    (mkZFS "/persist" "${sysPool}/safe/persist" true)
+    (mkZFS "/nix/persist" "${sysPool}/safe/persist" true)
     (mkZFS "/home" "${sysPool}/safe/home" false)
   ];
-  zFileSystems = listToAttrs (if zfsEnable then ZFSList else []);
+  zFileSystems = listToAttrs (if zfsEnable then ZFSList else [ ]);
 
   # Kernel
-  defaultKernelMods =
-    [ "nvme" "xhci_pci" "xhci_hcd" "ahci" "usbhid" "usb_storage" "sd_mod" "dm-snapshot" ];
+  defaultKernelMods = [
+    "nvme"
+    "xhci_pci"
+    "xhci_hcd"
+    "ahci"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+    "dm-snapshot"
+  ];
   kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  kernelParams = [ "nohibernate" "quiet" "idle=nomwait"];
-
+  kernelParams = [ "nohibernate" "quiet" "idle=nomwait" ];
 
   # CPU
   # TODO : virtualisation
-  cpuVendors = ["amd" "intel"];
-  cpuVendorSwitch = s: d: vendorSwitch s cfg.cpu.vendor gpuVendors d  "please define nixos.cpu.vendor";
-  cpuVirtualisation = cpuVendorSwitch {"amd" = {};} {};
+  cpuVendors = [ "amd" "intel" ];
+  cpuVendorSwitch = s: d:
+    vendorSwitch s cfg.cpu.vendor gpuVendors d "please define nixos.cpu.vendor";
+  cpuVirtualisation = cpuVendorSwitch { "amd" = { }; } { };
 
   # GPU
   # TODO : Support multi-gpu
-  gpuVendors = ["amd" "intel"];
-  gpuVendorSwitch = s: d : vendorSwitch s cfg.gpu.vendor gpuVendors d  "please define nixos.gpu.vendor";
+  gpuVendors = [ "amd" "intel" ];
+  gpuVendorSwitch = s: d:
+    vendorSwitch s cfg.gpu.vendor gpuVendors d "please define nixos.gpu.vendor";
 
-  gpuKernelModule = gpuVendorSwitch { "amd" =  ["amdgpu"]; } [];
-  gpuOGLPackages  = gpuVendorSwitch {"amd" = [pkgs.amdvlk]; "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel];} [];
-  gpuDrivers      = gpuVendorSwitch { "amd" =  ["amdgpu" "radeon"]; } [];
-  gpuVars         = gpuVendorSwitch { "amd" = {AMD_VULKAN_ICD = "RADV";};} {};
-  gpuTmpRules     = gpuVendorSwitch { "amd" =  ["L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"]; } [];
+  gpuKernelModule = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
+  gpuOGLPackages = gpuVendorSwitch {
+    "amd" = [ pkgs.amdvlk ];
+    "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel ];
+  } [ ];
+  gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" "radeon" ]; } [ ];
+  gpuVars = gpuVendorSwitch { "amd" = { AMD_VULKAN_ICD = "RADV"; }; } { };
+  gpuTmpRules = gpuVendorSwitch {
+    "amd" = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}" ];
+  } [ ];
   # TODO : intel override / overlay :
-  gpuOverrides   = gpuVendorSwitch { "intel" = {vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };};} {};
+  gpuOverrides = gpuVendorSwitch {
+    "intel" = {
+      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+    };
+  } { };
 
-  vaapi = with pkgs; [libvdpau-va-gl vaapiVdpau];
-  ocl   = with pkgs; [rocm-opencl-icd rocm-opencl-runtime];
-
+  vaapi = with pkgs; [ libvdpau-va-gl vaapiVdpau ];
+  ocl = with pkgs; [ rocm-opencl-icd rocm-opencl-runtime ];
 
   # updates:
   # this flake
@@ -114,15 +133,14 @@ let
   updateDates = cfg.upgrade.updateDates;
   # update command to always be right
   nixos-update = pkgs.writeShellScriptBin "nixos-update" ''
-  if [ "$USER" != "root" ]
-  then
-    echo "Please run this as root or with sudo"
-    exit 2
-  fi
-  nixos-rebuild switch --flake github:${flake}#
-  exit $?
+    if [ "$USER" != "root" ]
+    then
+      echo "Please run this as root or with sudo"
+      exit 2
+    fi
+    nixos-rebuild switch --flake github:${flake}#
+    exit $?
   '';
-
 
 in {
   #interface
@@ -133,7 +151,8 @@ in {
     # HostName : (most important)
     host = {
       name = mkStringOption "hostname / computer name" "";
-      id   = mkStringOption "host unique ID - 8 hex digits" (hashWithLength cfg.host.name 8);
+      id = mkStringOption "host unique ID - 8 hex digits"
+        (hashWithLength cfg.host.name 8);
     };
 
     # (auto-)Upgrade scheme :
@@ -149,7 +168,7 @@ in {
           {manpage}`systemd.time(7)`.
         '';
       };
-      autoReboot = mkEnableOptionDefault  "reboot post upgrade" true;
+      autoReboot = mkEnableOptionDefault "reboot post upgrade" true;
     };
 
     # ZFS file system specifics
@@ -166,7 +185,7 @@ in {
     kernel = {
       packages = mkDrvOption "kernel packages" kernelPackages;
       extraKernelPackages = mkStringsOption "Extra kernel Packages" [ ];
-      params = mkStringsOption "Extra kernel Params" [];
+      params = mkStringsOption "Extra kernel Params" [ ];
     };
 
     # nixos-rebuild
@@ -206,14 +225,16 @@ in {
     # TODO : add SE/Hardened linux support
     enhancedSecurity = {
       enable = mkEnableOptionDefault "extra security" false;
-      appArmor.enable = mkEnableOptionDefault "App Armor, see https://www.apparmor.net/" true;
+      appArmor.enable =
+        mkEnableOptionDefault "App Armor, see https://www.apparmor.net/" true;
     };
 
     network = {
       # systemd-networkd-wait-online can timeout and fail if there are no network interfaces available for it to manage.
       waitForOnline = mkEnableOptionDefault "wait for networking at boot" false;
       # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
-      wakeOnLineInterfaces = mkStringsOption "Interfaces to enable wakeOnLan" [];
+      wakeOnLineInterfaces =
+        mkStringsOption "Interfaces to enable wakeOnLan" [ ];
     };
 
   };
@@ -237,42 +258,43 @@ in {
       networkmanager.enable = true;
       firewall.allowedTCPPorts = [ 22 ];
 
-      interfaces = listToAttrs (map (x: {name = "${x}"; value = {wakeOnLan.enable = true;};}) cfg.network.wakeOnLineInterfaces);
+      interfaces = listToAttrs (map (x: {
+        name = "${x}";
+        value = { wakeOnLan.enable = true; };
+      }) cfg.network.wakeOnLineInterfaces);
     };
-
-
 
     # Locale
     i18n.defaultLocale = "en_US.UTF-8";
     console.font = "Lat2-Terminus16";
     console.useXkbConfig = true; # use xkbOptions in tty.
 
-   # Timezone
+    # Timezone
     time.timeZone = "Europe/Paris";
     services.timesyncd.servers = [ "fr.pool.ntp.org" "europe.pool.ntp.org" ];
-    location.provider = "geoclue2";  # I don't want my address in this config
+    location.provider = "geoclue2"; # I don't want my address in this config
 
     # keyboard layout on desktop
     services.xserver = {
-        enable = cfg.gpu.enable;
-        videoDrivers = gpuDrivers;
-        layout = "us";
-        xkbVariant = "intl";
-        xkbOptions = "eurosign:e";
-      };
+      enable = cfg.gpu.enable;
+      videoDrivers = gpuDrivers;
+      layout = "us";
+      xkbVariant = "intl";
+      xkbOptions = "eurosign:e";
+    };
 
     # CUPS printer support :
     services.printing = {
-        enable = cfg.CUPS.enable; # default to false
-        #stateless = true;
-        #drivers = [ ];
-      };
+      enable = cfg.CUPS.enable; # default to false
+      #stateless = true;
+      #drivers = [ ];
+    };
 
     # zfs
     services.zfs = {
-        trim.enable = zfsEnable;
-        autoScrub.enable = zfsEnable;
-      };
+      trim.enable = zfsEnable;
+      autoScrub.enable = zfsEnable;
+    };
 
     # avahi for mdns :
     services.avahi = {
@@ -282,21 +304,17 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ pciutils usbutils psensor lm_sensors exa] ++
-                       [ cachix vulnix ] ++
-                       [ git git-crypt pre-commit git-lfs ] ++
-                       [ nixos-update ] ++
-                       [ agenix.packages.x86_64-linux.default  age] ++
-                       (condList cfg.gpu.enable [ vulkan-tools ])   ++
-                       (condList cfg.enhancedSecurity.enable [policycoreutils]);
+      systemPackages = [ pciutils usbutils psensor lm_sensors exa ]
+        ++ [ cachix vulnix ] ++ [ git git-crypt pre-commit git-lfs ]
+        ++ [ nixos-update ] ++ [ agenix.packages.x86_64-linux.default age ]
+        ++ (condList cfg.gpu.enable [ vulkan-tools ])
+        ++ (condList cfg.enhancedSecurity.enable [ policycoreutils ]);
 
       # set env-vars here
       variables = gpuVars;
 
       # keep secrets
-      persistence."/nix/persist" = {
-        directories = [ "/etc/nixos/secrets" ];
-    };
+      persistence."/nix/persist" = { directories = [ "/etc/nixos/secrets" ]; };
     };
 
     boot = {
@@ -325,7 +343,8 @@ in {
 
       # Kernel Packages
       inherit kernelPackages;
-      extraModulePackages = map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
+      extraModulePackages =
+        map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
 
       # UEFI boot loader with systemdboot
       loader = {
@@ -335,7 +354,8 @@ in {
       };
 
       # add zfs modprobe
-      extraModprobeConfig = mkAfter (if zfsEnable then zfsModProbConfig else "");
+      extraModprobeConfig =
+        mkAfter (if zfsEnable then zfsModProbConfig else "");
 
       # import zfs pools at boot
       zfs = {
@@ -354,7 +374,7 @@ in {
       "/boot" = {
         device = "/dev/disk/by-uuid/8001-EF00";
         fsType = "vfat";
-        };
+      };
     };
 
     # nix setup
@@ -376,7 +396,7 @@ in {
       # automate optimising the store :
       optimise = {
         automatic = true;
-        dates = [updateDates];
+        dates = [ updateDates ];
       };
 
       # add support for cachix
@@ -396,7 +416,8 @@ in {
     # root user
     users.users.root = {
       homeMode = "700"; # home will be erased anyway because on /
-      hashedPassword = "$y$j9T$W.JAnia2yZEpLY8RwEJ4M0$eS3XjstDqU8/5gRoTHen9RDZg4E1XNKp0ncKxGs0bY.";
+      hashedPassword =
+        "$y$j9T$W.JAnia2yZEpLY8RwEJ4M0$eS3XjstDqU8/5gRoTHen9RDZg4E1XNKp0ncKxGs0bY.";
     };
 
     # PowerManagement
@@ -415,15 +436,17 @@ in {
         # direct rendering (necessary for vulkan)
         driSupport = true;
         driSupport32Bit = true;
-        extraPackages =  gpuOGLPackages ++ vaapi ++ ocl;
-        };
+        extraPackages = gpuOGLPackages ++ vaapi ++ ocl;
+      };
     };
     systemd.tmpfiles.rules = gpuTmpRules;
 
     # AUDIO
-    sound.enable = cfg.audio.enable && !cfg.audio.usePipewire; # disabled for pipewire
+    sound.enable = cfg.audio.enable
+      && !cfg.audio.usePipewire; # disabled for pipewire
     hardware.pulseaudio.enable = cfg.audio.enable && !cfg.audio.usePipewire;
-    security.rtkit.enable = cfg.audio.enable; # rtkit is optional but recommended
+    security.rtkit.enable =
+      cfg.audio.enable; # rtkit is optional but recommended
     services.pipewire = {
       enable = cfg.audio.usePipewire;
       alsa.enable = true;
@@ -433,7 +456,8 @@ in {
     };
 
     # app armor : https://wikipedia.org/wiki/AppArmor
-    security.apparmor.enable = cfg.enhancedSecurity.enable && cfg.enhancedSecurity.appArmor;
+    security.apparmor.enable = cfg.enhancedSecurity.enable
+      && cfg.enhancedSecurity.appArmor;
 
     # Faster boot:
     systemd.services = {
@@ -451,13 +475,34 @@ in {
         # if not present or cannot be opened
         #
         secrets = let
-        key = elemAt config.age.identityPaths 0;
-        secrets = map (x : x.file ) (attrValues config.age.secrets);
-        secretsStr = concatStringsSep "\n" secrets;
-        in
-        {
-        text = ''
-        '';
+          key = elemAt config.age.identityPaths 0;
+          secrets = map (x: x.file) (attrValues config.age.secrets);
+          secretsStr = concatStringsSep "\n" secrets;
+        in {
+          text = ''
+            if [ ! -f ${key} ]; then
+                echo "SSH key not found at $''${key}. Creating a new one..."
+                ssh-keygen -C ${key} -f "./$''${key}" -q
+            fi
+            SECRETS=${secretsStr}
+
+            for SECRET_FILE_LOCATION in "$@"; do
+                if [ -f "$SECRET_FILE_LOCATION" ]; then
+                    echo "Secret file found at $SECRET_FILE_LOCATION. Trying to open it..."
+                    if ${pkgs.age} -d -i ${key} -o "$SECRET_FILE_LOCATION"; then
+                        echo "Success! Here is the content of the secret file:"
+                        cat "$SECRET_FILE_LOCATION"
+                    else
+                        echo "Failed to open the secret file. Deleting and recreating it..."
+                        rm "$SECRET_FILE_LOCATION"
+                        ${pkgs.age} -i ${key} -o "$SECRET_FILE_LOCATION"
+                    fi
+                else
+                    echo "Secret file not found at $SECRET_FILE_LOCATION. Creating a new one..."
+                    ${pkgs.age} -i ${key} -o "$SECRET_FILE_LOCATION"
+                fi
+            done
+          '';
         };
 
       };

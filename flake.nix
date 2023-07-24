@@ -26,6 +26,10 @@
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.darwin.follows = "darwin";
 
+    # pycnix for python scripts
+    pycnix.url = "github:MadMcCrow/pycnix";
+    pycnix.inputs.nixpkgs.follows = "nixpkgs";
+
   };
 
   outputs = { self, nixpkgs, darwin, home-manager, agenix, ... }@inputs:

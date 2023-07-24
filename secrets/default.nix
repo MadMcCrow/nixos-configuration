@@ -10,7 +10,7 @@ let
   # shortcut
   cfg = config.secrets;
   # wrapped function
-  mkEnableOptionDefault = desc : default: (mkEnableOption (mdDoc desc)) // { inherit default;};
+  mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
   hostKey = concatStringsSep "/" [cfg.keyPath config.networking.hostName];
 
   # simplify declaration of secret files
@@ -23,17 +23,15 @@ let
 in
 {
   options.secrets = {
-    enable = mkEnableOptionDefault "secret management with age" false;
-    keyPath = mkOption {description = "path to all keys"; default="/persist/secrets";};
-
-    secrets = mkOption {description = "set of secrets"; type = types.listOf types.attrs; default = {}; };
+    keyPath = mkOption {description = "path to all keys"; default="/nix/persist/secrets";};
+    secrets = mkOption {description = "set of secrets"; type = types.listOf types.attrs; default = []; };
   };
 
   config = {
     # add our script
     environment.systemPackages = [ gen-secret ];
 
-    age =  mkIf cfg.enable {
+    age = {
       secrets = listToAttrs ( map mkSecretList cfg.secrets);
       identityPaths = [ hostKey ];
     };

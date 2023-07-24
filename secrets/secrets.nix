@@ -7,7 +7,6 @@ let
   nixAF  = ./nixAF.pub;
 in
 {
-  # No need for secrets here :
   "nextcloud.age".publicKeys    = [ (builtins.readFile nixNUC) ];
   "postgresql.age".publicKeys   = [ (builtins.readFile nixNUC) ];
 }

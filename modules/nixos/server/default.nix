@@ -50,9 +50,8 @@ in {
   config = mkIf cfg.enable {
 
     # our secrets option
-    secrets = {
-      enable = true;
-      secrets = if cfg.nextcloud.enable then [{ name = "nextcloud"; }] else [ ];
+    secrets = mkIf cfg.nextcloud.enable {
+      secrets = [{ name = "nextcloud"; }];
     };
 
     # cockpit (web-based server interface )

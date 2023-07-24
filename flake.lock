@@ -148,6 +148,26 @@
         "type": "github"
       }
     },
+    "pycnix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1690234801,
+        "narHash": "sha256-OXB+MdpWsXWeF9YcSwOlUuYr9TDdZfmmc2RFbX59DxA=",
+        "owner": "MadMcCrow",
+        "repo": "pycnix",
+        "rev": "688bd13d4f5352911048ef1325e678ad0b488d70",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MadMcCrow",
+        "repo": "pycnix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -156,7 +176,8 @@
         "impermanence": "impermanence",
         "nixpkgs": "nixpkgs",
         "nixpkgs-darwin": "nixpkgs-darwin",
-        "nixpkgs-stable": "nixpkgs-stable"
+        "nixpkgs-stable": "nixpkgs-stable",
+        "pycnix": "pycnix"
       }
     }
   },
