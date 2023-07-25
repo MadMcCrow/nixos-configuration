@@ -323,8 +323,8 @@ with lib.hm.gvariant;
     "org/gnome/shell" = {
       app-picker-layout = "[{'748c8450-5d6b-4339-b9f3-ede683cde9cd': <{'position': <0>}>, 'Utilities': <{'position': <1>}>}]";
       disable-user-extensions = false;
-      disabled-extensions = [ "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "unite@hardpixel.eu" "advanced-alt-tab@G-dH.github.com" "gTile@vibou" "gsconnect@andyholmes.github.io" "places-menu@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "dash-to-dock@micxgx.gmail.com" "dashbar@fthx" "rocketbar@chepkun.github.com" "tiling-assistant@leleat-on-github" ];
-      enabled-extensions = [ "blur-my-shell@aunetx" "appindicatorsupport@rgcjonas.gmail.com" "quick-settings-tweaks@qwreey" "gsconnect@andyholmes.github.io" "runcat@kolesnikov.se" "user-theme@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "unite@hardpixel.eu" "forge@jmmaranan.com" "gtk4-ding@smedius.gitlab.com" "just-perfection-desktop@just-perfection" "valent@andyholmes.ca" "weatherornot@somepaulo.github.io" "wireless-hid@chlumskyvaclav.gmail.com" "dash2dock-lite@icedman.github.com" "pano@elhan.io" "alttab-mod@leleat-on-github" "dash-to-panel@jderose9.github.com" "space-bar@luchrioh" ];
+      disabled-extensions = [ "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "unite@hardpixel.eu" "advanced-alt-tab@G-dH.github.com" "gTile@vibou" "gsconnect@andyholmes.github.io" "places-menu@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "dashbar@fthx" "rocketbar@chepkun.github.com" "forge@jmmaranan.com" "dash-to-panel@jderose9.github.com" "dash-to-dock@micxgx.gmail.com" "window-list@gnome-shell-extensions.gcampax.github.com" ];
+      enabled-extensions = [ "appindicatorsupport@rgcjonas.gmail.com" "quick-settings-tweaks@qwreey" "gsconnect@andyholmes.github.io" "runcat@kolesnikov.se" "user-theme@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "unite@hardpixel.eu" "gtk4-ding@smedius.gitlab.com" "just-perfection-desktop@just-perfection" "valent@andyholmes.ca" "weatherornot@somepaulo.github.io" "wireless-hid@chlumskyvaclav.gmail.com" "dash2dock-lite@icedman.github.com" "pano@elhan.io" "alttab-mod@leleat-on-github" "space-bar@luchrioh" "arcmenu@arcmenu.com" "blur-my-shell@aunetx" "tiling-assistant@leleat-on-github" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
       welcome-dialog-last-shown-version = "43.2";
     };
@@ -348,17 +348,65 @@ with lib.hm.gvariant;
       remove-delay = true;
     };
 
-    "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
+    "org/gnome/shell/extensions/arcmenu" = {
+      activate-on-hover = true;
+      dash-to-panel-standalone = false;
+      enable-horizontal-flip = true;
+      enable-standlone-runner-menu = false;
+      enable-unity-homescreen = true;
+      force-menu-location = "TopCentered";
+      hide-overview-on-startup = true;
+      menu-background-color = "rgb(30,37,41)";
+      menu-border-color = "rgb(41,50,55)";
+      menu-button-appearance = "None";
+      menu-foreground-color = "rgb(189,230,251)";
+      menu-item-active-bg-color = "rgba(189,230,251,0.15)";
+      menu-item-active-fg-color = "rgb(189,230,251)";
+      menu-item-hover-bg-color = "rgba(189,230,251,0.08)";
+      menu-item-hover-fg-color = "rgb(189,230,251)";
+      menu-layout = "Runner";
+      menu-separator-color = "rgba(99,99,98,0.56)";
+      multi-monitor = true;
+      override-menu-theme = false;
+      prefs-visible-page = 0;
+      raven-position = "Right";
+      runner-show-frequent-apps = true;
+      search-entry-border-radius = mkTuple [ true 25 ];
+      show-activities-button = false;
+      vert-separator = true;
+    };
+
+    "org/gnome/shell/extensions/blur-my-shell" = {
+      hacks-level = 0;
+    };
+
+    "org/gnome/shell/extensions/blur-my-shell/applications" = {
       blur = false;
+      blur-on-overview = true;
+      customize = false;
+      enable-all = false;
+      opacity = 238;
+    };
+
+    "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
+      blur = true;
       brightness = 1.0;
       customize = true;
-      override-background = false;
+      override-background = true;
       sigma = 0;
       unblur-in-overview = true;
     };
 
+    "org/gnome/shell/extensions/blur-my-shell/hidetopbar" = {
+      compatibility = true;
+    };
+
+    "org/gnome/shell/extensions/blur-my-shell/panel" = {
+      override-background = true;
+    };
+
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 1;
+      indicator-position-max = 2;
       restore-state = true;
       toggle-state = true;
       user-enabled = true;
@@ -408,16 +456,16 @@ with lib.hm.gvariant;
       leftbox-size = 0;
       overview-click-to-exit = true;
       panel-anchors = ''
-        {"0":"MIDDLE"}
+        {"0":"MIDDLE"}\n
       '';
       panel-lengths = ''
-        {"0":100}
+        {"0":100}\n
       '';
       panel-positions = ''
-        {"0":"LEFT"}
+        {"0":"LEFT"}\n
       '';
       panel-sizes = ''
-        {"0":64}
+        {"0":64}\n
       '';
       primary-monitor = 0;
       secondarymenu-contains-showdetails = true;
@@ -447,7 +495,7 @@ with lib.hm.gvariant;
       animation-rise = 0.57;
       animation-spread = 0.4;
       autohide-dash = true;
-      border-radius = 2.3195876288659796;
+      border-radius = 2.319588;
       calendar-icon = false;
       clock-icon = false;
       customize-topbar = false;
@@ -464,7 +512,7 @@ with lib.hm.gvariant;
       pressure-sense = true;
       scroll-sensitivity = 0.25;
       shrink-icons = false;
-      topbar-background-color = mkTuple [ 0.6600000262260437 0.23980002105236053 ];
+      topbar-background-color = mkTuple [ 0.66 0.2398 ];
       trash-icon = true;
     };
 
@@ -557,7 +605,7 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/just-perfection" = {
       accessibility-menu = true;
-      activities-button = true;
+      activities-button = false;
       activities-button-label = false;
       app-menu = true;
       app-menu-icon = true;
@@ -587,11 +635,12 @@ with lib.hm.gvariant;
       window-picker-icon = true;
       window-preview-caption = true;
       window-preview-close-button = true;
-      workspace = true;
+      workspace = false;
       workspace-background-corner-size = 0;
       workspace-popup = false;
+      workspace-switcher-should-show = false;
       workspace-wrap-around = true;
-      workspaces-in-app-grid = false;
+      workspaces-in-app-grid = true;
       world-clock = true;
     };
 
@@ -606,7 +655,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/quick-settings-tweaks" = {
       datemenu-remove-notifications = true;
       disable-adjust-content-border-radius = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
+      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":true},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":false},{\"name\":\"NMWiredToggle\",\"label\":\"Wired\",\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":\"Wi-Fi\",\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":false},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":true},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":true},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":\"No Background Apps\",\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
       notifications-use-native-controls = true;
     };
 
@@ -614,6 +663,7 @@ with lib.hm.gvariant;
       activities-show-apps-button = "right_button";
       appbutton-backlight-dominant-color = true;
       appbutton-backlight-intensity = 3;
+      appbutton-enable-sound-control = true;
       appbutton-icon-padding = 4;
       appbutton-icon-size = 17;
       appbutton-icon-vertical-padding = 4;
@@ -632,6 +682,7 @@ with lib.hm.gvariant;
       taskbar-enabled = true;
       taskbar-position = "left";
       taskbar-position-offset = 2;
+      taskbar-preserve-position = true;
     };
 
     "org/gnome/shell/extensions/runcat" = {
@@ -641,6 +692,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/tiling-assistant" = {
       active-window-hint-color = "rgb(53,132,228)";
       last-version-installed = 41;
+      overridden-settings = "{'org.gnome.mutter.edge-tiling': <false>}";
     };
 
     "org/gnome/shell/extensions/unite" = {

@@ -44,19 +44,17 @@ let
     appindicator # add systray icon support
     blur-my-shell # some nice blur effect
     caffeine # prevents lockscreen
-       just-perfection # customise everything
+    just-perfection # customise everything
     gtk4-desktop-icons-ng-ding # add desktop icons
     weather-or-not # weather on the top top-bar
     runcat # the best gnome extension
-
     valent # replacement for GSConnect built with modern GTK
-
     alttab-mod # improve alt-tabbing
-    advanced-alttab-window-switcher # completely replace alt-tab
+    #advanced-alttab-window-switcher # completely replace alt-tab
+    wireless-hid # battery left in mouse/gamepad etc...
+    pano  # clipboard manager
 
-    # things to try
-
-    forge     # tiling manager
+    # forge     # tiling manager
     tiling-assistant # Windows-like tiling update
 
     space-bar # Activity replaced by workspaces
@@ -64,13 +62,11 @@ let
     arcmenu # windows like start menu
     #dash2dock-lite # kinda buggy
     dash-to-dock # turn the dash into a dock, always visible
-    dash-to-panel # might actually be more useful in 16:9
-    wireless-hid # battery left in mouse/gamepad etc...
-    pano  # clipboard manager
+    # dash-to-panel # might actually be more useful in 16:9
 
     # these two are the same
     # dashbar
-    # rocketbar # some dash
+    rocketbar # some dash
   ];
 
   # default gnome extensions
