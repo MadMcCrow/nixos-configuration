@@ -42,7 +42,7 @@ let
     modules = [ secrets ];
   };
 
-  rebuild-secret = pkgs.writeShellScriptBin "nixos-rebuild-secrets"
+  rebuild-secret = pkgs.writeShellScriptBin "nixos-update-secrets"
   (concatStringsSep "\n" map (x : "${gen-secret} -k ${hostKey} -f ${x.file}") cfg.secrets);
 
 in
@@ -62,7 +62,7 @@ in
 
   config = {
     # add our script
-    environment.systemPackages = [ gen-secret ];
+    environment.systemPackages = [ gen-secret rebuild-secret ];
 
     age = {
       secrets = listToAttrs (map (x : {name = x.name; value = mkSecret x;}) cfg.secrets);
