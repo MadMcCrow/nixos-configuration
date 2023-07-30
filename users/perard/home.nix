@@ -46,6 +46,7 @@ in {
     zsh-syntax-highlighting
     jetbrains-mono
     speechd
+    python3
   ];
 
   # enable HM

@@ -47,6 +47,13 @@ let
       default = elemAt values 0;
     };
 
+  mkScriptsOption = desc : mkOption {
+        type = types.listOf types.attrs;
+        description = concatStringsSep "\n" [desc "list of sets containing `name` and either `pkg` or `text`"];
+        # check = x : (hasAttr "pkg" x or hasAttr "text" x) && hasAttr "name" x;
+        default = [];
+      };
+
   condAttr = s: a: d: if hasAttr a s then getAttr a s else d;
   condList = cond: value: if cond then value else [ ];
   condString = cond: value: if cond then value else "";
@@ -141,6 +148,26 @@ let
     nixos-rebuild switch --flake github:${flake}#
     exit $?
   '';
+
+  textScripts = sc : filter ( x : hasAttr "text" x) sc;
+  callPackgages = sc : map (x : "${x}") (filter (x : hasAttr "pkg") sc);
+  scripts = sc : concatStringsSep "\n" (textScripts sc) ++ (callPackgages sc);
+
+  runScript = sc : let r = scripts sc; in pkgs.writeShellScriptBin name "${r}";
+  depend = sc : concatLists (map (x : condAttr x "depend" []) sc);
+
+
+  rebuildOverride = self: super: let sc = cfg.rebuildScripts.pre; in {
+     nixos-rebuild = super.nixos-rebuild.override {
+        nativeBuildInputs =  super.nativeBuildInputs ++ [ makeWrapper ];
+        buildInputs = super.buildInputs ++ depend sc;
+        installPhase = super.installPhase + ''
+      wrapProgram $out/bin/nixos-rebuild \
+        --run "${runScript sc}"
+    '';
+      };
+  };
+
 
 in {
   #interface
@@ -237,6 +264,13 @@ in {
         mkStringsOption "Interfaces to enable wakeOnLan" [ ];
     };
 
+     # scripts executed on "nixos"-rebuild implementation is system dependant
+    rebuildScripts = {
+      pre        = mkScriptsOption "scripts run before the rebuild command";
+      # TODO
+      activation = mkScriptsOption "scripts run after the rebuild command";
+    };
+
   };
 
   # imports
@@ -301,6 +335,9 @@ in {
       enable = true;
       nssmdns = true;
     };
+
+    # nixpkgs.overlays = (condList (length cfg.rebuildScripts.pre > 0)  [ rebuildOverride]);
+
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
@@ -467,45 +504,6 @@ in {
 
     system = {
 
-      # script activated
-      activationScripts = {
-
-        #
-        # We get all the secrets for the config and (re-)generate them
-        # if not present or cannot be opened
-        #
-        secrets = let
-          key = elemAt config.age.identityPaths 0;
-          secrets = map (x: x.file) (attrValues config.age.secrets);
-          secretsStr = concatStringsSep "\n" secrets;
-        in {
-          text = ''
-            if [ ! -f ${key} ]; then
-                echo "SSH key not found at $''${key}. Creating a new one..."
-                ssh-keygen -C ${key} -f "./$''${key}" -q
-            fi
-            SECRETS=${secretsStr}
-
-            for SECRET_FILE_LOCATION in "$@"; do
-                if [ -f "$SECRET_FILE_LOCATION" ]; then
-                    echo "Secret file found at $SECRET_FILE_LOCATION. Trying to open it..."
-                    if ${pkgs.age} -d -i ${key} -o "$SECRET_FILE_LOCATION"; then
-                        echo "Success! Here is the content of the secret file:"
-                        cat "$SECRET_FILE_LOCATION"
-                    else
-                        echo "Failed to open the secret file. Deleting and recreating it..."
-                        rm "$SECRET_FILE_LOCATION"
-                        ${pkgs.age} -i ${key} -o "$SECRET_FILE_LOCATION"
-                    fi
-                else
-                    echo "Secret file not found at $SECRET_FILE_LOCATION. Creating a new one..."
-                    ${pkgs.age} -i ${key} -o "$SECRET_FILE_LOCATION"
-                fi
-            done
-          '';
-        };
-
-      };
 
       # upgrade automatically each day
       autoUpgrade = {
