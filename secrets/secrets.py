@@ -3,6 +3,8 @@
 # We use python for readability and speed compared to bash
 # this will be compiled
 
+# TODO : use pyage (import age ) to avoid calling age in a subprocess
+
 import subprocess
 import shlex
 import os

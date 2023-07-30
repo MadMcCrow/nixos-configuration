@@ -16,7 +16,6 @@ let
   concatPath = list : /. + (concatStringsSep "/" list);
 
   # where the machine key is stored
-  # TODO : add users key based on machine users
   hostKey = concatPath [cfg.keyPath config.networking.hostName];
 
   #
@@ -26,7 +25,7 @@ let
   #     owner, file, group
   #
   mkSecret = secret : {
-    file  = concatPath [cfg.secretsPath filename "${name}.age"];
+    file  = concatPath [cfg.secretsPath "${secret.name}.age"];
     owner = name;
     group = name;
   } // (removeAttrs secret ["name" "publicKeys" ]);
@@ -42,8 +41,12 @@ let
     modules = [ secrets ];
   };
 
-  rebuild-secret = pkgs.writeShellScriptBin "nixos-update-secrets"
-  (concatStringsSep "\n" map (x : "${gen-secret} -k ${hostKey} -f ${x.file}") cfg.secrets);
+  rebuild-secret = let
+  hostStr = toString hostKey;
+  secretFile = x : toString (mkSecret x).file;
+  in
+  pkgs.writeShellScriptBin "age-update-secrets"
+  (concatStringsSep "\n" (map (x : "${gen-secret} -k ${hostStr} -f ${secretFile x}") cfg.secrets));
 
 in
 {
@@ -64,7 +67,7 @@ in
     # add our script
     environment.systemPackages = [ gen-secret rebuild-secret ];
 
-    age = {
+    age = mkIf (pathExists hostKey) {
       secrets = listToAttrs (map (x : {name = x.name; value = mkSecret x;}) cfg.secrets);
       identityPaths = [ hostKey ];
     };

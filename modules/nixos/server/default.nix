@@ -21,6 +21,8 @@ let
   # make a valid host name with prefix and suffix.
   subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
 
+  nextcloudSecret = {name = "nextcloud"; path = config.secrets.secretsPath + "nextcloud"; };
+
 in {
 
   # interface
@@ -51,7 +53,7 @@ in {
 
     # our secrets option
     secrets = mkIf cfg.nextcloud.enable {
-      secrets = [{ name = "nextcloud"; }];
+      secrets = [{ name = nextcloudSecret.name; }];
     };
 
     # cockpit (web-based server interface )
@@ -119,7 +121,7 @@ in {
       hostName = subHostName cfg.nextcloud.hostName;
       config = {
         adminuser = "admin";
-        adminpassFile = config.age.secrets.nextcloud.path;
+        adminpassFile = nextcloudSecret.path ;
         overwriteProtocol = "https";
         dbtype = "pgsql"; # hopefully dtb  is created on the correct data path
         # not necessary thanks to createLocally
