@@ -46,7 +46,7 @@ let
   secretFile = x : toString (mkSecret x).file;
   in
   pkgs.writeShellScriptBin "age-update-secrets"
-  (concatStringsSep "\n" (map (x : "${gen-secret} -k ${hostStr} -f ${secretFile x}") cfg.secrets));
+  (concatStringsSep "\n" (map (x : "${gen-secret}/bin/gen-secret -k ${hostStr} -f ${secretFile x}") cfg.secrets));
 
 in
 {
