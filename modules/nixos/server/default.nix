@@ -21,6 +21,7 @@ let
   # make a valid host name with prefix and suffix.
   subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
 
+  # maybe it won´t fail if we don't check for it !
   nextcloudSecretPath = config.secrets.secretsPath + "nextcloud.age";
   nextcloudEnable = cfg.nextcloud.enable && pathExists nextcloudSecretPath;
 
@@ -53,7 +54,7 @@ in {
   config = mkIf cfg.enable {
 
     # our secrets option
-    secrets = mkIf nextcloudEnable {
+    secrets = {
       secrets = [{ name = "nextcloud"; }];
     };
 
