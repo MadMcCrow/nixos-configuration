@@ -94,7 +94,7 @@ in {
   # github cli tool
   programs.gh = {
     enable = supported pkgs.gh;
-    enableGitCredentialHelper = true;
+    gitCredentialHelper.enable = true;
     settings.git_protocol = "https";
     extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
   };
