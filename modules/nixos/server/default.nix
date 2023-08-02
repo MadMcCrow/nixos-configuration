@@ -21,7 +21,8 @@ let
   # make a valid host name with prefix and suffix.
   subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
 
-  nextcloudSecret = {name = "nextcloud"; path = config.secrets.secretsPath + "nextcloud"; };
+  nextcloudSecretPath = config.secrets.secretsPath + "nextcloud.age";
+  nextcloudEnable = cfg.nextcloud.enable && pathExists nextcloudSecretPath;
 
 in {
 
@@ -52,8 +53,8 @@ in {
   config = mkIf cfg.enable {
 
     # our secrets option
-    secrets = mkIf cfg.nextcloud.enable {
-      secrets = [{ name = nextcloudSecret.name; }];
+    secrets = mkIf nextcloudEnable {
+      secrets = [{ name = "nextcloud"; }];
     };
 
     # cockpit (web-based server interface )
@@ -115,7 +116,7 @@ in {
     };
 
     # nextcloud and its apps (defined at nextcloud-apps.nix)
-    services.nextcloud = mkIf cfg.nextcloud.enable {
+    services.nextcloud = mkIf nextcloudEnable {
       enable = true;
       package = cfg.nextcloud.package;
       hostName = subHostName cfg.nextcloud.hostName;
