@@ -8,7 +8,7 @@
   };
 
   onlyOffice = pkgs.fetchNextcloudApp {
-    sha256 = "sha256-cDX4HQItUbuNmUcmdY03Lx62yyQbieqCrM3LQABezA0=";
+    sha256 = "sha256-Pzd3Fk3EmTc0uPo0DWaDPLsSLso6SXP+Q6uxSP1dbZs=";
     url = "https://github.com/ONLYOFFICE/onlyoffice-nextcloud/releases/download/v8.1.0/onlyoffice.tar.gz";
   };
 
