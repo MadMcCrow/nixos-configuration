@@ -54,9 +54,7 @@ in {
   config = mkIf cfg.enable {
 
     # our secrets option
-    secrets = {
-      secrets = [{ name = "nextcloud"; }];
-    };
+    secrets.secrets = [{ name = "nextcloud"; }];
 
     # cockpit (web-based server interface )
     services.cockpit = mkIf cfg.cockpit.enable {
