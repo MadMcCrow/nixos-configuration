@@ -1,6 +1,8 @@
 # perard.nix
 # 	my User
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
+with builtins;
+with lib;
 let
 # TODO : make those key generated for user !
 id_rsa_pub_AF = "";
@@ -18,6 +20,9 @@ in
     isNormalUser = true;
 
     openssh.authorizedKeys.keys = [id_rsa_pub_AF id_rsa_pub_NUC];
+
+    # use zsh if zsh is available
+    shell = mkIf (elem pkgs.zsh config.environment.systemPackages) pkgs.zsh;
 
   };
     # home manager configuration

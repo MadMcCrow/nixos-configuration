@@ -37,7 +37,7 @@ def removeFile(path : str) :
 # wrapper around subprocess.run
 def runShellCommand( command , stdinText = None) :
     if stdinText != None :
-        return subprocess.run(shlex.split(command), stdin = stdinText, text = True)
+        return subprocess.run(shlex.split(command), input = stdinText, text = True, encoding='utf8')
     else :
         return subprocess.run(shlex.split(command))
 
@@ -62,63 +62,67 @@ def decrypt(prvKey : str, inFile : str) :
         return True
 
 
+try : 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-k", "--key",  dest="key", help="key name",  metavar="KEY")
+    parser.add_argument("-p", "--public-key",  dest="pubkey", help="public key to use (file)",  metavar="PUBKEY")
+    parser.add_argument("-P", "--private-key", dest="prvkey", help="private key to use (file)", metavar="PRVKEY")
+    parser.add_argument("-f", "--file", dest="file", help="output file (with extension)", metavar="FILE")
+    parser.add_argument("-F", "--force", dest="force", help="force recreate secret", metavar="FORCE")
+    args = parser.parse_args()
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-k", "--key",  dest="key", help="key name",  metavar="KEY")
-parser.add_argument("-p", "--public-key",  dest="pubkey", help="public key to use (file)",  metavar="PUBKEY")
-parser.add_argument("-P", "--private-key", dest="prvkey", help="private key to use (file)", metavar="PRVKEY")
-parser.add_argument("-f", "--file", dest="file", help="output file (with extension)", metavar="FILE")
-parser.add_argument("-F", "--force", dest="force", help="force recreate secret", metavar="FORCE")
-args = parser.parse_args()
+    if args.file == None :
+        print( colored("Error: ", Colors.FAIL) + "no file provided")
+        parser.print_help()
+        exit(1)
 
-if args.file == None :
-    print( colored("Error: ", Colors.FAIL) + "no file provided")
-    parser.print_help()
+    if args.key == None and (args.pubkey == None or args.prvkey == None) :
+        print( colored("Error: ", Colors.FAIL) + "no key provided")
+        parser.print_help()
+        exit(1)
+
+    key = args.key
+    if key == None :
+        key = args.prvkey
+
+    pubkey = args.pubkey
+    if pubkey == None :
+        pubkey = f"{key}.pub"
+
+    prvkey = args.prvkey
+    if prvkey == None :
+        prvkey = key
+
+
+    # do not have a prv key
+    if not fileExists(prvkey) :
+        removeFile(pubkey)
+        genKey(key, prvkey)
+
+    if not fileExists(prvkey) :
+        removeFile(pubkey)
+        genKey(key, prvkey)
+
+    # cannot decrypt file : delete all
+    if not decrypt(prvkey, args.file) :
+        removeFile(pubkey)
+        removeFile(prvkey)
+        removeFile(args.file)
+        genKey(key, prvkey)
+    # skip : nothing to do
+    elif args.force == None :
+        print( colored("SKipped: ", Colors.OKCYAN) + "File already encrypted")
+        exit(0)
+
+    # key is valid :
+    encrypt(pubkey, args.file)
+    if decrypt(prvkey, args.file) :
+        print( colored("Success: ", Colors.OKGREEN) + "secret is encrypted with ssh key")
+        exit(0)
+    else :
+        print( colored("Fail: ", Colors.FAIL) + "failed to encrypt secret with ssh key")
+        exit(0)
+
+except KeyboardInterrupt :
+    print( colored("Fail: ", Colors.FAIL) + "user interrupted the process, exiting")
     exit(1)
-
-if args.key == None and (args.pubkey == None or args.prvkey == None) :
-    print( colored("Error: ", Colors.FAIL) + "no key provided")
-    parser.print_help()
-    exit(1)
-
-key = args.key
-if key == None :
-    key = args.prvkey
-
-pubkey = args.pubkey
-if pubkey == None :
-    pubkey = f"{key}.pub"
-
-prvkey = args.prvkey
-if prvkey == None :
-    prvkey = key
-
-
-# do not have a prv key
-if not fileExists(prvkey) :
-    removeFile(pubkey)
-    genKey(key, prvkey)
-
-if not fileExists(prvkey) :
-    removeFile(pubkey)
-    genKey(key, prvkey)
-
-# cannot decrypt file : delete all
-if not decrypt(prvkey, args.file) :
-    removeFile(pubkey)
-    removeFile(prvkey)
-    removeFile(args.file)
-    genKey(key, prvkey)
-# skip : nothing to do
-elif args.force == None :
-    print( colored("SKipped: ", Colors.OKCYAN) + "File already encrypted")
-    exit(0)
-
-# key is valid :
-encrypt(pubkey, args.file)
-if decrypt(prvkey, args.file) :
-    print( colored("Success: ", Colors.OKGREEN) + "secret is encrypted with ssh key")
-    exit(0)
-else :
-    print( colored("Fail: ", Colors.FAIL) + "failed to encrypt secret with ssh key")
-    exit(0)
