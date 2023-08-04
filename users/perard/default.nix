@@ -22,7 +22,7 @@ in
     openssh.authorizedKeys.keys = [id_rsa_pub_AF id_rsa_pub_NUC];
 
     # use zsh if zsh is available
-    shell = mkIf (elem pkgs.zsh config.environment.systemPackages) pkgs.zsh;
+    shell = pkgs.zsh;
 
   };
     # home manager configuration
