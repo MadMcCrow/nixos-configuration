@@ -354,6 +354,9 @@ in {
       persistence."/nix/persist" = { directories = [ "/etc/nixos/secrets" ]; };
     };
 
+    # zsh can be used as default shell
+    programs.zsh.enable = true;
+
     boot = {
       # hide wall-of-text
       plymouth.enable = true;
