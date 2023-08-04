@@ -17,7 +17,6 @@ let
       gnome-todo # quick todo app
       gnome-tweaks # Gnome tweaks
       gnome-boxes # remote or virtual systems
-      gnome-weather # get weather infos
       gnome-calendar # the calendar app
       gnome-logs # systemd logs
     ] ++ (if fpk then [ pkgs.gnome.gnome-software ] else [ ]);
@@ -40,33 +39,46 @@ let
   # extra gnome extensions
   ## you will need to enable them in the gnome extension app
   extraExtensions = with pkgs.gnomeExtensions; [
-    quick-settings-tweaker # Gnome43+ quick settings editor
-    appindicator # add systray icon support
-    blur-my-shell # some nice blur effect
+
     caffeine # prevents lockscreen
-    just-perfection # customise everything
-    gtk4-desktop-icons-ng-ding # add desktop icons
-    weather-or-not # weather on the top top-bar
-    runcat # the best gnome extension
     valent # replacement for GSConnect built with modern GTK
-    alttab-mod # improve alt-tabbing
-    #advanced-alttab-window-switcher # completely replace alt-tab
+    quick-settings-tweaker # Gnome43+ quick settings editor
+  
+   
+
+    appindicator # add systray icon support
+    runcat # the best gnome extension
     wireless-hid # battery left in mouse/gamepad etc...
     pano  # clipboard manager
 
-    # forge     # tiling manager
+    alttab-mod # improve alt-tabbing
+
+    
     tiling-assistant # Windows-like tiling update
 
-    space-bar # Activity replaced by workspaces
 
-    arcmenu # windows like start menu
-    #dash2dock-lite # kinda buggy
+    dash2dock-lite # kinda buggy, but better looking thab dash-to-dock
     dash-to-dock # turn the dash into a dock, always visible
     # dash-to-panel # might actually be more useful in 16:9
 
-    # these two are the same
-    # dashbar
-    rocketbar # some dash
+    openweather
+
+    hot-edge # hot edge for all corners
+
+    rocketbar # some dashbar in topbar
+    space-bar # Activity replaced by workspaces in topbar
+
+    ofp-overview-feature-pack # customise overview
+    just-perfection # customise everything
+
+    blur-my-shell # some nice blur effect
+
+    gtk4-desktop-icons-ng-ding # add desktop icons
+
+    #arcmenu # windows like start menu
+    #weather-or-not # weather on the top top-bar but buggy : double image
+    #forge     # tiling manager # kinda buggy
+    #advanced-alttab-window-switcher # completely replace alt-tab
   ];
 
   # default gnome extensions

@@ -65,17 +65,8 @@ with lib.hm.gvariant;
       temperature-unit = "centigrade";
     };
 
-    "org/gnome/TextEditor" = {
-      last-save-directory = "file:///home/perard";
-    };
-
     "org/gnome/Weather" = {
       locations = "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
-    };
-
-    "org/gnome/baobab/ui" = {
-      is-maximized = false;
-      window-size = mkTuple [ 1280 1048 ];
     };
 
     "org/gnome/calculator" = {
@@ -110,7 +101,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/app-folders/folders/748c8450-5d6b-4339-b9f3-ede683cde9cd" = {
-      apps = [ "org.gnome.Maps.desktop" "org.gnome.Todo.desktop" "org.gnome.Weather.desktop" "org.gnome.Contacts.desktop" "org.gnome.Calendar.desktop" "org.gnome.Calculator.desktop" "org.gnome.Notes.desktop" "org.gnome.clocks.desktop" "com.github.maoschanz.drawing.desktop" "org.gnome.Geary.desktop" "pidgin.desktop" "org.gnome.Software.desktop" "org.gnome.TextEditor.desktop" ];
+      apps = [ "org.gnome.Maps.desktop" "org.gnome.Todo.desktop" "org.gnome.Weather.desktop" "org.gnome.Contacts.desktop" "org.gnome.Calendar.desktop" "org.gnome.Calculator.desktop" "org.gnome.Notes.desktop" "org.gnome.clocks.desktop" "com.github.maoschanz.drawing.desktop" "org.gnome.Geary.desktop" "pidgin.desktop" "org.gnome.Software.desktop" "org.gnome.TextEditor.desktop" "ca.andyholmes.Valent.desktop" ];
       name = "Accessories";
     };
 
@@ -138,7 +129,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/app-folders/folders/c44139e0-9372-436c-9f4d-35311e691a05" = {
-      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "wine-Programs-CNCOnline-C&C Online.desktop" "net.openra.OpenRA-d2k.desktop" ];
+      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "wine-Programs-CNCOnline-C&C Online.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" "Warhammer 40,000 Dawn of War - Soulstorm.desktop" ];
       name = "Games";
     };
 
@@ -352,10 +343,8 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell" = {
-      app-picker-layout = "[{'748c8450-5d6b-4339-b9f3-ede683cde9cd': <{'position': <0>}>, 'Utilities': <{'position': <1>}>}]";
+      app-picker-layout = "[{'Utilities': <{'position': <0>}>, '748c8450-5d6b-4339-b9f3-ede683cde9cd': <{'position': <1>}>, 'c44139e0-9372-436c-9f4d-35311e691a05': <{'position': <2>}>}]";
       disable-user-extensions = false;
-      disabled-extensions = [ "auto-move-windows@gnome-shell-extensions.gcampax.github.com" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "unite@hardpixel.eu" "advanced-alt-tab@G-dH.github.com" "gTile@vibou" "gsconnect@andyholmes.github.io" "places-menu@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "dashbar@fthx" "forge@jmmaranan.com" "dash-to-panel@jderose9.github.com" "dash-to-dock@micxgx.gmail.com" "window-list@gnome-shell-extensions.gcampax.github.com" "arcmenu@arcmenu.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" ];
-      enabled-extensions = [ "appindicatorsupport@rgcjonas.gmail.com" "quick-settings-tweaks@qwreey" "gsconnect@andyholmes.github.io" "runcat@kolesnikov.se" "user-theme@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "unite@hardpixel.eu" "gtk4-ding@smedius.gitlab.com" "just-perfection-desktop@just-perfection" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "dash2dock-lite@icedman.github.com" "pano@elhan.io" "alttab-mod@leleat-on-github" "space-bar@luchrioh" "blur-my-shell@aunetx" "tiling-assistant@leleat-on-github" "rocketbar@chepkun.github.com" "weatherornot@somepaulo.github.io" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
       welcome-dialog-last-shown-version = "43.2";
     };
@@ -441,7 +430,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 2;
+      indicator-position-max = 1;
       restore-state = true;
       toggle-state = true;
       user-enabled = true;
@@ -491,16 +480,16 @@ with lib.hm.gvariant;
       leftbox-size = 0;
       overview-click-to-exit = true;
       panel-anchors = ''
-        {"0":"MIDDLE"}\\n\n
+        {"0":"MIDDLE"}\\\\n\\n\n
       '';
       panel-lengths = ''
-        {"0":100}\\n\n
+        {"0":100}\\\\n\\n\n
       '';
       panel-positions = ''
-        {"0":"LEFT"}\\n\n
+        {"0":"LEFT"}\\\\n\\n\n
       '';
       panel-sizes = ''
-        {"0":64}\\n\n
+        {"0":64}\\\\n\\n\n
       '';
       primary-monitor = 0;
       secondarymenu-contains-showdetails = true;
@@ -636,7 +625,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/quick-settings-tweaks" = {
       datemenu-remove-notifications = true;
       disable-adjust-content-border-radius = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":true},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":false},{\"name\":\"NMWiredToggle\",\"label\":\"Wired\",\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":\"Wi-Fi\",\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":false},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":true},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":true},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":\"No Background Apps\",\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
+      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":true}]";
       notifications-use-native-controls = true;
     };
 
@@ -710,8 +699,11 @@ with lib.hm.gvariant;
       edge-tiling = true;
     };
 
+   
     "org/gnome/software" = {
+      check-timestamp = mkInt64 1691146895;
       first-run = false;
+      flatpak-purge-timestamp = mkInt64 1691088930;
     };
 
     "org/gnome/tweaks" = {
@@ -726,7 +718,7 @@ with lib.hm.gvariant;
     "org/gtk/gtk4/settings/file-chooser" = {
       date-format = "regular";
       location-mode = "path-bar";
-      show-hidden = true;
+      show-hidden = false;
       show-size-column = true;
       show-type-column = true;
       sidebar-width = 140;
