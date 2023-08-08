@@ -43,8 +43,6 @@ let
     caffeine # prevents lockscreen
     valent # replacement for GSConnect built with modern GTK
     quick-settings-tweaker # Gnome43+ quick settings editor
-  
-   
 
     appindicator # add systray icon support
     runcat # the best gnome extension
@@ -53,11 +51,9 @@ let
 
     alttab-mod # improve alt-tabbing
 
-    
     tiling-assistant # Windows-like tiling update
 
-    #
-    material-shell
+    material-shell # weird tiling extension
 
     # dash2dock-lite #buggy with read only filesystems
     dash-to-dock # turn the dash into a dock, always visible
