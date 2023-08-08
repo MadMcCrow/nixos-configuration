@@ -97,21 +97,24 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/app-folders" = {
-      folder-children = [ "Utilities" "YaST" "748c8450-5d6b-4339-b9f3-ede683cde9cd" "9981859f-c72f-4081-9b60-debc6d305f65" "7b071b91-2ee0-4f3e-8b38-6b3f48404147" "c44139e0-9372-436c-9f4d-35311e691a05" ];
+      folder-children = [ "Utilities" "Accessories" "Code" "Graphics" "Games" ];
     };
 
-    "org/gnome/desktop/app-folders/folders/748c8450-5d6b-4339-b9f3-ede683cde9cd" = {
+    "org/gnome/desktop/app-folders/folders/Accessories" = {
       apps = [ "org.gnome.Maps.desktop" "org.gnome.Todo.desktop" "org.gnome.Weather.desktop" "org.gnome.Contacts.desktop" "org.gnome.Calendar.desktop" "org.gnome.Calculator.desktop" "org.gnome.Notes.desktop" "org.gnome.clocks.desktop" "com.github.maoschanz.drawing.desktop" "org.gnome.Geary.desktop" "pidgin.desktop" "org.gnome.Software.desktop" "org.gnome.TextEditor.desktop" "ca.andyholmes.Valent.desktop" ];
+      categories = [ "Gnome" "Accessories" ];
       name = "Accessories";
     };
 
-    "org/gnome/desktop/app-folders/folders/7b071b91-2ee0-4f3e-8b38-6b3f48404147" = {
+    "org/gnome/desktop/app-folders/folders/Graphics" = {
       apps = [ "org.inkscape.Inkscape.desktop" "gimp.desktop" "blender.desktop" ];
+      categories = [ "Graphics" "Video" "Image" "3D" ];
       name = "Graphics";
     };
 
-    "org/gnome/desktop/app-folders/folders/9981859f-c72f-4081-9b60-debc6d305f65" = {
-      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "code.desktop" "codium.desktop" ];
+    "org/gnome/desktop/app-folders/folders/Code" = {
+      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "code.desktop" "codium.desktop" ];\
+      categories = [ "Code" "Programming" "Debug" ];
       name = "Programming";
     };
 
@@ -122,14 +125,10 @@ with lib.hm.gvariant;
       translate = true;
     };
 
-    "org/gnome/desktop/app-folders/folders/YaST" = {
-      categories = [ "X-SuSE-YaST" ];
-      name = "suse-yast.directory";
-      translate = true;
-    };
 
-    "org/gnome/desktop/app-folders/folders/c44139e0-9372-436c-9f4d-35311e691a05" = {
-      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "wine-Programs-CNCOnline-C&C Online.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" "Warhammer 40,000 Dawn of War - Soulstorm.desktop" ];
+    "org/gnome/desktop/app-folders/folders/Games" = {
+      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" ];
+      categories = [ "Games" ];
       name = "Games";
     };
 
@@ -140,11 +139,6 @@ with lib.hm.gvariant;
       picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/keys-d.webp";
       primary-color = "#aaaaaa";
       secondary-color = "#000000";
-    };
-
-    "org/gnome/desktop/input-sources" = {
-      sources = [ (mkTuple [ "xkb" "us+intl" ]) ];
-      xkb-options = [ "eurosign:e" ];
     };
 
     "org/gnome/desktop/interface" = {
@@ -248,10 +242,6 @@ with lib.hm.gvariant;
       sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
     };
 
-    "org/gnome/desktop/sound" = {
-      event-sounds = true;
-      theme-name = "__custom";
-    };
 
     "org/gnome/desktop/wm/keybindings" = {
       maximize = [];
@@ -271,25 +261,6 @@ with lib.hm.gvariant;
 
     "org/gnome/evolution-data-server" = {
       migrated = true;
-    };
-
-    "org/gnome/file-roller/dialogs/extract" = {
-      recreate-folders = true;
-      skip-newer = false;
-    };
-
-    "org/gnome/file-roller/listing" = {
-      list-mode = "as-folder";
-      name-column-width = 250;
-      show-path = false;
-      sort-method = "name";
-      sort-type = "ascending";
-    };
-
-    "org/gnome/file-roller/ui" = {
-      sidebar-width = 200;
-      window-height = 480;
-      window-width = 600;
     };
 
     "org/gnome/gnome-system-monitor" = {
@@ -337,67 +308,18 @@ with lib.hm.gvariant;
       search-view = "list-view";
     };
 
-    "org/gnome/nautilus/window-state" = {
-      initial-size = mkTuple [ 1280 1048 ];
-      maximized = false;
-    };
-
     "org/gnome/shell" = {
-      app-picker-layout = "[{'Utilities': <{'position': <0>}>, '748c8450-5d6b-4339-b9f3-ede683cde9cd': <{'position': <1>}>, 'c44139e0-9372-436c-9f4d-35311e691a05': <{'position': <2>}>}]";
+      app-picker-layout = "[{'Utilities': <{'position': <0>}>, 'Accessories': <{'position': <1>}>, 'Code': <{'position': <2>}>, 'Games': <{'position': <3>}>}]";
       disable-user-extensions = false;
+      disabled-extensions = [];
+      enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
       welcome-dialog-last-shown-version = "43.2";
     };
 
-    "org/gnome/shell/extensions/advanced-alt-tab-window-switcher" = {
-      app-switcher-popup-hide-win-counter-for-single-window = true;
-      app-switcher-popup-win-counter = true;
-      hot-edge-mode = 0;
-      hot-edge-monitor = 1;
-      switcher-popup-hot-keys = false;
-      switcher-popup-position = 2;
-      switcher-popup-theme = 0;
-      switcher-popup-tooltip-title = 1;
-      win-switch-skip-minimized = true;
-      win-switcher-popup-order = 3;
-      ws-switch-popup = true;
-    };
-
     "org/gnome/shell/extensions/altTab-mod" = {
-      disable-hover-select = true;
+      disable-hover-select = false;
       remove-delay = true;
-    };
-
-    "org/gnome/shell/extensions/arcmenu" = {
-      activate-on-hover = true;
-      dash-to-panel-standalone = true;
-      enable-horizontal-flip = true;
-      enable-standlone-runner-menu = true;
-      enable-unity-homescreen = true;
-      force-menu-location = "TopCentered";
-      gnome-dash-show-applications = false;
-      hide-overview-on-startup = true;
-      menu-background-color = "rgb(30,37,41)";
-      menu-border-color = "rgb(41,50,55)";
-      menu-button-appearance = "None";
-      menu-foreground-color = "rgb(189,230,251)";
-      menu-item-active-bg-color = "rgba(189,230,251,0.15)";
-      menu-item-active-fg-color = "rgb(189,230,251)";
-      menu-item-hover-bg-color = "rgba(189,230,251,0.08)";
-      menu-item-hover-fg-color = "rgb(189,230,251)";
-      menu-layout = "GnomeOverview";
-      menu-separator-color = "rgba(99,99,98,0.56)";
-      multi-monitor = false;
-      override-menu-theme = false;
-      position-in-panel = "Left";
-      prefs-visible-page = 0;
-      raven-position = "Right";
-      runner-position = "Centered";
-      runner-search-display-style = "Grid";
-      runner-show-frequent-apps = true;
-      search-entry-border-radius = mkTuple [ true 25 ];
-      show-activities-button = true;
-      vert-separator = true;
     };
 
     "org/gnome/shell/extensions/blur-my-shell" = {
@@ -412,15 +334,6 @@ with lib.hm.gvariant;
       opacity = 238;
     };
 
-    "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
-      blur = true;
-      brightness = 1.0;
-      customize = true;
-      override-background = true;
-      sigma = 0;
-      unblur-in-overview = true;
-    };
-
     "org/gnome/shell/extensions/blur-my-shell/hidetopbar" = {
       compatibility = true;
     };
@@ -430,140 +343,12 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 1;
+      indicator-position-max = 2;
       restore-state = true;
       toggle-state = true;
       user-enabled = true;
     };
 
-    "org/gnome/shell/extensions/dash-to-dock" = {
-      apply-custom-theme = false;
-      background-opacity = 0.8;
-      custom-theme-shrink = true;
-      customize-alphas = true;
-      dash-max-icon-size = 68;
-      dock-position = "LEFT";
-      extend-height = true;
-      height-fraction = 0.9;
-      isolate-workspaces = true;
-      max-alpha = 0.6;
-      min-alpha = 0.15;
-      preferred-monitor = -2;
-      preferred-monitor-by-connector = "HDMI-1";
-      running-indicator-dominant-color = true;
-      running-indicator-style = "DOTS";
-      show-apps-at-top = true;
-      show-mounts-network = true;
-      show-trash = false;
-      transparency-mode = "DYNAMIC";
-    };
-
-    "org/gnome/shell/extensions/dash-to-panel" = {
-      animate-appicon-hover = true;
-      animate-appicon-hover-animation-extent = "{'RIPPLE': 4, 'PLANK': 4, 'SIMPLE': 1}";
-      animate-appicon-hover-animation-travel = "{'SIMPLE': 0.10000000000000001, 'RIPPLE': 0.40000000000000002, 'PLANK': 0.0}";
-      appicon-margin = 4;
-      appicon-padding = 4;
-      available-monitors = [ 0 ];
-      dot-color-dominant = true;
-      dot-color-override = false;
-      dot-position = "LEFT";
-      dot-style-focused = "METRO";
-      dot-style-unfocused = "METRO";
-      hide-overview-on-startup = true;
-      hotkeys-overlay-combo = "TEMPORARILY";
-      intellihide = true;
-      intellihide-hide-from-windows = true;
-      intellihide-show-in-fullscreen = false;
-      intellihide-use-pressure = true;
-      leftbox-padding = -1;
-      leftbox-size = 0;
-      overview-click-to-exit = true;
-      panel-anchors = ''
-        {"0":"MIDDLE"}\\\\n\\n\n
-      '';
-      panel-lengths = ''
-        {"0":100}\\\\n\\n\n
-      '';
-      panel-positions = ''
-        {"0":"LEFT"}\\\\n\\n\n
-      '';
-      panel-sizes = ''
-        {"0":64}\\\\n\\n\n
-      '';
-      primary-monitor = 0;
-      secondarymenu-contains-showdetails = true;
-      show-appmenu = false;
-      show-apps-icon-file = "";
-      status-icon-padding = -1;
-      stockgs-keep-dash = false;
-      stockgs-keep-top-panel = false;
-      stockgs-panelbtn-click-only = false;
-      trans-bg-color = "#ffa348";
-      trans-gradient-bottom-opacity = 0.0;
-      trans-gradient-top-color = "#000000";
-      trans-gradient-top-opacity = 0.1;
-      trans-panel-opacity = 0.0;
-      trans-use-custom-bg = false;
-      trans-use-custom-gradient = true;
-      trans-use-custom-opacity = true;
-      trans-use-dynamic-opacity = false;
-      tray-padding = -1;
-      tray-size = 10;
-      window-preview-title-position = "TOP";
-    };
-
-    "org/gnome/shell/extensions/dash2dock-lite" = {
-      animate-icons-unmute = true;
-      animation-magnify = 0.29;
-      animation-rise = 0.57;
-      animation-spread = 0.4;
-      autohide-dash = true;
-      border-radius = 2.319588;
-      calendar-icon = false;
-      clock-icon = false;
-      customize-topbar = false;
-      debug-visual = false;
-      icon-effect = 0;
-      icon-effect-color = mkTuple [ 0.0 0.0 ];
-      icon-size = 0.0;
-      monitor-count = 1;
-      mounted-icon = true;
-      msg-to-ext = "";
-      open-app-animation = true;
-      panel-mode = true;
-      peek-hidden-icons = true;
-      pressure-sense = true;
-      scroll-sensitivity = 0.25;
-      shrink-icons = false;
-      topbar-background-color = mkTuple [ 0.66 0.2398 ];
-      trash-icon = true;
-    };
-
-    "org/gnome/shell/extensions/gsconnect" = {
-      devices = [];
-      id = "9f8fefd0-ca95-4e1a-a94e-be850b8c13ea";
-      name = "nixAF";
-    };
-
-    "org/gnome/shell/extensions/gsconnect/device/fbec9f46a920bf9a" = {
-      incoming-capabilities = [ "kdeconnect.battery" "kdeconnect.battery.request" "kdeconnect.bigscreen.stt" "kdeconnect.clipboard" "kdeconnect.clipboard.connect" "kdeconnect.connectivity_report.request" "kdeconnect.contacts.request_all_uids_timestamps" "kdeconnect.contacts.request_vcards_by_uid" "kdeconnect.findmyphone.request" "kdeconnect.mousepad.keyboardstate" "kdeconnect.mousepad.request" "kdeconnect.mpris" "kdeconnect.mpris.request" "kdeconnect.notification" "kdeconnect.notification.action" "kdeconnect.notification.reply" "kdeconnect.notification.request" "kdeconnect.photo.request" "kdeconnect.ping" "kdeconnect.runcommand" "kdeconnect.sftp.request" "kdeconnect.share.request" "kdeconnect.share.request.update" "kdeconnect.sms.request" "kdeconnect.sms.request_attachment" "kdeconnect.sms.request_conversation" "kdeconnect.sms.request_conversations" "kdeconnect.systemvolume" "kdeconnect.telephony.request" "kdeconnect.telephony.request_mute" ];
-      last-connection = "lan://192.168.1.185:1716";
-      name = "ONEPLUS A3003";
-      outgoing-capabilities = [ "kdeconnect.battery" "kdeconnect.battery.request" "kdeconnect.bigscreen.stt" "kdeconnect.clipboard" "kdeconnect.clipboard.connect" "kdeconnect.connectivity_report" "kdeconnect.contacts.response_uids_timestamps" "kdeconnect.contacts.response_vcards" "kdeconnect.findmyphone.request" "kdeconnect.mousepad.echo" "kdeconnect.mousepad.keyboardstate" "kdeconnect.mousepad.request" "kdeconnect.mpris" "kdeconnect.mpris.request" "kdeconnect.notification" "kdeconnect.notification.request" "kdeconnect.photo" "kdeconnect.ping" "kdeconnect.presenter" "kdeconnect.runcommand.request" "kdeconnect.sftp" "kdeconnect.share.request" "kdeconnect.sms.attachment_file" "kdeconnect.sms.messages" "kdeconnect.systemvolume.request" "kdeconnect.telephony" ];
-      supported-plugins = [ "battery" "clipboard" "connectivity_report" "contacts" "findmyphone" "mousepad" "mpris" "notification" "photo" "ping" "presenter" "runcommand" "sftp" "share" "sms" "systemvolume" "telephony" ];
-      type = "phone";
-    };
-
-    "org/gnome/shell/extensions/gsconnect/preferences" = {
-      window-maximized = false;
-      window-size = mkTuple [ 640 440 ];
-    };
-
-    "org/gnome/shell/extensions/gtile" = {
-      auto-close = false;
-      theme = "Default";
-    };
 
     "org/gnome/shell/extensions/gtk4-ding" = {
       add-volumes-opposite = false;
@@ -597,10 +382,11 @@ with lib.hm.gvariant;
       panel-notification-icon = true;
       power-icon = false;
       ripple-box = false;
-      search = false;
+      search = true;
       show-apps-button = false;
       startup-status = 1;
       theme = true;
+      weather = true;
       window-demands-attention-focus = true;
       window-picker-icon = true;
       window-preview-caption = true;
@@ -625,7 +411,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/quick-settings-tweaks" = {
       datemenu-remove-notifications = true;
       disable-adjust-content-border-radius = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":true}]";
+      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":true},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":false},{\"name\":\"NMWiredToggle\",\"label\":\"Wired\",\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":\"Wi-Fi\",\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":false},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":true},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":\"No Background Apps\",\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
       notifications-use-native-controls = true;
     };
 
@@ -676,21 +462,6 @@ with lib.hm.gvariant;
       overridden-settings = "{'org.gnome.mutter.edge-tiling': <false>}";
     };
 
-    "org/gnome/shell/extensions/unite" = {
-      autofocus-windows = false;
-      extend-left-box = false;
-      greyscale-tray-icons = true;
-      hide-activities-button = "always";
-      hide-app-menu-icon = false;
-      hide-dropdown-arrows = true;
-      hide-window-titlebars = "never";
-      reduce-panel-spacing = false;
-      show-legacy-tray = true;
-      show-window-buttons = "never";
-      show-window-title = "maximized";
-      window-buttons-placement = "left";
-    };
-
     "org/gnome/shell/extensions/user-theme" = {
       name = "";
     };
@@ -699,56 +470,12 @@ with lib.hm.gvariant;
       edge-tiling = true;
     };
 
-   
     "org/gnome/software" = {
-      check-timestamp = mkInt64 1691146895;
       first-run = false;
-      flatpak-purge-timestamp = mkInt64 1691088930;
     };
 
     "org/gnome/tweaks" = {
       show-extensions-notice = false;
     };
-
-    "org/gtk/gtk4/settings/color-chooser" = {
-      custom-colors = [ (mkTuple [ 0.66 0.2398 ]) (mkTuple [ 0.0 0.0 ]) (mkTuple [ 1.0 0.964706 ]) (mkTuple [ 0.705882 0.654902 ]) (mkTuple [ 6.6667e-2 0.780392 ]) (mkTuple [ 0.968627 0.635294 ]) (mkTuple [ 0.92549 0.368627 ]) ];
-      selected-color = mkTuple [ true 1.0 ];
-    };
-
-    "org/gtk/gtk4/settings/file-chooser" = {
-      date-format = "regular";
-      location-mode = "path-bar";
-      show-hidden = false;
-      show-size-column = true;
-      show-type-column = true;
-      sidebar-width = 140;
-      sort-column = "name";
-      sort-directories-first = false;
-      sort-order = "ascending";
-      type-format = "category";
-      view-type = "list";
-      window-size = mkTuple [ 825 374 ];
-    };
-
-    "org/gtk/settings/color-chooser" = {
-      custom-colors = [ (mkTuple [ 0.447059 0.623529 ]) (mkTuple [ 0.988235 0.913725 ]) (mkTuple [ 0.909987 0.909987 ]) (mkTuple [ 0.8 0.0 ]) (mkTuple [ 1.0 1.0 ]) ];
-      selected-color = mkTuple [ true 0.447059 ];
-    };
-
-    "org/gtk/settings/file-chooser" = {
-      date-format = "regular";
-      location-mode = "path-bar";
-      show-hidden = false;
-      show-size-column = true;
-      show-type-column = true;
-      sidebar-width = 348;
-      sort-column = "name";
-      sort-directories-first = false;
-      sort-order = "ascending";
-      type-format = "category";
-      window-position = mkTuple [ 35 32 ];
-      window-size = mkTuple [ 1195 902 ];
-    };
-
   };
 }

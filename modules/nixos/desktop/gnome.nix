@@ -56,19 +56,21 @@ let
     
     tiling-assistant # Windows-like tiling update
 
+    #
+    material-shell
 
-    dash2dock-lite # kinda buggy, but better looking thab dash-to-dock
+    # dash2dock-lite #buggy with read only filesystems
     dash-to-dock # turn the dash into a dock, always visible
     # dash-to-panel # might actually be more useful in 16:9
 
     openweather
 
-    hot-edge # hot edge for all corners
+    # hot-edge # hot edge for bottom corner
 
     rocketbar # some dashbar in topbar
     space-bar # Activity replaced by workspaces in topbar
 
-    ofp-overview-feature-pack # customise overview
+    ofp-overview-feature-pack # customise overview -> do not work with gnome 44
     just-perfection # customise everything
 
     blur-my-shell # some nice blur effect
