@@ -9,6 +9,7 @@ import subprocess
 import shlex
 import os
 import argparse
+import io
 
 class Colors:
     OKBLUE = '\033[94m'
@@ -26,7 +27,10 @@ def colored(text : str, color ) :
 
 
 def fileExists(path : str) :
-    return os.path.exists(path)
+    try :
+        return os.path.exists(path)
+    except :
+        return False
 
 def removeFile(path : str) :
     try :
@@ -35,11 +39,12 @@ def removeFile(path : str) :
         pass
 
 # wrapper around subprocess.run
-def runShellCommand( command , stdinText = None) :
-    if stdinText != None :
-        return subprocess.run(shlex.split(command), input = stdinText, text = True, encoding='utf8')
-    else :
+def runShellCommand( command , text = None) :
+    if text ==  None  or text == "" :
         return subprocess.run(shlex.split(command))
+    else :
+        StdinText = io.StringIO(text)
+        return subprocess.run(shlex.split(command), input = stdinText, text = True, encoding='utf8')        
 
 # generate a ssh key
 def genKey( key:str , path : str) :
