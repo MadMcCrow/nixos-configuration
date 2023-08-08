@@ -43,7 +43,7 @@ def runShellCommand( command , text = None) :
     if text ==  None  or text == "" :
         return subprocess.run(shlex.split(command))
     else :
-        StdinText = io.StringIO(text)
+        stdinText = io.StringIO(text)
         return subprocess.run(shlex.split(command), input = stdinText, text = True, encoding='utf8')        
 
 # generate a ssh key
