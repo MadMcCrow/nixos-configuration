@@ -113,7 +113,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/app-folders/folders/Code" = {
-      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "code.desktop" "codium.desktop" ];\
+      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "code.desktop" "codium.desktop" ];
       categories = [ "Code" "Programming" "Debug" ];
       name = "Programming";
     };
