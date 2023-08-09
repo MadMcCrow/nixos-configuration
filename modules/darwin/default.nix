@@ -57,7 +57,7 @@ in {
   # interface 
   options.darwin = mkIf isDarwin {
     # enable MacOS
-    enable = mkEnableOptionDefault  "Darwin (MacOS)" false;
+    enable = mkEnableOptionDefault  "Darwin (MacOS)" true;
     # Touch ID with sudo :
     security.pam.sudoTouchIdAuth.enable = mkEnableOptionDefault ''
       sudo authentication with Touch ID

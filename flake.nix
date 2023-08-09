@@ -62,12 +62,7 @@
             home-manager.darwinModules.home-manager
             ./modules
             ./secrets
-            ./users/darwin.nix
-            system
-            {
-              darwin.enable = true;
-              darwin.apps.enable = true;
-            }
+            ./users
           ];
         };
 
