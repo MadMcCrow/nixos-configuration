@@ -1,6 +1,6 @@
 # default.nix
 #	Base of modules
-{ pkgs, config, lib, nixpkgs, ... }:
+{ pkgs, config, lib, nixpkgs, system, ... }:
 with builtins;
 with lib;
 let

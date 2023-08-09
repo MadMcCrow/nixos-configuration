@@ -54,8 +54,8 @@ let
 
 in {
 
-  # interface
-  options.darwin = {
+  # interface 
+  options.darwin = mkIf isDarwin {
     # enable MacOS
     enable = mkEnableOptionDefault  "Darwin (MacOS)" false;
     # Touch ID with sudo :
