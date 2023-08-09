@@ -6,7 +6,7 @@ with lib;
 let
   # shortcut
   cfg = config.nixos;
-  isLinux = false;
+  isLinux = config.platform == "x86_64-linux";
 
   # submodules
   # (things to complicated or too specific to have directly in the default linux config)

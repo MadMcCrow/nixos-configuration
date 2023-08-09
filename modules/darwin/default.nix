@@ -9,7 +9,7 @@ let
   pam = cfg.security.pam.sudoTouchIdAuth;
 
   # only M1 supported for now
-  isDarwin = pkgs.system == "aarch64-darwin";
+  isDarwin = config.platform == "aarch64-darwin";
 
   # helper functions
   mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
@@ -55,7 +55,7 @@ let
 in {
 
   # interface 
-  options.darwin = mkIf isDarwin {
+  options.darwin = {
     # enable MacOS
     enable = mkEnableOptionDefault  "Darwin (MacOS)" true;
     # Touch ID with sudo :

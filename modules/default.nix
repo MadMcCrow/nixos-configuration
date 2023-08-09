@@ -20,6 +20,16 @@ in {
 
   # interface : option for unfree modules
   options = {
+
+    platform = let 
+        desc = "platform to build, should be the value of `pkgs.system`";
+        values = [ "x86_64-linux" "aarch64-darwin" ];
+      in
+      mkOption {
+        description = concatStringsSep "," [ desc "one of " (toString values) ];
+        type = types.enum values;
+        default = elemAt values 0;
+      };
     
     packages = {
       # allow select unfree packages

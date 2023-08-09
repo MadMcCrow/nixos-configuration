@@ -34,12 +34,15 @@
 
   outputs = { self, nixpkgs, darwin, home-manager, agenix, ... }@inputs:
     let
-      # shortcut function :
-      nixOSx86 = sysModule:
+
+      # modules shared between linux and MacOS
+      baseModules = s : p : [ ./modules ./users ./secrets (import s { pkgs = nixpkgs; system = p; }) {platform = p;}];
+
+      # shortcut functions :
+      nixOSx86 = m :
         let
           pkgs = nixpkgs;
           system = "x86_64-linux";
-          sysArgs = import sysModule { inherit pkgs system; };
           specialArgs = inputs;
         in nixpkgs.lib.nixosSystem {
           inherit system specialArgs;
@@ -47,23 +50,16 @@
             agenix.nixosModules.default
             home-manager.nixosModule
             home-manager.nixosModules.home-manager
-            ./modules
-            ./users
-            ./secrets
-            sysArgs
-          ];
+          ] ++ ( baseModules m system);
         };
 
-      darwinAarch64 = system:
-        darwin.lib.darwinSystem {
+      darwinAarch64 =  m :
+        let
           system = "aarch64-darwin";
+        in darwin.lib.darwinSystem {
+          inherit system;
           specialArgs = inputs;
-          modules = [
-            home-manager.darwinModules.home-manager
-            ./modules
-            ./secrets
-            ./users
-          ];
+          modules = [ home-manager.darwinModules.home-manager ] ++ ( baseModules m system);
         };
 
     in {
