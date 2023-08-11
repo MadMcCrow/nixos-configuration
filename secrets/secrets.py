@@ -44,12 +44,17 @@ def runShellCommand( command , text = None) :
         return subprocess.run(shlex.split(command))
     else :
         stdinText = io.StringIO(text)
-        return subprocess.run(shlex.split(command), input = stdinText, text = True, encoding='utf8')        
+        return subprocess.run(shlex.split(command), input = stdinText)
 
 # generate a ssh key
 def genKey( key:str , path : str) :
+    print(f"generating ssh key pair : {colored(key, Colors.BOLD)}  at {colored(path), Colors.BOLD}:\n")
     # call ssh keygen
     runShellCommand(f"ssh-keygen -C {key} -f {path}  -q")
+
+def updateKey(key : str, path : str) :
+    print(f"updating ssh key (creating public key) for {colored(key, Colors.BOLD)}:\n")
+    runShellCommand(f"ssh-keygen -y -f {path} > {path}.pub")
 
 
 # encrypt a prompt from user to a file
@@ -67,7 +72,7 @@ def decrypt(prvKey : str, inFile : str) :
         return True
 
 
-try : 
+try :
     parser = argparse.ArgumentParser()
     parser.add_argument("-k", "--key",  dest="key", help="key name",  metavar="KEY")
     parser.add_argument("-p", "--public-key",  dest="pubkey", help="public key to use (file)",  metavar="PUBKEY")
@@ -99,17 +104,20 @@ try :
         prvkey = key
 
 
-    # do not have a prv key
+    # missing private key :
     if not fileExists(prvkey) :
+        print( colored("Error: ", Colors.FAIL) + "Missing private key")
         removeFile(pubkey)
         genKey(key, prvkey)
 
-    if not fileExists(prvkey) :
-        removeFile(pubkey)
-        genKey(key, prvkey)
+    # missing public or private key
+    if not fileExists(pubkey) :
+        print( colored("Warning: ", Colors.WARNING) + "Missing public key")
+        updateKey(key, prvkey)
 
     # cannot decrypt file : delete all
     if not decrypt(prvkey, args.file) :
+        print( colored("Error: ", Colors.FAIL) + "Cannot decrypt private key")
         removeFile(pubkey)
         removeFile(prvkey)
         removeFile(args.file)
