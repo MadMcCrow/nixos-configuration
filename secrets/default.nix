@@ -33,12 +33,20 @@ let
   # package secret script
   # TODO : replace by script module (and python)
   gen-secret = let
+  pylib = pycnix.lib."${pkgs.system}";
   secrets = pkgs.writeText "secrets.py" (readFile ./secrets.py);
+  pyage = pylib.mkPipInstall {
+    name = "age";
+    version = "0.5.1";
+    sha256 = "sha256-pNnORcE6Eskef51vSUXRdzqe+Xj3q7GImAcRdmsHgC0=";
+    libraries = ["pynacl" "requests" "cryptography" "click" "bcrypt"];
+  };
   in
-  pycnix.lib."${pkgs.system}".mkCythonBin {
+  pylib.mkCythonBin {
     name = "gen-secret";
     main = "secrets";
     modules = [ secrets ];
+    libraries= [ pyage ]
   };
 
   rebuild-secret = let
