@@ -62,6 +62,8 @@
           modules = [ home-manager.darwinModules.home-manager ] ++ ( baseModules m system);
         };
 
+        shells = [ "./secrets" ];
+
     in {
 
       #Linux : Nixos
@@ -90,5 +92,18 @@
             };
           };
       };
+
+      # a shell for every development experiment
+      devShells = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin"]  (
+      system: 
+      {
+        default = let
+          pkgs = nixpkgs.legacyPackages.${system};
+          paths = map (x : import x {inherit pkgs;} ) shells;
+        in
+          pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
+      }
+      );
+      
     };
 }
