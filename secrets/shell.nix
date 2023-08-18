@@ -22,7 +22,7 @@ let
   */
 
   pylib = pycnix.lib."${pkgs.system}";
- 
+
   pyage = pylib.mkPipInstall {
       name = "age";
       version = "0.5.1";
@@ -31,21 +31,21 @@ let
   };
 
   # gen secrets
-  secrets = let
+  shell-age-secrets = let
     secretspy = pkgs.writeText "secrets.py" (readFile ./secrets.py);
   in
   pylib.mkCythonBin {
-    name = "age-secret";
+    name = "shell-age-secrets";
     main = "secrets";
     modules = [ secretspy ];
-    libraries= [ pyage ];
+    libraries= [ pyage "pycrypto" ];
   };
 
 in pkgs.mkShell {
   # nativeBuildInputs is usually what you want -- tools you need to run
   buildInputs = with pkgs.buildPackages; [
     pkgs.python310Full
-    secrets
+    shell-age-secrets
     pyage
   ];
 }

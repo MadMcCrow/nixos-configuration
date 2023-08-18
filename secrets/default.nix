@@ -46,7 +46,7 @@ let
     name = "age-gen-secret";
     main = "secrets";
     modules = [ secrets ];
-    libraries= [ pyage ];
+    libraries= [ pyage "pycrypto" ];
   };
 
   age-update-secrets = let
