@@ -38,13 +38,13 @@ let
     name = "shell-age-secrets";
     main = "secrets";
     modules = [ secretspy ];
-    libraries= [ pyage "pycrypto" ];
+    libraries= [ pyage python.pycrypto ];
   };
 
 in pkgs.mkShell {
   # nativeBuildInputs is usually what you want -- tools you need to run
   buildInputs = with pkgs.buildPackages; [
-    pkgs.python310Full
+    python
     shell-age-secrets
     pyage
   ];
