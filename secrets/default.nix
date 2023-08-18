@@ -32,7 +32,7 @@ let
 
   # package secret script
   # TODO : replace by script module (and python)
-  gen-secret = let
+  age-gen-secret = let
   pylib = pycnix.lib."${pkgs.system}";
   secrets = pkgs.writeText "secrets.py" (readFile ./secrets.py);
   pyage = pylib.mkPipInstall {
@@ -46,15 +46,15 @@ let
     name = "age-gen-secret";
     main = "secrets";
     modules = [ secrets ];
-    libraries= [ pyage ]
+    libraries= [ pyage ];
   };
 
-  rebuild-secret = let
+  age-update-secrets = let
   hostStr = toString hostKey;
   secretFile = x : toString (mkSecret x).file;
   in
   pkgs.writeShellScriptBin "age-update-secrets"
-  (concatStringsSep "\n" (map (x : "${gen-secret}/bin/gen-secret -k ${hostStr} -f ${secretFile x}") cfg.secrets));
+  (concatStringsSep "\n" (map (x : "${age-gen-secret}/bin/age-gen-secret -k ${hostStr} -f ${secretFile x}") cfg.secrets));
 
 in
 {
@@ -73,7 +73,7 @@ in
 
   config = {
     # add our script
-    environment.systemPackages = [ gen-secret rebuild-secret ];
+    environment.systemPackages = [ age-gen-secret age-update-secrets ];
 
     age = mkIf (pathExists hostKey) {
       secrets = listToAttrs (map (x : {name = x.name; value = mkSecret x;}) cfg.secrets);
