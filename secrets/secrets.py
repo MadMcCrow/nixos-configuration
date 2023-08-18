@@ -29,6 +29,8 @@ class Colors:
 def colored(text : str, color ) :
     return '\0'.join([color, text, Colors.ENDC])
 
+def removeFile(path) :
+    os.remove(path)
 
 # generate a private key
 def genKey( key:str , path : str) :
@@ -54,8 +56,8 @@ def updateKey(key : str, path : str) :
             [ ] - support passphrase
     """
     print(f"updating ssh key (creating public key) for {colored(key, Colors.BOLD)}:\n")
-    with open(path, 'r') as content_file :
-        key_text = content_file.read()
+    with open(path, 'r') as key_file :
+        key_text = key_file.read()
         key = rsa.import_key(key_text)
     assert key.has_private()
     with open(f"{path.pub}", 'wb') as public_file:
@@ -109,7 +111,9 @@ if __name__ == "__main__" :
         parser.add_argument("-F", "--force", dest="force", help="force recreate secret", metavar="FORCE")
         args = parser.parse_args()
 
-        if args.file == None :
+
+        outfile = args.file
+        if outfile == None :
             print( colored("Error: ", Colors.FAIL) + "no file provided")
             parser.print_help()
             exit(1)
@@ -132,23 +136,24 @@ if __name__ == "__main__" :
             prvkey = key
 
 
+
         # missing private key :
-        if not fileExists(prvkey) :
+        if not os.path.isfile(prvkey) :
             print( colored("Error: ", Colors.FAIL) + "Missing private key")
             removeFile(pubkey)
             genKey(key, prvkey)
 
         # missing public or private key
-        if not fileExists(pubkey) :
+        if not os.path.isfile(pubkey) :
             print( colored("Warning: ", Colors.WARNING) + "Missing public key")
             updateKey(key, prvkey)
 
         # cannot decrypt file : delete all
-        if decrypt(prvkey, args.file) == None :
+        if decrypt(prvkey, outfile) == None :
             print( colored("Error: ", Colors.FAIL) + "Cannot decrypt private key")
             removeFile(pubkey)
             removeFile(prvkey)
-            removeFile(args.file)
+            removeFile(outfile)
             genKey(key, prvkey)
         # skip : nothing to do
         elif args.force == None :
@@ -158,10 +163,10 @@ if __name__ == "__main__" :
         # key is valid :
         # input :
         # WARNING : ENCRPYTED DATA IS VISIBLE 
-        print(f"enter content for {colored(outFile, Colors.BOLD)} :\n")
+        print(f"enter content for {colored(outfile, Colors.BOLD)} :\n")
         content = input()
-        encrypt(pubkey, args.file, content)
-        if decrypt(prvkey, args.file) == content :
+        encrypt(pubkey, outfile, content)
+        if decrypt(prvkey, outfile) == content :
             print( colored("Success: ", Colors.OKGREEN) + "secret is encrypted with ssh key")
             exit(0)
         else :

@@ -43,7 +43,7 @@ let
   };
   in
   pylib.mkCythonBin {
-    name = "gen-secret";
+    name = "age-gen-secret";
     main = "secrets";
     modules = [ secrets ];
     libraries= [ pyage ]

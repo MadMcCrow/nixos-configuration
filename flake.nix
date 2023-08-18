@@ -62,7 +62,7 @@
           modules = [ home-manager.darwinModules.home-manager ] ++ ( baseModules m system);
         };
 
-        shells = [ "./secrets" ];
+        shells = [ ./secrets/shell.nix ];
 
     in {
 
@@ -99,7 +99,7 @@
       {
         default = let
           pkgs = nixpkgs.legacyPackages.${system};
-          paths = map (x : import x {inherit pkgs;} ) shells;
+          paths = map (x : import x ({inherit pkgs;} // inputs) ) shells;
         in
           pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
       }
