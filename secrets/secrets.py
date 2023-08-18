@@ -11,9 +11,11 @@ import argparse
 import io
 
 from Crypto.PublicKey import RSA as rsa # ssh-keygen equivalent
-# pyage (replace age command line)
-import age.file as age           
+import age.file as age                  # pyage (replace age command line)
 
+
+# constants :
+_secretPermission = 0o600
 
 # color output
 class Colors:
@@ -30,7 +32,10 @@ def colored(text : str, color ) :
     return '\0'.join([color, text, Colors.ENDC])
 
 def removeFile(path) :
-    os.remove(path)
+    try :
+        os.remove(path)
+    except FileNotFoundError :
+        pass
 
 # generate a private key
 def genKey( key:str , path : str) :
@@ -40,13 +45,13 @@ def genKey( key:str , path : str) :
             [ ] - support passphrase
     """
     print(f"generating ssh key pair : {colored(key, Colors.BOLD)}  at {colored(path, Colors.BOLD)}:\n")
-    key = rsa.generate(2048)
+    rsa_key = rsa.generate(2048)
     with open(path, 'wb') as private_file:
-        os.chmod(path, 600)
-        private_file.write(key.exportKey('PEM'))
-    with open(f"{path.pub}", 'wb') as public_file:
-        os.chmod(path, 600)
-        public_file.write(key.public_key().exportKey('OpenSSH'))
+        os.chmod(path, _secretPermission)
+        private_file.write(rsa_key.exportKey('PEM'))
+    with open(f"{path}.pub", 'wb') as public_file:
+        os.chmod(path, _secretPermission)
+        public_file.write(rsa_key.public_key().exportKey('OpenSSH'))
 
 
 def updateKey(key : str, path : str) :
@@ -58,11 +63,11 @@ def updateKey(key : str, path : str) :
     print(f"updating ssh key (creating public key) for {colored(key, Colors.BOLD)}:\n")
     with open(path, 'r') as key_file :
         key_text = key_file.read()
-        key = rsa.import_key(key_text)
-    assert key.has_private()
-    with open(f"{path.pub}", 'wb') as public_file:
-        os.chmod(path, 600)
-        public_file.write(key.public_key().exportKey('OpenSSH'))
+        rsa_key = rsa.import_key(key_text)
+    assert rsa_key.has_private()
+    with open(f"{path}.pub", 'wb') as public_file:
+        os.chmod(path, _secretPermission)
+        public_file.write(rsa_key.public_key().exportKey('OpenSSH'))
     
 
 # encrypt a prompt from user to a file
@@ -74,13 +79,20 @@ def encrypt(key : str, outfile : str, content : str) :
             [ ] - support list of keys
     """
     # read key:
-    with open(key, 'wb') as key_file:
-        key_text = key_file.read()
-        key = rsa.import_key(key_text)
+    print(f"encrypting {colored(outfile, Colors.BOLD)} with {colored(key, Colors.BOLD)}:\n")
+    public_key = ""
+    with open(key, 'r') as key_file:
+        try :
+            key_text = key_file.read()
+            rsa_key = rsa.import_key(key_text)
+        except ValueError : # ValueError: RSA key format is not supported
+            print("using public key as-is")
+            public_key = key_text
+        else :
+            public_key = rsa_key.public_key().exportKey('OpenSSH') if rsa_key.has_private() else rsa_key.exportKey('OpenSSH')
     # make a list of keys
-    keys = [key.public_key().exportKey('OpenSSH') if key.has_private() else key.exportKey('OpenSSH')]
     # write to encrypted file
-    with age.Encryptor(keys, outfile) as encryptor:
+    with age.Encryptor([public_key], outfile) as encryptor:
         encryptor.write(content)
 
 
@@ -91,14 +103,17 @@ def decrypt(key : str, inFile : str) :
             [ ] - support passphrase
     """
     # read key:
-    with open(key, 'wb') as key_file:
+    with open(key, 'r') as key_file:
         key_text = key_file.read()
-        key = rsa.import_key(key_text)
+        rsa_key = rsa.import_key(key_text)
     # read encrpyted content
-    with age.Decrypt([key.exportKey('PEM')], inFile) as decryptor:
-        return decryptor.read()
-    # none
-    return None
+    try : 
+        contentFile = open(inFile, 'r')
+    except FileNotFoundError :
+        return None
+    else :
+        with age.Decryptor([rsa_key.exportKey('PEM')], inFile) as decryptor:
+            return decryptor.read()
 
 # main implementation for commandline
 if __name__ == "__main__" :
@@ -108,7 +123,7 @@ if __name__ == "__main__" :
         parser.add_argument("-p", "--public-key",  dest="pubkey", help="public key to use (file)",  metavar="PUBKEY")
         parser.add_argument("-P", "--private-key", dest="prvkey", help="private key to use (file)", metavar="PRVKEY")
         parser.add_argument("-f", "--file", dest="file", help="output file (with extension)", metavar="FILE")
-        parser.add_argument("-F", "--force", dest="force", help="force recreate secret", metavar="FORCE")
+        parser.add_argument("-F", "--force", help="force recreate secret", action='store_true')
         args = parser.parse_args()
 
 
@@ -148,17 +163,16 @@ if __name__ == "__main__" :
             print( colored("Warning: ", Colors.WARNING) + "Missing public key")
             updateKey(key, prvkey)
 
-        # cannot decrypt file : delete all
-        if decrypt(prvkey, outfile) == None :
-            print( colored("Error: ", Colors.FAIL) + "Cannot decrypt private key")
-            removeFile(pubkey)
-            removeFile(prvkey)
-            removeFile(outfile)
-            genKey(key, prvkey)
-        # skip : nothing to do
-        elif args.force == None :
-            print( colored("SKipped: ", Colors.OKCYAN) + "File already encrypted")
-            exit(0)
+        # cannot decrypt file :
+        if  os.path.exists(outfile) :
+            if decrypt(prvkey, outfile) == None :
+                print( colored("Error: ", Colors.FAIL) + "Cannot decrypt with private key")
+                if args.force == True:
+                    removeFile(outfile)
+            # skip : nothing to do
+            elif args.force != True :
+                print( colored("SKipped: ", Colors.OKCYAN) + "File already encrypted")
+                exit(0)
 
         # key is valid :
         # input :

@@ -101,7 +101,8 @@
           pkgs = nixpkgs.legacyPackages.${system};
           paths = map (x : import x ({inherit pkgs;} // inputs) ) shells;
         in
-          pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
+          # pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
+          pkgs.mkShell {buildInputs = builtins.concatLists (map  (x: x.buildInputs) paths) ;};
       }
       );
       
