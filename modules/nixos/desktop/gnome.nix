@@ -1,6 +1,5 @@
 # gnome.nix
 # 	Nixos Gnome Desktop environment settings
-#	TODO : implement Dconf2nix (possibly in a separate module)
 # TODO : more curated/ personnal version of gnome
 { config, pkgs, lib, ... }:
 with builtins;
@@ -51,15 +50,15 @@ let
 
     alttab-mod # improve alt-tabbing
 
-    tiling-assistant # Windows-like tiling update
+    tiling-assistant # Windows-like tiling help
 
-    material-shell # weird tiling extension
+    # material-shell # weird tiling extension : very slow and buggy
 
     # dash2dock-lite #buggy with read only filesystems
     dash-to-dock # turn the dash into a dock, always visible
     # dash-to-panel # might actually be more useful in 16:9
 
-    openweather
+    openweather # the good weather app
 
     # hot-edge # hot edge for bottom corner
 

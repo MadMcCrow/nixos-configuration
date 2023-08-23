@@ -36,10 +36,10 @@
     let
 
       # modules shared between linux and MacOS
-      baseModules = s : p : [ ./modules ./users ./secrets (import s { pkgs = nixpkgs; system = p; }) {platform = p;}];
+      baseModules = [ ./modules ./users ./secrets ];
 
       # shortcut functions :
-      nixOSx86 = m :
+      nixOSx86 = sysModule :
         let
           pkgs = nixpkgs;
           system = "x86_64-linux";
@@ -50,16 +50,18 @@
             agenix.nixosModules.default
             home-manager.nixosModule
             home-manager.nixosModules.home-manager
-          ] ++ ( baseModules m system);
+            (import sysModule {pkgs = nixpkgs;})
+          ] ++ baseModules ++ [{platform = "x86_64-linux"; }];
         };
 
-      darwinAarch64 =  m :
+      darwinAarch64 =  sysModule :
         let
           system = "aarch64-darwin";
         in darwin.lib.darwinSystem {
           inherit system;
           specialArgs = inputs;
-          modules = [ home-manager.darwinModules.home-manager ] ++ ( baseModules m system);
+          modules = [ home-manager.darwinModules.home-manager sysModule ]
+          ++ baseModules;#  ++ [{platform = "aarch64-darwin";}];
         };
 
         shells = [ ./secrets/shell.nix ];
@@ -76,7 +78,7 @@
       };
 
       # MacOS
-      darwinConfigurations = {
+      darwinSystems = {
         # my MacBook Air
         Noes-MacBook-Air = darwinAarch64 ./systems/MBA.nix;
       };
@@ -101,6 +103,7 @@
           pkgs = nixpkgs.legacyPackages.${system};
           paths = map (x : import x ({inherit pkgs;} // inputs) ) shells;
         in
+          # this is sad, for now I just merge build inputs but another solution would be great
           # pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
           pkgs.mkShell {buildInputs = builtins.concatLists (map  (x: x.buildInputs) paths) ;};
       }

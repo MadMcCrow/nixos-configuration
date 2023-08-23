@@ -39,9 +39,8 @@ experimental_features()
 build()
 {
   # build nix config on Darwin
-  host=${HOSTNAME/.local}
-  echo "building configuration for $host"
-  nix build ".#darwinSystems.$host.system"
+  echo "building configuration for $(hostname -s)"
+  nix build ".#darwinSystems.$(hostname -s).system"
 }
 
 apply()
