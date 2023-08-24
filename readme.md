@@ -39,8 +39,8 @@ The artifacts of that build are cached on cachix [here](https://app.cachix.org/c
 ## TODO
 these would be the next improvements for this repo :
  - [ ] Make a documentation
- - [ ] Move scripts to a separate folder
+ - [ ] split `Modules` folder to `Darwin` `Nixos` and `Nix`
+ - [X] Move scripts to a separate folder
  - [ ] Update github actions
  - [ ] Move nextcloud to a separate flake
  - [ ] Make gnome and dconf a separate flake
- - [ ] Fully package adw-gtk3 theme

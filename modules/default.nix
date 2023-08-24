@@ -24,11 +24,12 @@ in {
     platform = let 
         desc = "platform to build, should be the value of `pkgs.system`";
         values = [ "x86_64-linux" "aarch64-darwin" ];
+        default = config.nixpkgs.hostPlatform.system;
       in
       mkOption {
         description = concatStringsSep "," [ desc "one of " (toString values) ];
         type = types.enum values;
-        default = elemAt values 0;
+        inherit default;
       };
     
     packages = {
@@ -52,9 +53,6 @@ in {
       };
     };
   };
-
-  # submodules
-  imports = [ ./nixos ./darwin ];
 
   config = {
     nix.registry.nixpkgs.flake = nixpkgs;

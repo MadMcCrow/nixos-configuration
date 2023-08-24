@@ -50,8 +50,13 @@ let
     inherit name;
     home = "/Users/${name}";
   }) configUsers;
-  darwinHM = mapAttrs (name: value:
-    (value // { home = value.home // { homeDirectory = "/Users/${name}"; }; }))
+
+  darwinHM = mapAttrs ( name: value:
+    let 
+    homeValue = value args;
+    in 
+    (args :
+    homeValue // { home = homeValue.home // { homeDirectory = "/Users/${name}"; }; }))
     home-managerUsers;
 
 in {
@@ -59,7 +64,7 @@ in {
     # default nix config users :
     users = {
       users = if isDarwin then darwinUser else configUsers;
-      mutableUsers = true;
+      # mutableUsers = true;
     };
 
     # home manager config users : 

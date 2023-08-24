@@ -1,9 +1,19 @@
 # home.nix
 # home manager configuration for user
 { config, pkgs, firefox-gnome-theme, ... }:
+with builtins;
+with pkgs.lib;
 let
+
+  # multiplatform support
+  isLinux  = strings.hasSuffix "linux"  config.platform;
+  isDarwin = strings.hasSuffix "darwin" config.platform;
+
+  mkCondSet = base : cond : ifTrue : ifFalse :  mkMerge [base (if cond then ifTrue else ifFalse )];
+
   # true if this program can work
-  supported = package: builtins.elem pkgs.system package.meta.platforms;
+  supported = pkg: let m = l : elem pkg l; in
+  (m pkg.meta.platforms) && !(m pkg.meta.badPlatforms);
 
   # firefox-gnome-theme
   firefox-gnome-theme = pkgs.stdenvNoCC.mkDerivation rec {
@@ -37,7 +47,7 @@ in {
   imports = [ ./dconf.nix ];
 
   # packages to install to profile
-  home.packages = with pkgs; [
+  home.packages = filter ( x: supported x) (with pkgs; [
     git
     gh
     exa
@@ -47,7 +57,7 @@ in {
     jetbrains-mono
     speechd
     python3
-  ];
+  ]);
 
   # enable HM
   programs.home-manager.enable = true;
@@ -92,20 +102,23 @@ in {
   };
 
   # github cli tool
-  programs.gh = {
-    enable = supported pkgs.gh;
-    gitCredentialHelper.enable = true;
-    settings.git_protocol = "https";
-    extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
-  };
+  programs.gh = mkCondSet 
+    {
+      enable = supported pkgs.gh;
+      settings.git_protocol = "https";
+      extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
+    }
+    isLinux 
+    {gitCredentialHelper.enable = true;} 
+    {enableGitCredentialHelper = true;};
 
-  programs.git-credential-oauth.enable = true;
+  # needs custom merge
+  #programs = if isLinux then {git-credential-oauth.enable = true;} else {};
 
   # ZSH :
-  programs.zsh = {
+  programs.zsh = mkCondSet {
     enable = supported pkgs.zsh;
     dotDir = ".config/zsh";
-    syntaxHighlighting.enable = true;
     enableAutosuggestions = true;
     autocd = true;
     history = {
@@ -115,14 +128,18 @@ in {
       extended = false;
       share = true;
     };
-  };
-  services.gpg-agent = {
+  } 
+  isLinux
+  {syntaxHighlighting.enable = true;}
+  {enableSyntaxHighlighting = true; };
+
+  services.gpg-agent = mkIf isLinux {
     enable = true;
     enableZshIntegration = true;
   };
 
   # Bash And Zsh shell history suggest box
-  programs.hstr.enable = true; # only in 23.05
+  programs.hstr.enable = true;
 
   programs.powerline-go = {
     enable = supported pkgs.powerline-go;

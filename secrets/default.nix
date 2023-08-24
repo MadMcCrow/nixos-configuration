@@ -8,12 +8,15 @@ let
   # shortcut
   cfg = config.secrets;
 
-  # storage
-  defaultSecretsPath="/nix/persist/secrets";
-
   # wrapped function
   mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
-  concatPath = list : /. + (concatStringsSep "/" list);
+
+  # Darwin support
+  isDarwin = lib.strings.hasSuffix "darwin" config.platform;
+
+  # rootFolder depends on platform :
+  root = if isDarwin then ./. else /.;
+  concatPath = list : root + (concatStringsSep "/" list);
 
   # where the machine key is stored
   hostKey = concatPath [cfg.keyPath config.networking.hostName];
@@ -61,17 +64,21 @@ in
   options.secrets = {
     # path to the secret files
     secretsPath = mkOption {
-      description = "path to age secret files"; default=defaultSecretsPath;
+      description = "path to age secret files";
+      type = types.str;
+      default="nix/persist/secrets";
     };
     # path to all the ssh keys
     keyPath = mkOption {
       description = "path to ssh keys";
-      default=defaultSecretsPath;
+      type = types.str;
+      default="nix/persist/secrets";
       };
     secrets = mkOption {description = "set of secrets"; type = types.listOf types.attrs; default = []; };
   };
 
-  config = {
+  # darwin is not supported yet
+  config = mkIf (!isDarwin) {
     # add our script
     environment.systemPackages = [ age-gen-secret age-update-secrets ];
 
@@ -81,9 +88,10 @@ in
     };
 
     # TODO : move to config directly
-    nixos.rebuildScripts.pre = [{
-      name = "rebuid-secrets";
-      pkg = rebuild-secret;
-    }];
+    # this is shared between darwin and linux
+    #nixos.rebuildScripts.pre = [{
+    #  name = "rebuid-secrets";
+    #  pkg = age-update-secrets;
+    #}];
   };
 }

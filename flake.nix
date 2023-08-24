@@ -20,6 +20,8 @@
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    home-manager-darwin.url = "github:nix-community/home-manager/release-23.05";
+    home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
     # Agenix for secrets
     agenix.url = "github:ryantm/agenix";
@@ -32,7 +34,7 @@
 
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, agenix, ... }@inputs:
+  outputs = { self,  ... }@inputs:
     let
 
       # modules shared between linux and MacOS
@@ -41,27 +43,31 @@
       # shortcut functions :
       nixOSx86 = sysModule :
         let
-          pkgs = nixpkgs;
+          pkgs = inputs.nixpkgs;
           system = "x86_64-linux";
           specialArgs = inputs;
-        in nixpkgs.lib.nixosSystem {
+        in pkgs.lib.nixosSystem {
           inherit system specialArgs;
           modules = [
-            agenix.nixosModules.default
-            home-manager.nixosModule
-            home-manager.nixosModules.home-manager
-            (import sysModule {pkgs = nixpkgs;})
+            ./modules/nixos
+            inputs.agenix.nixosModules.default
+            inputs.home-manager.nixosModule
+            inputs.home-manager.nixosModules.home-manager
+            (import sysModule {inherit pkgs;})
           ] ++ baseModules ++ [{platform = "x86_64-linux"; }];
         };
 
       darwinAarch64 =  sysModule :
         let
           system = "aarch64-darwin";
-        in darwin.lib.darwinSystem {
+        in inputs.darwin.lib.darwinSystem {
           inherit system;
           specialArgs = inputs;
-          modules = [ home-manager.darwinModules.home-manager sysModule ]
-          ++ baseModules;#  ++ [{platform = "aarch64-darwin";}];
+          modules = [
+            ./modules/darwin
+            inputs.agenix.darwinModules.default
+            inputs.home-manager-darwin.darwinModules.home-manager
+            sysModule ] ++ baseModules ++ [{platform = "aarch64-darwin";}];
         };
 
         shells = [ ./secrets/shell.nix ];
@@ -90,17 +96,17 @@
             # Add access to x86 packages if system is running Apple Silicon
             pkgs-x86 = import inputs.nixpkgs {
               system = "x86_64-darwin";
-              inherit (nixpkgs) config;
+              inherit (inputs.nixpkgs) config;
             };
           };
       };
 
       # a shell for every development experiment
-      devShells = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin"]  (
+      devShells = inputs.nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin"]  (
       system: 
       {
         default = let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = inputs.nixpkgs.legacyPackages.${system};
           paths = map (x : import x ({inherit pkgs;} // inputs) ) shells;
         in
           # this is sad, for now I just merge build inputs but another solution would be great
