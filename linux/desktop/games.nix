@@ -68,7 +68,7 @@ in {
       concatLists [
       (condList cfg.logitech.enable [ logitech-udev-rules solaar ])
       (condList cfg.xone.enable [ xow_dongle-firmware config.boot.kernelPackages.xone])
-      (condList cfg.steam.enable [ steam steam-run steamcmd libglvn openhmd libgdiplus libpng])
+      (condList cfg.steam.enable [ steam steam-run steamcmd libglvnd openhmd libgdiplus libpng])
       (condList cfg.gog.enable [ minigalaxy ])
       ];
 
