@@ -27,7 +27,7 @@ let
   condList = c: l: if c then l else [ ];
 
   # Steam VR
-  vrlibs = with pkgs; [ procps usbutils libcap openhmd openxr-loader];
+  vrlibs = with pkgs; [ procps usbutils libcap openhmd openxr-loader ];
 
 in {
   # interface
