@@ -9,7 +9,7 @@ with builtins;
 with lib;
 let
 
-  # not working (cannot find inputs)
+  # not working (will not work with AllowUnfreePredicate )
   # stable pkgs for packages being broken on instable (like steam)
   #stable-pkgs = nixpkgs-stable.legacyPackages.${pkgs.system};
   stable-pkgs = pkgs;
@@ -25,6 +25,9 @@ let
     };
 
   condList = c: l: if c then l else [ ];
+
+  # Steam VR
+  vrlibs = with pkgs; [ procps usbutils libcap openhmd openxr-loader];
 
 in {
   # interface
@@ -68,7 +71,7 @@ in {
       concatLists [
       (condList cfg.logitech.enable [ logitech-udev-rules solaar ])
       (condList cfg.xone.enable [ xow_dongle-firmware config.boot.kernelPackages.xone])
-      (condList cfg.steam.enable [ steam steam-run steamcmd libglvnd openhmd libgdiplus libpng])
+      (condList cfg.steam.enable [ steam steam-run steamcmd libglvnd libgdiplus libpng] ++ vrlibs)
       (condList cfg.gog.enable [ minigalaxy ])
       ];
 
@@ -84,7 +87,7 @@ in {
     packages.overlays = condList cfg.steam.enable [
       (self: super: {
         steam = super.steam.override {
-          extraPkgs = pkgs: [ pkgs.libgdiplus pkgs.libpng pkgs.openhmd ];
+          extraPkgs = pkgs: with pkgs; [ libgdiplus libpng ] ++ vrlibs;
         };
       })
     ];

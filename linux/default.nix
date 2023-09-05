@@ -341,7 +341,7 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ pciutils usbutils psensor lm_sensors exa ]
+      systemPackages = [ lshw dmidecode pciutils usbutils psensor smartmontools lm_sensors exa ]
         ++ [ cachix vulnix ] ++ [ git git-crypt pre-commit git-lfs ]
         ++ [ nixos-update ] ++ [ agenix.packages.x86_64-linux.default age ]
         ++ (condList cfg.gpu.enable [ vulkan-tools ])
@@ -383,8 +383,7 @@ in {
 
       # Kernel Packages
       inherit kernelPackages;
-      extraModulePackages =
-        map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
+      extraModulePackages = map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
 
       # UEFI boot loader with systemdboot
       loader = {
