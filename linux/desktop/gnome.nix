@@ -130,7 +130,8 @@ in {
 
       # disable useless shit.
       core-utilities.enable = false;
-      core-shell.enable = lib.mkForce false;
+      # this makes for a smaller gnome, but components might not work :
+      # core-shell.enable = lib.mkForce false;
 
       # used for getting extensions from the web, prefer ExtensionManager or nixpkgs directly
       gnome-browser-connector.enable = false;

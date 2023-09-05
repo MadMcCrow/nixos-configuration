@@ -69,7 +69,7 @@ in {
 
   # FIREFOX
   programs.firefox =
-  let 
+  let
   package = pkgs.firefox-beta;
   in {
     enable = supported package;
@@ -104,14 +104,14 @@ in {
   };
 
   # github cli tool
-  programs.gh = mkCondSet 
+  programs.gh = mkCondSet
     {
       enable = supported pkgs.gh;
       settings.git_protocol = "https";
       extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
     }
-    isLinux 
-    {gitCredentialHelper.enable = true;} 
+    isLinux
+    {gitCredentialHelper.enable = true;}
     {enableGitCredentialHelper = true;};
 
   # needs custom merge
@@ -130,7 +130,7 @@ in {
       extended = false;
       share = true;
     };
-  } 
+  }
   isLinux
   {syntaxHighlighting.enable = true;}
   {enableSyntaxHighlighting = true; };

@@ -101,7 +101,7 @@
 
       # a shell for every development experiment
       devShells = inputs.nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin"]  (
-      system: 
+      system:
       {
         default = let
           pkgs = inputs.nixpkgs.legacyPackages.${system};
@@ -112,6 +112,6 @@
           pkgs.mkShell {buildInputs = builtins.concatLists (map  (x: x.buildInputs) paths) ;};
       }
       );
-      
+
     };
 }

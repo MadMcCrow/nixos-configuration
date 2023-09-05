@@ -6,7 +6,7 @@ with lib;
 let
   # shortcut
   cfg = config.nixos;
-  
+
   # submodules
   # (things to complicated or too specific to have directly in the default linux config)
   submodules = [ ./desktop ./server ];

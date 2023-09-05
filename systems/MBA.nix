@@ -10,7 +10,7 @@
       trusted-public-keys =
         [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
     };
-    
+
     package = pkgs.nixUnstable;
 
     extraOptions = ''

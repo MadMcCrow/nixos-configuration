@@ -5,7 +5,7 @@ with builtins;
 with lib;
 let
   cfg = config.packages;
-  
+
   # optiontype for overlays
   overlayType = mkOptionType {
     name = "nixpkgs-overlay";
@@ -13,12 +13,12 @@ let
     merge = lib.mergeOneOption;
   };
   overlaysType = types.listOf overlayType;
-  
+
 in {
 
   # interface : a way to expose settings
   options = {
-    platform = let 
+    platform = let
         desc = "platform to build, should be the value of `pkgs.system`";
         values = [ "x86_64-linux" "aarch64-darwin" ];
         default = config.nixpkgs.hostPlatform.system;
@@ -28,7 +28,7 @@ in {
         type = types.enum values;
         inherit default;
       };
-    
+
     packages = {
       # allow select unfree packages
       unfreePackages = mkOption {

@@ -51,7 +51,7 @@ let
 
 in {
 
-  # interface 
+  # interface
   options.darwin = {
     # enable MacOS
     enable = mkEnableOptionDefault  "Darwin (MacOS)" true;

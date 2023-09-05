@@ -1,4 +1,4 @@
-{ pkgs, ... }: 
+{ pkgs, ... }:
 {
 
   platform = "x86_64-linux";
@@ -19,7 +19,7 @@
     # kernel packages
     kernel.extraKernelPackages = [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
     kernel.params = ["pci=noats" "amd_iommu=on" "iommu=pt"];
-    
+
     # cpu/gpu
     cpu.vendor = "amd";
     cpu.powermode = "performance";

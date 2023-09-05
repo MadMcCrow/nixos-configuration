@@ -166,12 +166,37 @@ let
     sha256 = "sha256-LV3kyLWRd+yLtIOKB7zOdlCX5NO5RiGcBab09lyeO6A=";
   };
 
+
+  # github https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github
+  github-pr = vsMarketplace {
+    name = "vscode-pull-request-github";
+    publisher = "GitHub";
+    version = "0.71.2023090509";
+    sha256 = "sha256-h6AVwUYDrLuZTnzGuR3oWyL2XqxjFdJMXvjwikp6BuY=";
+  };
+
   # github action : https://marketplace.visualstudio.com/items?itemName=github.vscode-github-actions
   github-action = vsMarketplace {
     name = "vscode-github-actions";
     publisher = "GitHub";
     version = "0.25.7";
     sha256 = "sha256-MZrpaWe9PE+S4pRcSxLA417gQL0/oXvnZv+vSrb9nec=";
+  };
+
+  # Codespaces : https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces
+  github-codespaces = vsMarketplace {
+    name = "codespaces";
+    publisher = "GitHub";
+    version = "1.15.0";
+    sha256 = "sha256-XHVZ9H+F5s9EMkyrjw3sQYdi70mlGf/MmlZOR88NlAw=";
+  };
+
+  # remote hub : https://marketplace.visualstudio.com/items?itemName=GitHub.remotehub
+  github-remotehub = vsMarketplace {
+    name = "remotehub";
+    publisher = "GitHub";
+    version = "0.61.2023081601";
+    sha256 = "sha256-98BfGCxwlt0Jct23BltWKbcT0eiygTgANvrFPat+0bo=";
   };
 
   github-markdown = vsMarketplace {
@@ -188,18 +213,17 @@ let
     vs-shader
     shader-ed
     git-graph
-    #git-history
     material-icons
-    #material-theme
-    #peacock
-    prettier
     intellicode
     ms-python
     ms-cpp
     ms-dotnet
     ms-anycode
+    github-pr
+    github-codespaces
     github-action
     github-markdown
+    github-remotehub
   ];
 
   # nixos extensions
@@ -220,6 +244,6 @@ in {
       mutableExtensionsDir = false;
       # enable extensions
       extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
-      # JSon settings 
+      # JSon settings
       userSettings = vsSettings;
 }

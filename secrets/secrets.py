@@ -41,7 +41,7 @@ def removeFile(path) :
 def genKey( key:str , path : str) :
     """
         We create a key pair and write a public and a private key
-        TODO : 
+        TODO :
             [ ] - support passphrase
     """
     print(f"generating ssh key pair : {colored(key, Colors.BOLD)}  at {colored(path, Colors.BOLD)}:\n")
@@ -57,7 +57,7 @@ def genKey( key:str , path : str) :
 def updateKey(key : str, path : str) :
     """
         We import the private key and ask for a public key
-        TODO : 
+        TODO :
             [ ] - support passphrase
     """
     print(f"updating ssh key (creating public key) for {colored(key, Colors.BOLD)}:\n")
@@ -68,13 +68,13 @@ def updateKey(key : str, path : str) :
     with open(f"{path}.pub", 'wb') as public_file:
         os.chmod(path, _secretPermission)
         public_file.write(rsa_key.public_key().exportKey('OpenSSH'))
-    
+
 
 # encrypt a prompt from user to a file
 def encrypt(key : str, outfile : str, content : str) :
     """
         We import  the public key and encrypt the file with it
-        TODO : 
+        TODO :
             [ ] - support passphrase
             [ ] - support list of keys
     """
@@ -99,7 +99,7 @@ def encrypt(key : str, outfile : str, content : str) :
 def decrypt(key : str, inFile : str) :
     """
         We import the private key and ask for a public key
-        TODO : 
+        TODO :
             [ ] - support passphrase
     """
     # read key:
@@ -107,7 +107,7 @@ def decrypt(key : str, inFile : str) :
         key_text = key_file.read()
         rsa_key = rsa.import_key(key_text)
     # read encrpyted content
-    try : 
+    try :
         contentFile = open(inFile, 'r')
     except FileNotFoundError :
         return None
@@ -176,7 +176,7 @@ if __name__ == "__main__" :
 
         # key is valid :
         # input :
-        # WARNING : ENCRPYTED DATA IS VISIBLE 
+        # WARNING : ENCRPYTED DATA IS VISIBLE
         print(f"enter content for {colored(outfile, Colors.BOLD)} :\n")
         content = input()
         encrypt(pubkey, outfile, content)

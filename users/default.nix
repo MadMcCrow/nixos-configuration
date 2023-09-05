@@ -1,7 +1,7 @@
 # users/default.nix
 # 	users for nixos and Darwin systems
 #   TODO : clean and simplify
-# TODO : split between MacOS and linux 
+# TODO : split between MacOS and linux
 args@{ config, pkgs, lib, firefox-gnome-theme, ... }:
 with builtins;
 with lib;
@@ -53,9 +53,9 @@ let
   }) configUsers;
 
   darwinHM = mapAttrs ( name: value:
-    let 
+    let
     homeValue = value args;
-    in 
+    in
     (args :
     homeValue // { home = homeValue.home // { homeDirectory = "/Users/${name}"; }; }))
     home-managerUsers;
@@ -68,7 +68,7 @@ in {
       # mutableUsers = true;
     };
 
-    # home manager config users : 
+    # home manager config users :
     home-manager = {
       extraSpecialArgs = {inherit firefox-gnome-theme;};
       useGlobalPkgs = true;

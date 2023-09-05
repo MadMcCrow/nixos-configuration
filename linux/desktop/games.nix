@@ -14,7 +14,7 @@ let
   #stable-pkgs = nixpkgs-stable.legacyPackages.${pkgs.system};
   stable-pkgs = pkgs;
 
-  # shortcut : 
+  # shortcut :
   nos = config.nixos;
   dsk = nos.desktop;
   cfg = dsk.games;
@@ -68,11 +68,11 @@ in {
       concatLists [
       (condList cfg.logitech.enable [ logitech-udev-rules solaar ])
       (condList cfg.xone.enable [ xow_dongle-firmware config.boot.kernelPackages.xone])
-      (condList cfg.steam.enable [ steam steam-run steamcmd libglvnd ])
+      (condList cfg.steam.enable [ steam steam-run steamcmd libglvn openhmd libgdiplus libpng])
       (condList cfg.gog.enable [ minigalaxy ])
       ];
 
-    packages.unfreePackages = concatLists [
+    packages.unfreePackages = concatLists [s
       (condList cfg.xone.enable [ "xow_dongle-firmware" ])
       (condList cfg.steam.enable [
         "steam-original"
