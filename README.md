@@ -34,13 +34,3 @@ My configuration is automatically updated and build by a github action :
 ![flake-update](https://github.com/MadMcCrow/nixos-configuration/actions/workflows/flake-update.yml/badge.svg)
 
 The artifacts of that build are cached on cachix [here](https://app.cachix.org/cache/nixos-configuration).
-
-
-## TODO
-these would be the next improvements for this repo :
- - [ ] Make a documentation
- - [ ] split `Modules` folder to `Darwin` `Nixos` and `Nix`
- - [X] Move scripts to a separate folder
- - [ ] Update github actions
- - [ ] Move nextcloud to a separate flake
- - [ ] Make gnome and dconf a separate flake

@@ -9,3 +9,12 @@
     - [ ] install secrets to `nixNUC`
  - [ ] Server
     - [ ] Local server access
+ - [ ] Make a documentation
+ - [X] Move scripts to a separate folder
+ - [ ] Update github actions
+ - [ ] Move nextcloud to a separate flake
+ - [ ] Gnome changes
+   - [X] Simplify gnome module
+   - [ ] Gnome as a flake
+   - [ ] Gnome install user-side
+   - [ ] simplify gnome and dconf usage
