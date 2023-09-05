@@ -72,7 +72,7 @@ in {
       (condList cfg.gog.enable [ minigalaxy ])
       ];
 
-    packages.unfreePackages = concatLists [s
+    packages.unfreePackages = concatLists [
       (condList cfg.xone.enable [ "xow_dongle-firmware" ])
       (condList cfg.steam.enable [
         "steam-original"
