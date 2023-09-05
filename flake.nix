@@ -58,16 +58,14 @@
         };
 
       darwinAarch64 =  sysModule :
-        let
+          inputs.darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-        in inputs.darwin.lib.darwinSystem {
-          inherit system;
           specialArgs = inputs;
           modules = [
             ./darwin
             inputs.agenix.darwinModules.default
             inputs.home-manager-darwin.darwinModules.home-manager
-            sysModule ] ++ baseModules ++ [{platform = "aarch64-darwin";}];
+            sysModule ] ++ baseModules;
         };
 
         shells = [ ./secrets/shell.nix ];

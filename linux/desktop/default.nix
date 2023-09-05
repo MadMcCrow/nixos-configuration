@@ -7,7 +7,7 @@ with builtins;
 with lib;
 let
   cfg = config.desktop;
-  submodules = [ ./gnome.nix ./flatpak.nix ./apps.nix ./xone.nix ./logitech.nix];
+  submodules = [ ./apps.nix ./gnome.nix ./games.nix ];
 in {
   options.nixos.desktop.enable = (mkEnableOption "desktop") // {
     default = true;

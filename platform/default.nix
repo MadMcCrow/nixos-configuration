@@ -6,8 +6,6 @@ with lib;
 let
   cfg = config.packages;
   
-  allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
-
   # optiontype for overlays
   overlayType = mkOptionType {
     name = "nixpkgs-overlay";
@@ -51,9 +49,7 @@ in {
     nix.registry.nixpkgs.flake = nixpkgs;
     nixpkgs = {
       overlays = cfg.overlays;
-      config = {
-        inherit allowUnfreePredicate;
-      };
+      config.allowUnfreePredicate = pkg: elem (getName pkg) cfg.unfreePackages;
     };
   };
 }

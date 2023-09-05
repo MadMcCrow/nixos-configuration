@@ -1,6 +1,8 @@
 { pkgs, ... }: 
 {
 
+  platform = "x86_64-linux";
+
   nixos = {
     enable = true;
     host.name = "nixAF";
@@ -10,10 +12,8 @@
     # desktop env
     desktop = {
       enable = true;
-      # use gnome as it's more stable than KDE
       gnome.enable = true;
-      xone.enable = true;  # xbox controller
-      logitech.enable = true;
+      games.enable = true;  # video games, you should try them sometives
     };
 
     # kernel packages
@@ -28,9 +28,6 @@
     network.waitForOnline = false;
     network.wakeOnLineInterfaces = ["enp4s0"];
   };
-
-  # Add support for logitech drivers : 
-  hardware.logitech.wireless.enable = true;
 
   # add steam drive
   fileSystems."/run/media/steam" = {

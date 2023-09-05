@@ -5,6 +5,10 @@ with lib.hm.gvariant;
 
 {
   dconf.settings = {
+    "org/gnome/Console" = {
+      font-scale = 1.0;
+      last-window-size = mkTuple [ 652 481 ];
+    };
 
     "org/gnome/GWeather4" = {
       temperature-unit = "centigrade";
@@ -12,6 +16,11 @@ with lib.hm.gvariant;
 
     "org/gnome/Weather" = {
       locations = "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
+    };
+
+    "org/gnome/baobab/ui" = {
+      is-maximized = false;
+      window-size = mkTuple [ 960 600 ];
     };
 
     "org/gnome/calculator" = {
@@ -29,24 +38,33 @@ with lib.hm.gvariant;
       word-size = 64;
     };
 
+    "org/gnome/control-center" = {
+      window-state = mkTuple [ 980 640 ];
+    };
+
+    "org/gnome/deja-dup" = {
+      backend = "google";
+      prompt-check = "2023-09-05T19:09:38.734210Z";
+    };
+
     "org/gnome/desktop/app-folders" = {
       folder-children = [ "Utilities" "Accessories" "Code" "Graphics" "Games" ];
     };
 
     "org/gnome/desktop/app-folders/folders/Accessories" = {
-      apps = [ "org.gnome.Maps.desktop" "org.gnome.Todo.desktop" "org.gnome.Weather.desktop" "org.gnome.Contacts.desktop" "org.gnome.Calendar.desktop" "org.gnome.Calculator.desktop" "org.gnome.Notes.desktop" "org.gnome.clocks.desktop" "com.github.maoschanz.drawing.desktop" "org.gnome.Geary.desktop" "pidgin.desktop" "org.gnome.Software.desktop" "org.gnome.TextEditor.desktop" "ca.andyholmes.Valent.desktop" ];
+      apps = [ "org.gnome.Maps.desktop" "org.gnome.Todo.desktop" "org.gnome.Weather.desktop" "org.gnome.Contacts.desktop" "org.gnome.Calendar.desktop" "org.gnome.Calculator.desktop" "org.gnome.Notes.desktop" "org.gnome.clocks.desktop" "com.github.maoschanz.drawing.desktop" "org.gnome.Geary.desktop" "pidgin.desktop" "org.gnome.Software.desktop" "org.gnome.TextEditor.desktop" "ca.andyholmes.Valent.desktop" "org.gnome.Keysign.desktop" ];
       categories = [ "Gnome" "Accessories" ];
       name = "Accessories";
     };
 
     "org/gnome/desktop/app-folders/folders/Code" = {
-      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "code.desktop" "codium.desktop" ];
+      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "codium.desktop" ];
       categories = [ "Code" "Programming" "Debug" ];
       name = "Programming";
     };
 
     "org/gnome/desktop/app-folders/folders/Games" = {
-      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" ];
+      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" "EVERSPACE.desktop" "valve-vrmonitor.desktop" "Warhammer 40,000 Dawn of War - Soulstorm.desktop" "valve-URI-vrmonitor.desktop" "valve-URI-steamvr.desktop" "How to Survive 2.desktop" ];
       categories = [ "Games" ];
       name = "Games";
     };
@@ -74,6 +92,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/input-sources" = {
+      show-all-sources = false;
       sources = [ (mkTuple [ "xkb" "us+intl" ]) ];
       xkb-options = [ "eurosign:e" ];
     };
@@ -94,6 +113,41 @@ with lib.hm.gvariant;
       toolkit-accessibility = false;
     };
 
+    "org/gnome/desktop/notifications" = {
+      application-children = [ "firefox" "discord" "steam" "org-gnome-nautilus" "org-gnome-console" ];
+    };
+
+    "org/gnome/desktop/notifications/application/discord" = {
+      application-id = "discord.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/firefox" = {
+      application-id = "firefox.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/org-gnome-console" = {
+      application-id = "org.gnome.Console.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/org-gnome-nautilus" = {
+      application-id = "org.gnome.Nautilus.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/org-gnome-tweaks" = {
+      application-id = "org.gnome.tweaks.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/steam" = {
+      application-id = "steam.desktop";
+    };
+
+    "org/gnome/desktop/peripherals/keyboard" = {
+      numlock-state = true;
+    };
+
+    "org/gnome/desktop/peripherals/mouse" = {
+      accel-profile = "flat";
+    };
 
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
@@ -123,6 +177,10 @@ with lib.hm.gvariant;
       button-layout = "appmenu:minimize,maximize,close";
       focus-new-windows = "strict";
       workspace-names = [];
+    };
+
+    "org/gnome/evolution-data-server" = {
+      migrated = true;
     };
 
     "org/gnome/mutter" = {
@@ -155,12 +213,18 @@ with lib.hm.gvariant;
       initial-size = mkTuple [ 890 550 ];
     };
 
+    "org/gnome/settings-daemon/plugins/color" = {
+      night-light-enabled = false;
+    };
+
     "org/gnome/shell" = {
-      app-picker-layout = "[{'Utilities': <{'position': <0>}>, 'Accessories': <{'position': <1>}>, 'Code': <{'position': <2>}>, 'Games': <{'position': <3>}>}]";
+      app-picker-layout = "[{'Accessories': <{'position': <0>}>, 'Games': <{'position': <1>}>, 'Graphics': <{'position': <2>}>, 'io.github.sharkwouter.Minigalaxy.desktop': <{'position': <3>}>, 'Code': <{'position': <4>}>, 'Proton 4.2.desktop': <{'position': <5>}>, 'Utilities': <{'position': <6>}>}]";
+      command-history = [ "lg" "r" ];
       disable-user-extensions = false;
       disabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
       enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
+      looking-glass-history = [ "experimental_hdr=on" "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'" "exit()" "kill" "Exit" "exit" "log" "log( test)" "log( test )" "restart" "end" "return" ];
       welcome-dialog-last-shown-version = "43.2";
     };
 
@@ -270,10 +334,20 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/quick-settings-tweaks" = {
+      add-unsafe-quick-toggle-enabled = false;
+      datemenu-fix-weather-widget = false;
+      datemenu-remove-media-control = false;
       datemenu-remove-notifications = true;
       disable-adjust-content-border-radius = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
+      last-unsafe-state = false;
+      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false}]";
+      media-control-enabled = false;
+      notifications-enabled = false;
+      notifications-hide-when-no-notifications = false;
+      notifications-integrated = false;
+      notifications-max-height = 287;
       notifications-use-native-controls = true;
+      user-removed-buttons = [ "Notifications" ];
     };
 
     "org/gnome/shell/extensions/rocketbar" = {
@@ -345,33 +419,14 @@ with lib.hm.gvariant;
       edge-tiling = true;
     };
 
-    "org/gnome/shell/world-clocks" = {
-      locations = "@av []";
-    };
-
     "org/gnome/software" = {
-      check-timestamp = mkInt64 1692264061;
+      check-timestamp = mkInt64 1693944360;
       first-run = false;
       flatpak-purge-timestamp = mkInt64 1692271159;
     };
 
     "org/gnome/tweaks" = {
       show-extensions-notice = false;
-    };
-
-    "org/gtk/settings/file-chooser" = {
-      date-format = "regular";
-      location-mode = "path-bar";
-      show-hidden = false;
-      show-size-column = true;
-      show-type-column = true;
-      sidebar-width = 164;
-      sort-column = "name";
-      sort-directories-first = false;
-      sort-order = "ascending";
-      type-format = "category";
-      window-position = mkTuple [ 1172 298 ];
-      window-size = mkTuple [ 1096 822 ];
     };
 
   };

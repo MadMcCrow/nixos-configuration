@@ -1,6 +1,8 @@
 # Nix configuration of MacBook Air
 { pkgs, lib, ... }: {
 
+  platform = "aarch64-darwin";
+
   nix = {
     settings = {
       trusted-users = [ "@admin" ];
