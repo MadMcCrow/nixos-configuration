@@ -1,7 +1,6 @@
 { pkgs, ... }: 
 {
 
-  # our settings
   nixos = {
     enable = true;
     host.name = "nixAF";

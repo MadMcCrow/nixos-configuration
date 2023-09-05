@@ -6,14 +6,14 @@ with pkgs.lib;
 let
 
   # multiplatform support
-  isLinux  = strings.hasSuffix "linux"  config.platform;
-  isDarwin = strings.hasSuffix "darwin" config.platform;
+  platform = pkgs.system;
+  isLinux  = strings.hasSuffix "linux"  platform;
+  isDarwin = strings.hasSuffix "darwin" platform;
 
   mkCondSet = base : cond : ifTrue : ifFalse :  mkMerge [base (if cond then ifTrue else ifFalse )];
 
   # true if this program can work
-  supported = pkg: let m = l : elem pkg l; in
-  (m pkg.meta.platforms) && !(m pkg.meta.badPlatforms);
+  supported = pkg: ( elem platform pkg.meta.platforms) && !pkg.meta.unsupported;
 
   # firefox-gnome-theme
   firefox-gnome-theme = pkgs.stdenvNoCC.mkDerivation rec {
@@ -68,10 +68,12 @@ in {
   in code // { enable = supported code.package; };
 
   # FIREFOX
-  programs.firefox = let pkg = pkgs.firefox-beta;
+  programs.firefox =
+  let 
+  package = pkgs.firefox-beta;
   in {
-    enable = supported pkg;
-    package = pkg;
+    enable = supported package;
+    inherit package;
     # GTK4 theme for firefox
     profiles.nix-user-profile = {
       userChrome = ''@import "firefox-gnome-theme/userChrome.css";'';

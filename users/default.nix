@@ -1,6 +1,7 @@
 # users/default.nix
 # 	users for nixos and Darwin systems
 #   TODO : clean and simplify
+# TODO : split between MacOS and linux 
 args@{ config, pkgs, lib, firefox-gnome-theme, ... }:
 with builtins;
 with lib;

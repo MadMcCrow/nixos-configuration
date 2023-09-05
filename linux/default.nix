@@ -6,8 +6,7 @@ with lib;
 let
   # shortcut
   cfg = config.nixos;
-  isLinux = config.platform == "x86_64-linux";
-
+  
   # submodules
   # (things to complicated or too specific to have directly in the default linux config)
   submodules = [ ./desktop ./server ];
@@ -278,7 +277,7 @@ in {
   imports = submodules;
 
   # config
-  config = mkIf (cfg.enable && isLinux) {
+  config = mkIf (cfg.enable) {
 
     # Networking
     networking = {

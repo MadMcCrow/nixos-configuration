@@ -12,7 +12,7 @@ let
   mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
 
   # Darwin support
-  isDarwin = lib.strings.hasSuffix "darwin" config.platform;
+  isDarwin =  false; #lib.strings.hasSuffix "darwin" config.platform;
 
   # rootFolder depends on platform :
   root = if isDarwin then ./. else /.;

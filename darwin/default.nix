@@ -8,9 +8,6 @@ let
   cfg = config.darwin;
   pam = cfg.security.pam.sudoTouchIdAuth;
 
-  # only M1 supported for now
-  isDarwin = config.platform == "aarch64-darwin";
-
   # helper functions
   mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
 
@@ -70,7 +67,7 @@ in {
   };
 
   # implementation
-  config = mkIf ( cfg.enable && isDarwin ) {
+  config = mkIf (cfg.enable) {
     # nix settings
     nix = {
       settings = {

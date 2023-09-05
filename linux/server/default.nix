@@ -29,12 +29,12 @@ in {
 
   # interface
   options.nixos.server = {
+    adminEmail = mkStringOption "email to contact in case of problem" "admin@server.net";
     enable = mkEnableOptionDefault "server services" false;
     hostName = mkStringOption "server host name" "localhost";
     cockpit.enable = mkEnableOptionDefault "cockpit web-based interface" true;
     seafile.enable = mkEnableOptionDefault "seafile file manager" true;
-    data.path = mkStringOption "path to store data for the server"
-      "/persist/database/data";
+    data.path = mkStringOption "path to store data for the server" "/persist/database/data";
     nextcloud = {
       enable = mkEnableOptionDefault "nextcloud" true;
       package = mkOption {
@@ -65,7 +65,7 @@ in {
 
     #seafile
     #services.seafile = mkIf cfg.seafile.enable {
-    #  adminEmail = "noe.perard+seafile@gmail.com";
+    #  inherit adminEmail;
     #  enable = true;
     #   };
 
@@ -89,7 +89,7 @@ in {
     };
     security.acme = {
       acceptTerms = true;
-      defaults.email = "noe.perard@gmail.com";
+      defaults.email = adminEmail;
     };
 
     # DTBs : postgresql is faster

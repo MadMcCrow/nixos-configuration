@@ -38,7 +38,7 @@
     let
 
       # modules shared between linux and MacOS
-      baseModules = [ ./modules ./users ./secrets ];
+      baseModules = [ ./platform ./users ./secrets ];
 
       # shortcut functions :
       nixOSx86 = sysModule :
@@ -48,13 +48,13 @@
           specialArgs = inputs;
         in pkgs.lib.nixosSystem {
           inherit system specialArgs;
-          modules = [
-            ./modules/nixos
+          modules = baseModules ++ [
+            ./linux
             inputs.agenix.nixosModules.default
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             (import sysModule {inherit pkgs;})
-          ] ++ baseModules ++ [{platform = "x86_64-linux"; }];
+          ];
         };
 
       darwinAarch64 =  sysModule :
@@ -64,7 +64,7 @@
           inherit system;
           specialArgs = inputs;
           modules = [
-            ./modules/darwin
+            ./darwin
             inputs.agenix.darwinModules.default
             inputs.home-manager-darwin.darwinModules.home-manager
             sysModule ] ++ baseModules ++ [{platform = "aarch64-darwin";}];

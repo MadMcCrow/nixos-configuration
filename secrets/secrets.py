@@ -11,7 +11,7 @@ import argparse
 import io
 
 from Crypto.PublicKey import RSA as rsa # ssh-keygen equivalent
-import age.file as age                  # pyage (replace age command line)
+import age as age                  # pyage (replace age command line)
 
 
 # constants :

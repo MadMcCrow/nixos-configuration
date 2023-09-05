@@ -18,9 +18,8 @@ let
   
 in {
 
-  # interface : option for unfree modules
+  # interface : a way to expose settings
   options = {
-
     platform = let 
         desc = "platform to build, should be the value of `pkgs.system`";
         values = [ "x86_64-linux" "aarch64-darwin" ];
@@ -39,13 +38,7 @@ in {
           default = [ ];
           description = "list of allowed unfree packages";
         };
-      # Allow having overides in multiple modules
-      overrides = mkOption {
-        type = types.listOf types.attrs;
-        default = [ ];
-        description =
-          "list of package overrides packages formatted as {a = a.OverrideAttr(...)}";
-      };
+
       overlays = mkOption {
         type =  overlaysType;  #types.listOf types.listOf (types.functionTo types.attrs);
         default = [ ];
@@ -60,7 +53,6 @@ in {
       overlays = cfg.overlays;
       config = {
         inherit allowUnfreePredicate;
-        #packageOverrides = pkgs: listToAttrs (mapAttrs (name: value: { inherit name value; }) cfg.overrides);
       };
     };
   };

@@ -1,8 +1,7 @@
 # desktop/apps.nix
 # 	userspace apps that are provided directly, either because not present on home manager
 #   or because the HM-configuration is lacking for them
-#   TODO : move steam to separate module ?
-#   TODO : move discord to separate module ?
+#   TODO : CLEAN !
 { pkgs, config, lib, inputs, ... }:
 with builtins;
 with lib;
@@ -36,12 +35,19 @@ let
   # TODO : steam stable
   cfgSteam = cfg.steam.enable;
   steamApps = [ "steam" "steam-run" "steamcmd" "libglvnd" ];
-  steamPlus = self: super: { steam = super.steam.override {extraPkgs = pkgs : [ pkgs.libgdiplus pkgs.libpng];};};
+  steamPlus = self: super: { steam = super.steam.override {extraPkgs = pkgs : [ pkgs.libgdiplus pkgs.libpng pkgs.openhmd ];};};
   steamUnfree = ["steam-original" "steam" "steam-run" "steamcmd"];
 
+  #mkchromecast
+  mkchromecast = ["mkchromecast"];
+
+  # gog
+  # gog = [pkgs.minigalaxy];
+
   # generate app list for config
-  appList = (filter (isAppEnabled) defaultApps) ++ (condList cfgDiscord discordApps) ++ (condList cfgSteam steamApps);
+  appList = (filter (isAppEnabled) defaultApps) ++ (condList cfgDiscord discordApps) ++ (condList cfgSteam steamApps) ++  mkchromecast;
   unfreePackages = concatLists [(condList cfgDiscord discordUnfree) (condList cfgSteam steamUnfree)];
+
 
 in
 {
@@ -83,6 +89,7 @@ in
 
     # STEAM
     hardware.steam-hardware.enable = cfgSteam; # Steam udev rules
+    
     programs.steam = mkIf cfgSteam {
       # uses stable instead of latest
       package = stable-pkgs.steam;

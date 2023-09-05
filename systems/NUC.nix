@@ -11,6 +11,9 @@ intelKernelPackages =  [
   serverData = "/run/server_data";
 in
 {
+  
+  platform = "x86_64-linux";
+
 # our settings
   nixos = {
     enable = true;
