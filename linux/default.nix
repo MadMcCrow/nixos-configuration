@@ -116,10 +116,10 @@ let
 
   gpuKernelModule = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
   gpuOGLPackages = gpuVendorSwitch {
-    "amd" = [ pkgs.amdvlk ];
+    "amd" = [ pkgs.mesa ];
     "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel ];
   } [ ];
-  gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" "radeon" ]; } [ ];
+  gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
   gpuVars = gpuVendorSwitch { "amd" = { AMD_VULKAN_ICD = "RADV"; }; } { };
   gpuTmpRules = gpuVendorSwitch {
     "amd" = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}" ];

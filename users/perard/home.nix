@@ -130,6 +130,10 @@ in {
       extended = false;
       share = true;
     };
+    # alias vscodium to vscode
+    shellAliases = {
+      code = "codium";
+    };
   }
   isLinux
   {syntaxHighlighting.enable = true;}

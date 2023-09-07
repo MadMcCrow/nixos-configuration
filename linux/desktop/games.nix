@@ -27,7 +27,7 @@ let
   condList = c: l: if c then l else [ ];
 
   # Steam VR
-  vrlibs = with pkgs; [ procps usbutils libcap openhmd openxr-loader ];
+  vrlibs = with pkgs; [ procps usbutils libcap openhmd openxr-loader pango];
 
 in {
   # interface
@@ -74,6 +74,12 @@ in {
       (condList cfg.steam.enable [ steam steam-run steamcmd libglvnd libgdiplus libpng] ++ vrlibs)
       (condList cfg.gog.enable [ minigalaxy ])
       ];
+
+    # env vars for steam and steam VR
+    environment.variables = {
+      # STEAM_RUNTIME="1"; 
+      STEAM_RUNTIME_PREFER_HOST_LIBRARIES="0";
+      };
 
     packages.unfreePackages = concatLists [
       (condList cfg.xone.enable [ "xow_dongle-firmware" ])
