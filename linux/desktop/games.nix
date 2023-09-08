@@ -26,8 +26,9 @@ let
 
   condList = c: l: if c then l else [ ];
 
+  # vr libs :  openhmd openxr-loader pango 
   # Steam VR
-  vrlibs = with pkgs; [ procps usbutils libcap openhmd openxr-loader pango];
+  steamlibs = pkgs : with pkgs; [ libglvnd libgdiplus libpng procps usbutils libcap];
 
 in {
   # interface
@@ -37,6 +38,7 @@ in {
     xone.enable = mkEnableOptionDefault "XBox One driver" true;
     steam.enable = mkEnableOptionDefault "Steam" true;
     gog.enable = mkEnableOptionDefault "Good Old Games" true;
+    minecraft.enable = mkEnableOptionDefault "Minecraft" true;
   };
 
   # config
@@ -71,15 +73,16 @@ in {
       concatLists [
       (condList cfg.logitech.enable [ logitech-udev-rules solaar ])
       (condList cfg.xone.enable [ xow_dongle-firmware config.boot.kernelPackages.xone])
-      (condList cfg.steam.enable [ steam steam-run steamcmd libglvnd libgdiplus libpng] ++ vrlibs)
+      (condList cfg.steam.enable [ steam steam-run steamcmd ] ++ (steamlibs pkgs))
       (condList cfg.gog.enable [ minigalaxy ])
+      (condList cfg.minecraft.enable [minecraft])
       ];
 
     # env vars for steam and steam VR
-    environment.variables = {
-      # STEAM_RUNTIME="1"; 
-      STEAM_RUNTIME_PREFER_HOST_LIBRARIES="0";
-      };
+    #environment.variables = {
+    #  # STEAM_RUNTIME="1"; 
+    #  STEAM_RUNTIME_PREFER_HOST_LIBRARIES="0";
+    #  };
 
     packages.unfreePackages = concatLists [
       (condList cfg.xone.enable [ "xow_dongle-firmware" ])
@@ -93,7 +96,7 @@ in {
     packages.overlays = condList cfg.steam.enable [
       (self: super: {
         steam = super.steam.override {
-          extraPkgs = pkgs: with pkgs; [ libgdiplus libpng ] ++ vrlibs;
+          extraPkgs = steamlibs;
         };
       })
     ];

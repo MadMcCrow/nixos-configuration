@@ -109,14 +109,12 @@ let
   cpuVirtualisation = cpuVendorSwitch { "amd" = { }; } { };
 
   # GPU
-  # TODO : Support multi-gpu
+  # TODO : Clean 
   gpuVendors = [ "amd" "intel" ];
   gpuVendorSwitch = s: d:
     vendorSwitch s cfg.gpu.vendor gpuVendors d "please define nixos.gpu.vendor";
-
   gpuKernelModule = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
   gpuOGLPackages = gpuVendorSwitch {
-    "amd" = [ pkgs.mesa ];
     "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel ];
   } [ ];
   gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
