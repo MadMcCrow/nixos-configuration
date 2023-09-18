@@ -206,6 +206,13 @@ let
     sha256 = "sha256-7pbl5OgvJ6S0mtZWsEyUzlg+lkUhdq3rkCCpLsvTm4g=";
   };
 
+  haxe = vsMarketplace {
+    name="vshaxe";
+    publisher= "nadako";
+    version = "2.30.0";
+    sha256 = "sha256-tzcX9sWjbA64bFeq8FV7l39p16nzYhvwHO3mvEleH1o=";
+  };
+
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
@@ -215,6 +222,7 @@ let
     git-graph
     material-icons
     intellicode
+    haxe
     ms-python
     ms-cpp
     ms-dotnet
