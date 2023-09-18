@@ -15,7 +15,7 @@ let
   };
   python = {
     packages = with pkgs; [python3Full];
-  }
+  };
   };
 
 in {
