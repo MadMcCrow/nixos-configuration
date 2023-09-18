@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
+# TODO : test with nixos installation
 # We use python for readability and speed compared to bash
 # this will be compiled
 
-
-import subprocess
-import shlex
+# Python imports
 import os
 import argparse
-import io
 
-from Crypto.PublicKey import RSA as rsa # ssh-keygen equivalent
-import age as age                  # pyage (replace age command line)
+# ssh-keygen equivalent
+from Crypto.PublicKey import RSA as rsa
+# pyage (replace age command line)
+from age.keys.rsa import RSAPublicKey, RSAPrivateKey
+from age.file import Encryptor, Decryptor
 
 
 # constants :
@@ -92,8 +93,15 @@ def encrypt(key : str, outfile : str, content : str) :
             public_key = rsa_key.public_key().exportKey('OpenSSH') if rsa_key.has_private() else rsa_key.exportKey('OpenSSH')
     # make a list of keys
     # write to encrypted file
-    with age.Encryptor([public_key], outfile) as encryptor:
-        encryptor.write(content)
+    Keys = [RSAPublicKey.from_ssh_public_key(public_key)]
+    try :
+        with open(outfile, 'wb') as out :
+            with Encryptor(Keys,out) as encryptor :
+                c = str(content).encode("utf-8")
+                encryptor.write(c)
+    except Exception as E:
+        removeFile(outfile)
+        raise E
 
 
 def decrypt(key : str, inFile : str) :
@@ -108,12 +116,15 @@ def decrypt(key : str, inFile : str) :
         rsa_key = rsa.import_key(key_text)
     # read encrpyted content
     try :
-        contentFile = open(inFile, 'r')
+        contentFile = open(inFile, 'rb')
     except FileNotFoundError :
         return None
     else :
-        with age.Decryptor([rsa_key.exportKey('PEM')], inFile) as decryptor:
-            return decryptor.read()
+        with Decryptor([RSAPrivateKey.from_pem(rsa_key.exportKey('PEM'))], contentFile) as decryptor:
+            out = decryptor.read()
+        contentFile.close
+        return out.decode('utf8')
+
 
 # main implementation for commandline
 if __name__ == "__main__" :
@@ -124,6 +135,7 @@ if __name__ == "__main__" :
         parser.add_argument("-P", "--private-key", dest="prvkey", help="private key to use (file)", metavar="PRVKEY")
         parser.add_argument("-f", "--file", dest="file", help="output file (with extension)", metavar="FILE")
         parser.add_argument("-F", "--force", help="force recreate secret", action='store_true')
+        parser.add_argument("-c", "--content",dest="content", help="set encrypted file content", metavar="CONTENT")
         args = parser.parse_args()
 
 
@@ -150,7 +162,7 @@ if __name__ == "__main__" :
         if prvkey == None :
             prvkey = key
 
-
+        content = args.content
 
         # missing private key :
         if not os.path.isfile(prvkey) :
@@ -163,22 +175,37 @@ if __name__ == "__main__" :
             print( colored("Warning: ", Colors.WARNING) + "Missing public key")
             updateKey(key, prvkey)
 
-        # cannot decrypt file :
+        # try decrypt file :
         if  os.path.exists(outfile) :
-            if decrypt(prvkey, outfile) == None :
-                print( colored("Error: ", Colors.FAIL) + "Cannot decrypt with private key")
+            result = decrypt(prvkey, outfile)
+            # fail to decrypt
+            if result == None :
                 if args.force == True:
                     removeFile(outfile)
+                else:
+                    print( colored("Error: ", Colors.FAIL) + "Cannot decrypt with private key")
+                    exit(1)
+            # wrong content
+            elif content != None and result != content :
+                if args.force == True:
+                    removeFile(outfile)
+                else :
+                    print( colored("Error: ", Colors.FAIL) + "Content differs from commandline argument")
+                    exit(1)
             # skip : nothing to do
             elif args.force != True :
-                print( colored("SKipped: ", Colors.OKCYAN) + "File already encrypted")
+                print (content)
+                print(result)
+                print( colored("Skipped: ", Colors.OKCYAN) + "File already encrypted")
                 exit(0)
 
         # key is valid :
         # input :
         # WARNING : ENCRPYTED DATA IS VISIBLE
-        print(f"enter content for {colored(outfile, Colors.BOLD)} :\n")
-        content = input()
+        if content == None :
+            print(f"enter content for {colored(outfile, Colors.BOLD)} :\n")
+            content = input()
+
         encrypt(pubkey, outfile, content)
         if decrypt(prvkey, outfile) == content :
             print( colored("Success: ", Colors.OKGREEN) + "secret is encrypted with ssh key")

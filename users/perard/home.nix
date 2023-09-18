@@ -50,7 +50,7 @@ in {
   home.packages = filter ( x: supported x) (with pkgs; [
     git
     gh
-    exa
+    eza
     powerline-go
     zsh-autosuggestions
     zsh-syntax-highlighting
@@ -176,9 +176,9 @@ in {
     #historyFile = ".bash"
   };
 
-  # exa is ls but improved
-  programs.exa = {
-    enable = supported pkgs.exa;
+  # eza is ls but improved
+  programs.eza = {
+    enable = supported pkgs.eza;
     enableAliases = true;
     git = true;
     extraOptions = [ "--group-directories-first" "--header" ];

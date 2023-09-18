@@ -27,6 +27,7 @@ in
       enable = true;
       gnome.enable = true;
       apps.enable = false; # disable system-wide apps
+
     };
 
     # kernel packages

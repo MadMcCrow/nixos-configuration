@@ -36,7 +36,7 @@ let
     "nixfmt"
     "bash"
     "zsh"
-    "exa"
+    "eza"
     "nano"
     "wget"
     "openssl"
@@ -85,7 +85,7 @@ in {
       syntaxHighlighting.enable = true;
       autosuggestions.enable = true;
       histSize = 100;
-      shellAliases = { ls = "exa"; };
+      shellAliases = { ls = "eza"; "exa" = "eza"; };
       ohMyZsh = {
         enable = true;
         plugins = [ "git" ];

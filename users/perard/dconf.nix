@@ -39,6 +39,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/control-center" = {
+      last-panel = "sound";
       window-state = mkTuple [ 980 640 ];
     };
 
@@ -64,7 +65,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/app-folders/folders/Games" = {
-      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" "EVERSPACE.desktop" "valve-vrmonitor.desktop" "Warhammer 40,000 Dawn of War - Soulstorm.desktop" "valve-URI-vrmonitor.desktop" "valve-URI-steamvr.desktop" "How to Survive 2.desktop" ];
+      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" "EVERSPACE.desktop" "valve-vrmonitor.desktop" "Warhammer 40,000 Dawn of War - Soulstorm.desktop" "valve-URI-vrmonitor.desktop" "valve-URI-steamvr.desktop" "How to Survive 2.desktop" "SteamVR.desktop" "io.github.sharkwouter.Minigalaxy.desktop" "Proton 4.2.desktop" ];
       categories = [ "Games" ];
       name = "Games";
     };
@@ -218,7 +219,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell" = {
-      app-picker-layout = "[{'Accessories': <{'position': <0>}>, 'Games': <{'position': <1>}>, 'Graphics': <{'position': <2>}>, 'io.github.sharkwouter.Minigalaxy.desktop': <{'position': <3>}>, 'Code': <{'position': <4>}>, 'Proton 4.2.desktop': <{'position': <5>}>, 'Utilities': <{'position': <6>}>}]";
+      app-picker-layout = "[{'Utilities': <{'position': <0>}>, 'Accessories': <{'position': <1>}>, 'Games': <{'position': <2>}>, 'Graphics': <{'position': <3>}>, 'Code': <{'position': <4>}>}]";
       command-history = [ "lg" "r" ];
       disable-user-extensions = false;
       disabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
@@ -427,6 +428,21 @@ with lib.hm.gvariant;
 
     "org/gnome/tweaks" = {
       show-extensions-notice = false;
+    };
+
+    "org/gtk/gtk4/settings/file-chooser" = {
+      date-format = "regular";
+      location-mode = "path-bar";
+      show-hidden = false;
+      show-size-column = true;
+      show-type-column = true;
+      sidebar-width = 140;
+      sort-column = "name";
+      sort-directories-first = false;
+      sort-order = "ascending";
+      type-format = "category";
+      view-type = "list";
+      window-size = mkTuple [ 825 385 ];
     };
 
   };

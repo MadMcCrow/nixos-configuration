@@ -108,6 +108,7 @@
           paths = map (x : import x ({inherit pkgs;} // inputs) ) shells;
         in
           # this is sad, for now I just merge build inputs but another solution would be great
+          # another solution would be to merge all attributes but this would take too much time for nothing
           # pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
           pkgs.mkShell {buildInputs = builtins.concatLists (map  (x: x.buildInputs) paths) ;};
       }

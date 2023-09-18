@@ -26,7 +26,7 @@ let
 
   condList = c: l: if c then l else [ ];
 
-  # vr libs :  openhmd openxr-loader pango 
+  # vr libs :  openhmd openxr-loader pango
   # Steam VR
   steamlibs = pkgs : with pkgs; [ libglvnd libgdiplus libpng procps usbutils libcap];
 
@@ -80,7 +80,7 @@ in {
 
     # env vars for steam and steam VR
     #environment.variables = {
-    #  # STEAM_RUNTIME="1"; 
+    #  # STEAM_RUNTIME="1";
     #  STEAM_RUNTIME_PREFER_HOST_LIBRARIES="0";
     #  };
 
@@ -91,7 +91,8 @@ in {
         "steam"
         "steam-run"
         "steamcmd"
-      ])];
+      ])
+      (condList cfg.minecraft.enable ["minecraft" "minecraft-launcher"])];
 
     packages.overlays = condList cfg.steam.enable [
       (self: super: {
