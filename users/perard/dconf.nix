@@ -39,7 +39,6 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/control-center" = {
-      last-panel = "applications";
       window-state = mkTuple [ 980 640 ];
     };
 
