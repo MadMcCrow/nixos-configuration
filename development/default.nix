@@ -16,6 +16,10 @@ let
   python = {
     packages = with pkgs; [python3Full];
   };
+  haxe = {
+    packages = with pkgs; [haxe haxePackages.hxcpp];
+  };
+
   };
 
 in {
@@ -25,7 +29,7 @@ in {
     enable = mkEnableOption "enable programming tools support" // {default = true;};
     languages = mkOption {
       type = types.listOf types.str;
-       default = ["c" "rust"];
+       default = ["c" "rust" "haxe"];
     };
   };
 

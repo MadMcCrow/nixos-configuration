@@ -5,6 +5,7 @@ with builtins;
 with pkgs.lib;
 let
 
+
   # Json settings for VS Code
   vsSettings = {
     "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', monospace";
@@ -15,6 +16,7 @@ let
     "update.mode" = "none";
     "window.titleBarStyle" = "native"; # use "custom" for vs-code title bar
     "window.restoreWindows" = "none";
+    "window.zoomLevel" = 1;
     "workbench.colorTheme" = "GitHub Dark";
     "workbench.iconTheme" = "material-icon-theme";
     "workbench.colorCustomizations" = {
@@ -211,6 +213,12 @@ let
     publisher= "nadako";
     version = "2.30.0";
     sha256 = "sha256-tzcX9sWjbA64bFeq8FV7l39p16nzYhvwHO3mvEleH1o=";
+  };
+  haxe-lint = vsMarketplace {
+    name ="haxe-checkstyle";
+    publisher="vshaxe";
+    version ="1.8.3";
+    sha256 = "";   
   };
 
   # marketplace extensions

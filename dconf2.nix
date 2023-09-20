@@ -188,6 +188,32 @@ with lib.hm.gvariant;
       migrated = true;
     };
 
+    "org/gnome/file-roller/listing" = {
+      list-mode = "as-folder";
+      name-column-width = 250;
+      show-path = false;
+      sort-method = "name";
+      sort-type = "ascending";
+    };
+
+    "org/gnome/file-roller/ui" = {
+      sidebar-width = 200;
+      window-height = 480;
+      window-width = 600;
+    };
+
+    "org/gnome/gnome-system-monitor" = {
+      current-tab = "resources";
+      network-total-in-bits = false;
+      show-dependencies = false;
+      show-whose-processes = "user";
+    };
+
+    "org/gnome/gnome-system-monitor/disktreenew" = {
+      col-6-visible = true;
+      col-6-width = 0;
+    };
+
     "org/gnome/mutter" = {
       attach-modal-dialogs = true;
       center-new-windows = true;
@@ -229,6 +255,7 @@ with lib.hm.gvariant;
       disabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
       enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
+      last-selected-power-profile = "power-saver";
       looking-glass-history = [ "experimental_hdr=on" "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'" "exit()" "kill" "Exit" "exit" "log" "log( test)" "log( test )" "restart" "end" "return" ];
       welcome-dialog-last-shown-version = "43.2";
     };
@@ -269,11 +296,29 @@ with lib.hm.gvariant;
       user-enabled = true;
     };
 
+    "org/gnome/shell/extensions/dash-to-dock" = {
+      custom-background-color = false;
+      preferred-monitor = -2;
+      preferred-monitor-by-connector = "HDMI-1";
+    };
+
+    "org/gnome/shell/extensions/dash2dock-lite" = {
+      background-color = mkTuple [ 0.0 0.0 ];
+      edge-distance = -0.5909090909090908;
+      notification-badge-color = mkTuple [ 0.2078431397676468 0.5176469683647156 ];
+      notification-badge-style = 1;
+      running-indicator-style = 1;
+    };
+
     "org/gnome/shell/extensions/gtk4-ding" = {
       add-volumes-opposite = false;
       show-home = false;
       show-trash = false;
       show-volumes = false;
+    };
+
+    "org/gnome/shell/extensions/hotedge" = {
+      fallback-in-use = false;
     };
 
     "org/gnome/shell/extensions/just-perfection" = {
@@ -427,6 +472,11 @@ with lib.hm.gvariant;
       edge-tiling = true;
     };
 
+    "org/gnome/shell/weather" = {
+      automatic-location = true;
+      locations = "@av []";
+    };
+
     "org/gnome/software" = {
       check-timestamp = mkInt64 1695198067;
       first-run = false;
@@ -435,6 +485,36 @@ with lib.hm.gvariant;
 
     "org/gnome/tweaks" = {
       show-extensions-notice = false;
+    };
+
+    "org/gtk/gtk4/settings/file-chooser" = {
+      date-format = "regular";
+      location-mode = "path-bar";
+      show-hidden = false;
+      show-size-column = true;
+      show-type-column = true;
+      sidebar-width = 140;
+      sort-column = "name";
+      sort-directories-first = false;
+      sort-order = "ascending";
+      type-format = "category";
+      view-type = "list";
+      window-size = mkTuple [ 825 385 ];
+    };
+
+    "org/gtk/settings/file-chooser" = {
+      date-format = "regular";
+      location-mode = "path-bar";
+      show-hidden = false;
+      show-size-column = true;
+      show-type-column = true;
+      sidebar-width = 164;
+      sort-column = "name";
+      sort-directories-first = false;
+      sort-order = "ascending";
+      type-format = "category";
+      window-position = mkTuple [ 1172 301 ];
+      window-size = mkTuple [ 1096 822 ];
     };
 
   };
