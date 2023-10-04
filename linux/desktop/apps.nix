@@ -34,7 +34,6 @@ let
   # final list of apps to have on our systems
   defaultApps = [
     "nixfmt"
-    "bash"
     "zsh"
     "eza"
     "nano"
@@ -93,7 +92,7 @@ in {
       };
     };
     users.defaultUserShell = if isAppEnabled "zsh" then pkgs.zsh else pkgs.bash;
-    environment.shells = [ pkgs.zsh pkgs.bash ];
+    environment.shells = [ pkgs.zsh ];
     security.sudo.extraConfig = "Defaults        lecture = never";
 
     # for flatpak :
