@@ -19,11 +19,12 @@ let
     };
 
   # make a valid host name with prefix and suffix.
-  subHostName = sub: concatStringsSep "/" [ cfg.hostName sub ];
+  subHostName = {prefix? "", suffix ? ""} : concatStringsSep "" [prefix (concatStringsSep "/" [ cfg.hostName suffix ])];
 
   # maybe it won´t fail if we don't check for it !
+  validSecretPath = strings.hasPrefix "/" config.secrets.secretsPath;
   nextcloudSecretPath = config.secrets.secretsPath + "nextcloud.age";
-  nextcloudEnable = cfg.nextcloud.enable && pathExists nextcloudSecretPath;
+  nextcloudEnable = if validSecretPath && pathExists nextcloudSecretPath then cfg.nextcloud.enable else false;
 
 in {
 
@@ -89,7 +90,7 @@ in {
     };
     security.acme = {
       acceptTerms = true;
-      defaults.email = adminEmail;
+      defaults.email = cfg.adminEmail;
     };
 
     # DTBs : postgresql is faster
@@ -118,7 +119,7 @@ in {
     services.nextcloud = mkIf nextcloudEnable {
       enable = true;
       package = cfg.nextcloud.package;
-      hostName = subHostName cfg.nextcloud.hostName;
+      hostName = subHostName {prefix = cfg.nextcloud.hostName;};
       config = {
         adminuser = "admin";
         adminpassFile = nextcloudSecret.path ;
@@ -140,7 +141,7 @@ in {
     # TODO : switch to collabora
     services.onlyoffice = {
       enable = true;
-      hostname = subHostName cfg.nextcloud.onlyOffice.documentServer;
+      hostname = subHostName {suffix = cfg.nextcloud.onlyOffice.documentServer;};
     };
 
     # probably due to only-office (Microsoft fonts)

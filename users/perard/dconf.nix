@@ -39,6 +39,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/control-center" = {
+      last-panel = "bluetooth";
       window-state = mkTuple [ 980 640 ];
     };
 
@@ -121,6 +122,10 @@ with lib.hm.gvariant;
       application-id = "codium.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/com-mojang-minecraft" = {
+      application-id = "com.mojang.Minecraft.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/discord" = {
       application-id = "discord.desktop";
     };
@@ -129,12 +134,24 @@ with lib.hm.gvariant;
       application-id = "firefox.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/gnome-power-panel" = {
+      application-id = "gnome-power-panel.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-gnome-console" = {
       application-id = "org.gnome.Console.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/org-gnome-fileroller" = {
+      application-id = "org.gnome.FileRoller.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-gnome-nautilus" = {
       application-id = "org.gnome.Nautilus.desktop";
+    };
+
+    "org/gnome/desktop/notifications/application/org-gnome-software" = {
+      application-id = "org.gnome.Software.desktop";
     };
 
     "org/gnome/desktop/notifications/application/org-gnome-tweaks" = {
@@ -187,6 +204,20 @@ with lib.hm.gvariant;
       migrated = true;
     };
 
+    "org/gnome/file-roller/listing" = {
+      list-mode = "as-folder";
+      name-column-width = 250;
+      show-path = false;
+      sort-method = "name";
+      sort-type = "ascending";
+    };
+
+    "org/gnome/file-roller/ui" = {
+      sidebar-width = 200;
+      window-height = 480;
+      window-width = 600;
+    };
+
     "org/gnome/mutter" = {
       attach-modal-dialogs = true;
       center-new-windows = true;
@@ -227,7 +258,7 @@ with lib.hm.gvariant;
       disable-user-extensions = false;
       disabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
       enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" ];
-      favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "steam.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" ];
+      favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" "steam.desktop" ];
       looking-glass-history = [ "experimental_hdr=on" "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'" "exit()" "kill" "Exit" "exit" "log" "log( test)" "log( test )" "restart" "end" "return" ];
       welcome-dialog-last-shown-version = "43.2";
     };
@@ -262,7 +293,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 2;
+      indicator-position-max = 1;
       restore-state = true;
       toggle-state = true;
       user-enabled = true;
@@ -344,7 +375,7 @@ with lib.hm.gvariant;
       datemenu-remove-notifications = false;
       disable-adjust-content-border-radius = false;
       last-unsafe-state = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":true},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":false},{\"name\":\"NMWiredToggle\",\"label\":\"Wired\",\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":\"Wi-Fi\",\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":false},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":false},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":true},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":true},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"MenuToggle\",\"label\":\"Devices\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":\"No Background Apps\",\"visible\":false}]";
+      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":false}]";
       media-control-compact-mode = true;
       media-control-enabled = true;
       notifications-enabled = true;
@@ -369,12 +400,16 @@ with lib.hm.gvariant;
       appbutton-scroll-change-sound-volume = true;
       appbutton-spacing = 3;
       hotcorner-enable-in-fullscreen = false;
-      indicator-display-limit = 3;
+      indicator-display-limit = 4;
       indicator-dominant-color-active = true;
       indicator-dominant-color-inactive = true;
+      indicator-height-active = 6;
+      indicator-height-inactive = 4;
       indicator-position = "top";
+      indicator-roundness-inactive = 6;
       indicator-spacing-active = 4;
-      indicator-width-active = 10;
+      indicator-spacing-inactive = 2;
+      indicator-width-active = 8;
       indicator-width-inactive = 4;
       notification-counter-enabled = true;
       notification-counter-hide-empty = true;
@@ -427,13 +462,32 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/software" = {
-      check-timestamp = mkInt64 1695198067;
+      check-timestamp = mkInt64 1696174613;
       first-run = false;
       flatpak-purge-timestamp = mkInt64 1695203836;
     };
 
     "org/gnome/tweaks" = {
       show-extensions-notice = false;
+    };
+
+    "org/gtk/gtk4/settings/file-chooser" = {
+      show-hidden = true;
+    };
+
+    "org/gtk/settings/file-chooser" = {
+      date-format = "regular";
+      location-mode = "path-bar";
+      show-hidden = false;
+      show-size-column = true;
+      show-type-column = true;
+      sidebar-width = 164;
+      sort-column = "name";
+      sort-directories-first = false;
+      sort-order = "ascending";
+      type-format = "category";
+      window-position = mkTuple [ 1172 301 ];
+      window-size = mkTuple [ 1096 822 ];
     };
 
   };

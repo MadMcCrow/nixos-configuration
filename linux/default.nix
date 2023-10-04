@@ -109,7 +109,7 @@ let
   cpuVirtualisation = cpuVendorSwitch { "amd" = { }; } { };
 
   # GPU
-  # TODO : Clean 
+  # TODO : Clean
   gpuVendors = [ "amd" "intel" ];
   gpuVendorSwitch = s: d:
     vendorSwitch s cfg.gpu.vendor gpuVendors d "please define nixos.gpu.vendor";
@@ -136,35 +136,21 @@ let
   # this flake
   flake = "MadMcCrow/nixos-configuration";
   updateDates = cfg.upgrade.updateDates;
-  # update command to always be right
-  nixos-update = pkgs.writeShellScriptBin "nixos-update" ''
-    if [ "$USER" != "root" ]
-    then
-      echo "Please run this as root or with sudo"
-      exit 2
-    fi
-    nixos-rebuild switch --flake github:${flake}#
-    exit $?
+  nixos-update = pkgs.writeShellApplication
+  {
+      name = "nixos-update";
+      runtimeInputs = [ pkgs.nixos-rebuild ] ++ cfg.update.dependencies;
+      text = ''
+      if [ "$USER" != "root" ]; then
+        echo "Please run nixos-update as root or with sudo"; exit 2
+      fi
+      ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake github:${flake}#
+      RESULT=$?
+      ${concatStringsSep "\n" cfg.update.extraCommands}
+      exit $RESULT
   '';
-
-  textScripts = sc : filter ( x : hasAttr "text" x) sc;
-  callPackgages = sc : map (x : "${x}") (filter (x : hasAttr "pkg") sc);
-  scripts = sc : concatStringsSep "\n" (textScripts sc) ++ (callPackgages sc);
-
-  runScript = sc : let r = scripts sc; in pkgs.writeShellScriptBin name "${r}";
-  depend = sc : concatLists (map (x : condAttr x "depend" []) sc);
-
-
-  rebuildOverride = self: super: let sc = cfg.rebuildScripts.pre; in {
-     nixos-rebuild = super.nixos-rebuild.override {
-        nativeBuildInputs =  super.nativeBuildInputs ++ [ makeWrapper ];
-        buildInputs = super.buildInputs ++ depend sc;
-        installPhase = super.installPhase + ''
-      wrapProgram $out/bin/nixos-rebuild \
-        --run "${runScript sc}"
-    '';
-      };
   };
+
 
 
 in {
@@ -194,6 +180,25 @@ in {
         '';
       };
       autoReboot = mkEnableOptionDefault "reboot post upgrade" true;
+    };
+
+    # manual update
+    update = {
+      # runtime dependencies of
+      dependencies = mkOption {
+        type = types.listOf types.package;
+        default = [];
+        description = ''
+        list of packages necessary for `nixos-update`
+        '';
+      };
+      extraCommands = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = ''
+        list of commands to run when doing manual update with `nixos-update`
+        '';
+      };
     };
 
     # ZFS file system specifics
@@ -334,8 +339,6 @@ in {
       nssmdns = true;
     };
 
-    # nixpkgs.overlays = (condList (length cfg.rebuildScripts.pre > 0)  [ rebuildOverride]);
-
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
@@ -343,7 +346,8 @@ in {
         ++ [ cachix vulnix ] ++ [ git git-crypt pre-commit git-lfs ]
         ++ [ nixos-update ] ++ [ agenix.packages.x86_64-linux.default age ]
         ++ (condList cfg.gpu.enable [ vulkan-tools ])
-        ++ (condList cfg.enhancedSecurity.enable [ policycoreutils ]);
+        ++ (condList cfg.enhancedSecurity.enable [ policycoreutils ])
+        ++ (condList (cfg.audio.enable && cfg.audio.usePipewire) [wireplumber helvum]);
 
       # set env-vars here
       variables = gpuVars;

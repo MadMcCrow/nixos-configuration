@@ -20,6 +20,7 @@ let
       gnome-boxes # remote or virtual systems
       gnome-calendar # the calendar app
       gnome-logs # systemd logs
+      gnome-calculator # a calculator for quick math
       nautilus               # file manager
       gnome-backgrounds      # gnome collection of cool backgrounds
       gnome-shell-extensions # manage and control extensions

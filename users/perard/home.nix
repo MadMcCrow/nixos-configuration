@@ -57,6 +57,8 @@ in {
     jetbrains-mono
     speechd
     python3
+    #libclang
+    clang-tools_16
   ]);
 
   # enable HM

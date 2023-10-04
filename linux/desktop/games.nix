@@ -38,7 +38,8 @@ in {
     xone.enable = mkEnableOptionDefault "XBox One driver" true;
     steam.enable = mkEnableOptionDefault "Steam" true;
     gog.enable = mkEnableOptionDefault "Good Old Games" true;
-    minecraft.enable = mkEnableOptionDefault "Minecraft" true;
+    # minecraft is broken : launcher fails to download files : either use flatpak or prismlauncher
+    minecraft.enable = mkEnableOptionDefault "Minecraft" false;
   };
 
   # config
@@ -75,7 +76,7 @@ in {
       (condList cfg.xone.enable [ xow_dongle-firmware config.boot.kernelPackages.xone])
       (condList cfg.steam.enable [ steam steam-run steamcmd ] ++ (steamlibs pkgs))
       (condList cfg.gog.enable [ minigalaxy ])
-      (condList cfg.minecraft.enable [minecraft])
+      (condList cfg.minecraft.enable [prismlauncher])
       ];
 
     # env vars for steam and steam VR
@@ -92,7 +93,7 @@ in {
         "steam-run"
         "steamcmd"
       ])
-      (condList cfg.minecraft.enable ["minecraft" "minecraft-launcher"])];
+      (condList cfg.minecraft.enable [])];
 
     packages.overlays = condList cfg.steam.enable [
       (self: super: {
