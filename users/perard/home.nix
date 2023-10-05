@@ -59,6 +59,7 @@ in {
     python3
     #libclang
     clang-tools_16
+    bitwarden
   ]);
 
   # enable HM
