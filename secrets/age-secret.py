@@ -7,6 +7,7 @@
 # Python imports
 import os
 import argparse
+from sys import exit;
 
 # ssh-keygen equivalent
 from Crypto.PublicKey import RSA as rsa

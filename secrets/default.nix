@@ -37,20 +37,19 @@ let
       group = name;
     } // (removeAttrs secret [ "name" "publicKeys" ]);
 
-
-  # package secret script
-  name = "age-gen-secret";
-  nixos-age-secret = import ./age-secret.nix { inherit pkgs pycnix name;};
-
-  nixos-update-age-secrets = let
-    hostStr = toString hostKey;
-    secretFile = x: toString (mkSecret x).file;
-  in pkgs.writeShellScriptBin "nixos-update-age-secrets" (concatStringsSep "\n"
-    (map (x:
-      "${nixos-age-secret}/bin/${name} -k ${hostStr} -f ${secretFile x}")
+  secretPackages = let
+    # package secret script
+    name = "age-gen-secret";
+    nixos-age-secret = import ./age-secret.nix { inherit pkgs pycnix name; };
+    nixos-update-age-secrets = let
+      hostStr = toString hostKey;
+      secretFile = x: toString (mkSecret x).file;
+    in pkgs.writeShellScriptBin "nixos-update-age-secrets"
+    (concatStringsSep "\n" (map
+      (x: "${nixos-age-secret}/bin/${name} -k ${hostStr} -f ${secretFile x}")
       cfg.secrets));
+  in [ nixos-update-age-secrets nixos-age-secret ];
 
-  packages = [ nixos-update-age-secrets nixos-age-secret ] ++  [pkgs.python311Packages.pycrypto];
 in {
   options.secrets = {
     # path to the secret files
@@ -75,7 +74,7 @@ in {
   # darwin is not supported yet
   config = mkIf (!isDarwin) {
     # add our scripts
-    environment.systemPackages = packages;
+    environment.systemPackages = secretPackages;
 
     age = mkIf (pathExists hostKey) {
       secrets = listToAttrs (map (x: {
