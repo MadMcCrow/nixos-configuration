@@ -7,7 +7,6 @@ let
   pylib = pycnix.lib."${pkgs.system}";
   python = pkgs.python311;
 
-
   # pyage from pip :
   pyage = pylib.mkPipInstall {
     inherit python;
@@ -29,12 +28,11 @@ let
   filename = "secret.py";
   secretspy = pkgs.writeText filename (readFile ./age-secret.py);
 
-
   # implementation
 in pylib.mkCxFreezeBin {
   inherit python name;
   src = secretspy;
   main = "${secretspy}";
-  modules = [ "Crypto" "age"];
-  nativeBuildInputs = [pycrypto pyage];
+  modules = [ "Crypto" "age" ];
+  nativeBuildInputs = [ pycrypto pyage ];
 }

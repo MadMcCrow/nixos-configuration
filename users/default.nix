@@ -52,13 +52,12 @@ let
     home = "/Users/${name}";
   }) configUsers;
 
-  darwinHM = mapAttrs ( name: value:
-    let
-    homeValue = value args;
-    in
-    (args :
-    homeValue // { home = homeValue.home // { homeDirectory = "/Users/${name}"; }; }))
-    home-managerUsers;
+  darwinHM = mapAttrs (name: value:
+    let homeValue = value args;
+    in (args:
+      homeValue // {
+        home = homeValue.home // { homeDirectory = "/Users/${name}"; };
+      })) home-managerUsers;
 
 in {
   config = {
@@ -70,7 +69,7 @@ in {
 
     # home manager config users :
     home-manager = {
-      extraSpecialArgs = {inherit firefox-gnome-theme;};
+      extraSpecialArgs = { inherit firefox-gnome-theme; };
       useGlobalPkgs = true;
       useUserPackages = true;
       users = if isDarwin then darwinHM else home-managerUsers;

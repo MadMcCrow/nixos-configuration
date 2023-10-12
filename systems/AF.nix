@@ -1,5 +1,5 @@
 { pkgs, ... }:
-{
+with builtins; {
 
   platform = "x86_64-linux";
 
@@ -13,12 +13,13 @@
     desktop = {
       enable = true;
       gnome.enable = true;
-      games.enable = true;  # video games, you should try them sometives
+      games.enable = true; # video games, you should try them sometives
     };
 
     # kernel packages
-    kernel.extraKernelPackages = [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
-    kernel.params = ["pci=noats" "amd_iommu=on" "iommu=pt"];
+    kernel.extraKernelPackages =
+      [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
+    kernel.params = [ "pci=noats" "amd_iommu=on" "iommu=pt" ];
 
     # cpu/gpu
     cpu.vendor = "amd";
@@ -26,7 +27,7 @@
     gpu.vendor = "amd";
 
     network.waitForOnline = false;
-    network.wakeOnLineInterfaces = ["enp4s0"];
+    network.wakeOnLineInterfaces = [ "enp4s0" ];
   };
 
   # add steam drive

@@ -6,19 +6,11 @@ with builtins;
 with lib;
 let
   cfg = config.development;
- langs = {
-  c = {
-    packages = with pkgs; [gcc clang]; 
-  };
-  rust = {
-    packages = with pkgs;[cargo rustc];
-  };
-  python = {
-    packages = with pkgs; [python3Full];
-  };
-  haxe = {
-    packages = with pkgs; [haxe haxePackages.hxcpp];
-  };
+  langs = {
+    c = { packages = with pkgs; [ gcc clang ]; };
+    rust = { packages = with pkgs; [ cargo rustc ]; };
+    python = { packages = with pkgs; [ python3Full ]; };
+    haxe = { packages = with pkgs; [ haxe haxePackages.hxcpp ]; };
 
   };
 
@@ -26,14 +18,17 @@ in {
 
   # interface : a way to expose settings
   options.development = {
-    enable = mkEnableOption "enable programming tools support" // {default = true;};
+    enable = mkEnableOption "enable programming tools support" // {
+      default = true;
+    };
     languages = mkOption {
       type = types.listOf types.str;
-       default = ["c" "rust" "haxe"];
+      default = [ "c" "rust" "haxe" ];
     };
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = concatLists (map (x : langs.${x}.packages) cfg.languages);
+    environment.systemPackages =
+      concatLists (map (x: langs.${x}.packages) cfg.languages);
   };
 }

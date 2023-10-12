@@ -47,12 +47,16 @@ let
       default = elemAt values 0;
     };
 
-  mkScriptsOption = desc : mkOption {
-        type = types.listOf types.attrs;
-        description = concatStringsSep "\n" [desc "list of sets containing `name` and either `pkg` or `text`"];
-        # check = x : (hasAttr "pkg" x or hasAttr "text" x) && hasAttr "name" x;
-        default = [];
-      };
+  mkScriptsOption = desc:
+    mkOption {
+      type = types.listOf types.attrs;
+      description = concatStringsSep "\n" [
+        desc
+        "list of sets containing `name` and either `pkg` or `text`"
+      ];
+      # check = x : (hasAttr "pkg" x or hasAttr "text" x) && hasAttr "name" x;
+      default = [ ];
+    };
 
   condAttr = s: a: d: if hasAttr a s then getAttr a s else d;
   condList = cond: value: if cond then value else [ ];
@@ -114,9 +118,9 @@ let
   gpuVendorSwitch = s: d:
     vendorSwitch s cfg.gpu.vendor gpuVendors d "please define nixos.gpu.vendor";
   gpuKernelModule = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
-  gpuOGLPackages = gpuVendorSwitch {
-    "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel ];
-  } [ ];
+  gpuOGLPackages =
+    gpuVendorSwitch { "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel ]; }
+    [ ];
   gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
   gpuVars = gpuVendorSwitch { "amd" = { AMD_VULKAN_ICD = "RADV"; }; } { };
   gpuTmpRules = gpuVendorSwitch {
@@ -136,11 +140,10 @@ let
   # this flake
   flake = "MadMcCrow/nixos-configuration";
   updateDates = cfg.upgrade.updateDates;
-  nixos-update = pkgs.writeShellApplication
-  {
-      name = "nixos-update";
-      runtimeInputs = [ pkgs.nixos-rebuild ] ++ cfg.update.dependencies;
-      text = ''
+  nixos-update = pkgs.writeShellApplication {
+    name = "nixos-update";
+    runtimeInputs = [ pkgs.nixos-rebuild ] ++ cfg.update.dependencies;
+    text = ''
       if [ "$USER" != "root" ]; then
         echo "Please run nixos-update as root or with sudo"; exit 2
       fi
@@ -148,10 +151,8 @@ let
       RESULT=$?
       ${concatStringsSep "\n" cfg.update.extraCommands}
       exit $RESULT
-  '';
+    '';
   };
-
-
 
 in {
   #interface
@@ -187,16 +188,16 @@ in {
       # runtime dependencies of
       dependencies = mkOption {
         type = types.listOf types.package;
-        default = [];
+        default = [ ];
         description = ''
-        list of packages necessary for `nixos-update`
+          list of packages necessary for `nixos-update`
         '';
       };
       extraCommands = mkOption {
         type = types.listOf types.str;
-        default = [];
+        default = [ ];
         description = ''
-        list of commands to run when doing manual update with `nixos-update`
+          list of commands to run when doing manual update with `nixos-update`
         '';
       };
     };
@@ -267,9 +268,9 @@ in {
         mkStringsOption "Interfaces to enable wakeOnLan" [ ];
     };
 
-     # scripts executed on "nixos"-rebuild implementation is system dependant
+    # scripts executed on "nixos"-rebuild implementation is system dependant
     rebuildScripts = {
-      pre        = mkScriptsOption "scripts run before the rebuild command";
+      pre = mkScriptsOption "scripts run before the rebuild command";
       # TODO
       activation = mkScriptsOption "scripts run after the rebuild command";
     };
@@ -342,12 +343,23 @@ in {
     # env :
     environment = with pkgs; {
       # maybe use defaultPackages instead, because they might not be that necessary
-      systemPackages = [ lshw dmidecode pciutils usbutils psensor smartmontools lm_sensors eza ]
-        ++ [ cachix vulnix ] ++ [ git git-crypt pre-commit git-lfs ]
+      systemPackages = [
+        lshw
+        dmidecode
+        pciutils
+        usbutils
+        psensor
+        smartmontools
+        lm_sensors
+        eza
+      ] ++ [ cachix vulnix ] ++ [ git git-crypt pre-commit git-lfs ]
         ++ [ nixos-update ] ++ [ agenix.packages.x86_64-linux.default age ]
         ++ (condList cfg.gpu.enable [ vulkan-tools ])
         ++ (condList cfg.enhancedSecurity.enable [ policycoreutils ])
-        ++ (condList (cfg.audio.enable && cfg.audio.usePipewire) [wireplumber helvum]);
+        ++ (condList (cfg.audio.enable && cfg.audio.usePipewire) [
+          wireplumber
+          helvum
+        ]);
 
       # set env-vars here
       variables = gpuVars;
@@ -385,7 +397,8 @@ in {
 
       # Kernel Packages
       inherit kernelPackages;
-      extraModulePackages = map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
+      extraModulePackages =
+        map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
 
       # UEFI boot loader with systemdboot
       loader = {
@@ -507,7 +520,6 @@ in {
     };
 
     system = {
-
 
       # upgrade automatically each day
       autoUpgrade = {

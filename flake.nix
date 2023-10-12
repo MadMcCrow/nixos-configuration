@@ -34,14 +34,14 @@
 
   };
 
-  outputs = { self,  ... }@inputs:
+  outputs = { self, ... }@inputs:
     let
 
       # modules shared between linux and MacOS
       baseModules = [ ./platform ./users ./secrets ./development ];
 
       # shortcut functions :
-      nixOSx86 = sysModule :
+      nixOSx86 = sysModule:
         let
           pkgs = inputs.nixpkgs;
           system = "x86_64-linux";
@@ -53,22 +53,23 @@
             inputs.agenix.nixosModules.default
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
-            (import sysModule {inherit pkgs;})
+            sysModule
           ];
         };
 
-      darwinAarch64 =  sysModule :
-          inputs.darwin.lib.darwinSystem {
+      darwinAarch64 = sysModule:
+        inputs.darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = inputs;
           modules = [
             ./darwin
             inputs.agenix.darwinModules.default
             inputs.home-manager-darwin.darwinModules.home-manager
-            sysModule ] ++ baseModules;
+            sysModule
+          ] ++ baseModules;
         };
 
-        shells = [ ./secrets/shell.nix ];
+      shells = [ ./secrets/shell.nix ];
 
     in {
 
@@ -100,19 +101,21 @@
       };
 
       # a shell for every development experiment
-      devShells = inputs.nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin"]  (
-      system:
-      {
+      devShells = inputs.nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ] (system: {
         default = let
           pkgs = inputs.nixpkgs.legacyPackages.${system};
-          paths = map (x : import x ({inherit pkgs;} // inputs) ) shells;
-        in
+          paths = map (x: import x ({ inherit pkgs; } // inputs)) shells;
           # this is sad, for now I just merge build inputs but another solution would be great
           # another solution would be to merge all attributes but this would take too much time for nothing
           # pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
-          pkgs.mkShell {buildInputs = builtins.concatLists (map  (x: x.buildInputs) paths) ;};
-      }
-      );
+        in pkgs.mkShell {
+          buildInputs = builtins.concatLists (map (x: x.buildInputs) paths);
+        };
+      });
 
     };
 }

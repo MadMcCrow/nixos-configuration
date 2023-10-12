@@ -9,16 +9,18 @@ let
   pam = cfg.security.pam.sudoTouchIdAuth;
 
   # helper functions
-  mkEnableOptionDefault = desc : default: (mkEnableOption desc) // { inherit default;};
+  mkEnableOptionDefault = desc: default:
+    (mkEnableOption desc) // {
+      inherit default;
+    };
 
   # init for fish and "command not found"
   fishInit = if config.programs.fish.useBabelfish then ''
-            command_not_found_handle $argv
-          '' else ''
-            ${pkgs.bashInteractive}/bin/bash -c \
-              "source ${cfg.package}/etc/profile.d/command-not-found.sh; command_not_found_handle $argv"
-          '';
-
+    command_not_found_handle $argv
+  '' else ''
+    ${pkgs.bashInteractive}/bin/bash -c \
+      "source ${cfg.package}/etc/profile.d/command-not-found.sh; command_not_found_handle $argv"
+  '';
 
   # We don't use `environment.etc` because this would require that the user manually delete
   # `/etc/pam.d/sudo` which seems unwise given that applying the nix-darwin configuration requires
@@ -48,13 +50,12 @@ let
       ''}
     '';
 
-
 in {
 
   # interface
   options.darwin = {
     # enable MacOS
-    enable = mkEnableOptionDefault  "Darwin (MacOS)" true;
+    enable = mkEnableOptionDefault "Darwin (MacOS)" true;
     # Touch ID with sudo :
     security.pam.sudoTouchIdAuth.enable = mkEnableOptionDefault ''
       sudo authentication with Touch ID
@@ -72,7 +73,8 @@ in {
     nix = {
       settings = {
         substituters = [ "https://cache.nixos.org/" ];
-        trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+        trusted-public-keys =
+          [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
         trusted-users = [ "@admin" ];
       };
 
