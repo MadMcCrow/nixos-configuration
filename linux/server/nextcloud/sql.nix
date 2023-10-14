@@ -27,9 +27,10 @@ in
          after = [ "postgresql.service" ];
       };
 
+      # this is the value on ubuntu :
+      # users.users.postgres.uid = lib.mkForce 114;
+      # users.groups.postgres.gid = lib.mkForce 120;
       # perhaps make it share group with nextcloud ?
-      users.users.postgres.uid = lib.mkForce 114;
-      users.groups.postgres.gid = lib.mkForce 120;
       users.users.postgres.group = "postgres";
       users.users.postgres.extraGroups = [ "ssl-cert" ];
 
