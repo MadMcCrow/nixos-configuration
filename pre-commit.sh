@@ -61,10 +61,10 @@ for CONF in $CONFIGS
 do
   echo -n "dry building $CONF :"
   #nixos-rebuild dry-activate --flake .#$CONF --impure 1> /dev/null
-  nix build .#nixosConfigurations.$CONF.config.system.build.toplevel --no-link --dry-run --cores 0  --quiet --quiet --impure  > /dev/null 2>&1
+  nix build .#nixosConfigurations.$CONF.config.system.build.toplevel --no-link --dry-run --cores 0 --quiet --quiet --no-eval-cache  > /dev/null 2>&1
   RES=$?
   if [ $RES -ne 0 ]; then
-    echo -e "$RED\0Error:$NC Cannot build configuration $BLU\0$CONF\0$NC : edit and test with $BLU'nix build .#nixosConfigurations.$CONF.config.system.build.toplevel --no-link --dry-run --cores 0 --impure --show-trace'$NC"
+    echo -e "$RED\0Error:$NC Cannot build configuration $BLU\0$CONF\0$NC : edit and test with $BLU'nix build .#nixosConfigurations.$CONF.config.system.build.toplevel --no-link --dry-run --cores 0 --quiet --quiet --no-eval-cache'$NC"
     echo_line "check complete: $RED\0 Error !$NC"
     exit $RES
   else
