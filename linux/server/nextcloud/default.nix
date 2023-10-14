@@ -8,16 +8,17 @@ with builtins;
 with lib;
 let
   # shortcuts
-  srv = config.linux.server;
+  srv = config.nixos.server;
   cfg = srv.nextcloud;
 
-  # path to our data 
-  nextcloudPath = concatStringsSep "/" [config.nixos.server.data.path "nextcloud"];
+  mkPath = l: concatStringsSep "/" l;
+
+  # path to our data
+  nextcloudPath = mkPath [config.nixos.server.data.path "nextcloud"];
 
   # make sure nextcloud can be instantiated
-  nextcloudSecretPath = config.secrets.secretsPath + "nextcloud.age";
-  nextcloudEnable = if (strings.hasPrefix "/" config.secrets.secretsPath) 
-  && pathExists nextcloudSecretPath then cfg.enable else false;
+  nextcloudSecret =config.age.secrets."nextcloud".path;
+  nextcloudEnable = config.secrets.enable && cfg.enable;
 
 in
 {
@@ -40,6 +41,12 @@ in
     # our secrets for password
     # this gets generated with nixos-update-age-secrets
     secrets.secrets = [{ name = "nextcloud"; }];
+    systemd.services."nextcloud-setup" = let
+      secret-service = config.secrets.updateSecretsPackage.pname;
+    in {
+         requires = [ "${secret-service}.service" ];
+         after = [ "${secret-service}.service" ];
+    };
 
     # nextcloud user
     users.users.nextcloud.uid = lib.mkForce 115;
@@ -49,7 +56,7 @@ in
 
     # ensure data folder
     systemd.tmpfiles.rules = [
-      "d ${nextcloudPath} 0770 nextcloud nextcloud -"
+      "d ${nextcloudPath} 0750 nextcloud nextcloud -"
     ];
 
     # setup SSL and ACME for https :
@@ -65,9 +72,9 @@ in
       datadir = nextcloudPath;
       config = {
         adminuser = "admin";
-        adminpassFile = nextcloudSecretPath ;
+        adminpassFile = nextcloudSecret ;
         #overwriteProtocol = "https";
-      };   
+      };
       # for now forget about safety
       https = false;
     };

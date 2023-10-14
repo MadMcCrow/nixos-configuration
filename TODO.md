@@ -1,20 +1,24 @@
-# My [NIXOS](https://nixos.org/) configuration(s)
+# TODO :
 
-## TODO :
+# Necessary :
  - [ ] Rewrite Linux modules :
     - split in categories : hardware, software, etc ...
     - map unfree programs to unfree automatically
- - [ ] secrets deployment
-    - [ ] add secrets to `nixos-update`
-    - [ ] install secrets to `nixNUC`
+ - [ ] Flake checks for pre-commit
+ - [X] secrets deployment
+    - [X] add secrets to `nixos-update`
+    - [X] install secrets to `nixNUC`
+    - [ ] have ssh-keys generated once and for all for machines
  - [ ] Server
-    - [ ] Local server access
+    - [X] localhost nextcloud
+    - [ ] Use secrets
+    - [ ] Nextcloud on LAN
  - [ ] Make a documentation
- - [X] Move scripts to a separate folder
  - [ ] Update github actions
+
+ ## Possible :
  - [ ] Move nextcloud to a separate flake
  - [ ] Gnome changes
-   - [X] Simplify gnome module
    - [ ] Gnome as a flake
    - [ ] Gnome install user-side
    - [ ] simplify gnome and dconf usage

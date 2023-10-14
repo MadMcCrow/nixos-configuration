@@ -2,9 +2,6 @@
 { pkgs, pycnix, ... }:
 with builtins;
 let
-  # package secret script
-  nixos-age-secret = import ./age-secret.nix { inherit pkgs pycnix; };
-in pkgs.mkShell {
-  # nativeBuildInputs is usually what you want -- tools you need to run
-  buildInputs = [ nixos-age-secret ];
-}
+  # python scripts
+  scripts = import ./scripts.nix { inherit pkgs pycnix; };
+in pkgs.mkShell { buildInputs = [ scripts.ageSecret scripts.sshKeygen ]; }

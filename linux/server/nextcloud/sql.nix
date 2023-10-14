@@ -12,13 +12,13 @@ let
   # path to the data on the server
   postgresPath = concatStringsSep "/" [config.nixos.server.data.path "postgresql"];
 in
-{  
-   # implementation  
+{
+   # implementation
    config = mkIf nxt.enable {
       # force nextcloud to use postgresql
       services.nextcloud = {
          config.dbtype = "pgsql";
-         database.createLocally = true; 
+         database.createLocally = true;
       };
 
       # make sure postgresql starts first
@@ -32,10 +32,10 @@ in
       users.groups.postgres.gid = lib.mkForce 120;
       users.users.postgres.group = "postgres";
       users.users.postgres.extraGroups = [ "ssl-cert" ];
-      
+
       # add postgres folder path
-      systemd.tmpfiles.rules= [ "d ${postgresPath} 0770 postgres  postgres -" ];
-      
+      systemd.tmpfiles.rules= [ "d ${postgresPath} 0750 postgres  postgres -" ];
+
       # set folder for postgresql
       services.postgresql = {
          enable = true;
@@ -48,9 +48,3 @@ in
       #};
    };
 }
-
-   
-   
-
-
-  

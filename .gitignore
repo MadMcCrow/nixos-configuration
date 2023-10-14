@@ -7,5 +7,7 @@ result
 # ignore secrets private keys
 secrets/*
 !secrets/*.sh
+!secrets/scripts/
+!secrets/python/
 !secrets/*.py
 !secrets/*.nix

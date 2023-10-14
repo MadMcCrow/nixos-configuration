@@ -124,7 +124,7 @@ let
   gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
   gpuVars = gpuVendorSwitch { "amd" = { AMD_VULKAN_ICD = "RADV"; }; } { };
   gpuTmpRules = gpuVendorSwitch {
-    "amd" = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}" ];
+    "amd" = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
   } [ ];
   # TODO : intel override / overlay :
   gpuOverrides = gpuVendorSwitch {
@@ -134,7 +134,7 @@ let
   } { };
 
   vaapi = with pkgs; [ libvdpau-va-gl vaapiVdpau ];
-  ocl = with pkgs; [ rocm-opencl-icd rocm-opencl-runtime ];
+  ocl = with pkgs; [ rocmPackages.clr rocmPackages.clr.icd ];
 
   # updates:
   # this flake
@@ -363,9 +363,6 @@ in {
 
       # set env-vars here
       variables = gpuVars;
-
-      # keep secrets
-      persistence."/nix/persist" = { directories = [ "/etc/nixos/secrets" ]; };
     };
 
     # zsh can be used as default shell
@@ -530,8 +527,8 @@ in {
         allowReboot = cfg.upgrade.autoReboot;
       };
 
-      # our configuration is working with "23.05"
-      stateVersion = "23.05";
+      # our configuration is working with "23.11"
+      stateVersion = "23.11";
     };
 
     # disable nixos manual : just use the web version !

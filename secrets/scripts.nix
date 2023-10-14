@@ -1,6 +1,6 @@
-# age-secret.nix
-# package age-secret.py
-{ pkgs, pycnix, name ? "age-gen-secret" }:
+# sripts.nix
+# package pythopn scripts for secrets
+{ pkgs, pycnix }:
 with builtins;
 let
   # pylib
@@ -24,15 +24,23 @@ let
     libraries = [ ];
   };
 
-  # secret file
-  filename = "secret.py";
-  secretspy = pkgs.writeText filename (readFile ./age-secret.py);
+  # scripts :
+  src = ./python;
 
-  # implementation
-in pylib.mkCxFreezeBin {
-  inherit python name;
-  src = secretspy;
-  main = "${secretspy}";
-  modules = [ "Crypto" "age" ];
-  nativeBuildInputs = [ pycrypto pyage ];
+in {
+  ageSecret = pylib.mkCxFreezeBin {
+    inherit python src;
+    name = "nixage-secret";
+    main = "age_secret.py";
+    modules = [ "Crypto" "age" "colors" "ssh_keygen" ];
+    nativeBuildInputs = [ pycrypto pyage ];
+  };
+
+  sshKeygen = pylib.mkCxFreezeBin {
+    inherit python src;
+    name = "nixage-sshkeygen";
+    main = "ssh_keygen.py";
+    modules = [ "Crypto" "age" "colors" ];
+    nativeBuildInputs = [ pycrypto pyage ];
+  };
 }

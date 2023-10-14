@@ -41,7 +41,7 @@ in {
 
   home.username = "perard";
   home.homeDirectory = "/home/perard";
-  home.stateVersion = "23.05";
+  home.stateVersion = "23.11";
 
   # add our dconf settings
   imports = [ ./dconf.nix ];
