@@ -62,10 +62,8 @@ let
 in {
   config = {
     # default nix config users :
-    users = {
-      users = if isDarwin then darwinUser else configUsers;
-      # mutableUsers = true;
-    };
+    users.users = if isDarwin then darwinUser else configUsers;
+    # users.mutableUsers = true;
 
     # home manager config users :
     home-manager = {

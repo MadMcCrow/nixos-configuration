@@ -109,7 +109,7 @@ let
   # TODO : virtualisation
   cpuVendors = [ "amd" "intel" ];
   cpuVendorSwitch = s: d:
-    vendorSwitch s cfg.cpu.vendor gpuVendors d "please define nixos.cpu.vendor";
+    vendorSwitch s cfg.cpu.vendor cpuVendors d "please define nixos.cpu.vendor";
   cpuVirtualisation = cpuVendorSwitch { "amd" = { }; } { };
 
   # GPU

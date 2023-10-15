@@ -11,6 +11,10 @@ from Crypto.PublicKey import RSA as rsa
 # local modules
 from colors import colored, Colors
 
+
+# constants :
+_keyPermission = 0o600
+
 # generate a private key
 def genKey( key:str , path : str) :
     """
@@ -21,10 +25,10 @@ def genKey( key:str , path : str) :
     print(f"generating ssh key pair : {colored(key, Colors.BOLD)}  at {colored(path, Colors.BOLD)}:\n")
     rsa_key = rsa.generate(2048)
     with open(path, 'wb') as private_file:
-        os.chmod(path, _secretPermission)
+        os.chmod(path, _keyPermission)
         private_file.write(rsa_key.exportKey('PEM'))
     with open(f"{path}.pub", 'wb') as public_file:
-        os.chmod(path, _secretPermission)
+        os.chmod(path, _keyPermission)
         public_file.write(rsa_key.public_key().exportKey('OpenSSH'))
 
 def updateKey(key : str, path : str) :
@@ -39,7 +43,7 @@ def updateKey(key : str, path : str) :
         rsa_key = rsa.import_key(key_text)
     assert rsa_key.has_private()
     with open(f"{path}.pub", 'wb') as public_file:
-        os.chmod(path, _secretPermission)
+        os.chmod(path, _keyPermission)
         public_file.write(rsa_key.public_key().exportKey('OpenSSH'))
 
 # main implementation for commandline

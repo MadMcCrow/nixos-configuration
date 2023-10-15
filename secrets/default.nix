@@ -37,13 +37,13 @@ let
   #
   mkSecret = secret:
     {
-      file = concatPath [ cfg.secretsPath "${secret.name}.age" ];
+      file = concatStringsSep "/" [ cfg.secretsPath "${secret.name}.age" ];
       owner = secret.name;
       group = secret.name;
     } // (removeAttrs secret [ "name" "publicKeys" ]);
 
   # secret updater :
-  updateSecretsName = cfg.updateSecretsPackage.pname;
+  updateSecretsName = cfg.update.pname;
   updateSecrets = let
     nixage-scripts = import ./scripts.nix { inherit pkgs pycnix; };
     name = updateSecretsName;
@@ -52,7 +52,7 @@ let
     owner = x: toString (mkSecret x).owner;
     group = x: toString (mkSecret x).group;
   in pkgs.writeShellScriptBin name (concatStringsSep "\n" (map (x: ''
-    ${nixage-scripts.ageSecret}/bin/${name} -k ${hostStr}\
+    ${nixage-scripts.ageSecret}/bin/${nixage-scripts.ageSecret.name} -k ${hostStr}\
            -f ${secretFile x} -o ${owner x} -g ${owner x}'') cfg.secrets));
 
   # condition for config
@@ -60,9 +60,8 @@ let
 in {
   # interfaces
   options.secrets = {
-    # TODO : disable for macOS
     enable = mkEnableOption "secrets management" // {
-      default = (pathExists hostKey); # (length cfg.secrets) > 0;
+      default = true;
     };
     # path to the secret files
     secretsPath =
@@ -75,11 +74,9 @@ in {
       type = types.listOf types.attrs;
       default = [ ];
     };
-    updateSecretsPackage = {
-      pname =
-        mkStringOption "package name for updating the config secrets and keys"
-        "nixos-update-secrets";
-    };
+    update.pname = mkStringOption
+    "package name for updating the config secrets and keys"
+    "nixos-update-secrets";
   };
 
   # darwin is not supported yet

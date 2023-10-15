@@ -16,6 +16,12 @@ with builtins; {
       games.enable = true; # video games, you should try them sometives
     };
 
+    server = {
+      enable = true;
+      nextcloud.enable = true;
+      data.path = "/nix/persist/server";
+    };
+
     # kernel packages
     kernel.extraKernelPackages =
       [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];

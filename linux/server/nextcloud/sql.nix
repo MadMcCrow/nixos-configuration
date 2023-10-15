@@ -3,49 +3,92 @@
 #  TODO : enable backup
 { pkgs, lib, config, ... }:
 with builtins;
-with lib;
 let
   # shortcuts
   nxt = config.nixos.server.nextcloud;
   cfg = nxt.sql;
 
+  # nextcloud recommends mariadb
+  dbtypes = [ "mariadb" "mysql" "postgresql" ];
+  db = cfg.db;
+
+
   # path to the data on the server
-  postgresPath = concatStringsSep "/" [config.nixos.server.data.path "postgresql"];
-in
-{
-   # implementation
-   config = mkIf nxt.enable {
-      # force nextcloud to use postgresql
-      services.nextcloud = {
-         config.dbtype = "pgsql";
-         database.createLocally = true;
-      };
+  mkDataDir = folder:
+    concatStringsSep "/" [ config.nixos.server.data.path folder ];
 
-      # make sure postgresql starts first
-      systemd.services."nextcloud-setup" = {
-         requires = [ "postgresql.service" ];
-         after = [ "postgresql.service" ];
-      };
+  # todo : make it work :
 
-      # this is the value on ubuntu :
-      # users.users.postgres.uid = lib.mkForce 114;
-      # users.groups.postgres.gid = lib.mkForce 120;
-      # perhaps make it share group with nextcloud ?
-      users.users.postgres.group = "postgres";
-      users.users.postgres.extraGroups = [ "ssl-cert" ];
+  isPostgres = db == "postgresql";
 
-      # add postgres folder path
-      systemd.tmpfiles.rules= [ "d ${postgresPath} 0750 postgres  postgres -" ];
+  # helper functions
+  condArg = c: s: d: if c then s else d;
+  condAttrs = c: s: condArg c s { };
+  condDBType = pgsql: mysql: condArg isPostgres pgsql mysql;
 
-      # set folder for postgresql
-      services.postgresql = {
-         enable = true;
-         dataDir = postgresPath;
-      };
+  # settings for nextcloud
+  dbuser = condDBType "postgres" "mysql";
+  dbtype = condDBType "pgsql" "mysql";
+  dbservice = condDBType "postgresql.service" "mysql.service";
 
-      #services.postgresqlBackup = {
-      #  enable = false;
-      #  location = ""; # find a way to have a network location or another drive
-      #};
-   };
+in {
+  # easy to switch dtb type :
+  options.nixos.server.nextcloud.sql = {
+    db = lib.mkOption {
+      description = lib.concatStringsSep "," [ desc "one of " (toString dbtypes) ];
+      type = lib.types.enum dbtypes;
+      default = elemAt dbtypes 0;
+    };
+  };
+
+  # implementation
+  config = lib.mkIf nxt.enable {
+
+    # db user :
+    users.users."${dbuser}" = {
+      group = "${dbuser}";
+      extraGroups = [ "ssl-cert" ];
+      isSystemUser = true;
+    };
+    # TODO : Postgres group already exist and has gid
+    users.groups."${dbuser}" = { };
+
+    # start nextcloud after db is ready :
+    systemd.services."nextcloud-setup" = {
+      requires = [ dbservice ];
+      after = [ dbservice ];
+    };
+
+    # create folder for db
+    systemd.tmpfiles.rules =
+      [ "d ${mkDataDir dbtype} 0750 ${dbuser} ${dbuser} -" ];
+
+    # systemd services :
+    services = lib.mkMerge [
+      {
+        nextcloud.database.createLocally = true;
+        nextcloud.config = { inherit dbtype; };
+      }
+      (condAttrs isPostgres {
+        postgresql = mkIf isPostgres {
+          enable = isPostgres;
+          dataDir = mkDataDir dbtype;
+        };
+        # TODO : enable backup :
+        postgresqlBackup.enable = false;
+      })
+      (condAttrs (!isPostgres) {
+        mysql = lib.mkIf isPostgres {
+          enable = true;
+          dataDir = mkDataDir dbtype;
+          user = dbuser;
+          group = dbuser;
+          package = if db == "mariadb"
+          then pkgs.mariadb else pkgs.mysql80;
+        };
+        # TODO: enable backup :
+        mysqlBackup.enable = false;
+      })
+    ];
+  };
 }

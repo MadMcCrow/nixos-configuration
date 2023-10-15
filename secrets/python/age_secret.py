@@ -189,11 +189,19 @@ if __name__ == "__main__" :
         else :
             print( colored("Fail: ", Colors.FAIL) + "failed to encrypt secret with ssh key")
             exit(1)
-
+    # handle exceptions :
     except KeyboardInterrupt :
         print( colored("Fail: ", Colors.FAIL) + "user interrupted the process, exiting")
         exit(1)
-
     except PermissionError :
         print( colored("Fail: ", Colors.FAIL) + "cannot encrypt secret, permission denied (try again with sudo)")
         exit(1)
+    except EOFError :
+        print( colored("Fail: ", Colors.FAIL) + "cannot encrypt secret, ran without input")
+        exit(1)
+    except :
+        print( colored("Fail: ", Colors.FAIL) + "Unknown error")
+        exit(1)
+    else :
+        print( colored("Success: ", Colors.OKGREEN) + "nothing to do")
+        exit(0)
