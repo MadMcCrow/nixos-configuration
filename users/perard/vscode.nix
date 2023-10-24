@@ -5,7 +5,6 @@ with builtins;
 with pkgs.lib;
 let
 
-
   # Json settings for VS Code
   vsSettings = {
     "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', monospace";
@@ -16,13 +15,22 @@ let
     "update.mode" = "none";
     "window.titleBarStyle" = "native"; # use "custom" for vs-code title bar
     "window.restoreWindows" = "none";
-    "window.zoomLevel" = 1;
+    "window.zoomLevel" = 2;
     "workbench.colorTheme" = "GitHub Dark";
     "workbench.iconTheme" = "material-icon-theme";
     "workbench.colorCustomizations" = {
       "activityBar.activeBackground" = "#0000002C";
       "tab.inactiveBackground" = "#00000041"; # make tabs pop more
     };
+    # something that could be done for colors :
+    # "editor.tokenColorCustomizations" ={
+    # "functions"= "#179559";
+    # "numbers"= "#fff476";
+    # "types"= "#ff7f50";
+    # "comments"= "#555555";
+    # "variables"= "#ffffff";
+    # "keywords"= "#226f50";
+    # };
     "anycode.language.features" = {
       "folding" = true;
       "diagnostics" = true;
@@ -168,7 +176,6 @@ let
     sha256 = "sha256-LV3kyLWRd+yLtIOKB7zOdlCX5NO5RiGcBab09lyeO6A=";
   };
 
-
   # github https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github
   github-pr = vsMarketplace {
     name = "vscode-pull-request-github";
@@ -209,16 +216,23 @@ let
   };
 
   haxe = vsMarketplace {
-    name="vshaxe";
-    publisher= "nadako";
+    name = "vshaxe";
+    publisher = "nadako";
     version = "2.30.0";
     sha256 = "sha256-tzcX9sWjbA64bFeq8FV7l39p16nzYhvwHO3mvEleH1o=";
   };
   haxe-lint = vsMarketplace {
-    name ="haxe-checkstyle";
-    publisher="vshaxe";
-    version ="1.8.3";
-    sha256 = "";   
+    name = "haxe-checkstyle";
+    publisher = "vshaxe";
+    version = "1.8.3";
+    sha256 = "";
+  };
+
+  jetbrainsColors = vsMarketplace {
+    name = "jetbrains-new-dark";
+    publisher = "MoBalic";
+    version = "0.0.1";
+    sha256 = "";
   };
 
   # marketplace extensions
@@ -251,15 +265,15 @@ let
     github.github-vscode-theme
   ];
 in {
-      enable = true;
-      # disable update check and notification
-      enableUpdateCheck = false;
-      # use vscodium as vscode
-      package = pkgs.vscodium;
-      # allow installing extensions from marketplace
-      mutableExtensionsDir = false;
-      # enable extensions
-      extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
-      # JSon settings
-      userSettings = vsSettings;
+  enable = true;
+  # disable update check and notification
+  enableUpdateCheck = false;
+  # use vscodium as vscode
+  package = pkgs.vscodium;
+  # allow installing extensions from marketplace
+  mutableExtensionsDir = false;
+  # enable extensions
+  extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
+  # JSon settings
+  userSettings = vsSettings;
 }

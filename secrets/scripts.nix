@@ -26,21 +26,35 @@ let
 
   # scripts :
   src = ./python;
+  # the list of scripts and modules :
+  srciptModules = [ "age_crypt" "apply_secret" "colors" "ssh_keygen" "files" ];
 
 in {
-  ageSecret = pylib.mkCxFreezeBin {
-    inherit python src;
-    name = "nixage-secret";
-    main = "age_secret.py";
-    modules = [ "Crypto" "age" "colors" "ssh_keygen" ];
-    nativeBuildInputs = [ pycrypto pyage ];
-  };
 
-  sshKeygen = pylib.mkCxFreezeBin {
+  # create the key for encryption and decryption
+  genKeys = pylib.mkCxFreezeBin {
     inherit python src;
     name = "nixage-sshkeygen";
     main = "ssh_keygen.py";
-    modules = [ "Crypto" "age" "colors" ];
+    modules = [ "Crypto" "age" ] ++ srciptModules;
+    nativeBuildInputs = [ pycrypto pyage ];
+  };
+
+  # create a secret for encryption
+  genSecret = pylib.mkCxFreezeBin {
+    inherit python src;
+    name = "nixage-create";
+    main = "gen_secret.py";
+    modules = [ "Crypto" "age" ] ++ srciptModules;
+    nativeBuildInputs = [ pycrypto pyage ];
+  };
+
+  # decrypt secret anywhere you want
+  applySecret = pylib.mkCxFreezeBin {
+    inherit python src;
+    name = "nixage-apply";
+    main = "apply_secret.py";
+    modules = [ "Crypto" "age" ] ++ srciptModules;
     nativeBuildInputs = [ pycrypto pyage ];
   };
 }

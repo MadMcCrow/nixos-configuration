@@ -10,12 +10,11 @@ with lib.hm.gvariant;
       last-window-size = mkTuple [ 652 481 ];
     };
 
-    "org/gnome/GWeather4" = {
-      temperature-unit = "centigrade";
-    };
+    "org/gnome/GWeather4" = { temperature-unit = "centigrade"; };
 
     "org/gnome/Weather" = {
-      locations = "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
+      locations =
+        "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
     };
 
     "org/gnome/baobab/ui" = {
@@ -54,31 +53,93 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/app-folders/folders/Accessories" = {
-      apps = [ "org.gnome.Maps.desktop" "org.gnome.Todo.desktop" "org.gnome.Weather.desktop" "org.gnome.Contacts.desktop" "org.gnome.Calendar.desktop" "org.gnome.Calculator.desktop" "org.gnome.Notes.desktop" "org.gnome.clocks.desktop" "com.github.maoschanz.drawing.desktop" "org.gnome.Geary.desktop" "pidgin.desktop" "org.gnome.Software.desktop" "org.gnome.TextEditor.desktop" "ca.andyholmes.Valent.desktop" "org.gnome.Keysign.desktop" ];
+      apps = [
+        "org.gnome.Maps.desktop"
+        "org.gnome.Todo.desktop"
+        "org.gnome.Weather.desktop"
+        "org.gnome.Contacts.desktop"
+        "org.gnome.Calendar.desktop"
+        "org.gnome.Calculator.desktop"
+        "org.gnome.Notes.desktop"
+        "org.gnome.clocks.desktop"
+        "com.github.maoschanz.drawing.desktop"
+        "org.gnome.Geary.desktop"
+        "pidgin.desktop"
+        "org.gnome.Software.desktop"
+        "org.gnome.TextEditor.desktop"
+        "ca.andyholmes.Valent.desktop"
+        "org.gnome.Keysign.desktop"
+      ];
       categories = [ "Gnome" "Accessories" ];
       name = "Accessories";
     };
 
     "org/gnome/desktop/app-folders/folders/Code" = {
-      apps = [ "org.gnome.gitg.desktop" "org.gnome.Sysprof.desktop" "nemiver.desktop" "codium.desktop" ];
+      apps = [
+        "org.gnome.gitg.desktop"
+        "org.gnome.Sysprof.desktop"
+        "nemiver.desktop"
+        "codium.desktop"
+      ];
       categories = [ "Code" "Programming" "Debug" ];
       name = "Programming";
     };
 
     "org/gnome/desktop/app-folders/folders/Games" = {
-      apps = [ "steam.desktop" "net.openra.OpenRA-cnc.desktop" "net.openra.OpenRA.desktop" "net.openra.OpenRA-d2k.desktop" "info.beyondallreason.bar.desktop" "EVERSPACE.desktop" "valve-vrmonitor.desktop" "Warhammer 40,000 Dawn of War - Soulstorm.desktop" "valve-URI-vrmonitor.desktop" "valve-URI-steamvr.desktop" "How to Survive 2.desktop" "SteamVR.desktop" "io.github.sharkwouter.Minigalaxy.desktop" "Proton 4.2.desktop" "minecraft-launcher.desktop" ];
+      apps = [
+        "steam.desktop"
+        "net.openra.OpenRA-cnc.desktop"
+        "net.openra.OpenRA.desktop"
+        "net.openra.OpenRA-d2k.desktop"
+        "info.beyondallreason.bar.desktop"
+        "EVERSPACE.desktop"
+        "valve-vrmonitor.desktop"
+        "Warhammer 40,000 Dawn of War - Soulstorm.desktop"
+        "valve-URI-vrmonitor.desktop"
+        "valve-URI-steamvr.desktop"
+        "How to Survive 2.desktop"
+        "SteamVR.desktop"
+        "io.github.sharkwouter.Minigalaxy.desktop"
+        "Proton 4.2.desktop"
+        "minecraft-launcher.desktop"
+      ];
       categories = [ "Games" ];
       name = "Games";
     };
 
     "org/gnome/desktop/app-folders/folders/Graphics" = {
-      apps = [ "org.inkscape.Inkscape.desktop" "gimp.desktop" "blender.desktop" ];
+      apps =
+        [ "org.inkscape.Inkscape.desktop" "gimp.desktop" "blender.desktop" ];
       categories = [ "Graphics" "Video" "Image" "3D" ];
       name = "Graphics";
     };
 
     "org/gnome/desktop/app-folders/folders/Utilities" = {
-      apps = [ "gnome-abrt.desktop" "gnome-system-log.desktop" "nm-connection-editor.desktop" "org.gnome.baobab.desktop" "org.gnome.Connections.desktop" "org.gnome.DejaDup.desktop" "org.gnome.Dictionary.desktop" "org.gnome.DiskUtility.desktop" "org.gnome.eog.desktop" "org.gnome.Evince.desktop" "org.gnome.FileRoller.desktop" "org.gnome.fonts.desktop" "org.gnome.seahorse.Application.desktop" "org.gnome.tweaks.desktop" "org.gnome.Usage.desktop" "vinagre.desktop" "nixos-manual.desktop" "org.gnome.Settings.desktop" "org.gnome.Extensions.desktop" "gnome-system-monitor.desktop" "org.gnome.Boxes.desktop" "psensor.desktop" "solaar.desktop" ];
+      apps = [
+        "gnome-abrt.desktop"
+        "gnome-system-log.desktop"
+        "nm-connection-editor.desktop"
+        "org.gnome.baobab.desktop"
+        "org.gnome.Connections.desktop"
+        "org.gnome.DejaDup.desktop"
+        "org.gnome.Dictionary.desktop"
+        "org.gnome.DiskUtility.desktop"
+        "org.gnome.eog.desktop"
+        "org.gnome.Evince.desktop"
+        "org.gnome.FileRoller.desktop"
+        "org.gnome.fonts.desktop"
+        "org.gnome.seahorse.Application.desktop"
+        "org.gnome.tweaks.desktop"
+        "org.gnome.Usage.desktop"
+        "vinagre.desktop"
+        "nixos-manual.desktop"
+        "org.gnome.Settings.desktop"
+        "org.gnome.Extensions.desktop"
+        "gnome-system-monitor.desktop"
+        "org.gnome.Boxes.desktop"
+        "psensor.desktop"
+        "solaar.desktop"
+      ];
       categories = [ "X-GNOME-Utilities" ];
       name = "X-GNOME-Utilities.directory";
       translate = true;
@@ -87,8 +148,10 @@ with lib.hm.gvariant;
     "org/gnome/desktop/background" = {
       color-shading-type = "solid";
       picture-options = "zoom";
-      picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/keys-l.webp";
-      picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/keys-d.webp";
+      picture-uri =
+        "file:///run/current-system/sw/share/backgrounds/gnome/keys-l.webp";
+      picture-uri-dark =
+        "file:///run/current-system/sw/share/backgrounds/gnome/keys-d.webp";
       primary-color = "#aaaaaa";
       secondary-color = "#000000";
     };
@@ -116,7 +179,14 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/notifications" = {
-      application-children = [ "firefox" "discord" "steam" "org-gnome-nautilus" "org-gnome-console" "org-gnome-dejadup" ];
+      application-children = [
+        "firefox"
+        "discord"
+        "steam"
+        "org-gnome-nautilus"
+        "org-gnome-console"
+        "org-gnome-dejadup"
+      ];
     };
 
     "org/gnome/desktop/notifications/application/codium" = {
@@ -171,47 +241,47 @@ with lib.hm.gvariant;
       application-id = "steam.desktop";
     };
 
-    "org/gnome/desktop/peripherals/keyboard" = {
-      numlock-state = true;
-    };
+    "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
 
-    "org/gnome/desktop/peripherals/mouse" = {
-      accel-profile = "flat";
-    };
+    "org/gnome/desktop/peripherals/mouse" = { accel-profile = "flat"; };
 
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
       picture-options = "zoom";
-      picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/keys-l.webp";
+      picture-uri =
+        "file:///run/current-system/sw/share/backgrounds/gnome/keys-l.webp";
       primary-color = "#aaaaaa";
       secondary-color = "#000000";
     };
 
     "org/gnome/desktop/search-providers" = {
-      sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+      sort-order = [
+        "org.gnome.Contacts.desktop"
+        "org.gnome.Documents.desktop"
+        "org.gnome.Nautilus.desktop"
+      ];
     };
 
     "org/gnome/desktop/wm/keybindings" = {
-      maximize = [];
+      maximize = [ ];
       switch-applications = [ "<Super>Tab" ];
       switch-applications-backward = [ "<Shift><Super>Tab" ];
       switch-input-source = [ "<Super>space" "XF86Keyboard" ];
-      switch-input-source-backward = [ "<Shift><Super>space" "<Shift>XF86Keyboard" ];
+      switch-input-source-backward =
+        [ "<Shift><Super>space" "<Shift>XF86Keyboard" ];
       switch-windows = [ "<Alt>Tab" ];
       switch-windows-backward = [ "<Shift><Alt>Tab" ];
-      unmaximize = [];
+      unmaximize = [ ];
     };
 
     "org/gnome/desktop/wm/preferences" = {
       auto-raise = true;
       button-layout = "appmenu:minimize,maximize,close";
       focus-new-windows = "strict";
-      workspace-names = [];
+      workspace-names = [ ];
     };
 
-    "org/gnome/evolution-data-server" = {
-      migrated = true;
-    };
+    "org/gnome/evolution-data-server" = { migrated = true; };
 
     "org/gnome/file-roller/listing" = {
       list-mode = "as-folder";
@@ -243,8 +313,8 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/mutter/keybindings" = {
-      toggle-tiled-left = [];
-      toggle-tiled-right = [];
+      toggle-tiled-left = [ ];
+      toggle-tiled-right = [ ];
     };
 
     "org/gnome/mutter/wayland/keybindings" = {
@@ -258,22 +328,57 @@ with lib.hm.gvariant;
       search-view = "list-view";
     };
 
-    "org/gnome/nautilus/window-state" = {
-      initial-size = mkTuple [ 890 550 ];
-    };
+    "org/gnome/nautilus/window-state" = { initial-size = mkTuple [ 890 550 ]; };
 
     "org/gnome/settings-daemon/plugins/color" = {
       night-light-enabled = false;
     };
 
     "org/gnome/shell" = {
-      app-picker-layout = "[{'Accessories': <{'position': <0>}>, 'Games': <{'position': <1>}>, 'Graphics': <{'position': <2>}>, 'Code': <{'position': <3>}>, 'Utilities': <{'position': <4>}>}]";
+      app-picker-layout =
+        "[{'Accessories': <{'position': <0>}>, 'Games': <{'position': <1>}>, 'Graphics': <{'position': <2>}>, 'Code': <{'position': <3>}>, 'Utilities': <{'position': <4>}>}]";
       command-history = [ "lg" "r" ];
       disable-user-extensions = false;
-      disabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
-      enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" ];
-      favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" "steam.desktop" ];
-      looking-glass-history = [ "experimental_hdr=on" "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'" "exit()" "kill" "Exit" "exit" "log" "log( test)" "log( test )" "restart" "end" "return" ];
+      disabled-extensions =
+        [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
+      enabled-extensions = [
+        "quick-settings-tweaks@qwreey"
+        "blur-my-shell@aunetx"
+        "caffeine@patapon.info"
+        "just-perfection-desktop@just-perfection"
+        "openweather-extension@jenslody.de"
+        "pano@elhan.io"
+        "rocketbar@chepkun.github.com"
+        "runcat@kolesnikov.se"
+        "space-bar@luchrioh"
+        "valent@andyholmes.ca"
+        "wireless-hid@chlumskyvaclav.gmail.com"
+        "user-theme@gnome-shell-extensions.gcampax.github.com"
+        "gtk4-ding@smedius.gitlab.com"
+        "alttab-mod@leleat-on-github"
+      ];
+      favorite-apps = [
+        "org.gnome.Nautilus.desktop"
+        "firefox.desktop"
+        "org.gnome.Console.desktop"
+        "discord.desktop"
+        "codium.desktop"
+        "steam.desktop"
+      ];
+      looking-glass-history = [
+        "experimental_hdr=on"
+        "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'"
+        "exit()"
+        "kill"
+        "Exit"
+        "exit"
+        "log"
+        "log( test)"
+        "log( test )"
+        "restart"
+        "end"
+        "return"
+      ];
       welcome-dialog-last-shown-version = "43.2";
     };
 
@@ -282,13 +387,9 @@ with lib.hm.gvariant;
       remove-delay = true;
     };
 
-    "org/gnome/shell/extensions/appindicator" = {
-      icon-size = 0;
-    };
+    "org/gnome/shell/extensions/appindicator" = { icon-size = 0; };
 
-    "org/gnome/shell/extensions/blur-my-shell" = {
-      hacks-level = 0;
-    };
+    "org/gnome/shell/extensions/blur-my-shell" = { hacks-level = 0; };
 
     "org/gnome/shell/extensions/blur-my-shell/applications" = {
       blur = false;
@@ -371,7 +472,8 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/openweather" = {
-      city = "48.9906696,2.2794326>Eaubonne, Argenteuil, Val-d'Oise, Île-de-France, France métropolitaine, 95600, France>0";
+      city =
+        "48.9906696,2.2794326>Eaubonne, Argenteuil, Val-d'Oise, Île-de-France, France métropolitaine, 95600, France>0";
     };
 
     "org/gnome/shell/extensions/pano" = {
@@ -389,7 +491,8 @@ with lib.hm.gvariant;
       datemenu-remove-notifications = false;
       disable-adjust-content-border-radius = false;
       last-unsafe-state = false;
-      list-buttons = "[{\"name\":\"SystemItem\",\"label\":null,\"visible\":true},{\"name\":\"OutputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"InputStreamSlider\",\"label\":null,\"visible\":false},{\"name\":\"St_BoxLayout\",\"label\":null,\"visible\":true},{\"name\":\"BrightnessItem\",\"label\":null,\"visible\":true},{\"name\":\"NMWiredToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMWirelessToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMModemToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMBluetoothToggle\",\"label\":null,\"visible\":true},{\"name\":\"NMVpnToggle\",\"label\":null,\"visible\":true},{\"name\":\"BluetoothToggle\",\"label\":\"Bluetooth\",\"visible\":false},{\"name\":\"PowerProfilesToggle\",\"label\":\"Power Mode\",\"visible\":false},{\"name\":\"NightLightToggle\",\"label\":\"Night Light\",\"visible\":true},{\"name\":\"DarkModeToggle\",\"label\":\"Dark Style\",\"visible\":true},{\"name\":\"RfkillToggle\",\"label\":\"Airplane Mode\",\"visible\":false},{\"name\":\"RotationToggle\",\"label\":\"Auto Rotate\",\"visible\":false},{\"name\":\"CaffeineToggle\",\"label\":\"Caffeine\",\"visible\":true},{\"name\":\"DndQuickToggle\",\"label\":\"Do Not Disturb\",\"visible\":true},{\"name\":\"BackgroundAppsToggle\",\"label\":null,\"visible\":false},{\"name\":\"MediaSection\",\"label\":null,\"visible\":false},{\"name\":\"Notifications\",\"label\":null,\"visible\":true}]";
+      list-buttons = ''
+        [{"name":"SystemItem","label":null,"visible":true},{"name":"OutputStreamSlider","label":null,"visible":false},{"name":"InputStreamSlider","label":null,"visible":false},{"name":"St_BoxLayout","label":null,"visible":true},{"name":"BrightnessItem","label":null,"visible":true},{"name":"NMWiredToggle","label":null,"visible":true},{"name":"NMWirelessToggle","label":null,"visible":true},{"name":"NMModemToggle","label":null,"visible":true},{"name":"NMBluetoothToggle","label":null,"visible":true},{"name":"NMVpnToggle","label":null,"visible":true},{"name":"BluetoothToggle","label":"Bluetooth","visible":false},{"name":"PowerProfilesToggle","label":"Power Mode","visible":false},{"name":"NightLightToggle","label":"Night Light","visible":true},{"name":"DarkModeToggle","label":"Dark Style","visible":true},{"name":"RfkillToggle","label":"Airplane Mode","visible":false},{"name":"RotationToggle","label":"Auto Rotate","visible":false},{"name":"CaffeineToggle","label":"Caffeine","visible":true},{"name":"DndQuickToggle","label":"Do Not Disturb","visible":true},{"name":"BackgroundAppsToggle","label":null,"visible":false},{"name":"MediaSection","label":null,"visible":false},{"name":"Notifications","label":null,"visible":true}]'';
       media-control-compact-mode = true;
       media-control-enabled = true;
       notifications-enabled = true;
@@ -438,9 +541,7 @@ with lib.hm.gvariant;
       taskbar-preserve-position = true;
     };
 
-    "org/gnome/shell/extensions/runcat" = {
-      idle-threshold = 10;
-    };
+    "org/gnome/shell/extensions/runcat" = { idle-threshold = 10; };
 
     "org/gnome/shell/extensions/space-bar/behavior" = {
       position = "left";
@@ -453,9 +554,7 @@ with lib.hm.gvariant;
       overridden-settings = "{'org.gnome.mutter.edge-tiling': <false>}";
     };
 
-    "org/gnome/shell/extensions/user-theme" = {
-      name = "";
-    };
+    "org/gnome/shell/extensions/user-theme" = { name = ""; };
 
     "org/gnome/shell/keybindings" = {
       switch-to-application-1 = [ "<Super>1" ];
@@ -471,9 +570,7 @@ with lib.hm.gvariant;
       toggle-overview = [ "<Super>s" ];
     };
 
-    "org/gnome/shell/overrides" = {
-      edge-tiling = true;
-    };
+    "org/gnome/shell/overrides" = { edge-tiling = true; };
 
     "org/gnome/software" = {
       check-timestamp = mkInt64 1697308663;
@@ -481,13 +578,9 @@ with lib.hm.gvariant;
       flatpak-purge-timestamp = mkInt64 1695203836;
     };
 
-    "org/gnome/tweaks" = {
-      show-extensions-notice = false;
-    };
+    "org/gnome/tweaks" = { show-extensions-notice = false; };
 
-    "org/gtk/gtk4/settings/file-chooser" = {
-      show-hidden = true;
-    };
+    "org/gtk/gtk4/settings/file-chooser" = { show-hidden = true; };
 
     "org/gtk/settings/file-chooser" = {
       date-format = "regular";

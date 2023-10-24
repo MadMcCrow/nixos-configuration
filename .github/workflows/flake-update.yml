@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
-# TODO : replace by secrets
 env:
   commit:      ':robot::snowflake: flake.lock : update'
   pr_title:    ':robot::snowflake: update flake lock '
@@ -25,13 +24,12 @@ jobs:
       - name: Generate flake.json
         run: |
           nix flake show --json > flake.json
-      # TODO : replace by parametrized jq command to work with every repo !
       - id: gen_configs
         run: |
           configurations=$(jq -c '.nixosConfigurations | keys' < flake.json)
           echo "configurations=$configurations" >> $GITHUB_OUTPUT
-          
-  
+
+
 
   # update flake inputs
   update_flake:
@@ -48,7 +46,7 @@ jobs:
           name: flake-lock
           path: flake.lock
 
-  # build new flake 
+  # build new flake
   build_flake:
     runs-on: ubuntu-20.04
     needs: [generate_matrix, update_flake]
@@ -123,4 +121,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       shell: bash
-        

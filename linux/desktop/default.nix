@@ -1,16 +1,22 @@
 # desktop/default.nix
 # 	Nixos Desktop Environment settings
-#	TODO : regroup KDE/gnome
-# TODO : regroup xone/logitech
 { config, pkgs, lib, inputs, ... }:
 with builtins;
-with lib;
 let
-  cfg = config.desktop;
-  submodules = [ ./apps.nix ./gnome.nix ./games.nix ];
+  cfg = config.nixos.desktop;
 in {
-  options.nixos.desktop.enable = (mkEnableOption "desktop") // {
-    default = true;
+  options.nixos.desktop.enable = (lib.mkEnableOption "desktop") // {
+    default = false;
   };
-  imports = submodules;
+
+  imports = [
+    ./apps
+    ./artwork.nix
+    ./xfce.nix
+    ./gtk.nix
+    ./kde.nix
+    ./gnome.nix
+    ./cinnamon.nix
+    ./display-manager.nix
+  ];
 }

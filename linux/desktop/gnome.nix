@@ -1,7 +1,7 @@
 # gnome.nix
 # 	Nixos Gnome Desktop environment settings
 # TODO : more curated/ personnal version of gnome
-{ config, pkgs, lib, impermanence, ... }:
+{ config, pkgs, lib, ... }:
 with builtins;
 with lib;
 let
@@ -21,10 +21,10 @@ let
       gnome-calendar # the calendar app
       gnome-logs # systemd logs
       gnome-calculator # a calculator for quick math
-      nautilus               # file manager
-      gnome-backgrounds      # gnome collection of cool backgrounds
+      nautilus # file manager
+      gnome-backgrounds # gnome collection of cool backgrounds
       gnome-shell-extensions # manage and control extensions
-      seahorse               # manage gpg keys
+      seahorse # manage gpg keys
       file-roller # compression and decompression of files
       gnome-system-monitor # self explainatory
     ]) ++ (with pkgs; [
@@ -99,10 +99,6 @@ in {
     # do you want gnome Desktop environment
     enable =
       mkEnableOptionDefault "gnome, the default desktop environment" false;
-    # wayland support
-    wayland =
-      mkEnableOptionDefault "Wayland, the new standard meant to replace Xorg"
-      true;
   };
 
   # base config for gnome
@@ -114,14 +110,7 @@ in {
       excludePackages = [ pkgs.xterm ] ++ gnomeUnused;
       desktopManager.xterm.enable = false;
       desktopManager.gnome.enable = true;
-      # use gdm :
-      displayManager.gdm = {
-        enable = true;
-        wayland = cfg.wayland;
-      };
-
     };
-    programs.xwayland.enable = cfg.wayland;
 
     # Remove default gnome apps unless explicitly requested
     environment.gnome.excludePackages = gnomeUnused;

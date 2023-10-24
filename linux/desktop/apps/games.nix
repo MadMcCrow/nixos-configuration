@@ -15,9 +15,10 @@ let
   stable-pkgs = pkgs;
 
   # shortcut :
-  nos = config.nixos;
-  dsk = nos.desktop;
-  cfg = dsk.games;
+  dsk = config.nixos.desktop;
+  aps = dsk.apps;
+  cfg = aps.games;
+
   # helper option function
   mkEnableOptionDefault = desc: default:
     (mkEnableOption desc) // {
@@ -28,11 +29,19 @@ let
 
   # vr libs :  openhmd openxr-loader pango
   # Steam VR
-  steamlibs = pkgs : with pkgs; [ libglvnd libgdiplus libpng procps usbutils libcap];
+  steamlibs = pkgs:
+    with pkgs; [
+      libglvnd
+      libgdiplus
+      libpng
+      procps
+      usbutils
+      libcap
+    ];
 
 in {
   # interface
-  options.nixos.desktop.games = {
+  options.nixos.desktop.apps.games = {
     enable = mkEnableOptionDefault "gaming on nixos" false;
     logitech.enable = mkEnableOptionDefault "logitech software" false;
     xone.enable = mkEnableOptionDefault "XBox One driver" true;
@@ -43,7 +52,7 @@ in {
   };
 
   # config
-  config = mkIf cfg.enable {
+  config = mkIf (cfg.enable && aps.enable) {
     # drivers
     hardware = {
       xone.enable = cfg.xone.enable;
@@ -72,11 +81,15 @@ in {
     # Packages
     environment.systemPackages = with pkgs;
       concatLists [
-      (condList cfg.logitech.enable [ logitech-udev-rules solaar ])
-      (condList cfg.xone.enable [ xow_dongle-firmware config.boot.kernelPackages.xone])
-      (condList cfg.steam.enable [ steam steam-run steamcmd ] ++ (steamlibs pkgs))
-      (condList cfg.gog.enable [ minigalaxy ])
-      (condList cfg.minecraft.enable [prismlauncher])
+        (condList cfg.logitech.enable [ logitech-udev-rules solaar ])
+        (condList cfg.xone.enable [
+          xow_dongle-firmware
+          config.boot.kernelPackages.xone
+        ])
+        (condList cfg.steam.enable [ steam steam-run steamcmd ]
+          ++ (steamlibs pkgs))
+        (condList cfg.gog.enable [ minigalaxy ])
+        (condList cfg.minecraft.enable [ prismlauncher ])
       ];
 
     # env vars for steam and steam VR
@@ -93,13 +106,12 @@ in {
         "steam-run"
         "steamcmd"
       ])
-      (condList cfg.minecraft.enable [])];
+      (condList cfg.minecraft.enable [ ])
+    ];
 
     packages.overlays = condList cfg.steam.enable [
       (self: super: {
-        steam = super.steam.override {
-          extraPkgs = steamlibs;
-        };
+        steam = super.steam.override { extraPkgs = steamlibs; };
       })
     ];
   };

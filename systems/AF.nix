@@ -11,13 +11,20 @@ with builtins; {
 
     # desktop env
     desktop = {
+      gtk.installAll = true;
       enable = true;
-      gnome.enable = true;
-      games.enable = true; # video games, you should try them sometives
+      cinnamon.enable = true;
+      apps.flatpak.enable = true;
+      apps.games.enable = true; # video games, you should try them sometives
+    };
+
+    server = {
+      enable = true;
+      data.path = "/run/server";
     };
 
     # kernel packages
-    kernel.extraKernelPackages =
+    kernel.extraPackages =
       [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
     kernel.params = [ "pci=noats" "amd_iommu=on" "iommu=pt" ];
 

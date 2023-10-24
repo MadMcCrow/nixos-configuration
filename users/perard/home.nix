@@ -7,13 +7,14 @@ let
 
   # multiplatform support
   platform = pkgs.system;
-  isLinux  = strings.hasSuffix "linux"  platform;
+  isLinux = strings.hasSuffix "linux" platform;
   isDarwin = strings.hasSuffix "darwin" platform;
 
-  mkCondSet = base : cond : ifTrue : ifFalse :  mkMerge [base (if cond then ifTrue else ifFalse )];
+  mkCondSet = base: cond: ifTrue: ifFalse:
+    mkMerge [ base (if cond then ifTrue else ifFalse) ];
 
   # true if this program can work
-  supported = pkg: ( elem platform pkg.meta.platforms) && !pkg.meta.unsupported;
+  supported = pkg: (elem platform pkg.meta.platforms) && !pkg.meta.unsupported;
 
   # firefox-gnome-theme
   firefox-gnome-theme = pkgs.stdenvNoCC.mkDerivation rec {
@@ -47,7 +48,7 @@ in {
   imports = [ ./dconf.nix ];
 
   # packages to install to profile
-  home.packages = filter ( x: supported x) (with pkgs; [
+  home.packages = filter (x: supported x) (with pkgs; [
     git
     gh
     eza
@@ -71,26 +72,11 @@ in {
   in code // { enable = supported code.package; };
 
   # FIREFOX
-  programs.firefox =
-  let
-  package = pkgs.firefox-beta;
+  programs.firefox = let package = pkgs.firefox-beta;
   in {
     enable = supported package;
     inherit package;
-    # GTK4 theme for firefox
-    profiles.nix-user-profile = {
-      userChrome = ''@import "firefox-gnome-theme/userChrome.css";'';
-      userContent = ''@import "firefox-gnome-theme/userContent.css";'';
-      settings = {
-        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        "browser.uidensity" = 0;
-        "svg.context-properties.content.enabled" = true;
-        "browser.theme.dark-private-windows" = false;
-      };
-    };
   };
-  home.file.".mozilla/firefox/nix-user-profile/chrome/firefox-gnome-theme".source =
-    firefox-gnome-theme;
 
   # GIT
   programs.git = {
@@ -107,15 +93,13 @@ in {
   };
 
   # github cli tool
-  programs.gh = mkCondSet
-    {
-      enable = supported pkgs.gh;
-      settings.git_protocol = "https";
-      extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
-    }
-    isLinux
-    {gitCredentialHelper.enable = true;}
-    {enableGitCredentialHelper = true;};
+  programs.gh = mkCondSet {
+    enable = supported pkgs.gh;
+    settings.git_protocol = "https";
+    extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
+  } isLinux { gitCredentialHelper.enable = true; } {
+    enableGitCredentialHelper = true;
+  };
 
   # needs custom merge
   #programs = if isLinux then {git-credential-oauth.enable = true;} else {};
@@ -125,7 +109,20 @@ in {
     enable = supported pkgs.zsh;
     dotDir = ".config/zsh";
     enableAutosuggestions = true;
+    enableCompletion = true;
     autocd = true;
+    plugins = [
+      {
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "chisui";
+          repo = "zsh-nix-shell";
+          rev = "v0.7.0";
+          sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
+        };
+      }
+    ];
     history = {
       size = 100;
       ignoreDups = true;
@@ -134,13 +131,10 @@ in {
       share = true;
     };
     # alias vscodium to vscode
-    shellAliases = {
-      code = "codium";
-    };
-  }
-  isLinux
-  {syntaxHighlighting.enable = true;}
-  {enableSyntaxHighlighting = true; };
+    shellAliases = { code = "codium"; };
+  } isLinux { syntaxHighlighting.enable = true; } {
+    enableSyntaxHighlighting = true;
+  };
 
   services.gpg-agent = mkIf isLinux {
     enable = true;

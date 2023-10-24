@@ -1,142 +1,11 @@
 # linux/default.nix
 #	Nixos on linux
-{ pkgs, config, lib, inputs, agenix, ... }:
+{ pkgs, config, lib, ... }:
 with builtins;
-with lib;
 let
   # shortcut
   cfg = config.nixos;
 
-  # submodules
-  # (things to complicated or too specific to have directly in the default linux config)
-  submodules = [ ./desktop ./server ];
-
-  # helper functions
-  mkEnableOptionDefault = desc: default:
-    mkEnableOption (desc) // {
-      inherit default;
-    };
-  mkStringOption = desc: default:
-    mkOption {
-      description = desc;
-      inherit default;
-      type = types.str;
-    };
-  mkStringsOption = desc: default:
-    mkOption {
-      description = desc;
-      inherit default;
-      type = types.listOf types.str;
-    };
-  mkDrvOption = desc: default:
-    mkOption {
-      description = desc;
-      inherit default;
-      type = types.package;
-    };
-  mkDrvsOption = desc: default:
-    mkOption {
-      description = desc;
-      inherit default;
-      type = types.listOf types.package;
-    };
-  mkEnumOption = desc: values:
-    mkOption {
-      description = concatStringsSep "," [ desc "one of " (toString values) ];
-      type = types.enum values;
-      default = elemAt values 0;
-    };
-
-  mkScriptsOption = desc:
-    mkOption {
-      type = types.listOf types.attrs;
-      description = concatStringsSep "\n" [
-        desc
-        "list of sets containing `name` and either `pkg` or `text`"
-      ];
-      # check = x : (hasAttr "pkg" x or hasAttr "text" x) && hasAttr "name" x;
-      default = [ ];
-    };
-
-  condAttr = s: a: d: if hasAttr a s then getAttr a s else d;
-  condList = cond: value: if cond then value else [ ];
-  condString = cond: value: if cond then value else "";
-  vendorSwitch = s: v: l: d: err:
-    if (any (x: x == v) l) then condAttr s v d else throw err;
-  hashWithLength = str: len:
-    elemAt (elemAt (split "(.{${toString len}})" (hashString "md5" str)) 1) 0;
-
-  # ZFS
-  ## rollback command
-  zfsEnable = true; # cfg.zfs.enable;
-  pl = cfg.zfs.rollback.pool;
-  ds = cfg.zfs.rollback.dataset;
-  sn = cfg.zfs.rollback.snapshot;
-  rollbackCommand = "zfs rollback -r ${pl}/${ds}@${sn}";
-  zfsModProbConfig = "options zfs l2arc_noprefetch=0 zfs_arc_max=1073741824";
-  sysPool = cfg.zfs.systemPool;
-  mkZFS = name: device: neededForBoot: {
-    inherit name;
-    value = {
-      inherit device neededForBoot;
-      mountPoint = name;
-      fsType = "zfs";
-    };
-  };
-  ZFSList = [
-    (mkZFS "/" "${sysPool}/local/root" true)
-    (mkZFS "/nix" "${sysPool}/local/nix" true)
-    (mkZFS "/nix/persist" "${sysPool}/safe/persist" true)
-    (mkZFS "/home" "${sysPool}/safe/home" false)
-  ];
-  zFileSystems = listToAttrs (if zfsEnable then ZFSList else [ ]);
-
-  # Kernel
-  defaultKernelMods = [
-    "nvme"
-    "xhci_pci"
-    "xhci_hcd"
-    "ahci"
-    "usbhid"
-    "usb_storage"
-    "sd_mod"
-    "dm-snapshot"
-  ];
-  kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-  kernelParams = [ "nohibernate" "quiet" "idle=nomwait" ];
-
-  # CPU
-  # TODO : virtualisation
-  cpuVendors = [ "amd" "intel" ];
-  cpuVendorSwitch = s: d:
-    vendorSwitch s cfg.cpu.vendor gpuVendors d "please define nixos.cpu.vendor";
-  cpuVirtualisation = cpuVendorSwitch { "amd" = { }; } { };
-
-  # GPU
-  # TODO : Clean
-  gpuVendors = [ "amd" "intel" ];
-  gpuVendorSwitch = s: d:
-    vendorSwitch s cfg.gpu.vendor gpuVendors d "please define nixos.gpu.vendor";
-  gpuKernelModule = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
-  gpuOGLPackages =
-    gpuVendorSwitch { "intel" = [ pkgs.intel-media-driver pkgs.vaapiIntel ]; }
-    [ ];
-  gpuDrivers = gpuVendorSwitch { "amd" = [ "amdgpu" ]; } [ ];
-  gpuVars = gpuVendorSwitch { "amd" = { AMD_VULKAN_ICD = "RADV"; }; } { };
-  gpuTmpRules = gpuVendorSwitch {
-    "amd" = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
-  } [ ];
-  # TODO : intel override / overlay :
-  gpuOverrides = gpuVendorSwitch {
-    "intel" = {
-      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-    };
-  } { };
-
-  vaapi = with pkgs; [ libvdpau-va-gl vaapiVdpau ];
-  ocl = with pkgs; [ rocmPackages.clr rocmPackages.clr.icd ];
-
-  # updates:
   # this flake
   flake = "MadMcCrow/nixos-configuration";
   updateDates = cfg.upgrade.updateDates;
@@ -148,29 +17,37 @@ let
         echo "Please run nixos-update as root or with sudo"; exit 2
       fi
       ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake github:${flake}#
-      RESULT=$?
-      ${concatStringsSep "\n" cfg.update.extraCommands}
-      exit $RESULT
+      exit $?
     '';
   };
 
+  mkOptionBase = type: description: default: lib.mkOption {inherit type description default;};
+
+  mkOptionDrv  = desc: d: (mkOptionBase lib.types.package desc d);
+
+  mkEnumOption = desc: list:  lib.mkOption {
+      description = (concatStringsSep "," [ desc "one of " (toString list) ]);
+      type = lib.types.enum list;
+      default = elemAt list 0;
+    };
+
 in {
   #interface
-  options.nixos = {
+  options.nixos = with lib.types; {
     # this is for having a linux system
-    enable = mkEnableOptionDefault "Nixos Linux" true;
+    enable = mkOptionBase bool "enable Nixos Linux" true;
 
     # HostName : (most important)
     host = {
-      name = mkStringOption "hostname / computer name" "";
-      id = mkStringOption "host unique ID - 8 hex digits"
-        (hashWithLength cfg.host.name 8);
+      name = mkOptionBase str "hostname / computer name" "";
+      id = mkOptionBase str "host unique ID - 8 hex digits"
+        (elemAt (elemAt (split "(.{8})" (hashString "md5" cfg.host.name)) 1) 0);
     };
 
     # (auto-)Upgrade scheme :
     upgrade = {
-      enable = mkEnableOptionDefault "auto upgrade" true;
-      updateDates = mkOption {
+      enable = mkOptionBase bool "enable auto upgrade" true;
+      updateDates = lib.mkOption {
         type = types.str;
         default = "04:40";
         example = "daily";
@@ -180,127 +57,58 @@ in {
           {manpage}`systemd.time(7)`.
         '';
       };
-      autoReboot = mkEnableOptionDefault "reboot post upgrade" true;
+      autoReboot =  mkOptionBase bool "reboot post upgrade" true;
     };
 
     # manual update
-    update = {
-      # runtime dependencies of
-      dependencies = mkOption {
-        type = types.listOf types.package;
-        default = [ ];
-        description = ''
+    update.dependencies =  mkOptionBase (listOf package) ''
           list of packages necessary for `nixos-update`
-        '';
-      };
-      extraCommands = mkOption {
-        type = types.listOf types.str;
-        default = [ ];
-        description = ''
+        '' [];
+    update.extraCommands = mkOptionBase (listOf str) ''
           list of commands to run when doing manual update with `nixos-update`
-        '';
-      };
-    };
-
-    # ZFS file system specifics
-    zfs = {
-      enable = mkEnableOptionDefault "zfs filesystem" true;
-      systemPool = mkStringOption "main system pool" "nixos-pool";
-      rollback = {
-        pool = mkStringOption "pool to rollback" "nixos-pool";
-        dataset = mkStringOption "dataset to rollback" "local/root";
-        snapshot = mkStringOption "snapshot for rollback" "blank";
-      };
-    };
-
-    kernel = {
-      packages = mkDrvOption "kernel packages" kernelPackages;
-      extraKernelPackages = mkStringsOption "Extra kernel Packages" [ ];
-      params = mkStringsOption "Extra kernel Params" [ ];
-    };
+        '' [];
 
     # nixos-rebuild
     rebuild = {
-      genCount = mkOption {
+      genCount = lib.mkOption {
         default = 5;
-        type = types.int;
+        type = int;
         description = "number of generations to keep";
       };
     };
 
     # printing
-    CUPS = { enable = mkEnableOptionDefault "CUPS : printer support" false; };
+    CUPS = { enable = mkOptionBase bool "enable printer support" false; };
 
-    # CPU firmware and power settings
-    cpu = {
-      vendor = mkEnumOption "CPU manufacturer" cpuVendors;
-      powermode = mkEnumOption "powergovernor mode" [
-        "ondemand"
-        "powersave"
-        "performance"
-      ];
-    };
-
-    # Graphics hardware settings
-    gpu = {
-      enable = mkEnableOptionDefault "GPU support" true;
-      vendor = mkEnumOption "CPU manufacturer" gpuVendors;
-    };
+    # CPU/GPU
+    cpu.vendor = mkEnumOption "CPU manufacturer" [ "amd" "intel" ];
+    cpu.powermode = mkEnumOption "power governor" [ "ondemand" "powersave" "performance" ];
+    gpu.enable = mkOptionBase bool "enable GPU support" true;
+    gpu.vendor = mkEnumOption "GPU manufacturer" [ "amd" "intel" ];
 
     # audio (via piperwire as default)
-    audio = {
-      enable = mkEnableOptionDefault "audio suppprt" true;
-      usePipewire = mkEnableOptionDefault "pipewire" true;
-    };
+    audio.enable = mkOptionBase bool "enable audio suppprt" true;
+    audio.usePipewire = mkOptionBase bool "use pipewire" true;
 
     # TODO : add SE/Hardened linux support
-    enhancedSecurity = {
-      enable = mkEnableOptionDefault "extra security" false;
-      appArmor.enable =
-        mkEnableOptionDefault "App Armor, see https://www.apparmor.net/" true;
-    };
-
-    network = {
-      # systemd-networkd-wait-online can timeout and fail if there are no network interfaces available for it to manage.
-      waitForOnline = mkEnableOptionDefault "wait for networking at boot" false;
-      # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
-      wakeOnLineInterfaces =
-        mkStringsOption "Interfaces to enable wakeOnLan" [ ];
-    };
-
-    # scripts executed on "nixos"-rebuild implementation is system dependant
-    rebuildScripts = {
-      pre = mkScriptsOption "scripts run before the rebuild command";
-      # TODO
-      activation = mkScriptsOption "scripts run after the rebuild command";
-    };
+    enhancedSecurity.enable = mkOptionBase bool "enable extra security" false;
+    enhancedSecurity.appArmor.enable =
+         mkOptionBase bool "enable App Armor, see https://www.apparmor.net/" true;
 
   };
 
   # imports
-  imports = submodules;
+  imports = [ ./desktop ./server ./kernel.nix ./zfs.nix ./network.nix ./shell.nix ];
 
   # config
-  config = mkIf (cfg.enable) {
+  config = lib.mkIf (cfg.enable) {
 
-    # Networking
-    networking = {
-      # unique identifier for this machine
-      hostName = cfg.host.name;
-      hostId = cfg.host.id;
+    # unique identifier for this machine
+    networking.hostName = cfg.host.name;
+    networking.hostId = cfg.host.id;
 
-      # use dhcp for addresses. static adresses are given by the rooter
-      useDHCP = lib.mkDefault true;
-      enableIPv6 = true;
-
-      networkmanager.enable = true;
-      firewall.allowedTCPPorts = [ 22 ];
-
-      interfaces = listToAttrs (map (x: {
-        name = "${x}";
-        value = { wakeOnLan.enable = true; };
-      }) cfg.network.wakeOnLineInterfaces);
-    };
+    nixos.kernel.modules =
+      lib.lists.optional (cfg.gpu.vendor == "amd") "amdgpu";
 
     # Locale
     i18n.defaultLocale = "en_US.UTF-8";
@@ -315,30 +123,20 @@ in {
     # keyboard layout on desktop
     services.xserver = {
       enable = cfg.gpu.enable;
-      videoDrivers = gpuDrivers;
+      videoDrivers = lib.lists.optional (cfg.gpu.vendor == "amd") "amdgpu";
       layout = "us";
       xkbVariant = "intl";
       xkbOptions = "eurosign:e";
     };
 
     # CUPS printer support :
-    services.printing = {
-      enable = cfg.CUPS.enable; # default to false
-      #stateless = true;
-      #drivers = [ ];
-    };
-
-    # zfs
-    services.zfs = {
-      trim.enable = zfsEnable;
-      autoScrub.enable = zfsEnable;
-    };
+    services.printing.enable = cfg.CUPS.enable; # default to false
+    # services.printing.stateless = true;
+    # services.printing.drivers = [ ];
 
     # avahi for mdns :
-    services.avahi = {
-      enable = true;
-      nssmdns = true;
-    };
+    services.avahi.enable = true;
+    services.avahi.nssmdns = true;
 
     # env :
     environment = with pkgs; {
@@ -353,16 +151,16 @@ in {
         lm_sensors
         eza
       ] ++ [ cachix vulnix ] ++ [ git git-crypt pre-commit git-lfs ]
-        ++ [ nixos-update ] ++ [ agenix.packages.x86_64-linux.default age ]
-        ++ (condList cfg.gpu.enable [ vulkan-tools ])
-        ++ (condList cfg.enhancedSecurity.enable [ policycoreutils ])
-        ++ (condList (cfg.audio.enable && cfg.audio.usePipewire) [
+        ++ [ nixos-update ] ++ [ age ]
+        ++ (lib.lists.optionals cfg.gpu.enable [ vulkan-tools ])
+        ++ (lib.lists.optionals cfg.enhancedSecurity.enable [ policycoreutils ])
+        ++ (lib.lists.optionals (cfg.audio.enable && cfg.audio.usePipewire) [
           wireplumber
           helvum
         ]);
 
       # set env-vars here
-      variables = gpuVars;
+      variables = lib.attrsets.optionalAttrs (cfg.gpu.vendor == "amd") { AMD_VULKAN_ICD = "RADV"; };
     };
 
     # zsh can be used as default shell
@@ -386,17 +184,6 @@ in {
         "zfs"
       ];
 
-      initrd = {
-        # use availableKernelModules to avoid force loading them
-        kernelModules = defaultKernelMods;
-        postDeviceCommands = lib.mkAfter rollbackCommand;
-      };
-
-      # Kernel Packages
-      inherit kernelPackages;
-      extraModulePackages =
-        map (x: kernelPackages."${x}") cfg.kernel.extraKernelPackages;
-
       # UEFI boot loader with systemdboot
       loader = {
         systemd-boot.enable = true; # use gummyboot for faster boot
@@ -404,24 +191,12 @@ in {
         systemd-boot.configurationLimit = cfg.rebuild.genCount;
       };
 
-      # add zfs modprobe
-      extraModprobeConfig =
-        mkAfter (if zfsEnable then zfsModProbConfig else "");
-
-      # import zfs pools at boot
-      zfs = {
-        forceImportRoot = zfsEnable;
-        forceImportAll = zfsEnable;
-        enableUnstable = false;
-      };
-
-      # boot kernel params
-      kernelParams = cfg.kernel.params ++ kernelParams;
       consoleLogLevel = 3; # avoid useless errors
     };
 
-    # mount filesystems
-    fileSystems = zFileSystems // {
+    # mount filesystems :
+    # we try to always have boot as 8001-EF00
+    fileSystems = {
       "/boot" = {
         device = "/dev/disk/by-uuid/8001-EF00";
         fsType = "vfat";
@@ -430,38 +205,17 @@ in {
 
     # nix setup
     nix = {
-
-      package = pkgs.nixVersions.unstable;
-      extraOptions = "experimental-features = nix-command flakes";
-
       # GarbageCollection
       gc = {
         automatic = true;
         dates = updateDates;
         persistent = true;
       };
-
-      # detect files in the store that have identical contents, and replaces them with hard links to a single copy.
+      # detect files in the store that have identical contents,
+      # and replaces them with hard links to a single copy.
       settings.auto-optimise-store = true;
-
-      # automate optimising the store :
-      optimise = {
-        automatic = true;
-        dates = [ updateDates ];
-      };
-
-      # add support for cachix
-      settings = {
-        substituters = [
-          "https://nixos-configuration.cachix.org"
-          "https://nix-community.cachix.org"
-          "https://cache.nixos.org/"
-        ];
-        trusted-public-keys = [
-          "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
-          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        ];
-      };
+      optimise.automatic = true;
+      optimise.dates = [ updateDates ];
     };
 
     # root user
@@ -472,25 +226,30 @@ in {
     };
 
     # PowerManagement
-    powerManagement = {
-      enable = true;
-      cpuFreqGovernor = cfg.cpu.powermode;
-    };
+    powerManagement.enable = true;
+    powerManagement.cpuFreqGovernor = cfg.cpu.powermode;
 
     # firmwares and drivers : CPU/GPU
     hardware = {
       enableRedistributableFirmware = true;
       cpu."${cfg.cpu.vendor}" = { updateMicrocode = true; };
 
-      opengl = mkIf cfg.gpu.enable {
+      opengl = lib.mkIf cfg.gpu.enable {
         enable = true;
         # direct rendering (necessary for vulkan)
         driSupport = true;
         driSupport32Bit = true;
-        extraPackages = gpuOGLPackages ++ vaapi ++ ocl;
+        extraPackages = with pkgs;
+          (lib.lists.optionals (cfg.gpu.vendor == "intel") [
+            intel-media-driver
+            vaapiIntel
+          ]) ++ [ libvdpau-va-gl vaapiVdpau ]
+          ++ [ rocmPackages.clr rocmPackages.clr.icd ];
       };
     };
-    systemd.tmpfiles.rules = gpuTmpRules;
+
+    systemd.tmpfiles.rules = lib.lists.optional (cfg.gpu.vendor == "amd")
+      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}";
 
     # AUDIO
     sound.enable = cfg.audio.enable
@@ -511,25 +270,21 @@ in {
       && cfg.enhancedSecurity.appArmor;
 
     # Faster boot:
-    systemd.services = {
-      NetworkManager-wait-online.enable = cfg.network.waitForOnline;
-      systemd-fsck.enable = false;
+    systemd.services.NetworkManager-wait-online.enable =
+      cfg.network.waitForOnline;
+    systemd.services.systemd-fsck.enable = false;
+
+    # upgrade automatically each day
+    system.autoUpgrade = {
+      flake = "github:${flake}";
+      enable = cfg.upgrade.enable; # enable auto upgrades
+      persistent = true; # apply if missed
+      dates = cfg.upgrade.updateDates;
+      allowReboot = cfg.upgrade.autoReboot;
     };
 
-    system = {
-
-      # upgrade automatically each day
-      autoUpgrade = {
-        flake = "github:${flake}";
-        enable = cfg.upgrade.enable; # enable auto upgrades
-        persistent = true; # apply if missed
-        dates = cfg.upgrade.updateDates;
-        allowReboot = cfg.upgrade.autoReboot;
-      };
-
-      # our configuration is working with "23.11"
-      stateVersion = "23.11";
-    };
+    # our configuration is working with "23.11"
+    system.stateVersion = "23.11";
 
     # disable nixos manual : just use the web version !
     documentation.nixos.enable = false;

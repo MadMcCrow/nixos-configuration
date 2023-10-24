@@ -23,11 +23,6 @@
     home-manager-darwin.url = "github:nix-community/home-manager/release-23.05";
     home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
-    # Agenix for secrets
-    agenix.url = "github:ryantm/agenix";
-    agenix.inputs.nixpkgs.follows = "nixpkgs";
-    agenix.inputs.darwin.follows = "darwin";
-
     # pycnix for python scripts
     pycnix.url = "github:MadMcCrow/pycnix";
     pycnix.inputs.nixpkgs.follows = "nixpkgs";
@@ -38,7 +33,7 @@
     let
 
       # modules shared between linux and MacOS
-      baseModules = [ ./platform ./users ./secrets ./development ];
+      baseModules = [ ./nix ./users ./secrets ./development ];
 
       # shortcut functions :
       nixOSx86 = sysModule:
@@ -50,7 +45,6 @@
           inherit system specialArgs;
           modules = baseModules ++ [
             ./linux
-            inputs.agenix.nixosModules.default
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule
@@ -63,7 +57,6 @@
           specialArgs = inputs;
           modules = [
             ./darwin
-            inputs.agenix.darwinModules.default
             inputs.home-manager-darwin.darwinModules.home-manager
             sysModule
           ] ++ baseModules;

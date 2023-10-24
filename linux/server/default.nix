@@ -1,5 +1,6 @@
 # server/default.nix
 # 	each server service is enabled in a separate sub-module
+#   TODO : use containers !
 { config, pkgs, lib, ... }:
 with builtins;
 with lib;
@@ -25,21 +26,23 @@ in {
   # interface
   options.nixos.server = {
     enable = mkEnableOptionDefault "server services" false;
-    adminEmail = mkStringOption "email to contact in case of problem" "admin@server.net";
+    adminEmail =
+      mkStringOption "email to contact in case of problem" "admin@server.net";
     hostName = mkStringOption "server host name" "localhost";
     cockpit.enable = mkEnableOptionDefault "cockpit web-based interface" false;
-    seafile.enable = mkEnableOptionDefault "seafile file manager"        false;
-    data.path = mkStringOption "path to store data for the server" "/persist/server/data";
+    seafile.enable = mkEnableOptionDefault "seafile file manager" false;
+    data.path =
+      mkStringOption "path to store data for the server" "/persist/server/data";
   };
 
   # nextcloud is in another module :
-  imports = [ ./nextcloud ];
+  imports = [ ./nextcloud ./dns ];
 
   # server configuration
   config = mkIf cfg.enable {
 
     # SSL :
-     users.groups.ssl-cert.gid = 119;
+    users.groups.ssl-cert.gid = 119;
 
     # cockpit (web-based server interface )
     services.cockpit = mkIf cfg.cockpit.enable {

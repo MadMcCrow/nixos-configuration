@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-# colored output
+#
+#   colors.py : helper for colored output
+#
 
 # enum for lookup
 class Colors:
@@ -15,3 +17,19 @@ class Colors:
 # wrap text in color
 def colored(text : str, color ) :
     return '\0'.join([color, text, Colors.ENDC])
+
+def error(text: str, silent = False ):
+    if not silent :
+        print(colored("Error: ", Colors.FAIL) + text)
+
+def warning(text: str, silent = False ):
+    if not silent :
+        print(colored("Warning: ", Colors.WARNING) + text)
+
+def note(text: str, silent = False ):
+    if not silent :
+        print(colored("Note: ", Colors.OKCYAN) + text)
+
+def success(text: str, silent = False ):
+    if not silent :
+        print(colored("Success: ", Colors.OKGREEN) + text)

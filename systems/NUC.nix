@@ -3,7 +3,7 @@
 let
   # todo filter broken
   #intel kernel packages can be broken sometimes
-  intelKernelPackages = [
+  extraPackages = [
     # "intel-speed-select" # broken
     # "phc-intel" # broken
   ];
@@ -17,7 +17,7 @@ in {
   # our settings
   nixos = {
 
-    # use our 
+    # use our
     enable = true;
     host.name = "nixNUC";
 
@@ -39,7 +39,7 @@ in {
     };
 
     # kernel packages
-    kernel.extraKernelPackages = [ "acpi_call" ];
+    kernel.extraPackages = [ "acpi_call" ];
 
     # cpu/gpu
     cpu.vendor = "intel";

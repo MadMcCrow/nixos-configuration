@@ -1,18 +1,16 @@
 # TODO :
 
 # Necessary :
- - [ ] Rewrite Linux modules :
-    - split in categories : hardware, software, etc ...
-    - map unfree programs to unfree automatically
- - [ ] Flake checks for pre-commit
+ - [ ] Rewrite Linux modules for simplicity
+ - [ ] map unfree programs to unfree automatically
+ - [X] Flake checks for pre-commit
  - [X] secrets deployment
-    - [X] add secrets to `nixos-update`
-    - [X] install secrets to `nixNUC`
-    - [ ] have ssh-keys generated once and for all for machines
+    - [ ] autogen missing keys via service
  - [ ] Server
     - [X] localhost nextcloud
     - [ ] Use secrets
     - [ ] Nextcloud on LAN
+    - [ ] Nextcloud in container
  - [ ] Make a documentation
  - [ ] Update github actions
 
