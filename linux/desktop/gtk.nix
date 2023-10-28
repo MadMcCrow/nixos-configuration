@@ -122,12 +122,18 @@ in {
     # TODO:
     extra = {
       iconThemes = listToAttrs (map (x: {
-        name = x.name;
-        value = lib.mkEnableOption "${x.name}";
+         name = x.name;
+        value = {
+          enable = lib.mkEnableOption "${x.name}";
+          theme = mkThemeOption "icon" x;
+        };
       }) (attrValues iconThemes));
       gtkThemes = listToAttrs (map (x: {
         name = x.name;
-        value = lib.mkEnableOption "${x.name}";
+        value = {
+          enable = lib.mkEnableOption "${x.name}";
+          theme = mkThemeOption "gtk" x;
+        } ;
       }) (attrValues gtkThemes));
     };
   };
@@ -142,8 +148,8 @@ in {
       ++ (optList cfg.installAll
         ((allOf "package" gtkThemes) ++ (allOf "package" iconThemes)))
       # those selected
-      ++ (map (x : x.package) ( filter (x: cfg.extra.iconThemes."${x.name}") (attrValues iconThemes)))
-      ++ (map (x : x.package) ( filter (x: cfg.extra.gtkThemes."${x.name}") (attrValues gtkThemes)))
+      # ++ (map (x : x.package) ( filter (x: cfg.extra.iconThemes."${x.name}".enable ) (attrValues iconThemes)))
+      # ++ (map (x : x.package) ( filter (x: cfg.extra.gtkThemes."${x.name}".enable  ) (attrValues gtkThemes)))
     );
   };
 }

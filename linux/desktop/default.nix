@@ -11,12 +11,9 @@ in {
 
   imports = [
     ./apps
+    ./environments
     ./artwork.nix
-    ./xfce.nix
-    ./gtk.nix
-    ./kde.nix
-    ./gnome.nix
-    ./cinnamon.nix
     ./display-manager.nix
+    ./gtk.nix
   ];
 }

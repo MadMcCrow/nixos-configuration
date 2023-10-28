@@ -11,9 +11,10 @@ with builtins; {
 
     # desktop env
     desktop = {
-      gtk.installAll = true;
       enable = true;
-      cinnamon.enable = true;
+      gnome.enable = true;
+      #cinnamon.enable = true;
+      # xfce.enable = true;
       apps.flatpak.enable = true;
       apps.games.enable = true; # video games, you should try them sometives
     };

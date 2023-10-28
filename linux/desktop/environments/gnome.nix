@@ -1,4 +1,4 @@
-# gnome.nix
+# environments/gnome.nix
 # 	Nixos Gnome Desktop environment settings
 # TODO : more curated/ personnal version of gnome
 { config, pkgs, lib, ... }:
@@ -104,6 +104,8 @@ in {
   # base config for gnome
   config = lib.mkIf (dsk.enable && cfg.enable) {
 
+    nixos.desktop.displayManager.type = "gdm"; # gdm has better integration with gnome
+
     system.nixos.tags = [ "Gnome" ];
     services.xserver = {
       enable = true;
@@ -137,8 +139,10 @@ in {
       glib-networking.enable = true; # GnuTLS and OpenSSL for gnome
       gnome-keyring.enable = true; # keyring stores gpg keys
       sushi.enable = true; # sushi is a preview/thumbnailer for nautilus
-
     };
+
+    # not necessary :
+    #xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gnome];
 
     # enable DConf to edit gnome configuration
     programs.dconf.enable = true;

@@ -1,4 +1,4 @@
-# kde.nix
+# environments/kde.nix
 # 	Nixos Kde Desktop environment settings
 { config, pkgs, lib, ... }:
 with builtins;
@@ -70,10 +70,13 @@ in {
   config = mkIf (dsk.enable && cfg.enable) {
 
     # force gtk to use breeze
-    nixos.desktop.gtk = {
-      theme = breeze-gtk;
-      iconTheme = breeze-icons;
-      cursorTheme = breeze-cursor;
+    nixos.desktop = {
+      gtk = {
+        theme = breeze-gtk;
+        iconTheme = breeze-icons;
+        cursorTheme = breeze-cursor;
+      };
+      displayManager.type = "lightdm"; # lightdm is faster than sddm
     };
 
     system.nixos.tags = [ "KDE" ];
@@ -91,8 +94,6 @@ in {
       # remove xterm
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
-
-      # sddm :
       displayManager.defaultSession =
         if wayland then "plasmawayland" else "plasma";
     };

@@ -1,97 +1,68 @@
 # display-manager.nix
 # 	ensure that no matter the desktop environment
+# TODO : try :
+# ldm-mini;
+# pantheon.elementary-greeter
+# services.xserver.displayManager.lightdm.background =
+# pkgs.nixos-artwork.wallpapers.simple-dark-gray-bottom.gnomeFilePath
 { config, pkgs, lib, ... }:
 with builtins;
 let
-  cfg = config.nixos.desktop.displayManager;
-
-  mkDefaultEnableOption = desc: default:
-    (lib.mkEnableOption desc) // {
-      inherit default;
-    };
-  mkEnumOption = desc: values:
-    lib.mkOption {
-      description = concatStringsSep "," [ desc "one of " (toString values) ];
-      type = lib.types.enum values;
-      default = elemAt values 0;
-    };
-
+  # shortcuts :
+  dsk = config.nixos.desktop;
+  cfg = dsk.displayManager;
+  dmtype = cfg.type;
   # list of supported dm
   dms = [ "lightdm" "sddm" "gdm" ];
-
-  # TODO : try :
-  # ldm-mini;
-  # pantheon.elementary-greeter
-  # services.xserver.displayManager.lightdm.background =
-  # pkgs.nixos-artwork.wallpapers.simple-dark-gray-bottom.gnomeFilePath
-  greeter = let
-    noto-font = {
-      name = "Noto Sans";
-      package = pkgs.noto-fonts;
-    };
-  in {
-    slick = {
-      # iconTheme can cause issues
-      inherit (config.nixos.desktop.gtk) cursorTheme theme;
-      font = {
-        name = "Noto Sans";
-        package = pkgs.noto-fonts;
-      };
-      enable = true;
-    };
-  };
-
-  # allow multiple definitions to co-exist
-  dmSwitch = set:
-    if (any (x: x == cfg.type) dms) && (hasAttr cfg.type set) then
-      getAttr cfg.type set
-    else
-      throw ''
-        please define the value for all and only of [ ${
-          concatStringsSep " " dms
-        } ]
-      '';
-
 in {
 
   options.nixos.desktop.displayManager = {
-    enable = mkDefaultEnableOption "diplay manager" true;
-    wayland.enable = mkDefaultEnableOption "use Wayland" true;
-    type = mkEnumOption "Display manager to use" dms;
-
+    enable = lib.mkEnableOption "diplay manager" // { default = true; };
+    wayland.enable = lib.mkEnableOption "Wayland for DM" // { default = true; };
+    type = lib.mkOption {
+      description = "one of ${concatStringsSep "," dms}";
+      type = lib.types.enum dms;
+      default = elemAt dms 0;
+    };
   };
 
   # implementation
-  config = lib.mkIf cfg.enable {
+  config =
+    # assert lib.assertMsg (any (x: x == dmtype) dms) ''
+    #   please set config.nixos.desktop.displayManager.type to one of : [ ${
+    #     concatStringsSep " " dms
+    #   } ]
+    # '';
+    lib.mkIf (dsk.enable && cfg.enable) {
+      services.xserver.enable = true;
+      programs.xwayland.enable = cfg.wayland.enable;
+      environment.systemPackages = with pkgs;
+        (lib.lists.optional (dmtype == "gdm") gnome.gdm)
+        ++ (lib.lists.optional (dmtype == "sddm") libsForQt5.sddm)
+        ++ (lib.lists.optionals (dmtype == "lightdm") [ lightdm lightlocker ]);
 
-    # base packages :
-    environment.systemPackages = with pkgs;
-      dmSwitch {
-        "lightdm" = [ lightdm lightlocker ];
-        "gdm" = [ gnome.gdm ];
-        "sddm" = [ libsForQt5.sddm ];
-      };
-
-    # enable GUI
-    services.xserver = {
-      enable = true;
-
-      displayManager = dmSwitch {
-        "lightdm" = {
-          lightdm.enable = true;
-          lightdm.greeter.enable = true;
-          lightdm.greeters = greeter;
-        };
-        "gdm" = {
+      services.xserver.displayManager = lib.mkMerge [
+        (lib.optionalAttrs (dmtype == "gdm") {
           gdm.enable = true;
           gdm.wayland = cfg.wayland.enable;
-        };
-        "sddm" = { sddm.enable = true; };
-      };
+        })
+        (lib.optionalAttrs (dmtype == "sddm") {
+          sddm.enable = true;
+          sddm.settings = mkIf cfg.wayland.enable { DisplayServer = "wayland"; };
+        })
+        (lib.optionalAttrs (dmtype == "lightdm") {
+          lightdm.enable = true;
+          lightdm.greeter.enable = true;
+          lightdm.greeters.slick = {
+            enable = true;
+            cursorTheme = dsk.gtk.cursorTheme;
+            theme = dsk.gtk.theme;
+            font = {
+              name = "Noto Sans";
+              package = pkgs.noto-fonts;
+            };
+          };
+        })
+      ];
     };
-
-    programs.xwayland.enable = cfg.wayland.enable;
-
-  };
-
 }

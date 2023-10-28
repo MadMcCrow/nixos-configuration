@@ -73,7 +73,7 @@ if __name__ == "__main__" :
         # public key :
         if not args.silent:
             print(f"updating ssh public key: {colored(pubkey, Colors.BOLD)}")
-        updateKey(prvkey)
+        genPublicKey(prvkey)
 
     except KeyboardInterrupt :
         error("user interrupted the process, exiting")

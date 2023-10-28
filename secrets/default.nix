@@ -145,7 +145,7 @@ in {
   config = lib.mkIf enableSecrets (lib.mkMerge [
     # scripts are available on Drawin, just not the services
     ({
-      environment.systemPackages = [ pkgs.hello nixage-gen-keys nixage-gen-secrets nixage-apply-secrets ];
+      environment.systemPackages = [ nixage-gen-keys nixage-gen-secrets  ]; # nixage-apply-secrets is only as a service
     })
     (lib.optionalAttrs (!isDarwin) {
 

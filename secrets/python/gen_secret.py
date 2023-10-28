@@ -10,10 +10,8 @@ from sys import exit;
 
 # local modules
 from colors import colored, Colors
-from age_crypt import encrypt, decrypt
-from ssh_keygen import updateKey, genKey
+from age_crypt import encrypt
 from files import *
-
 
 # main implementation for commandline
 if __name__ == "__main__" :

@@ -60,7 +60,7 @@ in
       neofetch  # because its cool ;)s
     ]);
     # use nano as our editor :
-    environment.variables.EDITOR = "${cfg.editor}";
+    environment.variables.EDITOR = "${cfg.editor}/bin/${cfg.editor.pname}";
 
     # disable the sudo warning for users (they might otherwise see it constantly):
     security.sudo.extraConfig = "Defaults        lecture = never";
