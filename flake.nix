@@ -25,7 +25,8 @@
 
     # pycnix for python scripts
     pycnix.url = "github:MadMcCrow/pycnix";
-    pycnix.inputs.nixpkgs.follows = "nixpkgs";
+    # newer freeze do not work
+    #pycnix.inputs.nixpkgs.follows = "nixpkgs";
 
   };
 

@@ -104,7 +104,8 @@ in {
   # base config for gnome
   config = lib.mkIf (dsk.enable && cfg.enable) {
 
-    nixos.desktop.displayManager.type = "gdm"; # gdm has better integration with gnome
+    nixos.desktop.displayManager.type =
+      "gdm"; # gdm has better integration with gnome
 
     system.nixos.tags = [ "Gnome" ];
     services.xserver = {

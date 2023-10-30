@@ -3,19 +3,18 @@
 { config, pkgs, lib, ... }:
 with builtins;
 let
-dsk = config.nixos.desktop;
-cfg = dsk.budgie;
-inherit (pkgs) budgie;
+  dsk = config.nixos.desktop;
+  cfg = dsk.budgie;
+  inherit (pkgs) budgie;
 in {
   options.nixos.desktop.budgie = {
     enable = lib.mkEnableOption "budgie desktop environment";
   };
 
-  config = lib.mkIf (dsk.enable && cfg.enable)  {
+  config = lib.mkIf (dsk.enable && cfg.enable) {
 
     # make other module use the mint theme
-    nixos.desktop.gtk = let
-    themes = config.nixos.desktop.gtk.extra;
+    nixos.desktop.gtk = let themes = config.nixos.desktop.gtk.extra;
     in {
       theme = themes.gtkThemes.stilo.theme;
       iconTheme = themes.iconThemes.papirus.theme;
@@ -28,16 +27,19 @@ in {
     system.nixos.tags = [ "budgie" ];
 
     # necessary packages
-    environment.systemPackages = with pkgs; [
-    dconf2nix
-    gnome.gnome-terminal
-    gnome.gnome-screenshot
-    ];
+    environment.systemPackages = with pkgs;
+      [ dconf2nix gnome.gnome-terminal gnome.gnome-screenshot ] ++ [
+        budgie.budgie-desktop-with-plugins
+        budgie.budgie-desktop-view
+        budgie.budgie-control-center
+        budgiePlugins.budgie-user-indicator-redux
+      ];
 
     # bad taste themes :
-    environment.budgie.excludePackages = with pkgs; [
-      #??
-     ];
+    environment.budgie.excludePackages = with pkgs;
+      [
+        #??
+      ];
 
     services.xserver = {
       # enable GUI

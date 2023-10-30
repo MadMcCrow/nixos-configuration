@@ -1,8 +1,7 @@
 # desktop/apps/discord.nix
 # 	discord app on nixos.
 #   TODO: try to move to HM
-{ pkgs, config, lib, ... }:
-{
+{ pkgs, config, lib, ... }: {
   # interface
   options.nixos.desktop.apps.discord = {
     enable = lib.mkEnableOption "discord" // {
@@ -11,13 +10,14 @@
   };
   # discord configuration :
   config = lib.mkIf config.nixos.desktop.apps.discord.enable {
-      environment.systemPackages = with pkgs; [ discord nss_latest ];
-      packages = {
-      unfreePackages =  [ "discord" ];
+    environment.systemPackages = with pkgs; [ discord nss_latest ];
+    packages = {
+      unfreePackages = [ "discord" ];
       overlays = [
-        ( self: super: {
+        (self: super: {
           discord = super.discord.override { withOpenASAR = true; };
-        }) ];
+        })
+      ];
     };
   };
 }

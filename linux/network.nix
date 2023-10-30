@@ -7,7 +7,8 @@ let
   nxs = config.nixos;
   cfg = nxs.network;
 
-  mkOptionBase = type: description: default: lib.mkOption {inherit type description default;};
+  mkOptionBase = type: description: default:
+    lib.mkOption { inherit type description default; };
 
 in {
   # interface
@@ -15,7 +16,8 @@ in {
     # systemd-networkd-wait-online can timeout and fail if there are no network interfaces available for it to manage.
     waitForOnline = mkOptionBase bool "wait for networking at boot" false;
     # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
-    wakeOnLineInterfaces = mkOptionBase (listOf str) "Interfaces to enable wakeOnLan" [ ];
+    wakeOnLineInterfaces =
+      mkOptionBase (listOf str) "Interfaces to enable wakeOnLan" [ ];
   };
 
   # implementation

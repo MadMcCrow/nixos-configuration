@@ -21,11 +21,13 @@ let
     '';
   };
 
-  mkOptionBase = type: description: default: lib.mkOption {inherit type description default;};
+  mkOptionBase = type: description: default:
+    lib.mkOption { inherit type description default; };
 
-  mkOptionDrv  = desc: d: (mkOptionBase lib.types.package desc d);
+  mkOptionDrv = desc: d: (mkOptionBase lib.types.package desc d);
 
-  mkEnumOption = desc: list:  lib.mkOption {
+  mkEnumOption = desc: list:
+    lib.mkOption {
       description = (concatStringsSep "," [ desc "one of " (toString list) ]);
       type = lib.types.enum list;
       default = elemAt list 0;
@@ -57,16 +59,16 @@ in {
           {manpage}`systemd.time(7)`.
         '';
       };
-      autoReboot =  mkOptionBase bool "reboot post upgrade" true;
+      autoReboot = mkOptionBase bool "reboot post upgrade" true;
     };
 
     # manual update
-    update.dependencies =  mkOptionBase (listOf package) ''
-          list of packages necessary for `nixos-update`
-        '' [];
+    update.dependencies = mkOptionBase (listOf package) ''
+      list of packages necessary for `nixos-update`
+    '' [ ];
     update.extraCommands = mkOptionBase (listOf str) ''
-          list of commands to run when doing manual update with `nixos-update`
-        '' [];
+      list of commands to run when doing manual update with `nixos-update`
+    '' [ ];
 
     # nixos-rebuild
     rebuild = {
@@ -82,7 +84,8 @@ in {
 
     # CPU/GPU
     cpu.vendor = mkEnumOption "CPU manufacturer" [ "amd" "intel" ];
-    cpu.powermode = mkEnumOption "power governor" [ "ondemand" "powersave" "performance" ];
+    cpu.powermode =
+      mkEnumOption "power governor" [ "ondemand" "powersave" "performance" ];
     gpu.enable = mkOptionBase bool "enable GPU support" true;
     gpu.vendor = mkEnumOption "GPU manufacturer" [ "amd" "intel" ];
 
@@ -93,12 +96,13 @@ in {
     # TODO : add SE/Hardened linux support
     enhancedSecurity.enable = mkOptionBase bool "enable extra security" false;
     enhancedSecurity.appArmor.enable =
-         mkOptionBase bool "enable App Armor, see https://www.apparmor.net/" true;
+      mkOptionBase bool "enable App Armor, see https://www.apparmor.net/" true;
 
   };
 
   # imports
-  imports = [ ./desktop ./server ./kernel.nix ./zfs.nix ./network.nix ./shell.nix ];
+  imports =
+    [ ./desktop ./server ./kernel.nix ./zfs.nix ./network.nix ./shell.nix ];
 
   # config
   config = lib.mkIf (cfg.enable) {
@@ -160,7 +164,9 @@ in {
         ]);
 
       # set env-vars here
-      variables = lib.attrsets.optionalAttrs (cfg.gpu.vendor == "amd") { AMD_VULKAN_ICD = "RADV"; };
+      variables = lib.attrsets.optionalAttrs (cfg.gpu.vendor == "amd") {
+        AMD_VULKAN_ICD = "RADV";
+      };
     };
 
     # zsh can be used as default shell

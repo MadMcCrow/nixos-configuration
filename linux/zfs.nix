@@ -8,7 +8,7 @@ let
 
   # option helper
   mkOptionBase = type: description: default:
-      lib.mkOption {inherit type description default;};
+    lib.mkOption { inherit type description default; };
 
   # ZFS
   ## rollback command
@@ -35,16 +35,17 @@ let
     (mkZFS "/nix" "${sysPool}/local/nix" true)
     (mkZFS "/nix/persist" "${sysPool}/safe/persist" true)
     (mkZFS "/home" "${sysPool}/safe/home" false)
-  ] else [ ]);
+  ] else
+    [ ]);
 
 in {
   options.nixos.zfs = with lib.types; {
     enable = mkOptionBase bool "enable zfs filesystem" true;
     systemPool = mkOptionBase str "main system pool" "nixos-pool";
     rollback = {
-      pool = mkOptionBase str       "pool to rollback" "nixos-pool";
-      dataset =  mkOptionBase str   "dataset to rollback" "local/root";
-      snapshot =  mkOptionBase str  "snapshot for rollback" "blank";
+      pool = mkOptionBase str "pool to rollback" "nixos-pool";
+      dataset = mkOptionBase str "dataset to rollback" "local/root";
+      snapshot = mkOptionBase str "snapshot for rollback" "blank";
     };
   };
 
@@ -54,8 +55,7 @@ in {
     services.zfs.autoScrub.enable = cfg.enable;
 
     # force use zfs compatible kernel :
-    nixos.kernel.packages =
-      lib.mkForce pkgs.zfs.latestCompatibleLinuxPackages;
+    nixos.kernel.packages = lib.mkForce pkgs.zfs.latestCompatibleLinuxPackages;
 
     boot = {
       initrd.postDeviceCommands = lib.mkAfter rollbackCommand;

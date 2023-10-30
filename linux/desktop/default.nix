@@ -2,18 +2,12 @@
 # 	Nixos Desktop Environment settings
 { config, pkgs, lib, inputs, ... }:
 with builtins;
-let
-  cfg = config.nixos.desktop;
+let cfg = config.nixos.desktop;
 in {
   options.nixos.desktop.enable = (lib.mkEnableOption "desktop") // {
     default = false;
   };
 
-  imports = [
-    ./apps
-    ./environments
-    ./artwork.nix
-    ./display-manager.nix
-    ./gtk.nix
-  ];
+  imports =
+    [ ./apps ./environments ./artwork.nix ./display-manager.nix ./gtk.nix ];
 }

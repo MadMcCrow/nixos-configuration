@@ -2,29 +2,26 @@
 # 	Nixos xfce Desktop environment settings
 { config, pkgs, lib, ... }:
 let
-dsk = config.nixos.desktop;
-cfg = dsk.xfce;
-in
-{
+  dsk = config.nixos.desktop;
+  cfg = dsk.xfce;
+in {
 
   # interface
-  options.nixos.desktop.xfce = {
-      enable = lib.mkEnableOption "XFCE";
-  };
+  options.nixos.desktop.xfce = { enable = lib.mkEnableOption "XFCE"; };
   config = lib.mkIf (dsk.enable && cfg.enable) {
-  # TODO: try this https://www.thelinuxrain.org/articles/tutorial-how-to-use-kwin-window-manager-with-xfce
-  services.xserver = {
-    enable = true;
-    desktopManager = {
-      xterm.enable = false;
-      xfce.enable = true;
-      xfce.noDesktop = false;
-      xfce.enableXfwm = true;
+    # TODO: try this https://www.thelinuxrain.org/articles/tutorial-how-to-use-kwin-window-manager-with-xfce
+    services.xserver = {
+      enable = true;
+      desktopManager = {
+        xterm.enable = false;
+        xfce.enable = true;
+        xfce.noDesktop = false;
+        xfce.enableXfwm = true;
+      };
+      displayManager.defaultSession = "xfce";
     };
-    displayManager.defaultSession = "xfce";
-  };
 
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     # TODO:
     nixos.desktop.gtk = with pkgs; {
       # theme.package = cinnamon.mint-themes;

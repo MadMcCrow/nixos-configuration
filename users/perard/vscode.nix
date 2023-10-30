@@ -238,8 +238,8 @@ let
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
-    glsl-lint
-    vs-shader
+    #glsl-lint  -> slow
+    # vs-shader -> slow 
     shader-ed
     git-graph
     material-icons
@@ -251,7 +251,7 @@ let
     ms-anycode
     github-pr
     github-codespaces
-    github-action
+    # github-action -> slow
     github-markdown
     github-remotehub
   ];

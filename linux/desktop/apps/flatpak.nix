@@ -14,7 +14,11 @@ in {
   imports = [ impermanence.nixosModules.impermanence ];
   #config
   config = lib.mkIf (dsk.enable && cfg.enable) {
-    environment.systemPackages = with pkgs; [ libportal libportal-gtk3 packagekit ];
+    environment.systemPackages = with pkgs; [
+      libportal
+      libportal-gtk3
+      packagekit
+    ];
     xdg.portal.enable = true;
     services.packagekit.enable = true;
     services.flatpak.enable = true;

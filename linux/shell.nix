@@ -5,8 +5,7 @@ let
   # shortcut
   nxs = config.nixos;
   cfg = nxs.shell;
-in
-{
+in {
   options.nixos.shell = {
     package = lib.mkOption {
       description = "package to use as shell for everyone";
@@ -21,7 +20,6 @@ in
     };
   };
 
-
   config = lib.mkIf nxs.enable {
     # ZSH :
     programs.zsh = {
@@ -31,8 +29,8 @@ in
       autosuggestions.enable = true;
       histSize = 100;
       shellAliases = {
-        ls   = "eza";
-        exa  = "eza";
+        ls = "eza";
+        exa = "eza";
         htop = "btop";
       };
       ohMyZsh = {
@@ -47,9 +45,9 @@ in
     environment.shells = [ cfg.package ];
 
     # packages that just make sens
-    environment.defaultPackages =  [ cfg.package cfg.editor ] ++ (with pkgs;[
-      nixfmt  # format nix files
-      eza     # better ls with colors
+    environment.defaultPackages = [ cfg.package cfg.editor ] ++ (with pkgs; [
+      nixfmt # format nix files
+      eza # better ls with colors
       wget
       openssl
       git
@@ -57,7 +55,7 @@ in
       zip
       zenith
       btop
-      neofetch  # because its cool ;)s
+      neofetch # because its cool ;)s
     ]);
     # use nano as our editor :
     environment.variables.EDITOR = "${cfg.editor}/bin/${cfg.editor.pname}";

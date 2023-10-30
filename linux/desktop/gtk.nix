@@ -42,7 +42,6 @@ let
     };
   };
 
-
   # cool themes :
   # icons :
   iconThemes = with pkgs; {
@@ -91,7 +90,6 @@ let
   allOf = name: set:
     map (x: getAttr name x) (filter (x: hasAttr name x) (attrValues set));
 
-
   # default themes
   defaultTheme = gtkThemes.orchis;
   defaultIcons = iconThemes.kora;
@@ -122,7 +120,7 @@ in {
     # TODO:
     extra = {
       iconThemes = listToAttrs (map (x: {
-         name = x.name;
+        name = x.name;
         value = {
           enable = lib.mkEnableOption "${x.name}";
           theme = mkThemeOption "icon" x;
@@ -133,7 +131,7 @@ in {
         value = {
           enable = lib.mkEnableOption "${x.name}";
           theme = mkThemeOption "gtk" x;
-        } ;
+        };
       }) (attrValues gtkThemes));
     };
   };

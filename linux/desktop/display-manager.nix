@@ -48,7 +48,8 @@ in {
         })
         (lib.optionalAttrs (dmtype == "sddm") {
           sddm.enable = true;
-          sddm.settings = mkIf cfg.wayland.enable { DisplayServer = "wayland"; };
+          sddm.settings =
+            mkIf cfg.wayland.enable { DisplayServer = "wayland"; };
         })
         (lib.optionalAttrs (dmtype == "lightdm") {
           lightdm.enable = true;

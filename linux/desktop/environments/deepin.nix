@@ -1,14 +1,14 @@
-# environments/cinnamon.nix
-# 	cinnamon is a fork of Gnome3 to look like gnome2
+# environments/budgie.nix
+# 	Budgie is a fork of Gnome3
 { config, pkgs, lib, ... }:
 with builtins;
 let
   dsk = config.nixos.desktop;
-  cfg = dsk.cinnamon;
-  inherit (pkgs) cinnamon;
+  cfg = dsk.budgie;
+  inherit (pkgs) budgie;
 in {
-  options.nixos.desktop.cinnamon = {
-    enable = lib.mkEnableOption "cinnamon desktop environment";
+  options.nixos.desktop.dde = {
+    enable = lib.mkEnableOption "deepin desktop environment";
   };
 
   config = lib.mkIf (dsk.enable && cfg.enable) {
@@ -24,10 +24,7 @@ in {
       extra.gtkThemes.stilo.enable = true; # windows like borders
     };
 
-    system.nixos.tags = [ "Cinnamon" ];
-
-    # disable superfluous
-    services.cinnamon.apps.enable = false;
+    system.nixos.tags = [ "DDE" ];
 
     # necessary packages
     environment.systemPackages = with pkgs; [
@@ -36,18 +33,22 @@ in {
       gnome.gnome-screenshot
     ];
 
-    # bad taste themes :
-    environment.cinnamon.excludePackages = with pkgs; [
-      cinnamon.mint-y-icons
-      cinnamon.mint-x-icons
-      cinnamon.mint-themes
-    ];
+    # bad taste remove :
+    environment.deepin.excludePackages = with pkgs;
+      [
+        #??
+      ];
+
+    # maybe disable superfluous
+    services.deepin.app-services.enable = true;
+    services.deepin.dde-api.enable = true;
+    services.deepin.dde-daemon.enable = true;
 
     services.xserver = {
       # enable GUI
       enable = true;
 
-      desktopManager.cinnamon.enable = true;
+      desktopManager.deepin.enable = true;
       # remove xterm
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;

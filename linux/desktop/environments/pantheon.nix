@@ -1,14 +1,14 @@
-# environments/cinnamon.nix
-# 	cinnamon is a fork of Gnome3 to look like gnome2
+# environments/budgie.nix
+# 	Budgie is a fork of Gnome3
 { config, pkgs, lib, ... }:
 with builtins;
 let
   dsk = config.nixos.desktop;
-  cfg = dsk.cinnamon;
-  inherit (pkgs) cinnamon;
+  cfg = dsk.budgie;
+  inherit (pkgs) budgie;
 in {
-  options.nixos.desktop.cinnamon = {
-    enable = lib.mkEnableOption "cinnamon desktop environment";
+  options.nixos.desktop.pantheon = {
+    enable = lib.mkEnableOption "pantheon desktop environment";
   };
 
   config = lib.mkIf (dsk.enable && cfg.enable) {
@@ -24,33 +24,32 @@ in {
       extra.gtkThemes.stilo.enable = true; # windows like borders
     };
 
-    system.nixos.tags = [ "Cinnamon" ];
-
-    # disable superfluous
-    services.cinnamon.apps.enable = false;
+    system.nixos.tags = [ "pantheon" ];
 
     # necessary packages
-    environment.systemPackages = with pkgs; [
-      dconf2nix
-      gnome.gnome-terminal
-      gnome.gnome-screenshot
-    ];
+    environment.systemPackages = with pkgs; [ dconf2nix ];
 
-    # bad taste themes :
-    environment.cinnamon.excludePackages = with pkgs; [
-      cinnamon.mint-y-icons
-      cinnamon.mint-x-icons
-      cinnamon.mint-themes
-    ];
+    # remove what I don´t like :
+    environment.pantheon.excludePackages = [ pkgs.pantheon.elementary-camera ];
+
+    # maybe do : 
+    # services.xserver.displayManager.lightdm.greeters.pantheon.enable = true
+    services.pantheon.apps.enable = true;
+    # desktop-wide extension service
+    services.pantheon.contractor.enable = true;
 
     services.xserver = {
       # enable GUI
       enable = true;
 
-      desktopManager.cinnamon.enable = true;
+      desktopManager.pantheon.enable = true;
       # remove xterm
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
     };
+
+    # allow easy config
+    programs.pantheon-tweaks.enable = true;
   };
+
 }

@@ -1,6 +1,6 @@
 # desktop/environments/default.nix
 # 	Nixos Desktop Environments
-{ config, pkgs, lib, inputs, ... }:{
+{ config, pkgs, lib, inputs, ... }: {
   # TODO: 
   # - try lxqt
   # - try to fix xfce
@@ -10,8 +10,10 @@
   imports = [
     ./budgie.nix
     ./cinnamon.nix
+    ./deepin.nix
     ./gnome.nix
     ./kde.nix
+    ./pantheon.nix
     ./xfce.nix
   ];
 }

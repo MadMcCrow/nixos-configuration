@@ -42,10 +42,7 @@ let
   };
 
   # helper functions
-  mkBoolOption = desc: default:
-    (mkEnableOption desc) // {
-      inherit default;
-    };
+  mkBoolOption = desc: default: (mkEnableOption desc) // { inherit default; };
   mkEnumOption = desc: list:
     mkOption {
       description = (concatStringsSep "," [ desc "one of " (toString list) ]);
