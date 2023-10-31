@@ -12,11 +12,11 @@ with builtins; {
     # desktop env
     desktop = {
       enable = true;
-      #pantheon.enable = true;
+      pantheon.enable = true;
       #dde.enable = true;
       #budgie.enable = true;
       #cinnamon.enable = true;
-      gnome.enable = true;
+      #gnome.enable = true;
       #xfce.enable = true;
       apps.flatpak.enable = true;
       apps.games.enable = true; # video games, you should try them sometives

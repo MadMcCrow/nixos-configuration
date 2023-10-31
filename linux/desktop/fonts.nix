@@ -3,6 +3,7 @@
 { config, pkgs, lib, ... }:
 let
 dsk = config.nixos.desktop;
+in
 {
   config = lib.mkIf dsk.enable {
     environment.systemPackages = with pkgs; [

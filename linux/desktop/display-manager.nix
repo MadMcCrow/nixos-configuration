@@ -56,8 +56,8 @@ in {
           lightdm.greeter.enable = true;
           # TODO: try : lightdm-enso-os-greeter
           # lightdm-mini-greeter : gtk3 simple login manager
-          # lightdm.greeter.package = pkgs.lightdm-slick-greeter;
-          # lightdm.greeter.name = "lightdm-slick-greeter";
+          lightdm.greeter.package = lib.mkForce pkgs.lightdm-slick-greeter.xgreeters;
+          lightdm.greeter.name  = lib.mkForce "lightdm-slick-greeter";
           lightdm.greeters.slick = {
             enable = true;
             cursorTheme = dsk.gtk.cursorTheme;
