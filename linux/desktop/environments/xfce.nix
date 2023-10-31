@@ -21,6 +21,8 @@ in {
       displayManager.defaultSession = "xfce";
     };
 
+    environment.systemPackages = with pkgs.xfce; [xfwm4 xfwm4-themes xfdesktop xfdashboard garcon]
+
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     # TODO:
     nixos.desktop.gtk = with pkgs; {
