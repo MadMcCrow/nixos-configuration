@@ -9,5 +9,5 @@ in {
   };
 
   imports =
-    [ ./apps ./environments ./artwork.nix ./display-manager.nix ./gtk.nix ];
+    [ ./apps ./environments ./artwork.nix ./display-manager.nix ./fonts.nix ./gtk.nix ];
 }

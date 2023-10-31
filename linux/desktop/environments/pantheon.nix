@@ -1,11 +1,10 @@
-# environments/budgie.nix
-# 	Budgie is a fork of Gnome3
+# environments/Pantheon.nix
+# 	Pantheon is the desktop environment of Elementary linux
 { config, pkgs, lib, ... }:
 with builtins;
 let
   dsk = config.nixos.desktop;
-  cfg = dsk.budgie;
-  inherit (pkgs) budgie;
+  cfg = dsk.pantheon;
 in {
   options.nixos.desktop.pantheon = {
     enable = lib.mkEnableOption "pantheon desktop environment";
@@ -30,26 +29,24 @@ in {
     environment.systemPackages = with pkgs; [ dconf2nix ];
 
     # remove what I don´t like :
-    environment.pantheon.excludePackages = [ pkgs.pantheon.elementary-camera ];
+    environment.pantheon.excludePackages = [
+      pkgs.pantheon.elementary-camera
+    ];
 
-    # maybe do : 
+    # maybe do :
     # services.xserver.displayManager.lightdm.greeters.pantheon.enable = true
     services.pantheon.apps.enable = true;
     # desktop-wide extension service
     services.pantheon.contractor.enable = true;
-
+    # allow easy config
+    programs.pantheon-tweaks.enable = true;
+    # support for flatpak
+    xdg.portal.extraPortals = [ pkgs.pantheon.xdg-desktop-portal-pantheon ];
     services.xserver = {
-      # enable GUI
       enable = true;
-
       desktopManager.pantheon.enable = true;
-      # remove xterm
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
     };
-
-    # allow easy config
-    programs.pantheon-tweaks.enable = true;
   };
-
 }

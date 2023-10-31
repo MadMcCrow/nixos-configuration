@@ -1,11 +1,10 @@
-# environments/budgie.nix
-# 	Budgie is a fork of Gnome3
+# environments/deepin.nix
+# 	deepin is the desktop environment of Deepin linux, a chinese distro
 { config, pkgs, lib, ... }:
 with builtins;
 let
   dsk = config.nixos.desktop;
-  cfg = dsk.budgie;
-  inherit (pkgs) budgie;
+  cfg = dsk.dde;
 in {
   options.nixos.desktop.dde = {
     enable = lib.mkEnableOption "deepin desktop environment";
@@ -53,5 +52,6 @@ in {
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
     };
+    xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-xapp];
   };
 }
