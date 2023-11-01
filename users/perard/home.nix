@@ -45,7 +45,10 @@ in {
   home.stateVersion = "23.11";
 
   # add our dconf settings
-  imports = [ ./dconf.nix ];
+  imports = [
+    ./dconf.nix
+  #  plasma-manager.homeManagerModules.plasma-manager
+   ];
 
   # packages to install to profile
   home.packages = filter (x: supported x) (with pkgs; [

@@ -5,29 +5,33 @@
 
   # flake inputs :
   inputs = {
+    # Linux:
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05";
-
     # impermanence
     impermanence.url = "github:nix-community/impermanence";
-
     # Home manager
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # plasma
+    plasma-manager.url = "github:pjones/plasma-manager";
+    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
+    plasma-manager.inputs.home-manager.follows = "home-manager";
 
-    # macOS
+    # macOS:
+    # nixpkgs
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
+    # nix-darwin
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    # HM for MacOS
     home-manager-darwin.url = "github:nix-community/home-manager/release-23.05";
     home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
     # pycnix for python scripts
+    # TODO : move secrets to different flake
     pycnix.url = "github:MadMcCrow/pycnix";
-    # newer freeze do not work
-    #pycnix.inputs.nixpkgs.follows = "nixpkgs";
-
   };
 
   outputs = { self, ... }@inputs:
@@ -48,6 +52,7 @@
             ./linux
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
+            # inputs.plasma-manager.homeManagerModules.plasma-manager
             sysModule
           ];
         };

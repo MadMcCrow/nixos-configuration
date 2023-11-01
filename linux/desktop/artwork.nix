@@ -1,12 +1,13 @@
-# gtk.nix
-# 	unique configuration for all gtk themes
+# artwork.nix
+# 	TODO : all backgrounds in one package
+
 { config, pkgs, lib, ... }:
 with builtins;
 let
   dsk = config.nixos.desktop;
   cfg = dsk.artwork;
-
   tools = with pkgs; [ fondo variety sunpaper swww ];
+
 in {
   options.nixos.desktop.artwork = {
     enable = lib.mkEnableOption "artworks (background)" // { default = true; };
@@ -20,6 +21,6 @@ in {
         deepin.deepin-wallpapers
         budgie.budgie-backgrounds
         adapta-backgrounds
-      ] ++ tools;
+      ]; # ++ tools;
   };
 }
