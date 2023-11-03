@@ -23,9 +23,8 @@ let
   concatLines = list: concatStringsSep "\n" list;
   concatPath = list: concatStringsSep "/" list;
 
-  # Darwin support
-  isDarwin =
-    lib.attrsets.hasAttrByPath [ "environment" "darwinConfig" ] lib.options;
+  # Darwin support : TODO
+  isDarwin = false;
 
   # the various scripts for nixage
   nixage-scripts = import ./scripts.nix { inherit pkgs pycnix; };

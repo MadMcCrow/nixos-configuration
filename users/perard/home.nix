@@ -16,53 +16,27 @@ let
   # true if this program can work
   supported = pkg: (elem platform pkg.meta.platforms) && !pkg.meta.unsupported;
 
-  # firefox-gnome-theme
-  firefox-gnome-theme = pkgs.stdenvNoCC.mkDerivation rec {
-    name = "firefox-gnome-theme";
-    version = "115";
-    src = pkgs.fetchurl {
-      url =
-        "https://github.com/rafaelmardojai/firefox-gnome-theme/archive/refs/tags/v115.tar.gz";
-      sha256 =
-        "c676055e1e47442a147587fa6388754b182c9df907954ff6914eaca776056b47";
-    };
-    installPhase = ''
-      runHook preInstall
-      mkdir -p $out
-      mv icon.svg $out
-      mv user*.css $out
-      mv theme $out
-      mv scripts $out
-      mv configuration $out
-      runHook postInstall
-    '';
-  };
-
 in {
 
   home.username = "perard";
   home.homeDirectory = "/home/perard";
-  home.stateVersion = "23.11";
+  home.stateVersion = if isLinux then "23.11" else "23.05";
 
   # add our dconf settings
-  imports = [
-    ./dconf.nix
-  #  plasma-manager.homeManagerModules.plasma-manager
-   ];
+  # maybe disable if not linux
+  imports = [./dconf.nix];
 
   # packages to install to profile
   home.packages = filter (x: supported x) (with pkgs; [
     git
     gh
-    eza
     powerline-go
     zsh-autosuggestions
     zsh-syntax-highlighting
     jetbrains-mono
     speechd
     python3
-    #libclang
-    clang-tools_16
+    #clang-tools_16
     bitwarden
   ]);
 
@@ -177,8 +151,8 @@ in {
   };
 
   # eza is ls but improved
-  programs.eza = {
-    enable = supported pkgs.eza;
+  programs.exa = mkIf (!isLinux) {
+    enable = true;
     enableAliases = true;
     git = true;
     extraOptions = [ "--group-directories-first" "--header" ];
