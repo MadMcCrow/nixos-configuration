@@ -260,8 +260,8 @@ let
   nixVsCodeExtensions = with pkgs.vscode-extensions; [
     jnoortheen.nix-ide
     rust-lang.rust-analyzer
-    #xaver.clang-format
-    #llvm-vs-code-extensions.vscode-clangd
+    xaver.clang-format
+    llvm-vs-code-extensions.vscode-clangd
     github.github-vscode-theme
   ];
 in {

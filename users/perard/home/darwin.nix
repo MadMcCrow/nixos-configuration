@@ -1,63 +1,26 @@
-# home.nix
-# home manager configuration for user
-{ config, pkgs, firefox-gnome-theme, ... }:
-with builtins;
-with pkgs.lib;
-let
-
-  # multiplatform support
-  platform = pkgs.system;
-  isLinux = strings.hasSuffix "linux" platform;
-  isDarwin = strings.hasSuffix "darwin" platform;
-
-  mkCondSet = base: cond: ifTrue: ifFalse:
-    mkMerge [ base (if cond then ifTrue else ifFalse) ];
-
-  # true if this program can work
-  supported = pkg: (elem platform pkg.meta.platforms) && !pkg.meta.unsupported;
-
-in {
-
+# darwin.nix
+# home manager configuration for MacOS
+# TODO : browser 
+{ config, pkgs, ... }:
+{
   home.username = "perard";
-  home.homeDirectory = "/home/perard";
-  home.stateVersion = if isLinux then "23.11" else "23.05";
+  home.homeDirectory = "/Users/perard";
+  home.stateVersion = "23.05";
 
-  # add our dconf settings
-  # maybe disable if not linux
-  imports = [./dconf.nix];
+  imports = [./shared.nix];
 
-  # packages to install to profile
-  home.packages = filter (x: supported x) (with pkgs; [
-    git
-    gh
-    powerline-go
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    jetbrains-mono
-    speechd
-    python3
-    #clang-tools_16
-    bitwarden
+  # packages to install to profile (extra to shared)
+  home.packages = (with pkgs; [
+    exa
   ]);
-
-  # enable HM
-  programs.home-manager.enable = true;
 
   # Programs setup :
   # vscode is in another module (too many extensions)
-  programs.vscode = let code = (import ./vscode.nix { inherit pkgs; });
-  in code // { enable = supported code.package; };
-
-  # FIREFOX
-  programs.firefox = let package = pkgs.firefox-beta;
-  in {
-    enable = supported package;
-    inherit package;
-  };
+  programs.vscode = (import ./vscode.nix { inherit pkgs; });
 
   # GIT
   programs.git = {
-    enable = supported pkgs.git;
+    enable = true;
     userName = "MadMcCrow";
     userEmail = "noe.perard+git@gmail.com";
     lfs.enable = true;
@@ -70,20 +33,16 @@ in {
   };
 
   # github cli tool
-  programs.gh = mkCondSet {
-    enable = supported pkgs.gh;
+  programs.gh = {
+    enable = true;
     settings.git_protocol = "https";
     extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
-  } isLinux { gitCredentialHelper.enable = true; } {
     enableGitCredentialHelper = true;
   };
 
-  # needs custom merge
-  #programs = if isLinux then {git-credential-oauth.enable = true;} else {};
-
   # ZSH :
-  programs.zsh = mkCondSet {
-    enable = supported pkgs.zsh;
+  programs.zsh = {
+    enable = true ;
     dotDir = ".config/zsh";
     enableAutosuggestions = true;
     enableCompletion = true;
@@ -109,20 +68,14 @@ in {
     };
     # alias vscodium to vscode
     shellAliases = { code = "codium"; };
-  } isLinux { syntaxHighlighting.enable = true; } {
     enableSyntaxHighlighting = true;
-  };
-
-  services.gpg-agent = mkIf isLinux {
-    enable = true;
-    enableZshIntegration = true;
   };
 
   # Bash And Zsh shell history suggest box
   programs.hstr.enable = true;
 
   programs.powerline-go = {
-    enable = supported pkgs.powerline-go;
+    enable = true;
     modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
     modulesRight = [ "exit" "time" ];
     settings = {
@@ -147,11 +100,10 @@ in {
           fi
       fi
     '';
-    #historyFile = ".bash"
   };
 
   # eza is ls but improved
-  programs.exa = mkIf (!isLinux) {
+  programs.exa = {
     enable = true;
     enableAliases = true;
     git = true;
@@ -160,7 +112,7 @@ in {
 
   # environment switcher
   programs.direnv = {
-    enable = supported pkgs.direnv;
+    enable =true;
     nix-direnv.enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
