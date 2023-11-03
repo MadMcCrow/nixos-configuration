@@ -52,7 +52,6 @@
             ./linux
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
-            # inputs.plasma-manager.homeManagerModules.plasma-manager
             sysModule
           ];
         };
