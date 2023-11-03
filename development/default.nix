@@ -6,7 +6,7 @@ with builtins;
 let
   cfg = config.development;
   langs = {
-    c = { packages = with pkgs; [ gcc clang ]; };
+    c = { packages = with pkgs; [ clang ]; };
     rust = { packages = with pkgs; [ cargo rustc ]; };
     python = { packages = with pkgs; [ python3Full ]; };
     haxe = { packages = with pkgs; [ haxe haxePackages.hxcpp ]; };

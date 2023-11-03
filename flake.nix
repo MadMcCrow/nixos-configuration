@@ -38,7 +38,7 @@
     let
 
       # modules shared between linux and MacOS
-      baseModules = [ ./nix ./users ./secrets ./development ];
+      baseModules = [ ./nix ./users ./development ];
 
       # shortcut functions :
       nixOSx86 = sysModule:
@@ -50,6 +50,7 @@
           inherit system specialArgs;
           modules = baseModules ++ [
             ./linux
+            ./secrets
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule
@@ -81,7 +82,7 @@
       };
 
       # MacOS
-      darwinSystems = {
+      darwinConfigurations = {
         # my MacBook Air
         Noes-MacBook-Air = darwinAarch64 ./systems/MBA.nix;
       };
