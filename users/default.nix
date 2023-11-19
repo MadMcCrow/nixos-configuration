@@ -6,8 +6,6 @@
 let
   # list of users :
   users = [ ./perard ];
-
-  
   # merge users :
   usersConfig = lib.attrsets.zipAttrsWith
   (name: value: builtins.foldl' (a: b: a//b) {} value)

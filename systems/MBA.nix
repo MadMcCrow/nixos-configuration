@@ -30,10 +30,11 @@
 
   # Fonts
   fonts = {
-    fontDir.enable = true;
+  fontDir.enable = true;
     fonts = with pkgs; [
+      jetbrains-mono
       recursive
-      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  #    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     ];
   };
 

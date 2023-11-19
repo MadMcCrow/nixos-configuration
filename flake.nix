@@ -38,7 +38,7 @@
     let
 
       # modules shared between linux and MacOS
-      baseModules = [ ./nix ./users ./development ];
+      baseModules = [ ./nix ./users ];
 
       # shortcut functions :
       nixOSx86 = sysModule:
