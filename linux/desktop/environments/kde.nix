@@ -14,14 +14,7 @@ let
   extraApps = with kdePkgs; [ ];
 
   # some nice themes
-  themes = with pkgs; [
-    lightly-qt
-    kde-gruvbox
-    kde-rounded-corners
-    colloid-kde
-    catppuccin-kde
-    nordic
-  ];
+  themes = with pkgs; [ lightly-qt ];
 
   # KDE/breeze for light-dm
   breeze-icons = {
@@ -113,7 +106,7 @@ in {
         plasma-browser-integration
         print-manager
         kio-extras
-        # ark
+        ark
         elisa
         # gwenview
         # okular

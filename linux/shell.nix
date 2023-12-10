@@ -53,9 +53,7 @@ in {
       git
       curl
       zip
-      zenith
-      btop
-      neofetch # because its cool ;)s
+      neofetch # because its cool ;)
     ]);
     # use nano as our editor :
     environment.variables.EDITOR = "${cfg.editor}/bin/${cfg.editor.pname}";

@@ -12,14 +12,15 @@ with builtins; {
     # desktop env
     desktop = {
       enable = true;
+      displayManager.wayland.enable=false;
       gnome.enable = true;
       apps.flatpak.enable = true;
       apps.games.enable = true; # video games, you should try them sometives
     };
 
     server = {
-      enable = true;
-      data.path = "/run/server";
+       enable = true;
+       data.path = "/run/server";
     };
 
     # kernel packages

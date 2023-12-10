@@ -33,6 +33,7 @@ in {
     environment.systemPackages = with pkgs; [
       dconf2nix
       gnome.gnome-terminal
+      gnome-calculator
       gnome.gnome-screenshot
     ];
 

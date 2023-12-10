@@ -1,5 +1,5 @@
-# sripts.nix
-# package pythopn scripts for secrets
+# scripts.nix
+# python scripts for secrets
 { pkgs, pycnix }:
 with builtins;
 let
@@ -26,7 +26,7 @@ let
   # scripts :
   src = ./python;
   # the list of scripts and modules :
-  srciptModules = [ "age_crypt" "apply_secret" "colors" "ssh_keygen" "files" ];
+  scriptModules = [ "age_crypt" "apply_secret" "colors" "ssh_keygen" "files" ];
 
 in {
 
@@ -35,7 +35,7 @@ in {
     inherit src;
     name = "nixage-sshkeygen";
     main = "ssh_keygen.py";
-    modules = [ "Crypto" "age" ] ++ srciptModules;
+    modules = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
   };
 
@@ -44,7 +44,7 @@ in {
     inherit src;
     name = "nixage-create";
     main = "gen_secret.py";
-    modules = [ "Crypto" "age" ] ++ srciptModules;
+    modules = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
   };
 
@@ -53,7 +53,7 @@ in {
     inherit src;
     name = "nixage-apply";
     main = "apply_secret.py";
-    modules = [ "Crypto" "age" ] ++ srciptModules;
+    modules = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
   };
 }

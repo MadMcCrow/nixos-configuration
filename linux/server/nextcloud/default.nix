@@ -2,7 +2,6 @@
 #   all that is necessary for getting nextcloud to work OOTB
 #   TODO:
 #         - use container !
-#         - move secret to sub-module
 #         - Enable HTTPS
 #         - Remote access (ie from outside of my local network)
 { pkgs, config, lib, ... }:
@@ -25,51 +24,32 @@ let
   # path to our data
   nextcloudPath = mkPath [ config.nixos.server.data.path "nextcloud" ];
 
-  # pass to decrypted nextcloud password
-  nextcloudSecret = cfg.passwordPath;
-
-  # can nextcloud work :
-  # we cannot at instantiation time check
-  # if the password will be working at
-  # runtime. the best we could do would be
-  # IFD. we don't want IFD.
-  nextcloudEnable = true; # pathExists nextcloudSecret;
-
 in {
   # interface:
   options.nixos.server.nextcloud = {
     enable = lib.mkEnableOption "nextcloud" // {
       default = config.nixos.server.enable;
     };
+    # how to join the instance
     hostName = mkStringOption "hostname for nextcloud instance"
       "nextcloud.${srv.hostName}";
-    passwordPath =
-      mkStringOption "path for password file" "/etc/nextcloud/secret/pass";
   };
 
   # sub-modules
   imports = [ ./sql.nix ./apps.nix ];
 
   # config
-  config = lib.mkIf cfg.enable (lib.mkMerge [
-    {
+  config = lib.mkIf cfg.enable {
+
       # our secrets for password
       # this gets generated with nixos-update-secrets
-      secrets.secrets = [{
-        name = "nextcloud";
-        path = nextcloudSecret;
-      }];
-
-      # force updating secrets before initialisations :
-      # systemd.services."nextcloud-setup" = {
-      #    requires = [ "${config.secrets.update.pname}.service" ];
-      #    after = [ "${config.secrets.update.pname}.service" ];
-      # };
-    }
-
-    # if nextcloud can be enabled then do it:
-    (lib.optionalAttrs nextcloudEnable {
-
+      secrets.secrets."nextcloud-pass" = {
+        keys = ["${nextcloudPath}/ssh"];
+        service = "nextcloud-setup";
+        encrypted = "${nextcloudPath}/pass/password.age";
+        decrypted = "${nextcloudPath}/pass/password";
+      };
+    
       # nextcloud user
       # users.users.nextcloud.uid = lib.mkForce 115;
       # users.groups.nextcloud.gid = lib.mkForce 121;
@@ -77,17 +57,8 @@ in {
       users.users.nextcloud.extraGroups = [ "ssl-cert" ];
 
       # ensure data folder
-      systemd.tmpfiles.rules = [
-        "d ${nextcloudPath}         0750 nextcloud nextcloud -"
-        "d ${dirOf nextcloudSecret} 0750 nextcloud nextcloud -"
-      ];
-
-      # start nextcloud after secret is ready :
-      systemd.services."nextcloud-setup" = {
-        requires = [ config.secrets.service.name ];
-        after = [ config.secrets.service.name ];
-      };
-
+      systemd.tmpfiles.rules = ["d ${nextcloudPath} 0750 nextcloud nextcloud -"];
+      
       # setup SSL and ACME for https :
       # services.nginx.virtualHosts.${cfg.hostName} = {
       #   forceSSL = true;
@@ -101,7 +72,7 @@ in {
         datadir = nextcloudPath;
         config = {
           adminuser = "admin";
-          adminpassFile = nextcloudSecret;
+          adminpassFile = "${nextcloudPath}/pass/password";
           #overwriteProtocol = "https";
         };
         # for now forget about safety
@@ -122,13 +93,5 @@ in {
           "OC\\Preview\\HEIC"
         ];
       };
-    })
-    (lib.optionalAttrs (!nextcloudEnable) {
-      # if we fail to meet requirements for service,
-      # create user anyway
-      users.users.nextcloud.group = "nextcloud";
-      users.users.nextcloud.isSystemUser = true;
-      users.groups.nextcloud = { };
-    })
-  ]);
+  };
 }

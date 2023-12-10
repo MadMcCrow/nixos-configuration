@@ -102,8 +102,6 @@ with lib.hm.gvariant;
     "org/gnome/desktop/background" = {
       color-shading-type = "solid";
       picture-options = "zoom";
-      picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/keys-l.webp";
-      picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/keys-d.webp";
       primary-color = "#aaaaaa";
       secondary-color = "#000000";
     };
@@ -132,7 +130,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/notifications" = {
-      application-children = [ "firefox" "discord" "steam" "org-gnome-nautilus" "org-gnome-console" "org-gnome-dejadup" ];
+      application-children = [ "firefox" "discord" "steam" "org-gnome-nautilus" "org-gnome-console" "org-gnome-dejadup" "com-github-calo001-fondo" ];
     };
 
     "org/gnome/desktop/notifications/application/codium" = {
@@ -198,13 +196,17 @@ with lib.hm.gvariant;
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
       picture-options = "zoom";
-      picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/keys-l.webp";
+      picture-uri = "file:///home/perard/.config/variety/Downloaded/Unsplash/photo-1698103183329-14d67df6892a.jpg";
       primary-color = "#aaaaaa";
       secondary-color = "#000000";
     };
 
     "org/gnome/desktop/search-providers" = {
       sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+    };
+
+    "org/gnome/desktop/sound" = {
+      theme-name = "freedesktop";
     };
 
     "org/gnome/desktop/wm/keybindings" = {
@@ -222,6 +224,7 @@ with lib.hm.gvariant;
       auto-raise = true;
       button-layout = "appmenu:minimize,maximize,close";
       focus-new-windows = "strict";
+      titlebar-font = "System-ui 11";
       workspace-names = [];
     };
 
@@ -243,12 +246,6 @@ with lib.hm.gvariant;
       window-width = 600;
     };
 
-    "org/gnome/gnome-system-monitor" = {
-      current-tab = "resources";
-      network-total-in-bits = false;
-      show-dependencies = false;
-      show-whose-processes = "user";
-    };
 
     "org/gnome/gnome-system-monitor/disktreenew" = {
       col-6-visible = true;
@@ -259,7 +256,7 @@ with lib.hm.gvariant;
       attach-modal-dialogs = true;
       center-new-windows = true;
       dynamic-workspaces = true;
-      edge-tiling = true;
+      edge-tiling = false;
       focus-change-on-pointer-rest = true;
       overlay-key = "Super_L";
       workspaces-only-on-primary = true;
@@ -287,6 +284,11 @@ with lib.hm.gvariant;
 
     "org/gnome/settings-daemon/plugins/color" = {
       night-light-enabled = false;
+      night-light-last-coordinates = mkTuple [ 48.850729390543904 2.3387 ];
+    };
+
+    "org/gnome/settings-daemon/plugins/xsettings" = {
+      overrides = "{'Gtk/DialogsUseHeader': <0>, 'Gtk/ShellShowsAppMenu': <0>, 'Gtk/EnablePrimaryPaste': <0>, 'Gtk/DecorationLayout': <':minimize,maximize,close,menu'>, 'Gtk/ShowUnicodeMenu': <0>}";
     };
 
     "org/gnome/shell" = {
@@ -294,7 +296,7 @@ with lib.hm.gvariant;
       command-history = [ "lg" "r" ];
       disable-user-extensions = false;
       disabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
-      enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" ];
+      enabled-extensions = [ "quick-settings-tweaks@qwreey" "blur-my-shell@aunetx" "caffeine@patapon.info" "just-perfection-desktop@just-perfection" "openweather-extension@jenslody.de" "pano@elhan.io" "rocketbar@chepkun.github.com" "runcat@kolesnikov.se" "space-bar@luchrioh" "valent@andyholmes.ca" "wireless-hid@chlumskyvaclav.gmail.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "gtk4-ding@smedius.gitlab.com" "alttab-mod@leleat-on-github" "tiling-assistant@leleat-on-github" "appindicatorsupport@rgcjonas.gmail.com" ];
       favorite-apps = [ "org.gnome.Nautilus.desktop" "firefox.desktop" "org.gnome.Console.desktop" "discord.desktop" "codium.desktop" "steam.desktop" ];
       looking-glass-history = [ "experimental_hdr=on" "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'" "exit()" "kill" "Exit" "exit" "log" "log( test)" "log( test )" "restart" "end" "return" ];
       welcome-dialog-last-shown-version = "43.2";
@@ -472,8 +474,8 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/tiling-assistant" = {
       active-window-hint-color = "rgb(53,132,228)";
-      last-version-installed = 41;
-      overridden-settings = "{'org.gnome.mutter.edge-tiling': <false>}";
+      last-version-installed = 42;
+      overridden-settings = "{'org.gnome.mutter.edge-tiling': <true>}";
     };
 
     "org/gnome/shell/extensions/user-theme" = {
@@ -499,7 +501,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/software" = {
-      check-timestamp = mkInt64 1697308663;
+      check-timestamp = mkInt64 1699653710;
       first-run = false;
       flatpak-purge-timestamp = mkInt64 1695203836;
     };

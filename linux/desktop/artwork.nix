@@ -6,7 +6,12 @@ with builtins;
 let
   dsk = config.nixos.desktop;
   cfg = dsk.artwork;
-  tools = with pkgs; [ fondo variety sunpaper swww ];
+  tools = with pkgs; [
+     # fondo
+     variety
+     # sunpaper
+     # swww
+     ];
 
 in {
   options.nixos.desktop.artwork = {
@@ -21,6 +26,6 @@ in {
         deepin.deepin-wallpapers
         budgie.budgie-backgrounds
         adapta-backgrounds
-      ]; # ++ tools;
+      ] ++ tools;
   };
 }

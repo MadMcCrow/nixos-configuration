@@ -37,6 +37,9 @@ let
       procps
       usbutils
       libcap
+      openhmd
+      openxr-loader
+      pango
     ];
 
 in {

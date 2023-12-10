@@ -11,7 +11,7 @@ let
 
   # useful gnome apps
   # could add gnome.gnome-terminal
-  gnomeApps = (with pkgs; [ dconf dconf2nix polkit_gnome valent gnome-console ])
+  gnomeApps = (with pkgs; [ dconf dconf2nix polkit_gnome gnome-console ])
     ++ (with pkgs.gnome; [
       gnome-control-center # settings app
       gnome-notes # simple note app
@@ -41,12 +41,12 @@ let
   ## you will need to enable them in the gnome extension app
   gnomeExtensions = with pkgs.gnomeExtensions; [
     caffeine # prevents lockscreen
-    valent # replacement for GSConnect built with modern GTK
+    # valent # replacement for GSConnect built with modern GTK
     quick-settings-tweaker # Gnome43+ quick settings editor
     appindicator # add systray icon support
     runcat # the best gnome extension
     wireless-hid # battery left in mouse/gamepad etc...
-    pano # clipboard manager
+    # pano # clipboard manager
     alttab-mod # improve alt-tabbing
     tiling-assistant # Windows-like tiling help
     dash-to-dock # turn the dash into a dock, always visible
@@ -143,7 +143,7 @@ in {
     };
 
     # not necessary :
-    #xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gnome];
+    xdg.portal.extraPortals = with pkgs; [xdg-desktop-portal-gnome libportal-gtk4];
 
     # enable DConf to edit gnome configuration
     programs.dconf.enable = true;
@@ -151,8 +151,9 @@ in {
     programs.seahorse.enable = true;
     # KDE Connect is not required anymore for GSconnect to work
     programs.kdeconnect = {
-      enable = true;
-      package = pkgs.valent;
+      enable = false;
+      # Valent is broken for now
+      # package = pkgs.valent;
     };
     # evolution is the email/contact/etc client for gnome
     programs.evolution.enable = false;

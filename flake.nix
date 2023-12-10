@@ -38,7 +38,7 @@
     let
 
       # modules shared between linux and MacOS
-      baseModules = [ ./nix ./users ./development ];
+      baseModules = [ ./nix ./users ];
 
       # shortcut functions :
       nixOSx86 = sysModule:
@@ -50,7 +50,7 @@
           inherit system specialArgs;
           modules = baseModules ++ [
             ./linux
-            ./secrets
+            ./secrets/nixos.nix
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule
@@ -63,6 +63,7 @@
           specialArgs = inputs;
           modules = [
             ./darwin
+            ./secrets/darwin.nix
             inputs.home-manager-darwin.darwinModules.home-manager
             sysModule
           ] ++ baseModules;
@@ -115,6 +116,5 @@
           buildInputs = builtins.concatLists (map (x: x.buildInputs) paths);
         };
       });
-
     };
 }
