@@ -52,6 +52,6 @@ in {
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
     };
-    xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-xapp];
+    xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-xapp ];
   };
 }

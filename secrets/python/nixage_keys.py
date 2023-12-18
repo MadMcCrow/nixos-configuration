@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #
-#   ssh_keygen : a script responsible for creating ssh keys
-#                also a lib
+#   nixage_keys : a script responsible for creating ssh keys
 #
 
 # Python imports
@@ -16,11 +15,11 @@ from Crypto.PublicKey import RSA as rsa
 from colors import *
 from files import *
 
+global silent
 
 # constants :
 _keyPermission = "600"
 
-# generate a private key
 def genPrivateKey(path:str) :
     """
         We create a private key
@@ -28,7 +27,6 @@ def genPrivateKey(path:str) :
     rsa_key = rsa.generate(2048)
     writeFile(path,rsa_key.exportKey('PEM'), True)
     setPermission(path, _keyPermission)
-
 
 def genPublicKey(private_path : str, public_path : str) :
     """
@@ -40,8 +38,7 @@ def genPublicKey(private_path : str, public_path : str) :
         writeFile(public_path, rsa_key.public_key().exportKey('OpenSSH'), True)
     setPermission(public_path, _keyPermission)
 
-
-# main implementation for commandline
+# Main Program :
 if __name__ == "__main__" :
     try :
         # argument parser :
@@ -55,6 +52,8 @@ if __name__ == "__main__" :
         # adapt/parse the arguments
         prvkey = args.prvkey
         pubkey = args.pubkey
+        set_silent(args.silent)
+
         if prvkey == None :
             error("no private key provided")
             if not args.silent :
@@ -66,14 +65,12 @@ if __name__ == "__main__" :
         # private key :
         if (not fileExists(prvkey)) or args.force :
             removeFile(pubkey)
-            if not args.silent :
-                print(f"generating ssh private key : {colored(prvkey, Colors.BOLD)}")
+            note(f"generating ssh private key : {bold(prvkey)}")
             genPrivateKey(prvkey)
 
         # public key :
-        if not args.silent:
-            print(f"updating ssh public key: {colored(pubkey, Colors.BOLD)}")
-        genPublicKey(prvkey)
+        note(f"updating ssh public key: {bold(pubkey)}")
+        genPublicKey(prvkey, f"{prvkey}.pub")
 
     except KeyboardInterrupt :
         error("user interrupted the process, exiting")
@@ -85,5 +82,5 @@ if __name__ == "__main__" :
         error(f"unhandled error {E}")
         exit(1)
     else:
-        success("SSH keys ${args.prvkey} generated")
+        success(f"SSH keys {bold(prvkey)} generated")
         exit(0)

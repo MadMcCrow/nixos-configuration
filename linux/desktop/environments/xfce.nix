@@ -14,13 +14,12 @@ in {
       desktopManager.xfce.enable = true;
       desktopManager.xfce.enableXfwm = false;
       # desperately trying to get xfce to work
-      windowManager = {
-        metacity.enable = true;
-      };
+      windowManager = { metacity.enable = true; };
 
     };
 
-    environment.systemPackages = (with pkgs.xfce; [xfwm4 xfwm4-themes xfdesktop xfdashboard garcon]);
+    environment.systemPackages =
+      (with pkgs.xfce; [ xfwm4 xfwm4-themes xfdesktop xfdashboard garcon ]);
 
     xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     # TODO: theming for xfce

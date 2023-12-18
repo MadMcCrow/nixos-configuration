@@ -143,7 +143,10 @@ in {
     };
 
     # not necessary :
-    xdg.portal.extraPortals = with pkgs; [xdg-desktop-portal-gnome libportal-gtk4];
+    xdg.portal.extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome
+      libportal-gtk4
+    ];
 
     # enable DConf to edit gnome configuration
     programs.dconf.enable = true;

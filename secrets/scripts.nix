@@ -26,34 +26,37 @@ let
   # scripts :
   src = ./python;
   # the list of scripts and modules :
-  scriptModules = [ "age_crypt" "apply_secret" "colors" "ssh_keygen" "files" ];
+  scriptModules = [ "colors" "pyage" "files" ];
 
 in {
 
   # create the key for encryption and decryption
-  genKeys = pylib.mkCxFreezeBin {
+  keys = pylib.mkCxFreezeBin {
     inherit src;
-    name = "nixage-sshkeygen";
-    main = "ssh_keygen.py";
+    name = "nixage-keys";
+    main = "nixage_keys.py";
     modules = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
-  };
-
-  # create a secret for encryption
-  genSecret = pylib.mkCxFreezeBin {
-    inherit src;
-    name = "nixage-create";
-    main = "gen_secret.py";
-    modules = [ "Crypto" "age" ] ++ scriptModules;
-    nativeBuildInputs = [ pycrypto pyage ];
+    meta = {
+      licences = [ pkgs.lib.Licences.mit ];
+      description = pkgs.lib.mdDoc
+        "A tool to generate SSH-keys for secrets, written in python";
+      mainProgram = "nixage-keys";
+    };
   };
 
   # decrypt secret anywhere you want
-  applySecret = pylib.mkCxFreezeBin {
+  crypt = pylib.mkCxFreezeBin {
     inherit src;
-    name = "nixage-apply";
-    main = "apply_secret.py";
+    name = "nixage-crypt";
+    main = "nixage_crypt.py";
     modules = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
+    meta = {
+      licences = [ pkgs.lib.Licences.mit ];
+      description = pkgs.lib.mdDoc
+        "A tool to encrypt and decrypt age secrets, written in python";
+      mainProgram = "nixage-crypt";
+    };
   };
 }

@@ -69,7 +69,8 @@ def decrypt(keys : list, inFile : str) :
     try :
         contentFile = open(inFile, 'rb')
     except FileNotFoundError :
-        return None
+        print(f"cannot find file {inFile}")
+        raise FileNotFoundError
     else :
         with Decryptor(decryptor_keys, contentFile) as decryptor:
             out = decryptor.read()

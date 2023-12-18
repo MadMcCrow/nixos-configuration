@@ -51,7 +51,7 @@ def readFile(path, binary = False) :
             return f.read()
     except Exception as E:
         print(f"failed to read {path}: {E}")
-        return None
+        raise E
 
 
 def writeFile(path, content, binary = False) :
@@ -61,4 +61,4 @@ def writeFile(path, content, binary = False) :
             return f.write(content)
     except Exception as E:
         print(f"failed to write to {path}: {E}")
-        return None
+        raise E

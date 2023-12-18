@@ -1,10 +1,8 @@
 # fonts.nix
 # 	cool fonts I need on my systems
 { config, pkgs, lib, ... }:
-let
-dsk = config.nixos.desktop;
-in
-{
+let dsk = config.nixos.desktop;
+in {
   config = lib.mkIf dsk.enable {
     environment.systemPackages = with pkgs; [
       powerline-fonts
@@ -13,6 +11,6 @@ in
       open-sans
       ubuntu_font_family
       jetbrains-mono
-      ];
+    ];
   };
 }

@@ -1,16 +1,20 @@
 # options.nix
 # the (shared) options for secrets
 # TODO : support password protected keys
-{ lib, config, ... }:
+{ pkgs, lib, config, ... }:
 let
-  # type check for paths
-  pathStr = with lib; addCheckDesc "valid path" types.str (s: isNonEmpty s && (builtins.match ".+/" s) == null);
+
+ # type check for paths
+  pathStr =  with lib.types; 
+  types.addCheck str (s: (builtins.match "(/.+)" s) == null)
+  // {description = "${str.description} (with path check)";};
+
 
   # definition of a secret option
   secretOpts = { name, config, ... }: {
     options = with lib; {
       # Service to decrypt file for :
-      service =  mkOption {
+      service = mkOption {
         default = null;
         example = "nextcloud-setup";
         type = types.nullOr types.nonEmptyStr;
@@ -46,25 +50,23 @@ let
 
       # ssh keys to use for decryption
       keys = mkOption {
-        example = ["/etc/ssh/ssh_host_rsa_key"];
-        default = ["/etc/ssh/ssh_host_rsa_key"];
+        example = [ "/etc/ssh/ssh_host_rsa_key" ];
+        default = [ "/etc/ssh/ssh_host_rsa_key" ];
         type = types.nonEmptyListOf types.str;
         description = mdDoc "(private) key files for decrypting secrets";
       };
     };
-    };
-in
-{
+  };
+in {
   options.secrets = with lib; {
     # enable secret management
-    enable = mkEnableOption (mdDoc "secrets management") 
-    // {default = true;};
+    enable = mkEnableOption (mdDoc "secrets management") // { default = true; };
 
     # The actual secrets
     secrets = mkOption {
       description = mdDoc "set of secrets";
       type = types.attrsOf (types.submodule secretOpts);
-      default = {};
+      default = { };
     };
   };
-  }
+}

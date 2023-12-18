@@ -4,9 +4,7 @@
   platform = "aarch64-darwin";
 
   nix = {
-    settings = {
-      trusted-users = [ "@admin" ];
-    };
+    settings = { trusted-users = [ "@admin" ]; };
     extraOptions = ''
       auto-optimise-store = true
       experimental-features = nix-command flakes

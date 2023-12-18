@@ -3,6 +3,9 @@
 #   colors.py : helper for colored output
 #
 
+# global variable
+_silent = False
+
 # enum for lookup
 class Colors:
     OKBLUE = '\033[94m'
@@ -18,18 +21,37 @@ class Colors:
 def colored(text : str, color ) :
     return '\0'.join([color, text, Colors.ENDC])
 
-def error(text: str, silent = False ):
-    if not silent :
-        print(colored("Error: ", Colors.FAIL) + text)
+# bolden text
+def bold(text) :
+    return colored(text, Colors.BOLD)
 
-def warning(text: str, silent = False ):
-    if not silent :
-        print(colored("Warning: ", Colors.WARNING) + text)
+# print error message
+def error(text: str):
+    print(colored("Error: ", Colors.FAIL) + text)
 
-def note(text: str, silent = False ):
-    if not silent :
-        print(colored("Note: ", Colors.OKCYAN) + text)
 
-def success(text: str, silent = False ):
-    if not silent :
-        print(colored("Success: ", Colors.OKGREEN) + text)
+# enable or disable silent
+def set_silent(on: bool) :
+    _silent = on
+
+# get global variable and print if not set
+def _silenced(text : str) :
+    try: 
+        if _silent :
+          return
+    except NameError :
+        print("failed to find global variable")
+        pass
+    print(text)
+
+# Warning message
+def warning(text: str):
+    _silenced(colored("Warning: ", Colors.WARNING) + text)
+
+# note message
+def note(text: str ):
+    _silenced(colored("OKCYAN: ", Colors.OKCYAN) + text)
+
+# success message
+def success(text: str):
+    _silenced(colored("Success: ", Colors.OKGREEN) + text)

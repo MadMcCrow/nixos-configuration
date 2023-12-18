@@ -41,57 +41,58 @@ in {
   # config
   config = lib.mkIf cfg.enable {
 
-      # our secrets for password
-      # this gets generated with nixos-update-secrets
-      secrets.secrets."nextcloud-pass" = {
-        keys = ["${nextcloudPath}/ssh"];
-        service = "nextcloud-setup";
-        encrypted = "${nextcloudPath}/pass/password.age";
-        decrypted = "${nextcloudPath}/pass/password";
+    # our secrets for password
+    # this gets generated with nixos-update-secrets
+    secrets.secrets."nextcloud-pass" = {
+      keys = [ "${nextcloudPath}/ssh" ];
+      service = "nextcloud-setup";
+      encrypted = "${nextcloudPath}/pass/password.age";
+      decrypted = "${nextcloudPath}/pass/password";
+    };
+
+    # nextcloud user
+    # users.users.nextcloud.uid = lib.mkForce 115;
+    # users.groups.nextcloud.gid = lib.mkForce 121;
+    users.users.nextcloud.group = "nextcloud";
+    users.users.nextcloud.extraGroups = [ "ssl-cert" ];
+
+    # ensure data folder
+    systemd.tmpfiles.rules =
+      [ "d ${nextcloudPath} 0750 nextcloud nextcloud -" ];
+
+    # setup SSL and ACME for https :
+    # services.nginx.virtualHosts.${cfg.hostName} = {
+    #   forceSSL = true;
+    #   enableACME = true;
+    # };
+
+    services.nextcloud = {
+      enable = true;
+      package = pkgs.nextcloud27;
+      hostName = cfg.hostName;
+      datadir = nextcloudPath;
+      config = {
+        adminuser = "admin";
+        adminpassFile = "${nextcloudPath}/pass/password";
+        #overwriteProtocol = "https";
       };
-    
-      # nextcloud user
-      # users.users.nextcloud.uid = lib.mkForce 115;
-      # users.groups.nextcloud.gid = lib.mkForce 121;
-      users.users.nextcloud.group = "nextcloud";
-      users.users.nextcloud.extraGroups = [ "ssl-cert" ];
+      # for now forget about safety
+      https = false;
 
-      # ensure data folder
-      systemd.tmpfiles.rules = ["d ${nextcloudPath} 0750 nextcloud nextcloud -"];
-      
-      # setup SSL and ACME for https :
-      # services.nginx.virtualHosts.${cfg.hostName} = {
-      #   forceSSL = true;
-      #   enableACME = true;
-      # };
-
-      services.nextcloud = {
-        enable = true;
-        package = pkgs.nextcloud27;
-        hostName = cfg.hostName;
-        datadir = nextcloudPath;
-        config = {
-          adminuser = "admin";
-          adminpassFile = "${nextcloudPath}/pass/password";
-          #overwriteProtocol = "https";
-        };
-        # for now forget about safety
-        https = false;
-
-        # image preview options :
-        extraOptions.enabledPreviewProviders = [
-          "OC\\Preview\\BMP"
-          "OC\\Preview\\GIF"
-          "OC\\Preview\\JPEG"
-          "OC\\Preview\\Krita"
-          "OC\\Preview\\MarkDown"
-          "OC\\Preview\\MP3"
-          "OC\\Preview\\OpenDocument"
-          "OC\\Preview\\PNG"
-          "OC\\Preview\\TXT"
-          "OC\\Preview\\XBitmap"
-          "OC\\Preview\\HEIC"
-        ];
-      };
+      # image preview options :
+      extraOptions.enabledPreviewProviders = [
+        "OC\\Preview\\BMP"
+        "OC\\Preview\\GIF"
+        "OC\\Preview\\JPEG"
+        "OC\\Preview\\Krita"
+        "OC\\Preview\\MarkDown"
+        "OC\\Preview\\MP3"
+        "OC\\Preview\\OpenDocument"
+        "OC\\Preview\\PNG"
+        "OC\\Preview\\TXT"
+        "OC\\Preview\\XBitmap"
+        "OC\\Preview\\HEIC"
+      ];
+    };
   };
 }

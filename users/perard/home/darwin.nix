@@ -1,18 +1,15 @@
 # darwin.nix
 # home manager configuration for MacOS
 # TODO : browser 
-{ config, pkgs, ... }:
-{
+{ config, pkgs, ... }: {
   home.username = "perard";
   home.homeDirectory = "/Users/perard";
   home.stateVersion = "23.05";
 
-  imports = [./shared.nix];
+  imports = [ ./shared.nix ];
 
   # packages to install to profile (extra to shared)
-  home.packages = (with pkgs; [
-    exa
-  ]);
+  home.packages = (with pkgs; [ exa ]);
 
   # Programs setup :
   # vscode is in another module (too many extensions)
@@ -42,23 +39,21 @@
 
   # ZSH :
   programs.zsh = {
-    enable = true ;
+    enable = true;
     dotDir = ".config/zsh";
     enableAutosuggestions = true;
     enableCompletion = true;
     autocd = true;
-    plugins = [
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "chisui";
-          repo = "zsh-nix-shell";
-          rev = "v0.7.0";
-          sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
-        };
-      }
-    ];
+    plugins = [{
+      name = "zsh-nix-shell";
+      file = "nix-shell.plugin.zsh";
+      src = pkgs.fetchFromGitHub {
+        owner = "chisui";
+        repo = "zsh-nix-shell";
+        rev = "v0.7.0";
+        sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
+      };
+    }];
     history = {
       size = 100;
       ignoreDups = true;
@@ -112,7 +107,7 @@
 
   # environment switcher
   programs.direnv = {
-    enable =true;
+    enable = true;
     nix-direnv.enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;

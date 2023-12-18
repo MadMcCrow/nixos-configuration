@@ -29,9 +29,7 @@ in {
     environment.systemPackages = with pkgs; [ dconf2nix ];
 
     # remove what I don´t like :
-    environment.pantheon.excludePackages = [
-      pkgs.pantheon.elementary-camera
-    ];
+    environment.pantheon.excludePackages = [ pkgs.pantheon.elementary-camera ];
 
     # maybe do :
     # services.xserver.displayManager.lightdm.greeters.pantheon.enable = true

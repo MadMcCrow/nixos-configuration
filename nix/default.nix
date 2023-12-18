@@ -8,13 +8,13 @@ let
   # optiontype for overlays
 
   overlaysType = with lib;
-   let
-    subType = mkOptionType {
-      name = "nixpkgs-overlay";
-      check = isFunction;
-      merge = mergeOneOption;
-    };
-  in types.listOf subType;
+    let
+      subType = mkOptionType {
+        name = "nixpkgs-overlay";
+        check = isFunction;
+        merge = mergeOneOption;
+      };
+    in types.listOf subType;
 
 in {
 
@@ -56,10 +56,10 @@ in {
   config = {
     nix = {
       # pin for nix2 
-      nixPath = ["nixpkgs=flake:nixpkgs"];
+      nixPath = [ "nixpkgs=flake:nixpkgs" ];
       # pin for nix3
       registry.nixpkgs.flake = nixpkgs;
-      
+
       package = pkgs.nix;
 
       # enable flakes and commands
@@ -83,7 +83,8 @@ in {
       overlays = cfg.overlays;
 
       # predicate from list
-      config.allowUnfreePredicate = pkg: elem (lib.getName pkg) cfg.unfreePackages;
+      config.allowUnfreePredicate = pkg:
+        elem (lib.getName pkg) cfg.unfreePackages;
 
       # each functions gets its pkgs from here :
       config.packageOverrides = pkgs:

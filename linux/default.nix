@@ -79,9 +79,6 @@ in {
       };
     };
 
-    # printing
-    CUPS = { enable = mkOptionBase bool "enable printer support" false; };
-
     # CPU/GPU
     cpu.vendor = mkEnumOption "CPU manufacturer" [ "amd" "intel" ];
     cpu.powermode =
@@ -133,14 +130,10 @@ in {
       xkbOptions = "eurosign:e";
     };
 
-    # CUPS printer support :
-    services.printing.enable = cfg.CUPS.enable; # default to false
-    # services.printing.stateless = true;
-    # services.printing.drivers = [ ];
-
     # avahi for mdns :
     services.avahi.enable = true;
-    services.avahi.nssmdns = true;
+    services.avahi.nssmdns4 = true; #ipv4
+    services.avahi.nssmdns6 = true; #ipv6
 
     # env :
     environment = with pkgs; {

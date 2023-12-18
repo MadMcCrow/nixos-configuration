@@ -8,6 +8,12 @@ in {
     default = false;
   };
 
-  imports =
-    [ ./apps ./environments ./artwork.nix ./display-manager.nix ./fonts.nix ./gtk.nix ];
+  imports = [
+    ./apps
+    ./environments
+    ./artwork.nix
+    ./display-manager.nix
+    ./fonts.nix
+    ./gtk.nix
+  ];
 }

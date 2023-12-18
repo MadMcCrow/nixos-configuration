@@ -1,28 +1,23 @@
 # home.nix
 # home manager configuration for user
 { config, pkgs, ... }:
-with builtins;
-{
+with builtins; {
   home.username = "perard";
   home.homeDirectory = "/home/perard";
   home.stateVersion = "23.11";
 
   # add our dconf settings
-  imports = [./dconf.nix ./shared.nix];
+  imports = [ ./dconf.nix ./shared.nix ];
 
   # packages to install to profile
-  home.packages = (with pkgs; [
-    eza
-    speechd
-    bitwarden
-  ]);
+  home.packages = (with pkgs; [ eza speechd bitwarden ]);
 
   # vscode is in another module (too many extensions)
   programs.vscode = (import ./vscode.nix { inherit pkgs; });
 
   # FIREFOX
   programs.firefox = {
-    enable =true;
+    enable = true;
     package = pkgs.firefox-beta;
   };
 
@@ -41,18 +36,16 @@ with builtins;
     enableAutosuggestions = true;
     enableCompletion = true;
     autocd = true;
-    plugins = [
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "chisui";
-          repo = "zsh-nix-shell";
-          rev = "v0.7.0";
-          sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
-        };
-      }
-    ];
+    plugins = [{
+      name = "zsh-nix-shell";
+      file = "nix-shell.plugin.zsh";
+      src = pkgs.fetchFromGitHub {
+        owner = "chisui";
+        repo = "zsh-nix-shell";
+        rev = "v0.7.0";
+        sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
+      };
+    }];
     history = {
       size = 100;
       ignoreDups = true;
@@ -62,7 +55,7 @@ with builtins;
     };
     # alias vscodium to vscode
     shellAliases = { code = "codium"; };
-   syntaxHighlighting.enable = true;
+    syntaxHighlighting.enable = true;
   };
 
   services.gpg-agent = {
@@ -74,7 +67,7 @@ with builtins;
   programs.hstr.enable = true;
 
   programs.powerline-go = {
-    enable =true;
+    enable = true;
     modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
     modulesRight = [ "exit" "time" ];
     settings = {

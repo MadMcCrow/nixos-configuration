@@ -1,5 +1,4 @@
-{ lib, pkgs, ... }:
-{
+{ lib, pkgs, ... }: {
   # enable HM
   programs.home-manager.enable = true;
   home.packages = (with pkgs; [
@@ -42,7 +41,7 @@
 
   # environment switcher
   programs.direnv = {
-    enable =true;
+    enable = true;
     nix-direnv.enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
