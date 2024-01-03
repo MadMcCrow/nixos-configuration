@@ -4,11 +4,15 @@
 { pkgs, lib, config, ... }:
 let
 
- # type check for paths
-  pathStr =  with lib.types; 
-  types.addCheck str (s: (builtins.match "(/.+)" s) == null)
-  // {description = "${str.description} (with path check)";};
+  # type for service: 
+  serviceType = lib.types.strMatching 
+  "[a-zA-Z0-9@%:_.\\-]+[.](service|socket|device|mount|automount|swap|target|path|timer|scope|slice)";
 
+  # type for paths 
+  pathType = with lib.types;
+    addCheck str (s: (builtins.match "(/.+)" s) != null) // {
+      description = "${str.description} (with path check)";
+    };
 
   # definition of a secret option
   secretOpts = { name, config, ... }: {
@@ -17,21 +21,21 @@ let
       service = mkOption {
         default = null;
         example = "nextcloud-setup";
-        type = types.nullOr types.nonEmptyStr;
+        type = types.nullOr serviceType;
         description = mdDoc "service to attach the secret to";
       };
 
       # Encrypted file :
       encrypted = mkOption {
         example = "/nix/persist/secrets/my-secret.age";
-        type = types.either pathStr types.path;
+        type = types.either pathType types.path;
         description = mdDoc "path to encrypted file";
       };
 
       # decrypted file :
       decrypted = mkOption {
         example = "/etc/nextcloud/passfile";
-        type = pathStr;
+        type = pathType;
         description = mdDoc "path to decrypted file";
       };
 
@@ -52,7 +56,7 @@ let
       keys = mkOption {
         example = [ "/etc/ssh/ssh_host_rsa_key" ];
         default = [ "/etc/ssh/ssh_host_rsa_key" ];
-        type = types.nonEmptyListOf types.str;
+        type = types.nonEmptyListOf pathType;
         description = mdDoc "(private) key files for decrypting secrets";
       };
     };

@@ -132,8 +132,8 @@ in {
 
     # avahi for mdns :
     services.avahi.enable = true;
-    services.avahi.nssmdns4 = true; #ipv4
-    services.avahi.nssmdns6 = true; #ipv6
+    services.avahi.nssmdns4 = true; # ipv4
+    services.avahi.nssmdns6 = true; # ipv6
 
     # env :
     environment = with pkgs; {

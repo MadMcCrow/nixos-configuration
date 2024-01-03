@@ -45,7 +45,7 @@ in {
     # this gets generated with nixos-update-secrets
     secrets.secrets."nextcloud-pass" = {
       keys = [ "${nextcloudPath}/ssh" ];
-      service = "nextcloud-setup";
+      service = "nextcloud-setup.service";
       encrypted = "${nextcloudPath}/pass/password.age";
       decrypted = "${nextcloudPath}/pass/password";
     };
@@ -68,7 +68,7 @@ in {
 
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud27;
+      package = pkgs.nextcloud28;
       hostName = cfg.hostName;
       datadir = nextcloudPath;
       config = {

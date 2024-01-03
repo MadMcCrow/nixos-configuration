@@ -55,12 +55,16 @@ in {
 
   config = {
     nix = {
+
       # pin for nix2 
       nixPath = [ "nixpkgs=flake:nixpkgs" ];
       # pin for nix3
       registry.nixpkgs.flake = nixpkgs;
 
       package = pkgs.nix;
+
+      # security, might break macOS
+      allowedUsers = [ "@wheel" ];
 
       # enable flakes and commands
       settings.experimental-features = [ "nix-command" "flakes" ];

@@ -50,7 +50,7 @@ def warning(text: str):
 
 # note message
 def note(text: str ):
-    _silenced(colored("OKCYAN: ", Colors.OKCYAN) + text)
+    _silenced(colored("note: ", Colors.OKCYAN) + text)
 
 # success message
 def success(text: str):

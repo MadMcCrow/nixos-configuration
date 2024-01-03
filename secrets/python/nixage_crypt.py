@@ -14,94 +14,88 @@ from pyage import *
 from files import *
 
 
-def nixage_decrypt(infile, outfile, keys, force, ignore) :
+def nixage_decrypt(args) :
     """
         Decrypt a age secret to a normal file
     """
+    set_silent(args.silent)
     # decrypt to memory :
-    result = decrypt(keys, infile)
+    result = decrypt(list(set(args.keys)), args.input)
     # compare with already decrypted file :
-    if  fileExists(outfile) :
-        existing = readFile(outfile)
+    if  fileExists(args.output) :
+        existing = readFile(args.output)
         if existing == result :
             note("File already decrypted")
             return
-        elif force != True :
+        elif args.force != True :
                 error("already present file differs from decrypted secret")
                 raise FileExistsError
         else :
-            removeFile(outfile)
+            removeFile(args.output)
             # continue
     # write decrypted secret
-    writeFile(outfile, result)
+    writeFile(args.output, result)
 
 
-
-def nixage_encrypt(infile, outfile, keys, force, ignore) :
+def nixage_encrypt(args) :
     """
         encrypt a normal file to an age secret
     """
     # try decrypt file :
-    if fileExists(outfile) :
-        if force :
+    if fileExists(args.output) :
+        if args.force :
            warning("removing already present secret")
-           removeFile(outfile)
-        elif ignore :
+           removeFile(args.output)
+        elif args.ignore :
             note("File already present, skipping")
             return
         else :
             error("Secret file already present")
             raise FileExistsError
     # WARNING : ENCRPYTED DATA IS VISIBLE
-    if infile != None :
-        content = readFile(infile)
+    if args.input != None :
+        content = readFile(args.input)
     else :
-        note(f"enter content for {bold(outfile)}:\n")
+        note(f"enter content for {bold(args.output)}:\n")
         content = input()
     # create and set the output file
-    encrypt(keys, outfile, content)
+    encrypt(list(set(args.keys)), args.output, content)
 
+def addParserSubcommand(subparsers, name, requireInput, func) :
+    parser = subparsers.add_parser(name)
+    inputParser = parser.add_argument_group('input', 'input options')
+    inputParser.add_argument("-i", "--input", dest="input",  help="input file (full path)", metavar="IN", required=requireInput)
+    inputParser.add_argument("-k", "--keys",  dest="keys", nargs='+', help="ssh keys path",  metavar="KEY", required=True)
+    outputParser = parser.add_argument_group('output', 'output options')
+    outputParser.add_argument("-o", "--output", dest="output", help="output file (with extension)", metavar="OUT", required = True)
+    outputParser.add_argument("-u", "--user",dest="user", help="owner of the encrypted file", metavar="USER")
+    outputParser.add_argument("-g", "--group",dest="group", help="usergroup of the encrypted file (if different from the group of owner)", metavar="GROUP")
+    parser.add_argument("-I", "--ignore", dest="ignore", help="ignore errors",                 action='store_true')
+    parser.add_argument("-F", "--force",  dest="force",  help="force action (recreate files)", action='store_true')
+    parser.add_argument("-S", "--silent", dest="silent", help="silent, only output errors",    action='store_true')
+    parser.set_defaults(func=func)
+    return parser
 
 # Main Program :
 if __name__ == "__main__" :
     try :
-        # argument parser :
+        # shared command arguments :
+        parent_parser = argparse.ArgumentParser()
+       
+        #  add subparsers
         parser = argparse.ArgumentParser()
+        subparsers = parser.add_subparsers(required = True)
+        addParserSubcommand(subparsers, 'encrypt', False, nixage_encrypt)
+        addParserSubcommand(subparsers, 'decrypt', True,  nixage_decrypt)
        
-        #  add crypt parameters
-        parser.add_argument(dest="mode", nargs=1, metavar="MODE", choices = ["encrypt", "decrypt"], help="mode for nixage")
-        parser.add_argument("-i", "--input", dest="input",  help="input file (full path)", metavar="IN",   required = True)
-        parser.add_argument("-k", "--keys",  dest="keys", nargs='+', help="ssh keys path",  metavar="KEY", required = True)
-       
-        # General options
-        parser.add_argument("-I", "--ignore", dest="ignore", help="ignore errors",                 action='store_true')
-        parser.add_argument("-F", "--force",  dest="force",  help="force action (recreate files)", action='store_true')
-        parser.add_argument("-S", "--silent", dest="silent", help="silent, only output errors",    action='store_true')
-
-        # file output options
-        parser.add_argument("-o", "--output", dest="output", help="output file (with extension)", metavar="OUT", required = True)
-        parser.add_argument("-u", "--user",dest="user", help="owner of the encrypted file", metavar="USER")
-        parser.add_argument("-g", "--group",dest="group", help="usergroup of the encrypted file (if different from the group of owner)", metavar="GROUP")
-
         # start parser !
         args = parser.parse_args()
-
-        # adapt/parse the arguments
-        infile  = args.input
-        outfile = args.output
-        keys = list(set(args.keys))
-        mode = args.mode
-        set_silent(args.silent)
-
-        # perform the correct action
-        {
-            'decrypt' : nixage_decrypt,
-            'encrypt' : nixage_encrypt
-        }.get(mode)(infile, outfile, keys, args.force, args.ignore)
+        # do what we asked
+        args.func(args)
 
         # set ownership of created file
         if args.user != None :
-            setOwnership(outfile, args.user, args.group)
+            setOwnership(args.output, args.user, args.group)
 
     # handle exceptions :
     except KeyboardInterrupt :
@@ -113,12 +107,11 @@ if __name__ == "__main__" :
     except FileExistsError :
         error(f"output file {outfile} already exists")
     except Exception as E :
-        error(f"Unhandled Error : {E}")
+        error(f"{type(E).__name__} : {E}")
     else :
-        success("secret is encrypted with ssh key")
+        success("secret operation done")
         exit(0)
     finally :
-        error("failed to encrypt secret with ssh key")
         exit(1)
 
 

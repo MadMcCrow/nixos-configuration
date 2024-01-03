@@ -15,7 +15,6 @@ let
     ++ (with pkgs.gnome; [
       gnome-control-center # settings app
       gnome-notes # simple note app
-      gnome-todo # quick todo app
       gnome-tweaks # Gnome tweaks
       gnome-boxes # remote or virtual systems
       gnome-calendar # the calendar app
@@ -28,6 +27,7 @@ let
       file-roller # compression and decompression of files
       gnome-system-monitor # self explainatory
     ]) ++ (with pkgs; [
+      endeavour # previously gnome-todo
       baobab # disk usage analyzer
       gitg # git GUI client
       gnome-usage # cpu/gpu/mem usage monitor

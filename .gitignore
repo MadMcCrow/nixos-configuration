@@ -11,3 +11,5 @@ secrets/*
 !secrets/python/
 !secrets/*.py
 !secrets/*.nix
+# ignore any python cache
+__pycache__
