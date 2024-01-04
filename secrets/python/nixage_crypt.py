@@ -90,6 +90,12 @@ if __name__ == "__main__" :
        
         # start parser !
         args = parser.parse_args()
+
+        # check that keys exists:
+        missing_keys = [key for key in args.keys if not fileExists(key)]
+        if len(missing_keys) != 0 :
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), missing_keys[0])
+
         # do what we asked
         args.func(args)
 

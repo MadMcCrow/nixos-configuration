@@ -21,4 +21,4 @@ let
     libraries = [ ];
   };
 
-in pkgs.mkShell { buildInputs = [pycrypto pyage]; }
+in pkgs.mkShell { buildInputs = [ pycrypto pyage ]; }

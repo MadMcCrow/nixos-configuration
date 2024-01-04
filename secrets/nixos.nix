@@ -5,10 +5,6 @@ let
   # the various scripts for nixage
   nixage-scripts = import ./scripts.nix { inherit pkgs pycnix; };
 
-  # helper function for building :
-  mkKeysStr = secret:
-    concatStringsSep " " (map (k: "${k}.pub") (lib.lists.unique secret.keys));
-
   # gen/update all keys on the system
   # should only be done once by user
   # Should be moved to another module to work with Darwin
@@ -39,7 +35,11 @@ let
       text = let
         # secret generator
         gen = x:
-          "${lib.getExe nixage-scripts.crypt} encrypt -o ${x.encrypted} -u ${x.user} -g ${x.group} -k ${mkKeysStr x} -I";
+          "${
+            lib.getExe nixage-scripts.crypt
+          } encrypt -o ${x.encrypted} -u ${x.user} -g ${x.group} -k ${
+            concatStringsSep " " (map (k: "${k}.pub") (lib.lists.unique x.keys))
+          } -I -F";
         # out
       in lib.strings.concatLines (map (x:
         "${
@@ -58,58 +58,57 @@ let
   };
 
   # function to build service for secret
-  mkServicePair = secretName: secretOpts: 
-  let 
-  unit = if secretOpts.service == null then "multi-user.target" else secretOpts.service;
-  in
-  {
-    # make sure to start with unit
-    wantedBy = [unit]; 
-    partOf   = [unit];
+  mkServicePair = secretName: secretOpts:
+    let
+      unit = if secretOpts.service == null then
+        "multi-user.target"
+      else
+        secretOpts.service;
+    in {
+      # make sure to start with unit
+      wantedBy = [ unit ];
+      partOf = [ unit ];
 
-    # if requires tmpfs : require mounts for tmpfs
-    unitConfig = {
-      RequiresMountsFor = "${cfg.tmpfs.mountPoint}";
-    };
+      # if requires tmpfs : require mounts for tmpfs
+      unitConfig = { RequiresMountsFor = "${cfg.tmpfs.mountPoint}"; };
 
-    # execution
-    serviceConfig = {
-      # START : decrypt
-      ExecStart = if cfg.tmpfs.enable then
-      # decrypt to tmpfs and symlink to target
-      ''
-        ${lib.getExe nixage.crypt} decrypt -s -F \
-         -i ${secretOpts.encrypted} -o ${cfg.tmpfs.mountPoint}/${secretOpts.decrypted} \
-         -u ${secretOpts.user} -g ${secretOpts.group} \
-         -k ${mkKeysStr secretOpts}
-         ln -s ${cfg.tmpfs.mountPoint}/${secretOpts.decrypted} ${secretOpts.decrypted}
-      '' else # decrypt directly to target
-      ''
-        ${lib.getExe nixage.crypt} decrypt -s -F \
-        -i ${secretOpts.encrypted} -o ${secretOpts.decrypted} \
-        -u ${secretOpts.user} -g ${secretOpts.group} \
-        -k ${mkKeysStr secretOpts}
-      '';
-      # STOP : delete
-      ExecStop = if cfg.tmpfs.enable then
-      # remove link and target
-      ''
-        rm ${secretOpts.decrypted}
-        rm ${cfg.tmpfs.mountPoint}/${secretOpts.decrypted}
-      '' else # only remove target
-      ''
-        rm ${secretOpts.decrypted}
-      '';
+
+      # execution
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = "root";
+        # START : decrypt
+        ExecStart = if cfg.tmpfs.enable then
+        # decrypt to tmpfs and symlink to target
+        ''
+          ${lib.getExe nixage.crypt} decrypt -S -F \
+           -i ${secretOpts.encrypted} -o ${lib.strings.normalizePath (concatStringsSep "/" [cfg.tmpfs.mountPoint secretOpts.decrypted])} \
+           -u ${secretOpts.user} -g ${secretOpts.group} \
+           -k ${concatStringsSep " " (lib.lists.unique secretOpts.keys)} || \
+           ln -s ${lib.strings.normalizePath (concatStringsSep "/" [cfg.tmpfs.mountPoint secretOpts.decrypted])} ${secretOpts.decrypted} ||\
+           chown ${secretOpts.user}:${secretOpts.group}  ${secretOpts.decrypted}
+        '' else # decrypt directly to target
+        ''
+          ${lib.getExe nixage.crypt} decrypt -s -F \
+          -i ${secretOpts.encrypted} -o ${secretOpts.decrypted} \
+          -u ${secretOpts.user} -g ${secretOpts.group} \
+          -k ${concatStringsSep " " (lib.lists.unique secretOpts.keys)}
+        '';
+        # STOP : delete
+        ExecStop = if cfg.tmpfs.enable then
+        # remove link and target
+        ''
+          rm ${secretOpts.decrypted}
+          rm ${cfg.tmpfs.mountPoint}/${secretOpts.decrypted}
+        '' else # only remove target
+        ''
+          rm ${secretOpts.decrypted}
+        '';
+      };
+      # quick description
+      description = "service to decrypt ${secretName}";
     };
-    # confine this service
-    confinement = {
-      enable = true;
-      packages = [ pkgs.coreutils nixage.crypt ]
-        ++ nixage.crypt.buildInputs;
-    };
-    # quick description
-    description = "service to decrypt ${secretName}";
-  };
 in {
   # options defined separately
   imports = [ ./options.nix ];

@@ -44,10 +44,11 @@ in {
     # our secrets for password
     # this gets generated with nixos-update-secrets
     secrets.secrets."nextcloud-pass" = {
-      keys = [ "${nextcloudPath}/ssh" ];
+      keys = [ "${nextcloudPath}/ssh/rsa" ];
       service = "nextcloud-setup.service";
       encrypted = "${nextcloudPath}/pass/password.age";
       decrypted = "${nextcloudPath}/pass/password";
+      user = "nextcloud";
     };
 
     # nextcloud user

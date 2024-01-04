@@ -64,7 +64,7 @@ in {
       package = pkgs.nix;
 
       # security, might break macOS
-      allowedUsers = [ "@wheel" ];
+      settings.allowed-users = [ "@wheel" ];
 
       # enable flakes and commands
       settings.experimental-features = [ "nix-command" "flakes" ];
