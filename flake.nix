@@ -50,7 +50,7 @@
           inherit system specialArgs;
           modules = baseModules ++ [
             ./linux
-            ./secrets/nixos.nix
+            ./secrets/nixos
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule

@@ -2,14 +2,7 @@
 result
 
 # ignore macos files
-.DS_Store
+**/.DS_Store
 
-# ignore secrets private keys
-secrets/*
-!secrets/*.sh
-!secrets/scripts/
-!secrets/python/
-!secrets/*.py
-!secrets/*.nix
 # ignore any python cache
-__pycache__
+**/__pycache__/

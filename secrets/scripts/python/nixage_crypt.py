@@ -13,17 +13,15 @@ from colors import *
 from pyage import *
 from files import *
 
-
 def nixage_decrypt(args) :
     """
         Decrypt a age secret to a normal file
     """
+    outpath = fixPath(args.output)
     set_silent(args.silent)
-    # decrypt to memory :
     result = decrypt(list(set(args.keys)), args.input)
-    # compare with already decrypted file :
-    if  fileExists(args.output) :
-        existing = readFile(args.output)
+    if fileExists(outpath) :
+        existing = readFile(outpath)
         if existing == result :
             note("File already decrypted")
             return
@@ -31,10 +29,8 @@ def nixage_decrypt(args) :
                 error("already present file differs from decrypted secret")
                 raise FileExistsError
         else :
-            removeFile(args.output)
-            # continue
-    # write decrypted secret
-    writeFile(args.output, result)
+            removeFile(outpath)
+    writeFile(outpath, result)
 
 
 def nixage_encrypt(args) :
@@ -42,24 +38,23 @@ def nixage_encrypt(args) :
         encrypt a normal file to an age secret
     """
     # try decrypt file :
-    if fileExists(args.output) :
+    outpath = fixPath(args.output)
+    if fileExists(outpath) :
         if args.force :
            warning("removing already present secret")
-           removeFile(args.output)
+           removeFile(outpath)
         elif args.ignore :
             note("File already present, skipping")
             return
         else :
             error("Secret file already present")
             raise FileExistsError
-    # WARNING : ENCRPYTED DATA IS VISIBLE
     if args.input != None :
-        content = readFile(args.input)
+        content = readFile(fixPath(args.input))
     else :
-        note(f"enter content for {bold(args.output)}:\n")
+        note(f"enter content for {bold(outpath)}:\n")
         content = input()
-    # create and set the output file
-    encrypt(list(set(args.keys)), args.output, content)
+    writeFile(outpath, encrypt(list(set(args.keys)), content), true)
 
 def addParserSubcommand(subparsers, name, requireInput, func) :
     parser = subparsers.add_parser(name)
@@ -68,8 +63,7 @@ def addParserSubcommand(subparsers, name, requireInput, func) :
     inputParser.add_argument("-k", "--keys",  dest="keys", nargs='+', help="ssh keys path",  metavar="KEY", required=True)
     outputParser = parser.add_argument_group('output', 'output options')
     outputParser.add_argument("-o", "--output", dest="output", help="output file (with extension)", metavar="OUT", required = True)
-    outputParser.add_argument("-u", "--user",dest="user", help="owner of the encrypted file", metavar="USER")
-    outputParser.add_argument("-g", "--group",dest="group", help="usergroup of the encrypted file (if different from the group of owner)", metavar="GROUP")
+    outputParser.add_argument("-U", "--user",dest="user", help="owner in the form USER[:GROUP]", metavar="USER")
     parser.add_argument("-I", "--ignore", dest="ignore", help="ignore errors",                 action='store_true')
     parser.add_argument("-F", "--force",  dest="force",  help="force action (recreate files)", action='store_true')
     parser.add_argument("-S", "--silent", dest="silent", help="silent, only output errors",    action='store_true')
@@ -92,7 +86,7 @@ if __name__ == "__main__" :
         args = parser.parse_args()
 
         # check that keys exists:
-        missing_keys = [key for key in args.keys if not fileExists(key)]
+        missing_keys = [key for key in set(args.keys) if not fileExists(key)]
         if len(missing_keys) != 0 :
             raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), missing_keys[0])
 

@@ -2,7 +2,7 @@
 let
   cfg = config.secrets;
   # the various scripts for nixage
-  nixage-scripts = import ./scripts.nix { inherit pkgs pycnix; };
+  nixage = import ./nixage.nix { inherit pkgs pycnix config lib; };
 in {
   # pkgs :
   environment.systemPackages = builtins.AttrValues nixage-scripts;

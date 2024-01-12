@@ -46,50 +46,50 @@ in {
 
     # we still work in nextcloud container
 
-      # db user :
-      users.users."${dbuser}" = {
-        group = "${dbuser}";
-        extraGroups = [ "ssl-cert" ];
-        isSystemUser = true;
-      };
-      # TODO : Postgres group already exist and has gid
-      users.groups."${dbuser}" = { };
+    # db user :
+    users.users."${dbuser}" = {
+      group = "${dbuser}";
+      extraGroups = [ "ssl-cert" ];
+      isSystemUser = true;
+    };
+    # TODO : Postgres group already exist and has gid
+    users.groups."${dbuser}" = { };
 
-      # start nextcloud after db is ready :
-      systemd.services."nextcloud-setup" = {
-        requires = [ dbservice ];
-        after = [ dbservice ];
-      };
+    # start nextcloud after db is ready :
+    systemd.services."nextcloud-setup" = {
+      requires = [ dbservice ];
+      after = [ dbservice ];
+    };
 
-      # create folder for db
-      systemd.tmpfiles.rules =
-        [ "d ${mkDataDir dbtype} 0750 ${dbuser} ${dbuser} -" ];
+    # create folder for db
+    systemd.tmpfiles.rules =
+      [ "d ${mkDataDir dbtype} 0750 ${dbuser} ${dbuser} -" ];
 
-      # systemd services :
-      services = lib.mkMerge [
-        {
-          nextcloud.database.createLocally = true;
-          nextcloud.config = { inherit dbtype; };
-        }
-        (condAttrs isPostgres {
-          postgresql = mkIf isPostgres {
-            enable = isPostgres;
-            dataDir = mkDataDir dbtype;
-          };
-          # TODO : enable backup :
-          postgresqlBackup.enable = false;
-        })
-        (condAttrs (!isPostgres) {
-          mysql = lib.mkIf isPostgres {
-            enable = true;
-            dataDir = mkDataDir dbtype;
-            user = dbuser;
-            group = dbuser;
-            package = if db == "mariadb" then pkgs.mariadb else pkgs.mysql80;
-          };
-          # TODO: enable backup :
-          mysqlBackup.enable = false;
-        })
-      ];
+    # systemd services :
+    services = lib.mkMerge [
+      {
+        nextcloud.database.createLocally = true;
+        nextcloud.config = { inherit dbtype; };
+      }
+      (condAttrs isPostgres {
+        postgresql = mkIf isPostgres {
+          enable = isPostgres;
+          dataDir = mkDataDir dbtype;
+        };
+        # TODO : enable backup :
+        postgresqlBackup.enable = false;
+      })
+      (condAttrs (!isPostgres) {
+        mysql = lib.mkIf isPostgres {
+          enable = true;
+          dataDir = mkDataDir dbtype;
+          user = dbuser;
+          group = dbuser;
+          package = if db == "mariadb" then pkgs.mariadb else pkgs.mysql80;
+        };
+        # TODO: enable backup :
+        mysqlBackup.enable = false;
+      })
+    ];
   };
 }
