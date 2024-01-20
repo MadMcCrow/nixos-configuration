@@ -5,34 +5,25 @@
 #         - Enable HTTPS
 #         - Remote access (ie from outside of my local network)
 { pkgs, config, lib, ... }:
-with builtins;
 let
   # shortcuts
   srv = config.nixos.server;
   cfg = srv.nextcloud;
-
-  # helper function
-  condArg = n: s: d: if hasAttr n s then getAttr n s else d;
-  mkStringOption = description: default:
-    lib.mkOption {
-      inherit default description;
-      type = lib.types.str;
-    };
-
   mkPath = l: lib.concatStringsSep "/" l;
 
-  # path to our data
-  nextcloudPath = mkPath [ config.nixos.server.data.path "nextcloud" ];
+  nextcloudHostName = "nextcloud.${srv.hostName}";
+  nextcloudPath = cfg.dataPath;
 
 in {
   # interface:
   options.nixos.server.nextcloud = {
-    enable = lib.mkEnableOption "nextcloud" // {
-      default = config.nixos.server.enable;
+    enable = lib.mkEnableOption "nextcloud" // { default = srv.enable; };
+
+    dataPath = lib.mkOption {
+      type = lib.types.path;
+      description = "path to encrypted file";
+      example = "nix/persist/server/nextcloud";
     };
-    # how to join the instance
-    hostName = mkStringOption "hostname for nextcloud instance"
-      "nextcloud.${srv.hostName}";
   };
 
   # sub-modules
@@ -70,7 +61,7 @@ in {
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud28;
-      hostName = cfg.hostName;
+      hostName = nextcloudHostName;
       datadir = nextcloudPath;
       config = {
         adminuser = "admin";

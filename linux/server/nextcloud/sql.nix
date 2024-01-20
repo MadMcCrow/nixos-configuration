@@ -13,8 +13,7 @@ let
   db = cfg.db;
 
   # path to the data on the server
-  mkDataDir = folder:
-    concatStringsSep "/" [ config.nixos.server.data.path folder ];
+  mkDataDir = folder: concatStringsSep "/" [ nxt.dataPath folder ];
 
   # todo : make it work :
 
@@ -22,7 +21,7 @@ let
 
   # helper functions
   condArg = c: s: d: if c then s else d;
-  condAttrs = c: s: condArg c s { };
+  condAttrs = c: s: lib.attrsets.optionalAttrs c s;
   condDBType = pgsql: mysql: condArg isPostgres pgsql mysql;
 
   # settings for nextcloud

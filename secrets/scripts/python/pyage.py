@@ -8,6 +8,7 @@
 import os
 import argparse
 import errno
+import io
 
 # ssh-keygen equivalent
 from Crypto.PublicKey import RSA as rsa
@@ -28,13 +29,13 @@ def encrypt(keys : list, content : str) :
             [ ] - support passphrases
     """
     # read key:
-    note(f"""encrypting {bold(outfile)} with {bold(f'[{",".join([f"{x}" for x in keys])}]')}:\n""")
+    note(f"""encrypting with {bold(f'[{",".join([f"{x}" for x in keys])}]')}""")
     encryptor_keys = []
     for key in keys:
         encryptor_keys.extend(resolve_public_key(key))
     # create a buffer :
     out = io.BytesIO()
-    try : 
+    try :
         with Encryptor(encryptor_keys,out) as encryptor :
             c = str(content).encode("utf-8")
             encryptor.write(c)

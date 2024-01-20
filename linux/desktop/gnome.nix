@@ -5,9 +5,7 @@
 with builtins;
 with lib;
 let
-  dsk = config.nixos.desktop;
-  cfg = dsk.gnome;
-  fpk = dsk.apps.flatpak.enable;
+  fpk = config.nixos.flatpak.enable;
 
   # useful gnome apps
   # could add gnome.gnome-terminal
@@ -86,36 +84,29 @@ let
   # themes to unify gnome appearance
   themes = with pkgs; [ adw-gtk3 ];
 
-  # helper functions
-  mkEnableOptionDefault = desc: default:
-    mkEnableOption desc // {
-      inherit default;
-    };
+  backgrounds = with pkgs; [
+    # fondo
+    variety
+    # sunpaper
+    # swww
+    cinnamon.mint-artwork
+    gnome.gnome-backgrounds
+    deepin.deepin-wallpapers
+    budgie.budgie-backgrounds
+    adapta-backgrounds
+  ];
 
 in {
-
-  # interface
-  options.nixos.desktop.gnome = {
-    # do you want gnome Desktop environment
-    enable =
-      mkEnableOptionDefault "gnome, the default desktop environment" false;
-  };
-
   # base config for gnome
-  config = lib.mkIf (dsk.enable && cfg.enable) {
+  config = lib.mkIf config.nixos.desktop.enable {
 
-    nixos.desktop.displayManager.type =
-      "gdm"; # gdm has better integration with gnome
+    # gdm has better integration with gnome
+    services.xserver.displayManager.gdm.enable = true;
+    services.xserver.displayManager.gdm.wayland = true;
 
-    system.nixos.tags = [ "Gnome" ];
-    services.xserver = {
-      enable = true;
-      excludePackages = [ pkgs.xterm ] ++ gnomeUnused;
-      desktopManager.xterm.enable = false;
-      desktopManager.gnome.enable = true;
-    };
-
+    services.xserver.desktopManager.gnome.enable = true;
     # Remove default gnome apps unless explicitly requested
+    services.xserver.excludePackages = gnomeUnused;
     environment.gnome.excludePackages = gnomeUnused;
 
     # gnome services :
@@ -150,21 +141,23 @@ in {
 
     # enable DConf to edit gnome configuration
     programs.dconf.enable = true;
-    # basically gnome keyring UI
+
     programs.seahorse.enable = true;
-    # KDE Connect is not required anymore for GSconnect to work
+
     programs.kdeconnect = {
-      enable = false;
-      # Valent is broken for now
-      # package = pkgs.valent;
+      enable = !pkgs.valent.meta.broken;
+      package = pkgs.valent;
     };
     # evolution is the email/contact/etc client for gnome
     programs.evolution.enable = false;
 
     # packages
-    environment.systemPackages = gnomeApps ++ gnomeExtensions ++ themes;
+    environment.systemPackages = gnomeApps ++ gnomeExtensions ++ themes
+      ++ backgrounds;
 
     # enable gnome settings daemon
     services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+
+    system.nixos.tags = [ "Gnome" ];
   };
 }

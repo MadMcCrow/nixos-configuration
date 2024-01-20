@@ -1,12 +1,10 @@
 # default.nix
 #	Base of modules
 { pkgs, config, lib, nixpkgs, system, ... }:
-with builtins;
 let
   cfg = config.packages;
 
   # optiontype for overlays
-
   overlaysType = with lib;
     let
       subType = mkOptionType {
@@ -25,7 +23,8 @@ in {
       values = [ "x86_64-linux" "aarch64-darwin" ];
       default = config.nixpkgs.hostPlatform.system;
     in lib.mkOption {
-      description = concatStringsSep "," [ desc "one of " (toString values) ];
+      description =
+        builtins.concatStringsSep "," ([ desc "one of " ] ++ (toString values));
       type = lib.types.enum values;
       inherit default;
     };
@@ -56,7 +55,7 @@ in {
   config = {
     nix = {
 
-      # pin for nix2 
+      # pin for nix2
       nixPath = [ "nixpkgs=flake:nixpkgs" ];
       # pin for nix3
       registry.nixpkgs.flake = nixpkgs;
@@ -81,18 +80,32 @@ in {
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
 
+      # GarbageCollection
+      gc = {
+        automatic = true;
+        dates = "daily";
+        persistent = true;
+      };
+      # detect files in the store that have identical contents,
+      # and replaces them with hard links to a single copy.
+      settings.auto-optimise-store = true;
+      optimise.automatic = true;
+      optimise.dates = [ "daily" ];
+
     };
+
     nixpkgs = {
       # merged overlays
       overlays = cfg.overlays;
 
       # predicate from list
       config.allowUnfreePredicate = pkg:
-        elem (lib.getName pkg) cfg.unfreePackages;
+        builtins.elem (lib.getName pkg) cfg.unfreePackages;
 
       # each functions gets its pkgs from here :
       config.packageOverrides = pkgs:
-        (lib.mkMerge (mapAttrs (name: value: (value pkgs)) cfg.overrides));
+        (lib.mkMerge
+          (builtins.mapAttrs (name: value: (value pkgs)) cfg.overrides));
     };
   };
 }

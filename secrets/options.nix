@@ -4,10 +4,11 @@
 { pkgs, lib, config, ... }:
 let
 
-  # type for service: 
-  serviceType = lib.types.strMatching "[a-zA-Z0-9@%:_.\\-]+[.](service|socket|device|mount|automount|swap|target|path|timer|scope|slice)";
+  # type for service:
+  serviceType = lib.types.strMatching
+    "[a-zA-Z0-9@%:_.\\-]+[.](service|socket|device|mount|automount|swap|target|path|timer|scope|slice)";
 
-  # type for paths 
+  # type for paths
   pathType = with lib.types;
     addCheck str (s: (builtins.match "(/.+)" s) != null) // {
       description = "${str.description} (with path check)";

@@ -8,9 +8,9 @@ from grp import getgrnam, getgrgid
 from colors import error
 
 def fixPath(path) :
-    path = os.path.abspath(path)
+    abspath = os.path.abspath(path)
     relpath = f"./{os.path.relpath(path)}"
-    return relpath if len(relpath) < len(abspath) else path
+    return relpath if len(relpath) < len(abspath) else abspath
 
 def removeFile(path) :
     try :
@@ -31,7 +31,7 @@ def getFileUserGroup(path) :
 
 def splitUserGroup(owner: str) -> {str, str}:
     """
-        from a "User[:Group]" string to a "User" "Group" 
+        from a "User[:Group]" string to a "User" "Group"
         if no group is provided, we default to the user's group
     """
     if owner == None :

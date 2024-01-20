@@ -1,41 +1,18 @@
-{ pkgs, ... }:
-with builtins; {
+{ pkgs, ... }: {
+  networking.hostName = "nixAF";
 
-  platform = "x86_64-linux";
+  nixos.desktop.enable = true;
+  nixos.flatpak.enable = true;
 
-  nixos = {
-    enable = true;
-    host.name = "nixAF";
+  nixos.gpu.vendor = "amd";
+  nixos.boot.extraPackages =
+    [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" ];
 
-    rebuild.genCount = 10;
+  # TODO : This is machine specific and should be brought back from core!
+  nixos.network.wakeOnLineInterfaces = [ "enp4s0" ];
 
-    # desktop env
-    desktop = {
-      enable = true;
-      displayManager.wayland.enable = false;
-      gnome.enable = true;
-      apps.flatpak.enable = true;
-      apps.games.enable = true; # video games, you should try them sometives
-    };
-
-    server = {
-      enable = true;
-      data.path = "/run/server";
-    };
-
-    # kernel packages
-    kernel.extraPackages =
-      [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
-    kernel.params = [ "pci=noats" "amd_iommu=on" "iommu=pt" ];
-
-    # cpu/gpu
-    cpu.vendor = "amd";
-    cpu.powermode = "performance";
-    gpu.vendor = "amd";
-
-    network.waitForOnline = false;
-    network.wakeOnLineInterfaces = [ "enp4s0" ];
-  };
+  boot.initrd.availableKernelModules =
+    [ "pci=noats" "amd_iommu=on" "iommu=pt" ];
 
   # add steam drive
   fileSystems."/run/media/steam" = {
@@ -44,6 +21,16 @@ with builtins; {
     neededForBoot = false;
   };
 
+  # nixos.server.enable = true;
+  # nixos.server.nextcloud.dataPath =  "/run/server/nextcloud";
+  # fileSystems."/run/server" = {
+  #   device = "none";
+  #     fsType = "tmpfs";
+  #     options = [ "size=3G" "mode=755" ]; # mode=755 so only root can write to those files
+  # };
+
   # maybe consider adding swap ?
   swapDevices = [ ];
+
+  system.stateVersion = "23.11";
 }

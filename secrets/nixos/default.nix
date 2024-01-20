@@ -1,9 +1,8 @@
 # secrets/nixos
 # Nixos configuration of nixage secret management
-# TODO : 
+# TODO :
 #       - update keys as a service
 { config, pkgs, lib, pycnix, ... }:
-with builtins;
 let
   cfg = config.secrets;
   # the various scripts for nixage
@@ -32,22 +31,22 @@ in {
   config = lib.mkIf cfg.enable {
 
     # pkgs :
-    environment.systemPackages = (attrValues nixage);
+    environment.systemPackages = (builtins.attrValues nixage);
 
     # TMPFS for secrets (no write to disk !)
     fileSystems."${cfg.tmpfs.mountPoint}" = lib.mkIf cfg.tmpfs.enable {
       device = "none";
       fsType = "tmpfs";
-      options = [ "mode=750" ];
+      options = [ "mode=755" ];
     };
 
     # tmpfs rules to create and remove file
     systemd.tmpfiles.rules =
       (map (x: "d ${dirOf x.decrypted} 0750 ${x.user} ${x.group} -")
-        (attrValues cfg.secrets));
+        (builtins.attrValues cfg.secrets));
 
     # auto apply secrets service
-    systemd.services = (mapAttrs mkService cfg.secrets);
+    systemd.services = (builtins.mapAttrs mkService cfg.secrets);
 
   };
 }

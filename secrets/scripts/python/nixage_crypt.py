@@ -6,7 +6,8 @@
 # Python imports
 import os
 import argparse
-from sys import exit;
+from sys import exit, stdout
+from getpass import getpass
 
 # local modules (importing all without namespace like a madman)
 from colors import *
@@ -19,7 +20,8 @@ def nixage_decrypt(args) :
     """
     outpath = fixPath(args.output)
     set_silent(args.silent)
-    result = decrypt(list(set(args.keys)), args.input)
+    encrypted = readFile(args.input, True)
+    result = decrypt(list(set(args.keys)), encrypted)
     if fileExists(outpath) :
         existing = readFile(outpath)
         if existing == result :
@@ -51,10 +53,11 @@ def nixage_encrypt(args) :
             raise FileExistsError
     if args.input != None :
         content = readFile(fixPath(args.input))
+    elif os.isatty(stdout.fileno()) :
+        content = getpass(f"enter content for {bold(outpath)}:\n")
     else :
-        note(f"enter content for {bold(outpath)}:\n")
-        content = input()
-    writeFile(outpath, encrypt(list(set(args.keys)), content), true)
+        raise IOError("No input provided")
+    writeFile(outpath, encrypt(list(set(args.keys)), content), True)
 
 def addParserSubcommand(subparsers, name, requireInput, func) :
     parser = subparsers.add_parser(name)
@@ -75,13 +78,13 @@ if __name__ == "__main__" :
     try :
         # shared command arguments :
         parent_parser = argparse.ArgumentParser()
-       
+
         #  add subparsers
         parser = argparse.ArgumentParser()
         subparsers = parser.add_subparsers(required = True)
         addParserSubcommand(subparsers, 'encrypt', False, nixage_encrypt)
         addParserSubcommand(subparsers, 'decrypt', True,  nixage_decrypt)
-       
+
         # start parser !
         args = parser.parse_args()
 
@@ -105,14 +108,11 @@ if __name__ == "__main__" :
     except EOFError :
         error(f"read error, end of file encountered")
     except FileExistsError :
-        error(f"output file {outfile} already exists")
+        error(f"output file {args.output} already exists")
     except Exception as E :
-        error(f"{type(E).__name__} : {E}")
+        error(f"{type(E).__name__}: {E}")
     else :
         success("secret operation done")
         exit(0)
     finally :
         exit(1)
-
-
-        

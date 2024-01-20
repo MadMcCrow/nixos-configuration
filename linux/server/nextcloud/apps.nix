@@ -12,7 +12,7 @@ let
 
   cospend = pkgs.fetchNextcloudApp {
     url =
-      "https://github.com/julien-nc/cospend-nc/releases/download/v1.5.10/cospend-1.5.10.tar.gz";
+      "https://github.com/julien-nc/cospend-nc/releases/download/v1.5.14/cospend-1.5.14.tar.gz";
     sha256 = "sha256-SQ6tcwD1ThL41n3puZXMk8DEvpdr9H4hQ3Rd5ceY6eU=";
     license = "agpl3"; # license = lib.licenses.agpl3Only;
 

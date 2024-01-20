@@ -1,11 +1,13 @@
 # secrets/nixage.nix
+# TODO :
+# - Simplify config commands
+# - Add back user-based encryption (with command ran as user)
 { pkgs, lib, config, pycnix, ... }:
 with builtins;
-let 
-# imports scripts :
-scripts = import ./scripts { inherit pkgs pycnix; };
-# TODO : 
-# Simplify config commands
+let
+  # imports scripts :
+  scripts = import ./scripts { inherit pkgs pycnix; };
+
 in {
   # the scripts
   inherit (scripts) keys crypt;
@@ -15,8 +17,8 @@ in {
     name = "nixage-update-keys";
     text = lib.strings.concatLines
       (map (x: "${lib.getExe scripts.keys} -K ${x}.pub -P ${x} || true")
-        (lib.lists.unique (concatLists
-          (map (s: s.keys) (attrValues config.secrets.secrets)))));
+        (lib.lists.unique
+          (concatLists (map (s: s.keys) (attrValues config.secrets.secrets)))));
     runtimeInputs = [ scripts.keys ];
     meta = {
       mainProgram = "nixage-update-keys";
@@ -34,8 +36,9 @@ in {
     text = let
       # secret generator
       gen = x:
-        "${lib.getExe scripts.crypt} encrypt -o ${x.encrypted} -u ${x.user} -g ${
-        x.group} -k ${concatStringsSep " " (map (k: "${k}.pub") (lib.lists.unique x.keys))} -I -F";
+        "${lib.getExe scripts.crypt} encrypt -o ${x.encrypted} -k ${
+          concatStringsSep " " (map (k: "${k}.pub") (lib.lists.unique x.keys))
+        } -I -F";
       # out
     in lib.strings.concatLines (map (x:
       "${

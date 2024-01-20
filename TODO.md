@@ -1,26 +1,18 @@
 # TODO :
 
- - [ ] Users
-   - [ ] Option to enable or disable users by systems
-   - [ ] development tools in Users
  - [ ] map unfree programs to unfree automatically
- - [X] Flake checks for pre-commit
- - [X] secrets deployment
-    - [ ] MacOS support
-    - [ ] Simplify secrets and use agenix
- - [ ] Linux
-   - [ ] Desktop
-      - [ ] Cinnamon without settings (dconf)
-      - [ ] Cinnamon extensions
-      - [ ] GTK theming
-   - [ ] Server
-      - [X] localhost nextcloud
-      - [ ] Use secrets
-      - [ ] Nextcloud on LAN
-      - [ ] Nextcloud in container
+ - [ ] Linux : Clean options and rationalize them between machines
+ - [ ] Linux Desktop : Clean environment
+ - [ ] Linux Desktop : Theming
  - [ ] Make a documentation
  - [ ] Update github actions
+ - [ ] Option to enable or disable users by systems
+ - [ ] TV : have Gamescope compositor
+ - [ ] TV : try Plasma TV
+ - [ ] Nextcloud Server on LAN
+ - [ ] Nextcloud Server in container
 
  ## Possible :
  - [ ] Move nextcloud to a separate flake
  - [ ] Secrets as a separate flake
+ - [ ] Server : pufferpanel for game servers

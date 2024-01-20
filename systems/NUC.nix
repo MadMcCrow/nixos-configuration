@@ -1,52 +1,20 @@
 # NUC Cloud config
 { pkgs, ... }:
 let
-  # todo filter broken
-  #intel kernel packages can be broken sometimes
-  extraPackages = [
-    # "intel-speed-select" # broken
-    # "phc-intel" # broken
-  ];
 
   # where to put the data :
   serverData = "/run/server_data";
+
 in {
 
-  platform = "x86_64-linux";
+  networking.hostName = "nixNUC";
 
-  # our settings
-  nixos = {
-
-    # use our
-    enable = true;
-    host.name = "nixNUC";
-
-    # let's be generous with ourselves
-    rebuild.genCount = 10;
-
-    # desktop env
-    desktop = {
-      enable = true;
-      gnome.enable = true;
-      apps.enable = false; # disable system-wide apps
-    };
-
-    # server systems
-    server = {
-      enable = true;
-      nextcloud.enable = true;
-      data.path = serverData;
-    };
-
-    # kernel packages
-    kernel.extraPackages = [ "acpi_call" ];
-
-    # cpu/gpu
-    cpu.vendor = "intel";
-    cpu.powermode = "powersave";
-    gpu.vendor = "intel";
-
-  };
+  # our custom modules config :
+  nixos.flatpak.enable = true;
+  nixos.server.enable = true;
+  nixos.tv.enable = true;
+  nixos.gpu.vendor = "intel";
+  nixos.server.nextcloud.dataPath =  "${serverData}/nextcloud";
 
   # drive for server databases (Postgre)
   fileSystems."${serverData}" = {

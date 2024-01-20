@@ -12,7 +12,7 @@ let
   nonNullNonEmpty = s:
     if s == null then false else if s == "" then false else true;
 
-  # make user fitting for chmown or our nixage-crypt scrypt 
+  # make user fitting for chmown or our nixage-crypt scrypt
   mkUser = secret:
     if nonNullNonEmpty secret.user then
       concatStringsSep ":" [
@@ -27,48 +27,58 @@ let
   # where to REALLY decrypt secret
   mkTarget = secret:
     if cfg.tmpfs.enable then
-      mkPath [ cfg.tmpfs.mountPoint secret.user (hashString "md5" secret.decrypted) ]
+      mkPath [
+        cfg.tmpfs.mountPoint
+        secret.user
+        (hashString "md5" secret.decrypted)
+      ]
     else
       secret.decrypted;
 
   # script to execute to clean a decrypted secret
-  clean = name: secret: pkgs.writeShellScriptBin "clean-${name}" ''
-    rm --force ${secret.decrypted} >/dev/null 2>&1
-    rm --force ${mkTarget secret}  >/dev/null 2>&1
-  '';
+  clean = name: secret:
+    pkgs.writeShellScriptBin "clean-${name}" ''
+      rm --force ${secret.decrypted} >/dev/null 2>&1
+      rm --force ${mkTarget secret}  >/dev/null 2>&1
+      echo "cleaned secret ${name}"
+    '';
 
   # script to execute to decrypt a secret to a file
-  decrypt = name: secret: pkgs.writeShellScriptBin "decrypt-${name}" ''
-    ${lib.getExe (clean name secret)}
+  decrypt = name: secret:
+    pkgs.writeShellScriptBin "decrypt-${name}" ''
+      ${lib.getExe (clean name secret)}
 
-    ${lib.getExe nixage.crypt} decrypt -S -F -i ${secret.encrypted} -o ${
-      mkTarget secret
-    } \
-    ${optionalString (nonNullNonEmpty (secret.user)) "-U ${mkUser secret}"} \
-    -k ${concatStringsSep " " (lib.lists.unique secret.keys)}
+      ${lib.getExe nixage.crypt} decrypt -S -F -i ${secret.encrypted} -o ${
+        mkTarget secret
+      } \
+      ${optionalString (nonNullNonEmpty (secret.user)) "-U ${mkUser secret}"} \
+      -k ${concatStringsSep " " (lib.lists.unique secret.keys)}
 
-    ln -s ${mkTarget secret} ${secret.decrypted}
-    chown ${secret.user}:${secret.group}  ${secret.decrypted}
-  '';
+      ln -s ${mkTarget secret} ${secret.decrypted}
+      chown ${secret.user}:${secret.group}  ${secret.decrypted}
+    '';
 
   # systemd unit with which to start :
   unit = secret:
-    if nonNullNonEmpty secret.service then secret.service else "multi-user.target";
+    if nonNullNonEmpty secret.service then
+      secret.service
+    else
+      "multi-user.target";
 
 in name: opts: {
   wantedBy = [ (unit opts) ];
-  partOf   = [ (unit opts) ];
+  partOf = [ (unit opts) ];
   unitConfig = lib.mkIf cfg.tmpfs.enable {
     RequiresMountsFor = "${cfg.tmpfs.mountPoint}";
   };
 
   # execution
   serviceConfig = {
-    Type = "oneshot";
-    RemainAfterExit = true; # only for testing purposes
+    Type = "simple";
+    RemainAfterExit = false; # only for testing purposes
     User = "root"; # root is the one decrypting
     ExecStart = "${lib.getExe (decrypt name opts)}";
-    ExecStop  = "${lib.getExe (clean   name opts)}";
+    ExecStop = "${lib.getExe (clean name opts)}";
   };
   # quick description
   description = "service to decrypt ${name}";
