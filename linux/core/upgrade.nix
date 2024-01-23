@@ -14,10 +14,18 @@ let
     name = "nixos-update";
     runtimeInputs = [ pkgs.nixos-rebuild ];
     text = ''
+      if [ -z "$1" ]
+      then
+        MODE=$1
+      else
+        MODE="switch"
+      fi
       if [ "$USER" != "root" ]; then
         echo "Please run nixos-update as root or with sudo"; exit 2
       fi
-      ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --flake github:${flake}#
+      ${
+        lib.getExe pkgs.nixos-rebuild
+      } "$MODE" --flake github:${flake}#${config.networking.hostName}
       exit $?
     '';
   };

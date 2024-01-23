@@ -35,6 +35,7 @@ in {
       git-lfs
       age
       vulkan-tools
+      stremio
     ];
 
     # zsh can be used as default shell

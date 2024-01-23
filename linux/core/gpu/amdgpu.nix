@@ -4,9 +4,9 @@
   config = lib.mkIf (config.nixos.gpu.vendor == "amd") {
     # RADV support
     environment.variables = { AMD_VULKAN_ICD = "RADV"; };
-    services.xserver.videoDrivers = ["amdgpu"];
+    services.xserver.videoDrivers = [ "amdgpu" ];
     # boot.extraModulePackages = map (x: config.boot.kernelPackages."${x}") [ "amdgpu" ];
-    boot.initrd.availableKernelModules = ["amdgpu"];
+    boot.initrd.availableKernelModules = [ "amdgpu" ];
     hardware.opengl = {
       extraPackages = with pkgs; [
         amdvlk
@@ -18,7 +18,7 @@
       extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
     };
 
-    systemd.tmpfiles.rules =[
-      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"];
+    systemd.tmpfiles.rules =
+      [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
   };
 }

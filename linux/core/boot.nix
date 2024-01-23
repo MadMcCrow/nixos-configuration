@@ -74,7 +74,7 @@ in {
       # force use zfs compatible kernel :
       kernelPackages = lib.mkForce zKernel;
       extraModulePackages =
-        map (x: zKernel."${x}") (cfg.extraPackages ++ ["acpi_call"]);
+        map (x: zKernel."${x}") (cfg.extraPackages ++ [ "acpi_call" ]);
       initrd.availableKernelModules = [
         "nvme"
         "xhci_pci"

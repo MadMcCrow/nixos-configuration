@@ -12,5 +12,6 @@
     ./network.nix
     ./shell.nix
     ./upgrade.nix
+    ./vm.nix
   ];
 }

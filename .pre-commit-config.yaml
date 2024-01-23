@@ -10,11 +10,16 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
--   repo: local
-    hooks:
-    -   id: pre-commit-sh
-        name: pre-commit-sh
-        entry: ./pre-commit.sh
-        language: script
-        pass_filenames: false
-        files: '.*\.(nix|lock)'
+# Disabled until rework :
+#   TODO :
+#   - Python
+#   - disable on branches other than main
+#   - fast
+# -   repo: local
+#     hooks:
+#     -   id: pre-commit-sh
+#         name: pre-commit-sh
+#         entry: ./pre-commit.sh
+#         language: script
+#         pass_filenames: false
+#         files: '.*\.(nix|lock)'

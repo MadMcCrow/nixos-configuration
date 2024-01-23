@@ -7,7 +7,7 @@ in {
   options.nixos.tv.enable = lib.mkEnableOption "nixos TV experience";
 
   # imports
-  imports = [ ./display-manager.nix ./kde.nix ./themes.nix ./apps.nix ];
+  imports = [ ./kodi ./display-manager.nix ./themes.nix ./apps.nix ];
 
   # config
   config = lib.mkIf config.nixos.tv.enable {

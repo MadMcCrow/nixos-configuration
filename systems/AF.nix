@@ -11,8 +11,7 @@
   # TODO : This is machine specific and should be brought back from core!
   nixos.network.wakeOnLineInterfaces = [ "enp4s0" ];
 
-  boot.initrd.availableKernelModules =
-    [ "pci=noats" "amd_iommu=on" "iommu=pt" ];
+  boot.kernelParams = [ "pci=noats" "amd_iommu=on" "iommu=pt" ];
 
   # add steam drive
   fileSystems."/run/media/steam" = {

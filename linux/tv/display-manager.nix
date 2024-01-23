@@ -54,6 +54,10 @@
           font.name = "Noto Sans";
           font.package = pkgs.noto-fonts;
         };
+        # This may be needed to force Lightdm into 'autologin' mode.
+        # Setting an integer for the amount of time lightdm will wait
+        # between attempts to try to autologin again.
+        autoLogin.timeout = 3;
       };
     };
   };

@@ -14,7 +14,7 @@ in {
   nixos.server.enable = true;
   nixos.tv.enable = true;
   nixos.gpu.vendor = "intel";
-  nixos.server.nextcloud.dataPath =  "${serverData}/nextcloud";
+  nixos.server.nextcloud.dataPath = "${serverData}/nextcloud";
 
   # drive for server databases (Postgre)
   fileSystems."${serverData}" = {
@@ -24,8 +24,11 @@ in {
     options = [ "compress=zstd" "noatime" ];
   };
   # scrub
-  services.btrfs.autoScrub.enable = true;
-  services.btrfs.autoScrub.interval = "weekly";
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "weekly";
+    fileSystems = [ "${serverData}" ];
+  };
 
   # maybe consider adding swap ?
   swapDevices = [ ];

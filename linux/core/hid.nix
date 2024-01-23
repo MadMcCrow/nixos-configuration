@@ -26,5 +26,6 @@ in {
       "xow_dongle-firmware" # xbox dongle
       "steam-original" # steam controller
     ];
+    environment.systemPackages = [ pkgs.steamcontroller ];
   };
 }

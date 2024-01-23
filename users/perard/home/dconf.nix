@@ -14,8 +14,7 @@ with lib.hm.gvariant;
     "org/gnome/GWeather4" = { temperature-unit = "centigrade"; };
 
     "org/gnome/Weather" = {
-      locations =
-        "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
+      locations = "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
     };
 
     "org/gnome/baobab/ui" = {
@@ -117,7 +116,13 @@ with lib.hm.gvariant;
         "io.github.sharkwouter.Minigalaxy.desktop"
         "Proton 4.2.desktop"
         "minecraft-launcher.desktop"
+        "Borderlands 3.desktop"
+        "Burnout Paradise The Ultimate Box.desktop"
+        "X Rebirth.desktop"
+        "com.mojang.Minecraft.desktop"
+        "Alien Swarm Reactive Drop.desktop"
       ];
+
       categories = [ "Games" ];
       name = "Games";
     };
@@ -215,7 +220,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/desktop/notifications/application/firefox" = {
-      application-id = "firefox.desktop";
+      application-id = "firefox-beta.desktop";
     };
 
     "org/gnome/desktop/notifications/application/gnome-power-panel" = {
@@ -383,12 +388,13 @@ with lib.hm.gvariant;
       ];
       favorite-apps = [
         "org.gnome.Nautilus.desktop"
-        "firefox.desktop"
         "org.gnome.Console.desktop"
         "discord.desktop"
         "codium.desktop"
         "steam.desktop"
+        "firefox-beta.desktop"
       ];
+
       looking-glass-history = [
         "experimental_hdr=on"
         "global.compositor.backend.get_monitor_manager().experimental_hdr = 'on'"

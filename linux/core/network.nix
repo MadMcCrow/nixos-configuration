@@ -20,6 +20,9 @@ in {
   # implementation
   config = {
 
+    # add necessary tools :
+    environment.defaultPackages = with pkgs; [ ifwifi networkmanager ];
+
     networking = {
       # unique identifier for machines
       hostId = (elemAt
