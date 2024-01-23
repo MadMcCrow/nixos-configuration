@@ -25,6 +25,6 @@
 
     # allow myself to have gpu passthrough to the VM
     boot.initrd.kernelModules =
-      [ "vfio_pci" "vfio" "vfio_iommu_type1" "vfio_virqfd" ];
+      [ "vfio_pci" "vfio" "vfio_iommu_type1" ];
   };
 }

@@ -30,8 +30,8 @@ in lib.mkIf config.nixos.tv.enable {
       # arteplussept
       # vfs-sftp
       # pvr-iptvsimple # fails to build due to inputstream-ffmpeg-direct
-      requests-cache # improve perf
-      steam-controller
+      # requests-cache # improve perf
+      # steam-controller
       # osmc-skin # kinda looks bad IMHO
       #steam-launcher # require steam installed
     ] ++ (import ./addons { inherit pkgs lib kodi; }));
