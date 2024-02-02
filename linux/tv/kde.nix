@@ -1,4 +1,4 @@
-# environments/kde.nix
+# kde.nix
 # 	Nixos Kde Desktop environment settings
 { config, pkgs, lib, ... }:
 lib.mkIf config.nixos.tv.enable {

@@ -6,3 +6,6 @@ result
 
 # ignore any python cache
 **/__pycache__/
+
+# ignore built virtual machines :
+*.qcow2

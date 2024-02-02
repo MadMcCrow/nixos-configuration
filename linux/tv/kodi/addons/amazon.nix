@@ -1,7 +1,7 @@
 # addons/amazon.nix
 # amazon prime support for kodi
-{ pkgs, lib, kodi, ... }:
-kodi.buildKodiAddon { }
+{ pkgs, lib, kodiPkgs, ... }:
+kodiPkgs.buildKodiAddon { }
 # Amazon prime is this :
 # but there hasn't been a release in 4 month (repo is still active)
 # kodiprime = pkgs.kodiPlugins.buildKodiAddon {

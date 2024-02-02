@@ -1,6 +1,6 @@
 # Log viewer for kodi !
-{ pkgs, lib, kodi, ... }:
-kodi.buildKodiAddon {
+{ pkgs, lib, kodiPkgs, ... }:
+kodiPkgs.buildKodiAddon {
   pname = "script.logviewer";
   namespace = "script.logviewer";
   version = "2.1.6";

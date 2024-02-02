@@ -1,28 +1,18 @@
 # addons/libreelec.nix
 # system settings for kodi from libreelec
-{ pkgs, lib, kodi, ... }:
+{ pkgs, lib, kodiPkgs, ... }:
 let
   # version of libreElec
   version = "11.0.0";
 
   # Buss
-  dbussy = pkgs.python3Packages.buildPythonApplication rec {
+  dbussy = kodiPkgs.kodi.pythonPackages.buildPythonApplication rec {
     pname = "DBussy";
     version = "1.3";
     src = pkgs.fetchPypi {
       inherit pname version;
       sha256 = "1a3l427ibwck9zzzy1sp10hmjgminya08i4r9j4559qzy7lxghs1";
     };
-    # postPatch = ''
-    #   cat setup.py
-    #   substituteInPlace setup.py \
-    #     --replace 'click>=7.0,<8.0' 'click' \
-    #     --replace 'termcolor>=1.1.0,<2.0.0' 'termcolor'
-    # '';
-    # nativeBuildInputs = with python3Packages; [
-    #];
-    # propagatedBuildInputs = with python3Packages; [
-    #];
     doCheck = false;
     meta = with lib; {
       homepage = "https://gitlab.com/ldo/dbussy";
@@ -31,14 +21,14 @@ let
     };
 
   };
-in kodi.buildKodiAddon {
+in kodiPkgs.buildKodiAddon {
   inherit version;
   pname = "libreelec.settings";
   namespace = "service.libreelec.settings";
 
   # TODO : replace fan-art
   # TODO : replace root password -> major security flaw
-  postPatch = ''
+  patchPhase = ''
     substituteInPlace ./Makefile \
       --replace 'DISTRONAME := LibreELEC' 'DISTRONAME := NixOS' \
       --replace 'ADDON_VERSION := 0.0.0' 'ADDON_VERSION := ${version}' \

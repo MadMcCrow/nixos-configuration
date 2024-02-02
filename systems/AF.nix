@@ -5,8 +5,7 @@
   nixos.flatpak.enable = true;
 
   nixos.gpu.vendor = "amd";
-  nixos.boot.extraPackages =
-    [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" ];
+  nixos.boot.extraPackages = [ "asus-wmi-sensors" "asus-ec-sensors" "zenpower" "acpi_call" ];
 
   # TODO : This is machine specific and should be brought back from core!
   nixos.network.wakeOnLineInterfaces = [ "enp4s0" ];

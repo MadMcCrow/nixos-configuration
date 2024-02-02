@@ -7,21 +7,25 @@ let
 
   # Json settings for VS Code
   vsSettings = {
+    "anycode.language.features" = {
+      "diagnostics" = true;
+      "folding" = true;
+    };
+    "diffEditor.codeLens" = true;
     "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', monospace";
     "editor.fontLigatures" = true;
     "editor.fontSize" = 13;
     "editor.tabCompletion" = "on";
-    "diffEditor.codeLens" = true;
     "update.mode" = "none";
-    "window.titleBarStyle" = "native"; # use "custom" for vs-code title bar
     "window.restoreWindows" = "none";
-    "window.zoomLevel" = 2;
-    "workbench.colorTheme" = "GitHub Dark";
-    "workbench.iconTheme" = "material-icon-theme";
+    "window.titleBarStyle" = "native";
+    "window.zoomLevel" = 3;
     "workbench.colorCustomizations" = {
       "activityBar.activeBackground" = "#0000002C";
-      "tab.inactiveBackground" = "#00000041"; # make tabs pop more
+      "tab.inactiveBackground" = "#00000041";
     };
+    "workbench.colorTheme" = "GitHub Dark";
+    "workbench.iconTheme" = "material-icon-theme";
     # something that could be done for colors :
     # "editor.tokenColorCustomizations" ={
     # "functions"= "#179559";
@@ -31,10 +35,6 @@ let
     # "variables"= "#ffffff";
     # "keywords"= "#226f50";
     # };
-    "anycode.language.features" = {
-      "folding" = true;
-      "diagnostics" = true;
-    };
   };
 
   # Market place getter
@@ -221,25 +221,43 @@ let
     version = "2.30.0";
     sha256 = "sha256-tzcX9sWjbA64bFeq8FV7l39p16nzYhvwHO3mvEleH1o=";
   };
-  haxe-lint = vsMarketplace {
+
+  haxe-checkstyle = vsMarketplace {
     name = "haxe-checkstyle";
     publisher = "vshaxe";
     version = "1.8.3";
-    sha256 = "";
+    sha256 = "sha256-oOo7o1k0Er1txWUf69R6HuKyqpHwlpAol54KpKiWehk=";
   };
 
+  #
   jetbrainsColors = vsMarketplace {
     name = "jetbrains-new-dark";
     publisher = "MoBalic";
     version = "0.0.1";
-    sha256 = "";
+    sha256 = "sha256-hp1RoOacqM016NEtGXhdza4LxHZ0/rxyrTI2pwpjnas=";
+  };
+
+  # https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support
+  openscad = vsMarketplace {
+    name = "openscad";
+    publisher = "Antyos";
+    version = "1.3.0";
+    sha256 = "sha256-GY5GHZWxMuEPL+cyxj2jeLtUjxfjPTtj0eUZcyViqO8=";
+  };
+
+  # https://marketplace.visualstudio.com/items?itemName=Antyos.openscad
+  openscad-language-support = vsMarketplace {
+    name = "openscad-language-support";
+    publisher = "Leathong";
+    version = "1.2.5";
+    sha256 = "sha256-/CLxBXXdUfYlT0RaGox1epHnyAUlDihX1LfT5wGd2J8=";
   };
 
   # marketplace extensions
   marketPlaceExtensions = [
     godot-tools
     #glsl-lint  -> slow
-    # vs-shader -> slow 
+    # vs-shader -> slow
     shader-ed
     git-graph
     material-icons
@@ -254,6 +272,10 @@ let
     # github-action -> slow
     github-markdown
     github-remotehub
+    haxe-checkstyle
+    jetbrainsColors
+    openscad
+    openscad-language-support
   ];
 
   # nixos extensions

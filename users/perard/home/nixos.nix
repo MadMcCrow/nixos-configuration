@@ -11,7 +11,17 @@
     home.stateVersion = "23.11";
 
     # packages to install to profile
-    home.packages = (with pkgs; [ eza speechd bitwarden discord nss_latest ]);
+    home.packages = with pkgs; [
+      dconf
+      eza
+      speechd
+      bitwarden
+      discord
+      nss_latest
+      openscad
+      solvespace
+      blender
+    ];
 
     # vscode is in another module (too many extensions)
     programs.vscode = (import ./vscode.nix { inherit pkgs; });
@@ -19,7 +29,7 @@
     # FIREFOX
     programs.firefox = {
       enable = true;
-      package = pkgs.firefox-beta;
+      package = pkgs.floorp; # firefox-beta;
     };
 
     programs.gh = {

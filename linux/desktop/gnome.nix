@@ -53,7 +53,7 @@ let
     space-bar # Activity replaced by workspaces in topbar
     just-perfection # customise everything
     blur-my-shell # some nice blur effect
-    gtk4-desktop-icons-ng-ding # add desktop icons
+    # gtk4-desktop-icons-ng-ding # add desktop icons
   ];
 
   # useless default gnome crap to remove :

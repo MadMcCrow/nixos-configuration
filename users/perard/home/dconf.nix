@@ -1,9 +1,10 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{ lib, ... }:
+{ pkgs, lib, ... }:
 
 with lib.hm.gvariant;
 
 {
+  home.packages = [ pkgs.dconf ];
   dconf.settings = {
 
     "org/gnome/Console" = {
@@ -14,7 +15,8 @@ with lib.hm.gvariant;
     "org/gnome/GWeather4" = { temperature-unit = "centigrade"; };
 
     "org/gnome/Weather" = {
-      locations = "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
+      locations =
+        "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
     };
 
     "org/gnome/baobab/ui" = {

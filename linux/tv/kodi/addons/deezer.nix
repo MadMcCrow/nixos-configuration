@@ -1,8 +1,8 @@
 # addons/deezer.nix
 #   Deezer support for kodi
 
-{ pkgs, lib, kodi, ... }:
-kodi.buildKodiAddon rec {
+{ pkgs, lib, kodiPkgs, ... }:
+kodiPkgs.buildKodiAddon rec {
   version = "2.0.5";
   pname = "audio.deezer";
   namespace = "plugin.audio.deezer";

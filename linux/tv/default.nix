@@ -7,17 +7,17 @@ in {
   options.nixos.tv.enable = lib.mkEnableOption "nixos TV experience";
 
   # imports
-  imports = [ ./kodi ./display-manager.nix ./themes.nix ./apps.nix ];
+  imports = [ ./kiosk ./kodi ./themes.nix ];
 
   # config
   config = lib.mkIf config.nixos.tv.enable {
 
     # xOrg
-    services.xserver = {
-      enable = mkPrio true;
-      excludePackages = [ pkgs.xterm ];
-      desktopManager.xterm.enable = false;
-    };
+    #services.xserver = {
+    #  enable = mkPrio true;
+    #  excludePackages = [ pkgs.xterm ];
+    #  desktopManager.xterm.enable = false;
+    #};
 
     environment.defaultPackages = [ ];
 
@@ -54,11 +54,21 @@ in {
       driSupport32Bit = true;
     };
 
+    services.xserver.enable = mkPrio true;
+
     # TODO : decide what's best :
     # Faster boot:
     # systemd.services.NetworkManager-wait-online.enable = false;
     # systemd.services.systemd-fsck.enable = false;
 
+    # flatpak support :
+    xdg.portal.extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-xapp
+    ];
+    xdg.portal.config.common.default = [ "xapp" ];
+
+    #
     system.nixos.tags = [ "TV" ];
     system.stateVersion = "23.11";
 
