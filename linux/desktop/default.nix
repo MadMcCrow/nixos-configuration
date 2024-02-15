@@ -4,7 +4,10 @@
 #     - if KDE gets better, switch to KDE
 #     -
 { config, pkgs, lib, ... }:
-let mkPrio = value: lib.mkOverride 100 value;
+let
+inherit (lib) mkDefault;
+mkPrio = value: lib.mkOverride 100 value;
+
 in {
 
   options.nixos.desktop.enable = lib.mkEnableOption "NIXOS desktop experience";
@@ -42,7 +45,7 @@ in {
     programs.zsh.enable = true;
 
     boot = {
-      plymouth.enable = mkPrio true; # hide wall-of-text
+      plymouth.enable = mkDefault true; # hide wall-of-text
       # support everything
       supportedFilesystems = [
         "btrfs"
@@ -56,8 +59,8 @@ in {
         "ntfs"
         "zfs"
       ];
-      loader.systemd-boot.configurationLimit = 5;
-      consoleLogLevel = mkPrio 3; # avoid useless errors
+      loader.systemd-boot.configurationLimit = mkDefault 5;
+      consoleLogLevel = mkDefault 3; # avoid useless errors
     };
 
     # PowerManagement
@@ -81,13 +84,13 @@ in {
     };
 
     # Faster boot:
-    systemd.services.NetworkManager-wait-online.enable = false;
-    systemd.services.systemd-fsck.enable = false;
+    systemd.services.NetworkManager-wait-online.enable = mkDefault false;
+    systemd.services.systemd-fsck.enable = mkDefault false;
 
-    # disable nixos manual : just use the web version !
     system.nixos.tags = [ "Desktop" ];
     system.stateVersion = "23.11";
 
+    # disable nixos manual : just use the web version !
     documentation.nixos.enable = mkPrio false;
   };
 }
