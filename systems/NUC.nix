@@ -12,7 +12,8 @@ in {
   # our custom modules config :
   nixos.flatpak.enable = true;
   nixos.server.enable = true;
-  nixos.tv.enable = true;
+  nixos.desktop.enable = true;
+
   nixos.gpu.vendor = "intel";
   nixos.server.nextcloud.dataPath = "${serverData}/nextcloud";
 

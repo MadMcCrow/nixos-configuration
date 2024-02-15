@@ -39,7 +39,7 @@ let
     Type="Application";
     X-GDM-SessionRegisters=true;
   };
-  # Session file
+  # Session fileapp
   kiosk-session = mkTOML "GNOME Session" {
     Name = "kiosk";
     RequiredComponents = [

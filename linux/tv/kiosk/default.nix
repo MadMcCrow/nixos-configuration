@@ -8,6 +8,7 @@ let
   gnome-kiosk = import ./session.nix {
     inherit pkgs;
     kioskApp = cfg.app;
+    sessionName = "gnome-kiosk";
   };
 in {
 
@@ -44,17 +45,17 @@ in {
     # services.xserver.displayManager.autoLogin.enable = true;
     # GDM is our login manager :
 
-    services.xserver.displayManager.lightdm.enable = true;
-    # services.xserver.displayManager.sessionPackages = [ gnome-kiosk ];
     # services.xserver.displayManager.gdm.enable = true;
-    # services.xserver.displayManager.gdm.wayland = false;
+    # services.xserver.displayManager.gdm.wayland = true;
+    services.xserver.displayManager.sessionPackages = [ gnome-kiosk ];
+
     #services.xserver.desktopManager.gnome.enable = true;
 
     # services.xserver.displayManager.gdm.autoLogin.delay = 3;
-    services.gnome.core-os-services.enable = true;
-    services.gnome.core-shell.enable = true;
-    services.gnome.core-utilities.enable = false;
-    services.gnome.tracker-miners.enable = false;
-    services.gnome.tracker.enable = false;
+    # services.gnome.core-os-services.enable = true;
+    # services.gnome.core-shell.enable = true;
+    # services.gnome.core-utilities.enable = false;
+    # services.gnome.tracker-miners.enable = false;
+    # services.gnome.tracker.enable = false;
   };
 }

@@ -7,7 +7,7 @@ in {
   options.nixos.tv.enable = lib.mkEnableOption "nixos TV experience";
 
   # imports
-  imports = [ ./kiosk ./kodi ./themes.nix ];
+  imports = [ ./kiosk ./kodi ];
 
   # config
   config = lib.mkIf config.nixos.tv.enable {
@@ -18,8 +18,6 @@ in {
     #  excludePackages = [ pkgs.xterm ];
     #  desktopManager.xterm.enable = false;
     #};
-
-    environment.defaultPackages = [ ];
 
     # zsh can be used as default shell
     programs.zsh.enable = true;
