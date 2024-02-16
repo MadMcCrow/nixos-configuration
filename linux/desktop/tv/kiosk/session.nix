@@ -6,10 +6,13 @@ let
   # helper to write TOML text
   mkTOML = class: attrs:
     let
-      parseV = v: if builtins.isList v then
-        builtins.concatStringsSep ";" (map (x: builtins.toString x) v)
-        else if builtins.isBool v then ( if v then "true" else "false" )
-        else builtins.toString v;
+      parseV = v:
+        if builtins.isList v then
+          builtins.concatStringsSep ";" (map (x: builtins.toString x) v)
+        else if builtins.isBool v then
+          (if v then "true" else "false")
+        else
+          builtins.toString v;
     in pkgs.lib.strings.concatLines ([ "[${class}]" ]
       ++ (map (x: builtins.concatStringsSep "=" [ x (parseV attrs."${x}") ])
         (builtins.attrNames attrs)));
@@ -35,9 +38,9 @@ let
     Name = "kiosk-shell";
     Exec = "${pkgs.gnome.gnome-session}/bin/gnome-session --session kiosk";
     TryExec = Exec;
-    DesktopNames="Kiosk";
-    Type="Application";
-    X-GDM-SessionRegisters=true;
+    DesktopNames = "Kiosk";
+    Type = "Application";
+    X-GDM-SessionRegisters = true;
   };
   # Session fileapp
   kiosk-session = mkTOML "GNOME Session" {
@@ -72,24 +75,28 @@ in pkgs.stdenvNoCC.mkDerivation rec {
   phases = [ "buildPhase" "installPhase" ];
 
   # this depends on having gnome shell and session
-  buildInputs = with pkgs; [ gnome.gnome-session gnome.gnome-shell gnome-desktop];
+  buildInputs = with pkgs; [
+    gnome.gnome-session
+    gnome.gnome-shell
+    gnome-desktop
+  ];
   runtimeDependencies = buildInputs;
 
   passthru.providedSessions = [ sessionName ];
 
   buildPhase = ''
- echo ${
+    echo ${
       pkgs.lib.strings.escapeShellArg kiosk-shell-json
     }    > ./${sessionName}.json
-    echo ${
-      pkgs.lib.strings.escapeShellArg kiosk-desktop
-    } > ./${sessionName}.desktop
-    echo ${
-      pkgs.lib.strings.escapeShellArg kiosk-app-desktop
-    }   > ./${sessionName}-app.desktop
-    echo ${
-      pkgs.lib.strings.escapeShellArg kiosk-session
-    }       > ./${sessionName}.session
+       echo ${
+         pkgs.lib.strings.escapeShellArg kiosk-desktop
+       } > ./${sessionName}.desktop
+       echo ${
+         pkgs.lib.strings.escapeShellArg kiosk-app-desktop
+       }   > ./${sessionName}-app.desktop
+       echo ${
+         pkgs.lib.strings.escapeShellArg kiosk-session
+       }       > ./${sessionName}.session
   '';
 
   installPhase = ''

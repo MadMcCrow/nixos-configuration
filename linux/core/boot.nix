@@ -68,7 +68,7 @@ in {
     services.zfs.trim.enable = true;
     services.zfs.autoScrub.enable = true;
 
-    environment.systemPackages = [pkgs.linux-firmware];
+    environment.systemPackages = [ pkgs.linux-firmware ];
     packages.unfreePackages = [ "linux-firmware" ];
 
     boot = {

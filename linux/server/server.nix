@@ -6,7 +6,6 @@ let
   mkPrio = value: lib.mkOverride 100 value;
 in lib.mkIf config.nixos.server.enable {
 
-
   services.xserver = { enable = mkDefault false; };
 
   # env :
@@ -31,7 +30,6 @@ in lib.mkIf config.nixos.server.enable {
 
   powerManagement.enable = true;
   powerManagement.cpuFreqGovernor = mkDefault "powersave";
-
 
   # prevent any sleep/hibernation.
   systemd.targets = {

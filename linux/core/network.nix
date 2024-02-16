@@ -21,7 +21,12 @@ in {
   config = {
 
     # add necessary tools :
-    environment.defaultPackages = with pkgs; [ ifwifi networkmanager dnsutils nmap];
+    environment.defaultPackages = with pkgs; [
+      ifwifi
+      networkmanager
+      dnsutils
+      nmap
+    ];
 
     #
     networking = {

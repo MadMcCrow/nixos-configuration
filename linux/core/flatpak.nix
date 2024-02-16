@@ -21,9 +21,8 @@ in {
     xdg.portal = {
       enable = true;
       config.common.default = lib.mkDefault "xapp"; # default to Xapp
-      extraPortals = lib.mkDefault (with pkgs;[
-      xdg-desktop-portal-wlr
-      xdg-desktop-portal-xapp ]);
+      extraPortals = lib.mkDefault
+        (with pkgs; [ xdg-desktop-portal-wlr xdg-desktop-portal-xapp ]);
     };
 
     services.flatpak.enable = true;
