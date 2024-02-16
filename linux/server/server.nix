@@ -32,6 +32,15 @@ in lib.mkIf config.nixos.server.enable {
   powerManagement.enable = true;
   powerManagement.cpuFreqGovernor = mkDefault "powersave";
 
+
+  # prevent any sleep/hibernation.
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
+
   systemd.services.NetworkManager-wait-online.enable = mkPrio true;
   systemd.services.systemd-fsck.enable = mkPrio true;
 

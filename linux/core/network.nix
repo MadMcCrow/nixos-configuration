@@ -36,7 +36,7 @@ in {
 
       dhcpcd.persistent = true;
 
-      # 
+      #
       networkmanager.enable = true;
 
       # enable firewall with quite open ports
@@ -63,8 +63,15 @@ in {
       nssmdns4 = true; # ipv4
       nssmdns6 = true; # ipv6
       openFirewall = true;
-      publish.enable = true;
-      # domainName = "domain";
+      publish = {
+        enable = true;
+        domain = true;
+        workstation = true;
+        userServices = true;
+        addresses = true;
+        hinfo = true;
+      };
+      # domainName = "domain"; # defaults to .local
       # browseDomains = [ "domain" ];
     };
   };
