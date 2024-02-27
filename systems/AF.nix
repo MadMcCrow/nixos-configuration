@@ -12,6 +12,7 @@
   nixos.network.wakeOnLineInterfaces = [ "enp4s0" ];
 
   boot.kernelParams = [ "amd_iommu=on" "iommu=pt" "usbcore.autosuspend=-1" ];
+  boot.blacklistedKernelModules = ["xhci_hcd"];
 
   # add steam drive
   fileSystems."/run/media/steam" = {

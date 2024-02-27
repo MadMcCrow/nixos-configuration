@@ -23,6 +23,7 @@ let
       gnome-shell-extensions # manage and control extensions
       seahorse # manage gpg keys
       file-roller # compression and decompression of files
+      gnome-disk-utility # disk info tool
       gnome-system-monitor # self explainatory
     ]) ++ (with pkgs; [
       endeavour # previously gnome-todo

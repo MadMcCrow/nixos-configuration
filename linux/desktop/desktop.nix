@@ -5,7 +5,6 @@ let
   inherit (lib) mkDefault;
   mkPrio = value: lib.mkOverride 100 value;
 in lib.mkIf config.nixos.desktop.enable {
-  config = lib.mkIf config.nixos.desktop.enable {
     # xOrg
     services.xserver = {
       enable = mkPrio true;
@@ -83,5 +82,4 @@ in lib.mkIf config.nixos.desktop.enable {
 
     # disable nixos manual : just use the web version !
     documentation.nixos.enable = mkPrio false;
-  };
 }

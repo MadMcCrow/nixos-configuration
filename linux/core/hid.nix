@@ -16,6 +16,9 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # allow investigation of USB nightmare
+    programs.usbtop.enable = true;
+    # support various hardware
     hardware = {
       xone.enable = true;
       logitech.wireless.enable = true;

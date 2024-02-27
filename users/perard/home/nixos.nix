@@ -20,7 +20,7 @@
       nss_latest
       openscad
       solvespace
-      blender
+      #blender <- this often breaks !
     ];
 
     # vscode is in another module (too many extensions)
@@ -29,7 +29,7 @@
     # FIREFOX
     programs.firefox = {
       enable = true;
-      package = pkgs.floorp; # firefox-beta;
+      package = pkgs.firefox-beta;
     };
 
     programs.gh = {

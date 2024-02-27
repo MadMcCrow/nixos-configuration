@@ -1,6 +1,6 @@
 # containers/nextcloud.nix
 # nextcloud container
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let cts = config.nixos.server.containers;
 in {
   config = lib.mkIf cts.enable {

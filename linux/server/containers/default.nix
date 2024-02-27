@@ -1,6 +1,6 @@
 # containers/default.nix
 # import all relevant containers, setup podman
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let srv = config.nixos.server;
 in {
   imports = [ ./nextcloud.nix ];
