@@ -4,8 +4,8 @@
 let
 
   # TODO : build/Add firefox extensions declaratively
-  buildFirefoxXpiAddon = lib.makeOverridable ({ stdenv ? args.stdenv
-    , fetchurl ? args.fetchurl, pname, version, addonId, url, sha256, meta, ...
+  buildFirefoxXpiAddon = lib.makeOverridable ({ stdenv ? pkgs.stdenv
+    , fetchurl ? pkgs.fetchurl, pname, version, addonId, url, sha256, meta, ...
     }:
     stdenv.mkDerivation {
       name = "${pname}-${version}";

@@ -3,7 +3,7 @@
 { pkgs, config, lib, ... }:
 let
   shell = pkgs.zsh;
-  editor = pkgs.micro; # replaces pkgs.nano;
+  editor = pkgs.nano; # alternative are micro/ne/joe/jed but none are as KISS as nano
   ls = pkgs.eza;
 in {
 
