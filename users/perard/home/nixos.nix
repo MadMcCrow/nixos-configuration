@@ -27,10 +27,7 @@
     programs.vscode = (import ./vscode.nix { inherit pkgs; });
 
     # FIREFOX
-    programs.firefox = {
-      enable = true;
-      package = pkgs.firefox-beta;
-    };
+    programs.firefox = import ./firefox.nix { inherit pkgs lib; };
 
     programs.gh = {
       enable = true;

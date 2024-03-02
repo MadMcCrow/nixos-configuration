@@ -1,4 +1,4 @@
-# desktop/games.nix
+# games.nix
 # 	helps play games in nixos
 # TODO : add minecraft
 # TODO : steam stable

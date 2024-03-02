@@ -16,6 +16,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # allow easy remaps with a GUI:
+    services.input-remapper = {
+      enable = true;
+      enableUdevRules = true; # may cause issues with hot-plugs
+      serviceWantedBy = [ "graphical.target" ];
+    };
+
     # allow investigation of USB nightmare
     programs.usbtop.enable = true;
     # support various hardware
@@ -29,6 +36,7 @@ in {
       "xow_dongle-firmware" # xbox dongle
       "steam-original" # steam controller
     ];
-    environment.systemPackages = [ pkgs.steamcontroller ];
+
+    environment.systemPackages = [ pkgs.steamcontroller pkgs.input-remapper ];
   };
 }
