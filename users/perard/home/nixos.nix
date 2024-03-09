@@ -35,7 +35,8 @@
       extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
       gitCredentialHelper.enable = true;
     };
-    programs.git-credential-oauth.enable = true;
+    # this opens way too many github tabs on firefox
+    #programs.git-credential-oauth.enable = true;
 
     # ZSH :
     programs.zsh = {

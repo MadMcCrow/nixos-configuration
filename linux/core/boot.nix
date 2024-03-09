@@ -89,6 +89,7 @@ in {
         "dm-snapshot"
       ];
       # ZFS :
+
       supportedFilesystems = [ "zfs" ];
       initrd.supportedFilesystems = [ "zfs" ];
       initrd.postDeviceCommands = lib.mkAfter zRollbackCommand;
@@ -96,7 +97,7 @@ in {
       # import zfs pools at boot
       zfs.forceImportRoot = true;
       zfs.forceImportAll = true; # maybe not necessary
-      zfs.enableUnstable = false;
+      zfs.package = pkgs.zfs; # no unstable, performance are not that critical
       loader = {
         systemd-boot.enable = true; # use gummyboot for faster boot
         efi.canTouchEfiVariables = true; # may not be necessary

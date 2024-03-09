@@ -37,6 +37,9 @@
       jetbrains-mono
       python3
       clang-tools_16
+      git
+      git-secrets
+      git-credential-manager
     ]);
 
     # GIT
@@ -50,6 +53,7 @@
         color.ui = "auto";
         core.whitespace = "trailing-space,space-before-tab";
         apply.whitespace = "fix";
+        credential.helper = "git-credential-manager";
       };
     };
 
