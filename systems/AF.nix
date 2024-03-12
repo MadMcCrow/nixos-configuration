@@ -4,6 +4,8 @@
   nixos.desktop.enable = true;
   nixos.flatpak.enable = true;
 
+  nixos.desktop.steamSession.enable = true;
+
   nixos.gpu.vendor = "amd";
   nixos.boot.extraPackages =
     [ "asus-wmi-sensors" "asus-ec-sensors" "nct6687d" "zenpower" "acpi_call" ];
