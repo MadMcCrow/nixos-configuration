@@ -33,9 +33,10 @@ in {
   # create the key for encryption and decryption
   keys = pylib.mkCxFreezeBin {
     inherit src;
-    name = "nixage-keys";
+    pname = "nixage-keys";
     main = "nixage_keys.py";
-    modules = [ "Crypto" "age" ] ++ scriptModules;
+    version = "0.0.1";
+    includes = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
     meta = {
       licences = [ pkgs.lib.Licences.mit ];
@@ -48,9 +49,10 @@ in {
   # decrypt secret anywhere you want
   crypt = pylib.mkCxFreezeBin {
     inherit src;
-    name = "nixage-crypt";
+    pname = "nixage-crypt";
     main = "nixage_crypt.py";
-    modules = [ "Crypto" "age" ] ++ scriptModules;
+    version = "0.0.1";
+    includes = [ "Crypto" "age" ] ++ scriptModules;
     nativeBuildInputs = [ pycrypto pyage ];
     meta = {
       licences = [ pkgs.lib.Licences.mit ];

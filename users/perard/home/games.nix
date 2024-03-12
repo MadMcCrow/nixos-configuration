@@ -11,6 +11,8 @@ let
   # Steam
   steamLibs = p:
     with p; [
+      gamescope
+      mangohud
       libglvnd
       libgdiplus
       libpng
@@ -28,7 +30,7 @@ let
       steam
       steam-run
       steamcmd
-
+      gamescope
     ] ++ steamLibs pkgs;
 
 in {

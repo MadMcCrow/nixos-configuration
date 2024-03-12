@@ -50,7 +50,6 @@
           inherit system specialArgs;
           modules = baseModules ++ [
             ./linux
-            ./secrets/nixos
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule
@@ -63,7 +62,6 @@
           specialArgs = inputs;
           modules = [
             ./darwin
-            ./secrets/darwin.nix
             inputs.home-manager-darwin.darwinModules.home-manager
             sysModule
           ] ++ baseModules;

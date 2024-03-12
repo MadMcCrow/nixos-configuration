@@ -146,8 +146,8 @@ in {
     programs.seahorse.enable = true;
 
     programs.kdeconnect = {
-      enable = !pkgs.valent.meta.broken;
-      package = pkgs.valent;
+      enable = lib.mkDefault (!pkgs.valent.meta.broken);
+      package = lib.mkDefault pkgs.valent;
     };
     # evolution is the email/contact/etc client for gnome
     programs.evolution.enable = false;

@@ -1,50 +1,33 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
-#   WIP !!!
-{ config, pkgs, lib, ... }: {
-
-  # base config for kde
-  config = mkIf config.nixos.desktop.enable {
+{ config, pkgs, lib, ... }:
+lib.mkIf config.nixos.desktop.enable {
 
     system.nixos.tags = [ "KDE" ];
 
-    services.xserver = {
-      # enable GUI
-      enable = true;
+    services.xserver.enable = true;
 
-      # enable plasma
-      desktopManager.plasma5 = {
-        enable = true;
-        useQtScaling = true;
-      };
-
-      # remove xterm
-      excludePackages = [ pkgs.xterm ];
-      desktopManager.xterm.enable = false;
-      displayManager.defaultSession = "plasmawayland";
-    };
-
+     # enable plasma
+    services.xserver.desktopManager.plasma6.enable = true;
     qt.enable = true;
-    qt.platformTheme = "kde";
+    qt.platformTheme = "qt5ct";
 
     programs.dconf.enable = true;
     programs.kdeconnect.enable = true;
     programs.partition-manager.enable = true;
 
-    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [
       oxygen
       khelpcenter
       plasma-browser-integration
       print-manager
       kio-extras
-      ark
       elisa
       khelpcenter
-      kemoticons
       kwallet
       kwallet-pam
-    ];
+    ]
+    ++ (with pkgs.libsForQt5; [kemoticons]);
 
     environment.systemPackages = with pkgs; [ dconf dconf2nix lightly-qt ];
-  };
-}
+  }
