@@ -10,7 +10,7 @@ lib.mkIf config.nixos.desktop.enable {
      # enable plasma
     services.xserver.desktopManager.plasma6.enable = true;
     qt.enable = true;
-    qt.platformTheme = "qt5ct";
+    qt.platformTheme = "kde";
 
     programs.dconf.enable = true;
     programs.kdeconnect.enable = true;
@@ -26,6 +26,7 @@ lib.mkIf config.nixos.desktop.enable {
       khelpcenter
       kwallet
       kwallet-pam
+      kate
     ]
     ++ (with pkgs.libsForQt5; [kemoticons]);
 
