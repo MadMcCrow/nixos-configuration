@@ -46,6 +46,38 @@
     # vs_code is in another module
     programs.vscode = (import ./vscode.nix { inherit pkgs; });
 
+    # ZSH :
+    programs.zsh = {
+      enable = true;
+      dotDir = ".config/zsh";
+      enableAutosuggestions = true;
+      enableCompletion = true;
+      autocd = true;
+      plugins = [{
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "chisui";
+          repo = "zsh-nix-shell";
+          rev = "v0.8.0";
+          hash = "";
+        };
+      }];
+      history = {
+        size = 100;
+        ignoreDups = true;
+        ignoreSpace = true;
+        extended = false;
+        share = true;
+      };
+      # alias vscodium to vscode
+      shellAliases = {
+        code = "codium";
+        ls = "eza";
+      };
+      syntaxHighlighting.enable = true;
+    };
+
     # eza is ls but improved
     programs.eza = {
       enable = true;
@@ -67,6 +99,12 @@
         apply.whitespace = "fix";
         credential.helper = "git-credential-manager";
       };
+    };
+    programs.gh = {
+      enable = true;
+      settings.git_protocol = "https";
+      extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
+      gitCredentialHelper.enable = true;
     };
 
     # bash is used in nix-shell

@@ -8,26 +8,24 @@ let
   # TODO : use stable !
   # stable-pkgs = pkgs;
 
-
   # Extest is a drop in replacement for the X11 XTEST extension. It creates a virtual device with the uinput kernel module.
   # It's been primarily developed for allowing the desktop functionality on the Steam Controller to work while Steam is open on Wayland.
   extest = pkgs.rustPlatform.buildRustPackage rec {
-        pname = "extest";
-        version = "1.0.2";
-        src = pkgs.fetchFromGitHub {
-            repo = "extest";
-            owner = "Supreeeme";
-            rev = version;
-            hash = "sha256-qdTF4n3uhkl3WFT+7bAlwCjxBx3ggTN6i3WzFg+8Jrw=";
-        };
-        cargoLock.lockFile = "${src}/Cargo.lock";
-        meta = {
-          homepage = "https://github.com/Supreeeme/extest";
-          license = lib.licenses.mit;
-          platforms = lib.platforms.linux;
-        };
+    pname = "extest";
+    version = "1.0.2";
+    src = pkgs.fetchFromGitHub {
+      repo = "extest";
+      owner = "Supreeeme";
+      rev = version;
+      hash = "sha256-qdTF4n3uhkl3WFT+7bAlwCjxBx3ggTN6i3WzFg+8Jrw=";
+    };
+    cargoLock.lockFile = "${src}/Cargo.lock";
+    meta = {
+      homepage = "https://github.com/Supreeeme/extest";
+      license = lib.licenses.mit;
+      platforms = lib.platforms.linux;
+    };
   };
-
 
   # Steam
   steamLibs = p:
@@ -47,12 +45,7 @@ let
     ];
 
   steamPkgs = with pkgs;
-    [
-      steam
-      steam-run
-      steamcmd
-      gamescope
-    ] ++ steamLibs pkgs;
+    [ steam steam-run steamcmd gamescope ] ++ steamLibs pkgs;
 
 in {
 
@@ -75,8 +68,9 @@ in {
       (self: super: {
         steam = super.steam.override {
           extraPkgs = steamLibs;
-          extraProfile = ''export LD_PRELOAD=${extest}/lib/libextest.so:$LD_PRELOAD'';
-          };
+          extraProfile =
+            "export LD_PRELOAD=${extest}/lib/libextest.so:$LD_PRELOAD";
+        };
       })
     ];
   };

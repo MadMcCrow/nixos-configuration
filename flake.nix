@@ -44,7 +44,7 @@
           specialArgs = inputs;
         in pkgs.lib.nixosSystem {
           inherit system specialArgs;
-          modules =  [
+          modules = [
             ./linux
             ./users
             inputs.home-manager.nixosModule

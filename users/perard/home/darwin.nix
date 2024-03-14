@@ -1,64 +1,12 @@
 # darwin.nix
 # home manager configuration for MacOS
-# TODO : browser 
+# TODO : browser
 { config, pkgs, ... }: {
   home.username = "perard";
   home.homeDirectory = "/Users/perard";
   home.stateVersion = "23.05";
 
   imports = [ ./shared.nix ];
-
-  # github cli tool
-  programs.gh = {
-    enable = true;
-    settings.git_protocol = "https";
-    extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
-    gitCredentialHelper.enable = true;
-  };
-
-  # ZSH :
-  programs.zsh = {
-    enable = true;
-    dotDir = ".config/zsh";
-    enableAutosuggestions = true;
-    enableCompletion = true;
-    autocd = true;
-    plugins = [{
-      name = "zsh-nix-shell";
-      file = "nix-shell.plugin.zsh";
-      src = pkgs.fetchFromGitHub {
-        owner = "chisui";
-        repo = "zsh-nix-shell";
-        rev = "v0.7.0";
-        sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
-      };
-    }];
-    history = {
-      size = 100;
-      ignoreDups = true;
-      ignoreSpace = true;
-      extended = false;
-      share = true;
-    };
-    # alias vscodium to vscode
-    shellAliases = { code = "codium"; ls = "eza"; };
-    syntaxHighlighting.enable = true;
-  };
-
-  # bash is used in nix-shell
-  programs.bash = {
-    # enable powerline-go in bash
-    bashrcExtra = ''
-          # Workaround for nix-shell --pure
-      if [ "$IN_NIX_SHELL" == "pure" ]; then
-          if [ -x "$HOME/.nix-profile/bin/powerline-go" ]; then
-              alias powerline-go="$HOME/.nix-profile/bin/powerline-go"
-          elif [ -x "/run/current-system/sw/bin/powerline-go" ]; then
-              alias powerline-go="/run/current-system/sw/bin/powerline-go"
-          fi
-      fi
-    '';
-  };
 
   # environment switcher
   programs.direnv = {

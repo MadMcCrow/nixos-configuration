@@ -417,7 +417,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/altTab-mod" = {
       disable-hover-select = false;
       remove-delay = true;
-      current-workspace-only-window=true;
+      current-workspace-only-window = true;
     };
 
     "org/gnome/shell/extensions/appindicator" = { icon-size = 0; };
