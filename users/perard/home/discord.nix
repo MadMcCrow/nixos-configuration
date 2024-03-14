@@ -7,6 +7,7 @@
         discord = super.discord.override {
           nss = pkgs.nss_latest;
           withOpenASAR = true;
+          withVencord = true;
           #  withTTS = true;
         };
       })
