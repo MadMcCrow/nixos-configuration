@@ -32,6 +32,7 @@
     programs.home-manager.enable = true;
     home.packages = (with pkgs; [
       powerline-go
+      eza
       zsh-autosuggestions
       zsh-syntax-highlighting
       jetbrains-mono
@@ -41,6 +42,17 @@
       git-secrets
       git-credential-manager
     ]);
+
+    # vs_code is in another module
+    programs.vscode = (import ./vscode.nix { inherit pkgs; });
+
+    # eza is ls but improved
+    programs.eza = {
+      enable = true;
+      enableAliases = true;
+      git = true;
+      extraOptions = [ "--group-directories-first" "--header" ];
+    };
 
     # GIT
     programs.git = {
@@ -72,12 +84,28 @@
       '';
     };
 
+    # Bash And Zsh shell history suggest box
+    programs.hstr.enable = true;
+
     # environment switcher
     programs.direnv = {
       enable = true;
       nix-direnv.enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;
+    };
+
+    programs.powerline-go = {
+      enable = true;
+      modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
+      modulesRight = [ "exit" "time" ];
+      settings = {
+        hostname-only-if-ssh = true;
+        numeric-exit-codes = true;
+        cwd-max-depth = 3;
+        git-mode = "compact";
+        priority = [ "root" "cwd" "user" "nix-shell" "gitlite" ];
+      };
     };
   };
 }

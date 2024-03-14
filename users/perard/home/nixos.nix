@@ -88,14 +88,6 @@
       };
     };
 
-    # eza is ls but improved
-    programs.eza = {
-      enable = true;
-      enableAliases = true;
-      git = true;
-      extraOptions = [ "--group-directories-first" "--header" ];
-    };
-
     packages.overlays = [
       (self: super: {
         discord = super.discord.override { withOpenASAR = true; };

@@ -8,33 +8,12 @@
 
   imports = [ ./shared.nix ];
 
-  # packages to install to profile (extra to shared)
-  home.packages = (with pkgs; [ exa ]);
-
-  # Programs setup :
-  # vscode is in another module (too many extensions)
-  programs.vscode = (import ./vscode.nix { inherit pkgs; });
-
-  # GIT
-  programs.git = {
-    enable = true;
-    userName = "MadMcCrow";
-    userEmail = "noe.perard+git@gmail.com";
-    lfs.enable = true;
-    extraConfig = {
-      help.autocorrect = 10;
-      color.ui = "auto";
-      core.whitespace = "trailing-space,space-before-tab";
-      apply.whitespace = "fix";
-    };
-  };
-
   # github cli tool
   programs.gh = {
     enable = true;
     settings.git_protocol = "https";
     extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
-    enableGitCredentialHelper = true;
+    gitCredentialHelper.enable = true;
   };
 
   # ZSH :
@@ -62,24 +41,8 @@
       share = true;
     };
     # alias vscodium to vscode
-    shellAliases = { code = "codium"; };
-    enableSyntaxHighlighting = true;
-  };
-
-  # Bash And Zsh shell history suggest box
-  programs.hstr.enable = true;
-
-  programs.powerline-go = {
-    enable = true;
-    modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
-    modulesRight = [ "exit" "time" ];
-    settings = {
-      hostname-only-if-ssh = true;
-      numeric-exit-codes = true;
-      cwd-max-depth = 3;
-      git-mode = "compact";
-      priority = [ "root" "cwd" "user" "nix-shell" "gitlite" ];
-    };
+    shellAliases = { code = "codium"; ls = "eza"; };
+    syntaxHighlighting.enable = true;
   };
 
   # bash is used in nix-shell
@@ -95,14 +58,6 @@
           fi
       fi
     '';
-  };
-
-  # eza is ls but improved
-  programs.exa = {
-    enable = true;
-    enableAliases = true;
-    git = true;
-    extraOptions = [ "--group-directories-first" "--header" ];
   };
 
   # environment switcher

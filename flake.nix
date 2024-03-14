@@ -21,12 +21,12 @@
 
     # macOS:
     # nixpkgs
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.05-darwin";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
     # nix-darwin
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     # HM for MacOS
-    home-manager-darwin.url = "github:nix-community/home-manager/release-23.05";
+    home-manager-darwin.url = "github:nix-community/home-manager/release-23.11";
     home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
     # pycnix for python scripts
@@ -36,10 +36,6 @@
 
   outputs = { self, ... }@inputs:
     let
-
-      # modules shared between linux and MacOS
-      baseModules = [ ./nix ./users ];
-
       # shortcut functions :
       nixOSx86 = sysModule:
         let
@@ -48,8 +44,9 @@
           specialArgs = inputs;
         in pkgs.lib.nixosSystem {
           inherit system specialArgs;
-          modules = baseModules ++ [
+          modules =  [
             ./linux
+            ./users
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule
@@ -62,9 +59,10 @@
           specialArgs = inputs;
           modules = [
             ./darwin
+            ./users
             inputs.home-manager-darwin.darwinModules.home-manager
             sysModule
-          ] ++ baseModules;
+          ];
         };
 
       shells = [ ./secrets/shell.nix ];

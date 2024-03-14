@@ -67,6 +67,9 @@ in {
     '' cfg.enable;
   };
 
+  # import nix config
+  imports = [./nix.nix];
+
   # implementation
   config = mkIf (cfg.enable) {
     # nix settings

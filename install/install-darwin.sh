@@ -40,7 +40,7 @@ build()
 {
   # build nix config on Darwin
   echo "building configuration for $(hostname -s)"
-  nix build ".#darwinSystems.$(hostname -s).system"
+  nix build ".#darwinConfigurations.$(hostname -s).system"
 }
 
 apply()

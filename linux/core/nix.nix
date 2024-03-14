@@ -89,6 +89,8 @@ in {
       # detect files in the store that have identical contents,
       # and replaces them with hard links to a single copy.
       settings.auto-optimise-store = true;
+
+      # this is linux only :
       optimise.automatic = true;
       optimise.dates = [ "daily" ];
 

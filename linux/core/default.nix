@@ -10,6 +10,7 @@
     ./hid.nix
     ./locale.nix
     ./network.nix
+    ./nix.nix
     ./shell.nix
     ./upgrade.nix
     ./vm.nix

@@ -7,12 +7,10 @@
  - [ ] Make a documentation
  - [ ] Update github actions
  - [ ] Option to enable or disable users by systems
- - [ ] TV : have Gamescope compositor
- - [ ] TV : try Plasma TV
- - [ ] Nextcloud Server on LAN
- - [ ] Nextcloud Server in container
+ - [ ] Darwin : Auto Update command
 
  ## Possible :
  - [ ] Move nextcloud to a separate flake
  - [ ] Secrets as a separate flake
  - [ ] Server : pufferpanel for game servers
+ - [ ] Nextcloud : on server
