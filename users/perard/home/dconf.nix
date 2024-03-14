@@ -417,6 +417,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/altTab-mod" = {
       disable-hover-select = false;
       remove-delay = true;
+      current-workspace-only-window=true;
     };
 
     "org/gnome/shell/extensions/appindicator" = { icon-size = 0; };
@@ -567,7 +568,7 @@ with lib.hm.gvariant;
       overview-kill-dash = true;
       panel-menu-require-click = true;
       taskbar-enabled = true;
-      taskbar-isolate-workspaces = false;
+      taskbar-isolate-workspaces = true;
       taskbar-position = "left";
       taskbar-position-offset = 2;
       taskbar-preserve-position = true;
