@@ -81,7 +81,7 @@
     # eza is ls but improved
     programs.eza = {
       enable = true;
-      enableAliases = true;
+      # programs.eza.enableBashIntegration <- defaults to true
       git = true;
       extraOptions = [ "--group-directories-first" "--header" ];
     };

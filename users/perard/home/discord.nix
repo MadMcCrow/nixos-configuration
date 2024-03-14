@@ -14,8 +14,8 @@
     ];
   };
 
-  # try this
-  programs.discocss.enable = true;
+  # TODO: try this
+  #programs.discocss.enable = true;
 
   home.packages = with pkgs; [ discord nss_latest ];
 
