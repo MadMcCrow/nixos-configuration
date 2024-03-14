@@ -72,9 +72,6 @@
       enableZshIntegration = true;
     };
 
-    # Bash And Zsh shell history suggest box
-    programs.hstr.enable = true;
-
     programs.powerline-go = {
       enable = true;
       modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
