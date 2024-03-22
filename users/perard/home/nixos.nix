@@ -3,7 +3,14 @@
 { config, pkgs, lib, ... }: {
 
   # add our dconf settings
-  imports = [ ./dconf.nix ./shared.nix ./games.nix ./discord.nix ];
+  imports = [
+    ./dconf.nix
+    ./deezer.nix
+    ./discord.nix
+    ./shared.nix
+    ./games.nix
+    ./wallpaper.nix
+  ];
 
   config = {
     home.username = "perard";

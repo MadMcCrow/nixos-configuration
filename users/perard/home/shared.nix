@@ -60,7 +60,7 @@
           owner = "chisui";
           repo = "zsh-nix-shell";
           rev = "v0.8.0";
-          hash = "";
+          hash = "sha256-Z6EYQdasvpl1P78poj9efnnLj7QQg13Me8x1Ryyw+dM=";
         };
       }];
       history = {
