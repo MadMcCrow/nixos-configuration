@@ -9,3 +9,6 @@ result
 
 # ignore built virtual machines :
 *.qcow2
+
+# ignore WIP stuff :
+build

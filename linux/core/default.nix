@@ -5,6 +5,7 @@
     ./gpu
     ./audio.nix
     ./boot.nix
+    ./disks.nix
     ./flatpak.nix
     ./fonts.nix
     ./hid.nix

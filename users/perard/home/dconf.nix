@@ -369,7 +369,7 @@ with lib.hm.gvariant;
       command-history = [ "lg" "r" ];
       disable-user-extensions = false;
       disabled-extensions =
-        [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
+        [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" "gtk4-ding@smedius.gitlab.com"];
       enabled-extensions = [
         "quick-settings-tweaks@qwreey"
         "blur-my-shell@aunetx"
@@ -383,7 +383,6 @@ with lib.hm.gvariant;
         "valent@andyholmes.ca"
         "wireless-hid@chlumskyvaclav.gmail.com"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
-        "gtk4-ding@smedius.gitlab.com"
         "alttab-mod@leleat-on-github"
         "tiling-assistant@leleat-on-github"
         "appindicatorsupport@rgcjonas.gmail.com"
