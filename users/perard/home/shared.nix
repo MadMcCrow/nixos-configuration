@@ -50,7 +50,7 @@
     programs.zsh = {
       enable = true;
       dotDir = ".config/zsh";
-      enableAutosuggestions = true;
+      autosuggestions.enable = true;
       enableCompletion = true;
       autocd = true;
       plugins = [{
