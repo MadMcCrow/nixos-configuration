@@ -57,5 +57,5 @@ let
  };
 in
 {
-  home.packages = [deezer];
+  home.packages = [];
 }
