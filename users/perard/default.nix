@@ -1,11 +1,7 @@
 # perard.nix
 # 	my User
-{ pkgs, lib, ... }:
-let
-  isLinux = (lib.strings.hasSuffix "linux" pkgs.system);
-  # TODO : make those key generated for user !
-  id_rsa_pub_AF = "";
-  id_rsa_pub_NUC = "";
+{ pkgs, lib, pkgs-latest, ... }:
+let isLinux = lib.strings.hasSuffix "linux" pkgs.system;
 in {
   # nixos config
   users.users.perard = lib.mkMerge [
@@ -13,7 +9,8 @@ in {
       uid = 1000;
       description = "Noé Perard-Gayot";
       shell = pkgs.zsh;
-      openssh.authorizedKeys.keys = [ id_rsa_pub_AF id_rsa_pub_NUC ];
+      # TODO :
+      # openssh.authorizedKeys.keys = [  ];
     }
     (lib.attrsets.optionalAttrs isLinux {
       group = "users";
@@ -25,7 +22,6 @@ in {
     (lib.attrsets.optionalAttrs (!isLinux) { home = "/Users/perard"; })
   ];
 
-  # home manager configuration
   home-manager.users.perard =
     if isLinux then (import ./home/nixos.nix) else (import ./home/darwin.nix);
 }

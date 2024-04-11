@@ -5,11 +5,13 @@
     ./gpu
     ./audio.nix
     ./boot.nix
+    ./disks.nix
     ./flatpak.nix
     ./fonts.nix
     ./hid.nix
     ./locale.nix
     ./network.nix
+    ./nix.nix
     ./shell.nix
     ./upgrade.nix
     ./vm.nix

@@ -1,1 +1,1 @@
-flake.lock filter=git-crypt diff=git-crypt
+flake.lock filter=git-crypt diff=git-crypt merge=ours

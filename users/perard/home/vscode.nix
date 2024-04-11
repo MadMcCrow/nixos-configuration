@@ -1,41 +1,7 @@
 # home-manager/vs-code.nix
 # 	vs code and all the extensions I Like
-{ pkgs }:
-with builtins;
-with pkgs.lib;
+{ pkgs, lib, config, ... }:
 let
-
-  # Json settings for VS Code
-  vsSettings = {
-    "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', monospace";
-    "editor.fontLigatures" = true;
-    "editor.fontSize" = 13;
-    "editor.tabCompletion" = "on";
-    "diffEditor.codeLens" = true;
-    "update.mode" = "none";
-    "window.titleBarStyle" = "native"; # use "custom" for vs-code title bar
-    "window.restoreWindows" = "none";
-    "window.zoomLevel" = 2;
-    "workbench.colorTheme" = "GitHub Dark";
-    "workbench.iconTheme" = "material-icon-theme";
-    "workbench.colorCustomizations" = {
-      "activityBar.activeBackground" = "#0000002C";
-      "tab.inactiveBackground" = "#00000041"; # make tabs pop more
-    };
-    # something that could be done for colors :
-    # "editor.tokenColorCustomizations" ={
-    # "functions"= "#179559";
-    # "numbers"= "#fff476";
-    # "types"= "#ff7f50";
-    # "comments"= "#555555";
-    # "variables"= "#ffffff";
-    # "keywords"= "#226f50";
-    # };
-    "anycode.language.features" = {
-      "folding" = true;
-      "diagnostics" = true;
-    };
-  };
 
   # Market place getter
   vsMarketplace = pkgs.vscode-utils.extensionFromVscodeMarketplace;
@@ -46,22 +12,6 @@ let
     publisher = "geequlim";
     version = "1.3.1";
     sha256 = "sha256-wJICDW8bEBjilhjhoaSddN63vVn6l6aepPtx8VKTdZA=";
-  };
-
-  # GLSL linter
-  glsl-lint = vsMarketplace {
-    name = "vscode-glsllint";
-    publisher = "dtoplak";
-    version = "1.8.0";
-    sha256 = "sha256-imB+S7N6TIuyhMw/tfLdtGnLTgLv6BL9IAxKrOzICj8=";
-  };
-
-  # support for shader languages
-  vs-shader = vsMarketplace {
-    name = "shader";
-    publisher = "slevesque";
-    version = "1.1.5";
-    sha256 = "sha256-Pf37FeQMNlv74f7LMz9+CKscF6UjTZ7ZpcaZFKtX2ZM=";
   };
 
   # editor for shader
@@ -221,59 +171,107 @@ let
     version = "2.30.0";
     sha256 = "sha256-tzcX9sWjbA64bFeq8FV7l39p16nzYhvwHO3mvEleH1o=";
   };
-  haxe-lint = vsMarketplace {
+
+  haxe-checkstyle = vsMarketplace {
     name = "haxe-checkstyle";
     publisher = "vshaxe";
     version = "1.8.3";
-    sha256 = "";
+    sha256 = "sha256-oOo7o1k0Er1txWUf69R6HuKyqpHwlpAol54KpKiWehk=";
   };
 
+  #
   jetbrainsColors = vsMarketplace {
     name = "jetbrains-new-dark";
     publisher = "MoBalic";
     version = "0.0.1";
-    sha256 = "";
+    sha256 = "sha256-hp1RoOacqM016NEtGXhdza4LxHZ0/rxyrTI2pwpjnas=";
   };
 
-  # marketplace extensions
-  marketPlaceExtensions = [
-    godot-tools
-    #glsl-lint  -> slow
-    # vs-shader -> slow 
-    shader-ed
-    git-graph
-    material-icons
-    intellicode
-    haxe
-    ms-python
-    ms-cpp
-    ms-dotnet
-    ms-anycode
-    github-pr
-    github-codespaces
-    # github-action -> slow
-    github-markdown
-    github-remotehub
-  ];
+  # https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support
+  openscad = vsMarketplace {
+    name = "openscad";
+    publisher = "Antyos";
+    version = "1.3.0";
+    sha256 = "sha256-GY5GHZWxMuEPL+cyxj2jeLtUjxfjPTtj0eUZcyViqO8=";
+  };
 
-  # nixos extensions
-  nixVsCodeExtensions = with pkgs.vscode-extensions; [
-    jnoortheen.nix-ide
-    rust-lang.rust-analyzer
-    xaver.clang-format
-    llvm-vs-code-extensions.vscode-clangd
-    github.github-vscode-theme
-  ];
+  # https://marketplace.visualstudio.com/items?itemName=Antyos.openscad
+  openscad-language-support = vsMarketplace {
+    name = "openscad-language-support";
+    publisher = "Leathong";
+    version = "1.2.5";
+    sha256 = "sha256-/CLxBXXdUfYlT0RaGox1epHnyAUlDihX1LfT5wGd2J8=";
+  };
+
 in {
-  enable = true;
-  # disable update check and notification
-  enableUpdateCheck = false;
-  # use vscodium as vscode
-  package = pkgs.vscodium;
-  # allow installing extensions from marketplace
-  mutableExtensionsDir = false;
-  # enable extensions
-  extensions = marketPlaceExtensions ++ nixVsCodeExtensions;
-  # JSon settings
-  userSettings = vsSettings;
+  programs.vscode = {
+    enable = true;
+    # disable update check and notification
+    enableUpdateCheck = false;
+    # use vscodium as vscode
+    package = pkgs.vscodium;
+    # allow installing extensions from marketplace
+    mutableExtensionsDir = false;
+    # enable extensions
+    extensions = with pkgs.vscode-extensions;
+      [
+        jnoortheen.nix-ide
+        rust-lang.rust-analyzer
+        xaver.clang-format
+        llvm-vs-code-extensions.vscode-clangd
+        github.github-vscode-theme
+      ] ++ [
+        godot-tools
+        shader-ed
+        git-graph
+        material-icons
+        intellicode
+        haxe
+        ms-python
+        ms-cpp
+        ms-dotnet
+        ms-anycode
+        github-pr
+        github-codespaces
+        # github-action -> slow
+        github-markdown
+        github-remotehub
+        haxe-checkstyle
+        jetbrainsColors
+        openscad
+        openscad-language-support
+      ];
+
+    # JSon settings
+    userSettings = {
+      "anycode.language.features" = {
+        "diagnostics" = true;
+        "folding" = true;
+      };
+      "diffEditor.codeLens" = true;
+      "editor.fontFamily" = "'JetBrains Mono', 'Droid Sans Mono', monospace";
+      "editor.fontLigatures" = true;
+      "editor.fontSize" = 13;
+      "editor.tabCompletion" = "on";
+      "update.mode" = "none";
+      "window.restoreWindows" = "none";
+      "window.titleBarStyle" = "native";
+      "window.zoomLevel" = 3;
+      "workbench.colorCustomizations" = {
+        "activityBar.activeBackground" = "#0000002C";
+        "tab.inactiveBackground" = "#00000041";
+      };
+      "workbench.colorTheme" = "GitHub Dark";
+      "workbench.iconTheme" = "material-icon-theme";
+      # something that could be done for colors :
+      # "editor.tokenColorCustomizations" ={
+      # "functions"= "#179559";
+      # "numbers"= "#fff476";
+      # "types"= "#ff7f50";
+      # "comments"= "#555555";
+      # "variables"= "#ffffff";
+      # "keywords"= "#226f50";
+      # };
+    };
+  };
 }

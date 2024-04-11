@@ -1,6 +1,6 @@
 # desktop/audio.nix
 # Linux audio config
-{ pkgs, lib, config, ... }:
+{ lib, config, ... }:
 let
   # shortcut
   cfg = config.nixos.audio;

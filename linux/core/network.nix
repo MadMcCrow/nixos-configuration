@@ -21,8 +21,14 @@ in {
   config = {
 
     # add necessary tools :
-    environment.defaultPackages = with pkgs; [ ifwifi networkmanager ];
+    environment.defaultPackages = with pkgs; [
+      ifwifi
+      networkmanager
+      dnsutils
+      nmap
+    ];
 
+    #
     networking = {
       # unique identifier for machines
       hostId = (elemAt
@@ -30,11 +36,15 @@ in {
           1) 0);
 
       # use dhcp for addresses. static adresses are given by the rooter
-      useDHCP = lib.mkDefault true;
+      useDHCP = lib.mkForce true;
       enableIPv6 = true;
 
+      dhcpcd.persistent = true;
+
+      #
       networkmanager.enable = true;
 
+      # enable firewall with quite open ports
       firewall = {
         allowedTCPPorts = [ 27036 27015 22 ];
         allowedUDPPortRanges = [{
@@ -45,6 +55,7 @@ in {
         allowedUDPPorts = [ 27015 ]; # Gameplay traffic
       };
 
+      # WOL needs hard definition of interfaces
       interfaces = listToAttrs (map (x: {
         name = "${x}";
         value = { wakeOnLan.enable = true; };
@@ -54,8 +65,20 @@ in {
     # avahi for mdns :
     services.avahi = {
       enable = true;
-      nssmdns4 = true; # ipv4
-      nssmdns6 = true; # ipv6
+      nssmdns = true;
+      ipv6 = true;
+      ipv4 = true;
+      openFirewall = true;
+      publish = {
+        enable = true;
+        domain = true;
+        workstation = true;
+        userServices = true;
+        addresses = true;
+        hinfo = true;
+      };
+      # domainName = "domain"; # defaults to .local
+      # browseDomains = [ "domain" ];
     };
   };
 }

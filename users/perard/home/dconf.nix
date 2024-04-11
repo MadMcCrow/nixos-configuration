@@ -1,9 +1,10 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{ lib, ... }:
+{ pkgs, lib, ... }:
 
 with lib.hm.gvariant;
 
 {
+  home.packages = [ pkgs.dconf ];
   dconf.settings = {
 
     "org/gnome/Console" = {
@@ -14,7 +15,8 @@ with lib.hm.gvariant;
     "org/gnome/GWeather4" = { temperature-unit = "centigrade"; };
 
     "org/gnome/Weather" = {
-      locations = "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
+      locations =
+        "[<(uint32 2, <('Paris', 'LFPB', true, [(0.85462956287765413, 0.042760566673861078)], [(0.8528842336256599, 0.040724343395436846)])>)>]";
     };
 
     "org/gnome/baobab/ui" = {
@@ -366,8 +368,11 @@ with lib.hm.gvariant;
         "[{'Accessories': <{'position': <0>}>, 'Games': <{'position': <1>}>, 'Graphics': <{'position': <2>}>, 'Code': <{'position': <3>}>, 'Utilities': <{'position': <4>}>}]";
       command-history = [ "lg" "r" ];
       disable-user-extensions = false;
-      disabled-extensions =
-        [ "dash-to-dock@micxgx.gmail.com" "material-shell@papyelgringo" ];
+      disabled-extensions = [
+        "dash-to-dock@micxgx.gmail.com"
+        "material-shell@papyelgringo"
+        "gtk4-ding@smedius.gitlab.com"
+      ];
       enabled-extensions = [
         "quick-settings-tweaks@qwreey"
         "blur-my-shell@aunetx"
@@ -381,7 +386,6 @@ with lib.hm.gvariant;
         "valent@andyholmes.ca"
         "wireless-hid@chlumskyvaclav.gmail.com"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
-        "gtk4-ding@smedius.gitlab.com"
         "alttab-mod@leleat-on-github"
         "tiling-assistant@leleat-on-github"
         "appindicatorsupport@rgcjonas.gmail.com"
@@ -415,6 +419,7 @@ with lib.hm.gvariant;
     "org/gnome/shell/extensions/altTab-mod" = {
       disable-hover-select = false;
       remove-delay = true;
+      current-workspace-only-window = true;
     };
 
     "org/gnome/shell/extensions/appindicator" = { icon-size = 0; };
@@ -565,7 +570,7 @@ with lib.hm.gvariant;
       overview-kill-dash = true;
       panel-menu-require-click = true;
       taskbar-enabled = true;
-      taskbar-isolate-workspaces = false;
+      taskbar-isolate-workspaces = true;
       taskbar-position = "left";
       taskbar-position-offset = 2;
       taskbar-preserve-position = true;

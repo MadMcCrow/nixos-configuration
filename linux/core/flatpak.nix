@@ -14,8 +14,17 @@ in {
       libportal-gtk3
       packagekit
     ];
-    xdg.portal.enable = true;
+
     services.packagekit.enable = true;
+
+    # xdg portal is required for flatpak
+    xdg.portal = {
+      enable = true;
+      config.common.default = lib.mkDefault "xapp"; # default to Xapp
+      extraPortals = lib.mkDefault
+        (with pkgs; [ xdg-desktop-portal-wlr xdg-desktop-portal-xapp ]);
+    };
+
     services.flatpak.enable = true;
     # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
     environment.persistence."/nix/persist" = {

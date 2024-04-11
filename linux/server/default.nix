@@ -24,5 +24,5 @@ in {
   };
 
   # definitions are in another module
-  imports = [ ./docker ./services ./nextcloud ./server.nix ];
+  imports = [ ./containers ./services ./server.nix ];
 }

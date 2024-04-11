@@ -3,7 +3,7 @@
 { pkgs, config, lib, ... }:
 let
   shell = pkgs.zsh;
-  editor = pkgs.micro; # replaces pkgs.nano;
+  editor = pkgs.nano;
   ls = pkgs.eza;
 in {
 
@@ -36,6 +36,7 @@ in {
     # packages that just make sens
     environment.defaultPackages = [ shell editor ls ] ++ (with pkgs; [
       nixfmt # format nix files
+      #nixfmt-rfc-style
       wget
       openssl
       curl

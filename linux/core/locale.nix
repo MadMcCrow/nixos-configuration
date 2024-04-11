@@ -1,6 +1,6 @@
 # linux/kernel.nix
 # locale options for nixos
-{ pkgs, config, lib, ... }: {
+{ config, lib, ... }: {
   config = {
     i18n.defaultLocale = "en_US.UTF-8";
     console.font = "Lat2-Terminus16";
@@ -8,10 +8,11 @@
     time.timeZone = "Europe/Paris";
     services.timesyncd.servers = [ "fr.pool.ntp.org" "europe.pool.ntp.org" ];
     location.provider = "geoclue2";
-    services.xserver = {
+    # keyboard settings :
+    services.xserver.xkb = {
       layout = "us";
-      xkbVariant = "intl";
-      xkbOptions = "eurosign:e";
+      variant = "intl";
+      options = "eurosign:e";
     };
   };
 }
