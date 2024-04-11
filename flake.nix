@@ -33,7 +33,7 @@
             pkgs-latest = import inputs.nixpkgs-latest { inherit system; };
           };
           modules = [
-            ./linux
+            ./platform/linux
             ./users
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
@@ -49,7 +49,7 @@
             pkgs-latest = import inputs.nixpkgs-latest { inherit system; };
           };
           modules = [
-            ./darwin
+            ./platform/darwin
             ./users
             inputs.home-manager-darwin.darwinModules.home-manager
             sysModule
@@ -60,15 +60,15 @@
 
       #Linux : Nixos
       nixosConfigurations = {
-        nixAF = nixOSx86 ./systems/AF.nix;
+        nixAF = nixOSx86 ./systems/TAF.nix;
         nixNUC = nixOSx86 ./systems/NUC.nix;
       };
-
       # MacOS
       darwinConfigurations = {
         Noes-MacBook-Air = darwinAarch64 ./systems/MBA.nix;
       };
 
+      # TODO : move to darwin platform only !
       overlays = {
         # Overlay useful on Macs with Apple Silicon
         apple-silicon = final: prev:
@@ -80,22 +80,5 @@
             };
           };
       };
-
-      # a shell for every development experiment
-      devShells = inputs.nixpkgs.lib.genAttrs [
-        "x86_64-linux"
-        "aarch64-linux"
-        "aarch64-darwin"
-      ] (system: {
-        default = let
-          pkgs = inputs.nixpkgs.legacyPackages.${system};
-          paths = map (x: import x ({ inherit pkgs; } // inputs)) shells;
-          # this is sad, for now I just merge build inputs but another solution would be great
-          # another solution would be to merge all attributes but this would take too much time for nothing
-          # pkgs.buildEnv { name = "nixos-configuration shell";  inherit paths; };
-        in pkgs.mkShell {
-          buildInputs = builtins.concatLists (map (x: x.buildInputs) paths);
-        };
-      });
     };
 }

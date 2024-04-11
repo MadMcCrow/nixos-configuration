@@ -1,13 +1,12 @@
-# NUC Cloud config
+# NUC
+#   this is a 12th gen Intel NUC
+#   it's my central Home Cloud 
 { pkgs, ... }:
 let
-
-  # where to put the data :
   serverData = "/run/server_data";
-
 in {
 
-  networking.hostName = "nixNUC";
+  networking.hostName = "NixNUC"; #"alpha";
 
   # our custom modules config :
   nixos.flatpak.enable = true;
