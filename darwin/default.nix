@@ -1,18 +1,10 @@
 # darwin/default.nix
 # 	Nix Darwin (MacOS) Specific settings
 { config, pkgs, lib, ... }:
-with builtins;
-with lib;
 let
   # shortcuts :
   cfg = config.darwin;
   pam = cfg.security.pam.sudoTouchIdAuth;
-
-  # helper functions
-  mkEnableOptionDefault = desc: default:
-    (mkEnableOption desc) // {
-      inherit default;
-    };
 
   # init for fish and "command not found"
   fishInit = if config.programs.fish.useBabelfish then ''
@@ -54,56 +46,34 @@ in {
 
   # interface
   options.darwin = {
-    # enable MacOS
-    enable = mkEnableOptionDefault "Darwin (MacOS)" true;
     # Touch ID with sudo :
-    security.pam.sudoTouchIdAuth.enable = mkEnableOptionDefault ''
+    security.pam.sudoTouchIdAuth.enable = lib.mkEnableOption ''
       sudo authentication with Touch ID
       When enabled, this option adds the following line to /etc/pam.d/sudo:
           auth       sufficient     pam_tid.so
       (Note that macOS resets this file when doing a system update. As such, sudo
       authentication with Touch ID won't work after a system update until the nix-darwin
       configuration is reapplied.)
-    '' cfg.enable;
+    '' // {
+      defaults = true;
+    };
   };
 
+  # import nix config
+  imports = [ ./nix.nix ./update.nix ];
+
   # implementation
-  config = mkIf (cfg.enable) {
-    # nix settings
-    nix = {
-      settings = {
-        substituters = [ "https://cache.nixos.org/" ];
-        trusted-public-keys =
-          [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
-        trusted-users = [ "@admin" ];
-      };
-
-      # Enable experimental nix command and flakes
-      # nix.package = pkgs.nixUnstable;
-      extraOptions = ''
-        auto-optimise-store = true
-        experimental-features = nix-command flakes
-      '' + lib.optionalString (pkgs.system == "aarch64-darwin") ''
-        extra-platforms = x86_64-darwin aarch64-darwin
-      '';
-
-    };
-
+  config = {
     # Create /etc/bashrc that loads the nix-darwin environment.
     programs.zsh.enable = true;
-
-    # Auto upgrade nix package and the daemon service.
-    # TODO : find new variable name
-    #services.nix-daemon.enable = true;
 
     programs.fish.interactiveShellInit = ''
       function __fish_command_not_found_handler --on-event="fish_command_not_found"
         ${fishInit}
       end
     '';
-
     # PAM support
-    system.activationScripts.extraActivation = mkIf pam.enable {
+    system.activationScripts.extraActivation = lib.mkIf pam.enable {
       text = ''
         # PAM settings
         echo >&2 "setting up pam..."

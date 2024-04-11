@@ -1,13 +1,15 @@
-# linux/root.nix
-#	root zfs setup for my linux machines
-# implements the "erase your darling philosophy"
-{ pkgs, config, lib, ... }:
+# linux/boot.nix
+# Kernel stuff :
+#	  - root zfs setup for my linux machines
+#   - implements the "erase your darling philosophy"
+#   - uses latest nixos packages
+{ config, lib, pkgs-latest, ... }:
 let
 
   cfg = config.nixos.boot;
 
   # ZKernel is the kernel that is compatible with ZFS :
-  zKernel = pkgs.zfs.latestCompatibleLinuxPackages;
+  zKernel = pkgs-latest.zfs.latestCompatibleLinuxPackages;
 
   # ZFS
   sysPool = "nixos-pool";
@@ -68,6 +70,9 @@ in {
     services.zfs.trim.enable = true;
     services.zfs.autoScrub.enable = true;
 
+    environment.systemPackages = [ pkgs-latest.linux-firmware ];
+    packages.unfreePackages = [ "linux-firmware" ];
+
     boot = {
       # Kernel
       kernelParams = [ "nohibernate" "quiet" "idle=nomwait" ];
@@ -86,6 +91,7 @@ in {
         "dm-snapshot"
       ];
       # ZFS :
+
       supportedFilesystems = [ "zfs" ];
       initrd.supportedFilesystems = [ "zfs" ];
       initrd.postDeviceCommands = lib.mkAfter zRollbackCommand;
@@ -93,7 +99,8 @@ in {
       # import zfs pools at boot
       zfs.forceImportRoot = true;
       zfs.forceImportAll = true; # maybe not necessary
-      zfs.enableUnstable = false;
+      zfs.package =
+        pkgs-latest.zfs; # no unstable, performance are not that critical, but latest available
       loader = {
         systemd-boot.enable = true; # use gummyboot for faster boot
         efi.canTouchEfiVariables = true; # may not be necessary

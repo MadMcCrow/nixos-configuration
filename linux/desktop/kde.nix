@@ -1,50 +1,34 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
-#   WIP !!!
-{ config, pkgs, lib, ... }: {
+{ config, pkgs-latest, lib, ... }:
+lib.mkIf config.nixos.desktop.enable {
 
-  # base config for kde
-  config = mkIf config.nixos.desktop.enable {
+  system.nixos.tags = [ "KDE" ];
 
-    system.nixos.tags = [ "KDE" ];
+  services.xserver.enable = true;
 
-    services.xserver = {
-      # enable GUI
-      enable = true;
+  # enable plasma
+  services.xserver.desktopManager.plasma6.enable = true;
+  qt.enable = true;
+  qt.platformTheme = "kde";
 
-      # enable plasma
-      desktopManager.plasma5 = {
-        enable = true;
-        useQtScaling = true;
-      };
+  programs.dconf.enable = true;
+  programs.kdeconnect.enable = true;
+  programs.partition-manager.enable = true;
 
-      # remove xterm
-      excludePackages = [ pkgs.xterm ];
-      desktopManager.xterm.enable = false;
-      displayManager.defaultSession = "plasmawayland";
-    };
-
-    qt.enable = true;
-    qt.platformTheme = "kde";
-
-    programs.dconf.enable = true;
-    programs.kdeconnect.enable = true;
-    programs.partition-manager.enable = true;
-
-    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+  environment.plasma6.excludePackages = with pkgs-latest.kdePackages;
+    [
       oxygen
       khelpcenter
       plasma-browser-integration
       print-manager
       kio-extras
-      ark
       elisa
       khelpcenter
-      kemoticons
       kwallet
       kwallet-pam
-    ];
+      kate
+    ] ++ (with pkgs-latest.libsForQt5; [ kemoticons ]);
 
-    environment.systemPackages = with pkgs; [ dconf dconf2nix lightly-qt ];
-  };
+  environment.systemPackages = with pkgs-latest; [ dconf dconf2nix lightly-qt ];
 }

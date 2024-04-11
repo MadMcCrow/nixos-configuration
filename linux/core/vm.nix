@@ -11,7 +11,7 @@
     };
 
     # spice driver
-    environment.systemPackages = [pkgs.spice-vdagent];
+    environment.systemPackages = [ pkgs.spice-vdagent ];
 
     services.spice-vdagentd.enable = true;
     services.xserver.videoDrivers = [ "qxl" ];
@@ -24,7 +24,6 @@
     environment.variables = { QEMU_OPTS = "-m 4096 -smp 4 -enable-kvm"; };
 
     # allow myself to have gpu passthrough to the VM
-    boot.initrd.kernelModules =
-      [ "vfio_pci" "vfio" "vfio_iommu_type1" ];
+    boot.initrd.kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ];
   };
 }

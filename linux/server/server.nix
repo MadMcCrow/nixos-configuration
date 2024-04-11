@@ -1,11 +1,12 @@
 # server.nix
 #   base config for a nixos server
 { config, pkgs, lib, ... }:
-let mkPrio = value: lib.mkOverride 100 value;
+let
+  inherit (lib) mkDefault;
+  mkPrio = value: lib.mkOverride 100 value;
 in lib.mkIf config.nixos.server.enable {
 
-  # TODO : maybe remove this
-  services.xserver = { enable = mkPrio false; };
+  services.xserver = { enable = mkDefault false; };
 
   # env :
   environment.defaultPackages = with pkgs; [
@@ -21,17 +22,25 @@ in lib.mkIf config.nixos.server.enable {
     supportedFilesystems = [ "ext4" "f2fs" "fat32" "zfs" ];
 
     # make sure to be able to start !
-    loader.systemd-boot.configurationLimit = 10;
+    loader.systemd-boot.configurationLimit = mkPrio 10;
     consoleLogLevel = mkPrio 4; # we wanna know everything
   };
 
   security.apparmor.enable = true;
 
   powerManagement.enable = true;
-  powerManagement.cpuFreqGovernor = mkPrio "powersave";
+  powerManagement.cpuFreqGovernor = mkDefault "powersave";
 
-  systemd.services.NetworkManager-wait-online.enable = true;
-  systemd.services.systemd-fsck.enable = true;
+  # prevent any sleep/hibernation.
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
+
+  systemd.services.NetworkManager-wait-online.enable = mkPrio true;
+  systemd.services.systemd-fsck.enable = mkPrio true;
 
   # SSL :
   users.groups.ssl-cert.gid = 119;
@@ -51,6 +60,6 @@ in lib.mkIf config.nixos.server.enable {
 
   system.nixos.tags = [ "Server" ];
   system.stateVersion = "23.11";
-  documentation.nixos.enable = mkPrio true;
+  documentation.nixos.enable = mkDefault true;
 
 }
