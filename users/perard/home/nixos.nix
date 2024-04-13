@@ -20,16 +20,15 @@
     home.stateVersion = "23.11";
 
     # packages to install to profile
-    home.packages = with pkgs; [
-      blender
-    ] ++ (with pkgs-latest; [
-      jetbrains-mono
-      python3
-      speechd
-      bitwarden
-      openscad
-      solvespace
-    ]);
+    home.packages = with pkgs;
+      [ blender ] ++ (with pkgs-latest; [
+        jetbrains-mono
+        python3
+        speechd
+        bitwarden
+        openscad
+        solvespace
+      ]);
     # gpg key management (linux only)
     services.gpg-agent = {
       enable = true;

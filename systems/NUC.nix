@@ -2,11 +2,10 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud 
 { pkgs, ... }:
-let
-  serverData = "/run/server_data";
+let serverData = "/run/server_data";
 in {
 
-  networking.hostName = "NixNUC"; #"alpha";
+  networking.hostName = "NixNUC"; # "alpha";
 
   # our custom modules config :
   nixos.flatpak.enable = true;
@@ -14,7 +13,7 @@ in {
   nixos.desktop.enable = true;
 
   nixos.gpu.vendor = "intel";
-  nixos.server.nextcloud.dataPath = "${serverData}/nextcloud";
+  nixos.server.containers.nextcloud.datadir = "${serverData}/nextcloud";
 
   # drive for server databases (Postgre)
   fileSystems."${serverData}" = {
