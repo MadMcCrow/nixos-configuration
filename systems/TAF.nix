@@ -1,8 +1,8 @@
 # TAF
 #   previously "AF"
-#   this is my main desktop PC  
+#   this is my main desktop PC
 { pkgs, ... }: {
-  networking.hostName = "Trantor"; # "nixAF"
+  networking.hostName = "Trantor"; # previously "nixAF"
   nixos.desktop.enable = true;
   nixos.flatpak.enable = true;
   nixos.desktop.steamSession.enable = true;

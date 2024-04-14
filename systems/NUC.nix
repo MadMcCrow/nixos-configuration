@@ -1,11 +1,11 @@
 # NUC
 #   this is a 12th gen Intel NUC
-#   it's my central Home Cloud 
+#   it's my central Home Cloud
 { pkgs, ... }:
 let serverData = "/run/server_data";
 in {
 
-  networking.hostName = "NixNUC"; # "alpha";
+  networking.hostName = "Foundation"; # "Terminus/Foundation";
 
   # our custom modules config :
   nixos.flatpak.enable = true;

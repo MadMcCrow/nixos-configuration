@@ -2,8 +2,8 @@
 # Samsung Chromebook Pro (Caroline)
 # this is an old chromebook running NixOS on top of MrChromebox UEFI
 { pkgs, ... }: {
-  # 
-  networking.hostName = "ChromebookPro"; # "Terminus";
+  #
+  networking.hostName = "Smyrno"; # "Smyrno";
   nixos.desktop.enable = true;
   nixos.flatpak.enable = true;
   nixos.gpu.vendor = "intel";

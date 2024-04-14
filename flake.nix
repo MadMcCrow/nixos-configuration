@@ -60,12 +60,13 @@
 
       #Linux : Nixos
       nixosConfigurations = {
-        nixAF = nixOSx86 ./systems/TAF.nix;
-        nixNUC = nixOSx86 ./systems/NUC.nix;
+        Trantor    = nixOSx86 ./systems/TAF.nix;
+        Foundation = nixOSx86 ./systems/NUC.nix;
+        Smyrno     = nixOSx86 ./systems/SCP.nix;
       };
       # MacOS
       darwinConfigurations = {
-        Noes-MacBook-Air = darwinAarch64 ./systems/MBA.nix;
+        Anacreon = darwinAarch64 ./systems/MBA.nix;
       };
 
       # TODO : move to darwin platform only !
