@@ -9,6 +9,7 @@
     ./firefox.nix
     ./games.nix
     ./git.nix
+    ./media.nix
     ./shell.nix
     ./vscode.nix
     ./wallpaper.nix
