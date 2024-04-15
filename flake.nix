@@ -67,6 +67,9 @@
       # MacOS
       darwinConfigurations = { anacreon = darwinAarch64 ./systems/MBA; };
 
+      # TODO :
+      # packages = map (x: import ./packages {}) ["aarch64-darwin"];
+
       # TODO : move to darwin platform only !
       overlays = {
         # Overlay useful on Macs with Apple Silicon
