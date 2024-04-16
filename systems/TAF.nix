@@ -23,13 +23,17 @@
     neededForBoot = false;
   };
 
-  # nixos.server.enable = true;
-  # nixos.server.nextcloud.dataPath =  "/run/server/nextcloud";
-  # fileSystems."/run/server" = {
-  #   device = "none";
-  #     fsType = "tmpfs";
-  #     options = [ "size=3G" "mode=755" ]; # mode=755 so only root can write to those files
-  # };
+  # server test
+  nixos.server.enable = true;
+  nixos.server.containers.enable = true;
+  nixos.server.containers.nextcloud.enable = true;
+  nixos.server.containers.nextcloud.datadir = "/run/server/nextcloud";
+  fileSystems."/run/server" = {
+    device = "none";
+    fsType = "tmpfs";
+    options =
+      [ "size=3G" "mode=755" ]; # mode=755 so only root can write to those files
+  };
 
   # maybe consider adding swap ?
   swapDevices = [ ];

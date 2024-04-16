@@ -17,7 +17,7 @@ in {
   config = {
     virtualisation = lib.mkIf srv.enable (lib.mkMerge [
       (lib.attrsets.optionalAttrs cts.usePodman {
-         oci-containers.backend = "podman";
+        oci-containers.backend = "podman";
         podman = {
           enable = cts.enable;
           dockerCompat = true;

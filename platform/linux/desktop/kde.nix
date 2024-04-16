@@ -3,9 +3,8 @@
 { config, pkgs-latest, lib, ... }:
 let
   # change to plasma6 when we upgrade to 24.05
-  plasmaVersion = "5" ;
-in
-lib.mkIf config.nixos.desktop.enable {
+  plasmaVersion = "5";
+in lib.mkIf config.nixos.desktop.enable {
   # set tag for version
   system.nixos.tags = [ "KDE" ];
 
@@ -25,7 +24,8 @@ lib.mkIf config.nixos.desktop.enable {
   programs.kdeconnect.enable = true;
   programs.partition-manager.enable = true;
 
-  environment."plasma${plasmaVersion}".excludePackages = with pkgs-latest.kdePackages;
+  environment."plasma${plasmaVersion}".excludePackages =
+    with pkgs-latest.kdePackages;
     [
       oxygen
       khelpcenter
