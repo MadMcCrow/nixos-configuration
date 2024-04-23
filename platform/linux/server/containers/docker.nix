@@ -9,7 +9,7 @@ in {
   options.nixos.server.containers = with lib; {
     enable = mkEnableOption "service containers" // { default = srv.enable; };
     usePodman = mkEnableOption "replace docker with podman" // {
-      default = true;
+      default = false; # default to docker instead of podman
     };
   };
 

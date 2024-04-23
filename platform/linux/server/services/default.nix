@@ -3,7 +3,10 @@
 #
 { pkgs, config, lib, ... }:
 let
-  services = [ ./dns.nix ./seafile.nix ];
+  services = [
+    ./dns.nix
+    # ./seafile.nix
+    ];
 
   mkModuleName = module:
     "${lib.strings.removeSuffix ".nix" (builtins.baseNameOf module)}";

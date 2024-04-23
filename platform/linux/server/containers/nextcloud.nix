@@ -1,7 +1,9 @@
 # containers/nextcloud.nix
 # NEXTCLOUD AIO directly from Nextcloud GMBH
 { lib, config, pkgs, ... }:
-let cts = config.nixos.server.containers;
+let
+cts = config.nixos.server.containers;
+nxc = cts.nextcloud;
 in {
   # interface :
   options.nixos.server.containers.nextcloud = {
@@ -12,8 +14,9 @@ in {
       example = "/nix/persist/server/nextcloud";
     };
   };
-  config = lib.mkIf cts.enable {
-
+  config = lib.mkIf nxc.enable {
+    # force enable oci if nextcloud is asked :
+    nixos.server.containers.enable = true;
     # Simple configuration based off https://github.com/nextcloud/all-in-one/blob/main/compose.yaml
     virtualisation.oci-containers.containers."nextcloud" = {
       autoStart = true;
