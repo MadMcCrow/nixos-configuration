@@ -82,6 +82,9 @@ in {
       optimise.automatic = true;
       optimise.dates = [ "daily" ];
 
+      # serve nix store over ssh (the whole network can help each other)
+      sshServe.enable = true;
+
     };
 
     nixpkgs = {
@@ -97,5 +100,8 @@ in {
         (lib.mkMerge
           (builtins.mapAttrs (name: value: (value pkgs)) cfg.overrides));
     };
+
+    # disable documentation (don't download, online is always up to date)
+    documentation.nixos.enable = false;
   };
 }

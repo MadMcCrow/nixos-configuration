@@ -1,5 +1,13 @@
 # containers/default.nix
 # import all relevant containers, setup podman
 { lib, config, pkgs, ... }: {
-  imports = [ ./docker.nix ./nextcloud.nix ];
+  imports = [
+    # docker config :
+    ./docker.nix
+    # services :
+    ./adguard.nix
+    ./home-assistant.nix
+    #./nextcloud-aio.nix
+    ./nextcloud-ls.nix
+  ];
 }

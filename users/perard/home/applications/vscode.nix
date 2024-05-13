@@ -1,20 +1,29 @@
 # home-manager/vs-code.nix
 # 	vs code and all the extensions I Like
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, pkgs-latest, ... }:
 let
 
   # Market place getter
   vsMarketplace = pkgs.vscode-utils.extensionFromVscodeMarketplace;
 
-  # godot support
+  # https://marketplace.visualstudio.com/items?itemName=geequlim.godot-tools
   godot-tools = vsMarketplace {
     name = "godot-tools";
     publisher = "geequlim";
-    version = "1.3.1";
-    sha256 = "sha256-wJICDW8bEBjilhjhoaSddN63vVn6l6aepPtx8VKTdZA=";
+    version = "2.0.0";
+    sha256 = "sha256-6lSpx6GooZm6SfUOjooP8mHchu8w38an8Bc2tjYaVfw=";
   };
 
-  # editor for shader
+  # https://marketplace.visualstudio.com/items?itemName=alfish.godot-files
+  godot-files = vsMarketplace {
+    name = "godot-files";
+    publisher = "alfish";
+    version = "0.0.8";
+    sha256 = "sha256-Ih7yBCVQepBT8JY+k+KgGZw+cFhfFlhifZTF8h7tBXs=";
+  };
+
+  # quite old (2021)
+  # https://marketplace.visualstudio.com/items?itemName=dfranx.shadered
   shader-ed = vsMarketplace {
     name = "shadered";
     publisher = "dfranx";
@@ -22,7 +31,17 @@ let
     sha256 = "sha256-0X6D7jhJ54DOVjw+M5D6Z4YbaZnp5/l2ACPyQj3xywo=";
   };
 
+  # less old (2022)
+  # https://marketplace.visualstudio.com/items?itemName=circledev.glsl-canvas
+  glsl-canvas = vsMarketplace {
+    name = "glsl-canvas";
+    publisher = "circledev";
+    version = "0.2.15";
+    sha256 = "";
+  };
+
   # git graph so view branches
+  # consider moving to https://marketplace.visualstudio.com/items?itemName=d-bassarab.yagg
   git-graph = vsMarketplace {
     name = "git-graph";
     publisher = "mhutchie";
@@ -30,7 +49,7 @@ let
     sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
   };
 
-  # git history viewer
+  # https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory
   git-history = vsMarketplace {
     name = "githistory";
     publisher = "donjayamanne";
@@ -38,12 +57,12 @@ let
     sha256 = "sha256-nEdYS9/cMS4dcbFje23a47QBZr9eDK3dvtkFWqA+OHU=";
   };
 
-  # material-icons
+  # https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme
   material-icons = vsMarketplace {
     name = "material-icon-theme";
     publisher = "PKief";
-    version = "4.28.0";
-    sha256 = "sha256-DO3dcJPk+TMhfb0IJ/eTB7nIKfyCXIiyhZFBpZjJzsM=";
+    version = "5.2.0";
+    sha256 = "sha256-OxJ0+cupnkNczwfE0QGqL9dRja0QLZc+z0TaHm02ezY=";
   };
 
   # material-theme
@@ -122,8 +141,8 @@ let
   ms-anycode = vsMarketplace {
     name = "anycode";
     publisher = "ms-vscode";
-    version = "0.0.72";
-    sha256 = "sha256-LV3kyLWRd+yLtIOKB7zOdlCX5NO5RiGcBab09lyeO6A=";
+    version = "0.0.73";
+    sha256 = "sha256-83qz4wYnRK/KtrQMHwMAFhOnVyLXG1/EwUvVW2v30ho=";
   };
 
   # github https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github
@@ -209,11 +228,11 @@ in {
     # disable update check and notification
     enableUpdateCheck = false;
     # use vscodium as vscode
-    package = pkgs.vscodium;
+    package = pkgs-latest.vscodium;
     # allow installing extensions from marketplace
     mutableExtensionsDir = false;
     # enable extensions
-    extensions = with pkgs.vscode-extensions;
+    extensions = with pkgs-latest.vscode-extensions;
       [
         jnoortheen.nix-ide
         rust-lang.rust-analyzer
@@ -222,6 +241,7 @@ in {
         github.github-vscode-theme
       ] ++ [
         godot-tools
+        godot-files
         shader-ed
         git-graph
         material-icons
@@ -238,8 +258,9 @@ in {
         github-remotehub
         haxe-checkstyle
         jetbrainsColors
-        openscad
-        openscad-language-support
+        # scad :
+        # openscad
+        # openscad-language-support
       ];
 
     # JSon settings
@@ -254,6 +275,7 @@ in {
       "editor.fontSize" = 13;
       "editor.tabCompletion" = "on";
       "update.mode" = "none";
+      "extensions.autoUpdate" = false;
       "window.restoreWindows" = "none";
       "window.titleBarStyle" = "native";
       "window.zoomLevel" = 3;

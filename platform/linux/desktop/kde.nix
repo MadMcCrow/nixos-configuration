@@ -1,9 +1,44 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
-{ config, pkgs-latest, lib, ... }:
+{ config, pkgs, pkgs-latest, lib, ... }:
 let
-  # change to plasma6 when we upgrade to 24.05
-  plasmaVersion = "5";
+  # a plasmoid for start menu
+  plasma-drawer = with pkgs;
+    stdenv.mkDerivation rec {
+      pname = "plasma-drawer";
+      version = "1.4";
+      src = fetchFromGitHub {
+        owner = "p-connor";
+        repo = pname;
+        rev = "v${version}";
+        hash = "sha256-oqEjClHupSJt5BE2i/qRZp1cEpf5vPfdR2qVYiX6gI0=";
+      };
+      nativeBuildInputs = [ libsForQt5.kpackage libsForQt5.wrapQtAppsHook zip ];
+      # installPhase = ''
+      #   mkdir -p $out/share/plasma/plasmoids/plasma-drawer
+      #   cd $src
+      #   ${lib.getBin libsForQt5.kpackage}/bin/kpackagetool -i $out/share/plasma/plasmoids/plasma-drawer
+      # '';
+    };
+
+  # KDE theme used by SteamOS
+  vapor-theme = pkgs.stdenvNoCC.mkDerivation {
+    name = "kde-vapor-theme";
+    version = "0.16-1";
+    nativeBuildInputs = with pkgs; [ zstd ];
+    src = pkgs.fetchurl {
+      url =
+        "https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-rel/os/x86_64/steamdeck-kde-presets-0.16-1-any.pkg.tar.zst";
+      hash = "sha256-3SOzqBUEPWLk7OIv5715whRJa3qmJaMXL1Gf/DKs5bU=";
+    };
+    unpackPhase = ''
+      tar -xf  $src
+    '';
+    installPhase = ''
+      mkdir -p $out/share
+      cp -r ./usr/share/* $out/share/
+    '';
+  };
 in lib.mkIf config.nixos.desktop.enable {
   # set tag for version
   system.nixos.tags = [ "KDE" ];
@@ -11,21 +46,35 @@ in lib.mkIf config.nixos.desktop.enable {
   #
   services.xserver.enable = true;
 
-  services.xserver.desktopManager."plasma${plasmaVersion}" = {
+  # SDDM :
+  services.xserver.displayManager.sddm = {
+    enable = true;
+    enableHidpi = true;
+    settings.General.DisplayServer = "x11-user";
+  };
+
+  # Enable Plasma 5 or 6
+  services.xserver.desktopManager.plasma5 = {
     enable = true;
     useQtScaling = true;
-    bigscreen.enable = true;
+    # default font with extra
+    notoPackage = pkgs-latest.noto-fonts-lgc-plus;
   };
+
   # enable plasma
   qt.enable = true;
   qt.platformTheme = "kde";
 
+  # enable tools
   programs.dconf.enable = true;
   programs.kdeconnect.enable = true;
   programs.partition-manager.enable = true;
 
-  environment."plasma${plasmaVersion}".excludePackages =
-    with pkgs-latest.kdePackages;
+  # remove xterm
+  services.xserver.desktopManager.xterm.enable = false;
+  services.xserver.excludePackages = [ pkgs.xterm ];
+  # remove useless KDE packages
+  environment.plasma5.excludePackages = with pkgs.libsForQt5;
     [
       oxygen
       khelpcenter
@@ -36,7 +85,22 @@ in lib.mkIf config.nixos.desktop.enable {
       kwallet
       kwallet-pam
       kate
-    ] ++ (with pkgs-latest.libsForQt5; [ kemoticons ]);
+      okular
+    ] ++ (with pkgs.libsForQt5; [ kemoticons ]);
 
-  environment.systemPackages = with pkgs-latest; [ dconf dconf2nix lightly-qt ];
+  # extra tools
+  environment.systemPackages = with pkgs; [
+    dconf
+    dconf2nix
+    # theme
+    lightly-boehs
+    vapor-theme
+    # icons
+    papirus-icon-theme
+    # plasmoid :
+    # plasma-drawer
+    # apps not installed from KDE :
+    libsForQt5.kcalc
+  ];
+
 }

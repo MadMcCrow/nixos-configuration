@@ -45,15 +45,13 @@ let
     [ steam steam-run steamcmd gamescope ] ++ steamLibs pkgs;
 
 in {
-  # we need this module to work
-  imports = [ ./nixpkgs.nix ];
 
   # config
   config = {
 
     # Packages
     home.packages = with pkgs;
-      steamPkgs ++ [ minigalaxy ]; # ++ [ prismlauncher ];
+      [ minigalaxy ] ++ steamPkgs ++ [ extest ]; # ++ [ prismlauncher ];
 
     # env vars for steam and steam VR
     home.sessionVariables = {

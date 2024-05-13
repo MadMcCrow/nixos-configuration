@@ -5,15 +5,17 @@
 let serverData = "/run/server_data";
 in {
 
-  networking.hostName = "Foundation"; # "Terminus/Foundation";
+  networking.hostName = "terminus"; # "Terminus/Foundation";
+  networking.domain = "foundation.ovh";
+
+  nixos.zfs.enable = true;
 
   # our custom modules config :
   nixos.flatpak.enable = true;
   nixos.server.enable = true;
-  nixos.desktop.enable = true;
 
   nixos.gpu.vendor = "intel";
-  nixos.server.containers.nextcloud.datadir = "${serverData}/nextcloud";
+  nixos.server.containers.nextcloud.dataDir = "${serverData}/nextcloud";
 
   # drive for server databases (Postgre)
   fileSystems."${serverData}" = {
@@ -29,6 +31,15 @@ in {
     fileSystems = [ "${serverData}" ];
   };
 
+  # Power Management : minimize consumption
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "powersave";
+    powertop = true;
+    scsiLinkPolicy = "min_power";
+  };
+
   # maybe consider adding swap ?
   swapDevices = [ ];
+  system.stateVersion = "23.11";
 }

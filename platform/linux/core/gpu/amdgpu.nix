@@ -8,6 +8,7 @@
     # boot.extraModulePackages = map (x: config.boot.kernelPackages."${x}") [ "amdgpu" ];
     boot.initrd.availableKernelModules = [ "amdgpu" ];
     hardware.opengl = {
+      enable = true;
       extraPackages = with pkgs-latest; [
         amdvlk
         libvdpau-va-gl
@@ -16,6 +17,8 @@
         rocmPackages.clr.icd
       ];
       extraPackages32 = with pkgs-latest; [ driversi686Linux.amdvlk ];
+      driSupport = true;
+      driSupport32Bit = true;
     };
 
     systemd.tmpfiles.rules = [

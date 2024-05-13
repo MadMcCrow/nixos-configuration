@@ -7,8 +7,10 @@
 { config, pkgs, lib, ... }: {
   options.nixos.desktop.enable = lib.mkEnableOption "NIXOS desktop experience";
   imports = [
-    ./desktop.nix
-    ./gamescope.nix
-    ./gnome.nix
-  ]; # TV, KDE and cosmic are disabled for now
+    # ./cosmic.nix # not yet ready
+    # ./gamescope.nix # disabled, not necessary
+    # ./gnome.nix # gnome is getting more and more sluggish
+    ./kde.nix
+
+  ];
 }

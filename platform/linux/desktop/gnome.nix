@@ -95,8 +95,10 @@ in {
     services.xserver.displayManager.gdm.wayland = true;
 
     services.xserver.desktopManager.gnome.enable = true;
+
     # Remove default gnome apps unless explicitly requested
-    services.xserver.excludePackages = gnomeUnused;
+    services.xserver.desktopManager.xterm.enable = false;
+    services.xserver.excludePackages = gnomeUnused ++ [ pkgs.xterm ];
     environment.gnome.excludePackages = gnomeUnused;
 
     # make qt looks like gtk

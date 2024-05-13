@@ -18,7 +18,7 @@ in {
   config = lib.mkIf cfg.enable {
     # allow easy remaps with a GUI:
     services.input-remapper = {
-      enable = true;
+      enable = false;
       enableUdevRules = true; # may cause issues with hot-plugs
       serviceWantedBy = [ "graphical.target" ];
     };
@@ -37,6 +37,6 @@ in {
       "steam-original" # steam controller
     ];
 
-    environment.systemPackages = [ pkgs.steamcontroller pkgs.input-remapper ];
+    environment.systemPackages = [ pkgs.steamcontroller ];
   };
 }

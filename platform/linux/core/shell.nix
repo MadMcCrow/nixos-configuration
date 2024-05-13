@@ -42,10 +42,43 @@ in {
       curl
       zip # tar already present
       neofetch # because its cool ;)
+      # hardware tools :
+      lshw
+      dmidecode
+      pciutils
+      usbutils
+      psensor
+      smartmontools
+      lm_sensors
+      policycoreutils # SELinux tool
+      # git :
+      git
+      git-crypt
+      pre-commit
+      git-lfs
+      # nix tools :
+      cachix
+      vulnix
     ]);
+
     # use nano as our editor :
     environment.variables.EDITOR = "${lib.getExe editor}";
     # disable the sudo warning for users (they might otherwise see it constantly):
     security.sudo.extraConfig = "Defaults        lecture = never";
+
+    # remote shell :
+    services.openssh = {
+      enable = true;
+      # require public key authentication for better security
+      settings = {
+        KbdInteractiveAuthentication = false;
+        PasswordAuthentication = false;
+      };
+      #permitRootLogin = "yes";
+    };
+
+    # same GID for all SSH users
+    users.groups.ssl-cert.gid = 119;
+
   };
 }

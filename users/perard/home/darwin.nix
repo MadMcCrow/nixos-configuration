@@ -2,7 +2,11 @@
 # MacOS user configuration
 { config, pkgs, lib, pkgs-latest, ... }: {
 
-  imports = [ ./vscode.nix ./shell.nix ./git.nix ];
+  imports = [
+    ./applications/vscode.nix # only compatible application
+    ./shell.nix
+    ./git.nix
+  ];
   config = {
     home.username = "perard";
     home.homeDirectory = "/Users/perard";

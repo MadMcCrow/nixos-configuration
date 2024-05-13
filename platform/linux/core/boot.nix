@@ -1,56 +1,33 @@
 # linux/boot.nix
-# Kernel stuff :
-#	  - root zfs setup for my linux machines
-#   - implements the "erase your darling philosophy"
-#   - uses latest nixos packages
 { config, lib, pkgs-latest, ... }:
 let
-
+  # shortcut:
   cfg = config.nixos.boot;
-
-  # ZKernel is the kernel that is compatible with ZFS :
-  zKernel = pkgs-latest.zfs.latestCompatibleLinuxPackages;
-
-  # ZFS
-  sysPool = "nixos-pool";
-
-  # rollback command
-  zRollbackCommand = let
-    ds = "local/root";
-    sn = "blank";
-  in "zfs rollback -r ${sysPool}/${ds}@${sn}";
-
-  # the filesystem architecture :
-  zFileSystems = let
-    mkZFS = name: device: neededForBoot: {
-      inherit name;
-      value = {
-        inherit device neededForBoot;
-        mountPoint = name;
-        fsType = "zfs";
-      };
-    };
-  in builtins.listToAttrs [
-    (mkZFS "/" "${sysPool}/local/root" true)
-    (mkZFS "/nix" "${sysPool}/local/nix" true)
-    (mkZFS "/nix/persist" "${sysPool}/safe/persist" true)
-    (mkZFS "/home" "${sysPool}/safe/home" false)
-  ];
-
-  #modprope
-  zfsModProbConfig = "options zfs l2arc_noprefetch=0 zfs_arc_max=1073741824";
-
 in {
-  options.nixos.boot = {
+  options.nixos.boot = with lib; {
+
     # kernel package for gpus and such
-    extraPackages = lib.mkOption {
+    extraPackages = mkOption {
       description = "Extra kernel Packages to add in boot.extraModulePackages";
-      type = lib.types.listOf lib.types.str;
+      type = types.listOf types.str;
       default = [ ];
     };
+
+    # allow for different UUID for boot partition
+    bootUUID = mkOption {
+      description = "uuid for uefi boot partition";
+      type = types.str;
+      default = "8001-EF00";
+    };
+
+    # enable faster boot (disable many checks)
+    fastBoot = mkEnableOption "Simplify boot process";
+
+    # sleep mode
+    sleep = mkEnableOption "allow sleep";
   };
 
-  config = {
+  config = rec {
     # root user
     users.users.root = {
       homeMode = "700"; # home will be erased anyway because on /
@@ -58,17 +35,10 @@ in {
         "$y$j9T$W.JAnia2yZEpLY8RwEJ4M0$eS3XjstDqU8/5gRoTHen9RDZg4E1XNKp0ncKxGs0bY.";
     };
 
-    # we try to always have boot as 8001-EF00
-    fileSystems = {
-      "/boot" = {
-        device = "/dev/disk/by-uuid/8001-EF00";
-        fsType = "vfat";
-      };
-    } // zFileSystems;
-
-    # zfs service:
-    services.zfs.trim.enable = true;
-    services.zfs.autoScrub.enable = true;
+    fileSystems."/boot" = {
+      device = "/dev/disk/by-uuid/${cfg.bootUUID}";
+      fsType = "vfat";
+    };
 
     environment.systemPackages = [ pkgs-latest.linux-firmware ];
     packages.unfreePackages = [ "linux-firmware" ];
@@ -76,10 +46,12 @@ in {
     boot = {
       # Kernel
       kernelParams = [ "nohibernate" "quiet" "idle=nomwait" ];
-      # force use zfs compatible kernel :
-      kernelPackages = lib.mkForce zKernel;
-      extraModulePackages =
-        map (x: zKernel."${x}") (cfg.extraPackages ++ [ "acpi_call" ]);
+
+      # map kernel packages to kernel package in use :
+      extraModulePackages = map (x: config.boot.kernelPackages."${x}")
+        (cfg.extraPackages ++ [ "acpi_call" ]);
+
+      # modules :
       initrd.availableKernelModules = [
         "nvme"
         "xhci_pci"
@@ -90,21 +62,35 @@ in {
         "sd_mod"
         "dm-snapshot"
       ];
-      # ZFS :
 
-      supportedFilesystems = [ "zfs" ];
-      initrd.supportedFilesystems = [ "zfs" ];
-      initrd.postDeviceCommands = lib.mkAfter zRollbackCommand;
-      extraModprobeConfig = lib.mkAfter zfsModProbConfig;
-      # import zfs pools at boot
-      zfs.forceImportRoot = true;
-      zfs.forceImportAll = true; # maybe not necessary
-      zfs.package =
-        pkgs-latest.zfs; # no unstable, performance are not that critical, but latest available
+      plymouth.enable = true; # hide wall-of-text
+      supportedFilesystems = [ "ext4" "f2fs" "fat32" "ntfs" ];
+
       loader = {
         systemd-boot.enable = true; # use gummyboot for faster boot
         efi.canTouchEfiVariables = true; # may not be necessary
+        systemd-boot.configurationLimit = 5;
       };
+
+      consoleLogLevel = 3; # avoid useless errors
+
+    };
+
+    security.apparmor.enable = true;
+
+    # Faster boot:
+    systemd.services.NetworkManager-wait-online.enable = cfg.fastBoot;
+    systemd.services.systemd-fsck.enable = cfg.fastBoot;
+
+    # faster program start
+    services.preload.enable = true;
+
+    # enable or disable sleep/suspend
+    systemd.targets = {
+      sleep.enable = cfg.sleep;
+      suspend.enable = cfg.sleep;
+      hibernate.enable = cfg.sleep;
+      hybrid-sleep.enable = cfg.sleep;
     };
   };
 }

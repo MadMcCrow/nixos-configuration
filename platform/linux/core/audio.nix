@@ -1,16 +1,14 @@
 # desktop/audio.nix
 # Linux audio config
-{ lib, config, ... }:
+{ pkgs-latest, lib, config, ... }:
 let
   # shortcut
   cfg = config.nixos.audio;
 in {
   # audio options :
-  options.nixos.audio = {
-    enable = lib.mkEnableOption "audio support" // { default = true; };
-    usePipewire = lib.mkEnableOption "pipewire for audio" // {
-      default = true;
-    };
+  options.nixos.audio = with lib; {
+    enable = mkEnableOption "audio support" // { default = true; };
+    usePipewire = mkEnableOption "pipewire for audio" // { default = true; };
     # TODO :
     mkChromecast = lib.mkEnableOption "Chromecast for desktop linux";
   };
@@ -29,6 +27,12 @@ in {
     # pipewire service
     services.pipewire = lib.mkIf cfg.usePipewire {
       enable = true;
+
+      # use latest pipewire
+      package = pkgs-latest.pipewire;
+
+      # use pipewire for all audio streams
+      audio.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;

@@ -77,8 +77,8 @@ in {
         addresses = true;
         hinfo = true;
       };
-      # domainName = "domain"; # defaults to .local
-      # browseDomains = [ "domain" ];
+      domainName = config.networking.domain; # defaults to "local"
+      browseDomains = [ "local" config.networking.domain ];
     };
   };
 }

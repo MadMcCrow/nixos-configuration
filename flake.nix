@@ -60,12 +60,12 @@
 
       #Linux : Nixos
       nixosConfigurations = {
-        Trantor = nixOSx86 ./systems/TAF.nix;
-        Foundation = nixOSx86 ./systems/NUC.nix;
-        Smyrno = nixOSx86 ./systems/SCP.nix;
+        trantor = nixOSx86 ./systems/TAF.nix;
+        terminus = nixOSx86 ./systems/NUC.nix;
+        smyrno = nixOSx86 ./systems/SCP.nix;
       };
       # MacOS
-      darwinConfigurations = { Anacreon = darwinAarch64 ./systems/MBA.nix; };
+      darwinConfigurations = { anacreon = darwinAarch64 ./systems/MBA.nix; };
 
       # TODO : move to darwin platform only !
       overlays = {
