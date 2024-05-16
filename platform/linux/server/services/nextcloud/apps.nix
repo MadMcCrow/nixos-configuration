@@ -15,7 +15,6 @@
     # nixpkgs :
     # also already packaged in nixos :
     #   - bookmarks
-    #   - cospend
     #   - end_to_end_encryption
     #   - files_markdown
     #   - files_texteditor
@@ -28,7 +27,7 @@
     #   - registration
     #   - ...
     inherit (config.services.nextcloud.package.packages.apps)
-      contacts calendar tasks;
+      contacts calendar tasks cospend onlyoffice;
 
     # for the rest use :
     # myApp = fetchNextcloudApp {

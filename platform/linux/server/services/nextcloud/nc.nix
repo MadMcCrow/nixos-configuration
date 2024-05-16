@@ -4,8 +4,14 @@
 {
   # interface:
   options.nc = with lib; {
-     dataDir  = mkOption { type = types.str; };
-     hostName = mkOption { type = types.str; };
+     dataDir  = mkOption {
+       type = types.str;
+       default = "/www/nextcloud";
+    };
+     subdomain = mkOption {
+       type = types.str;
+       default = "nextcloud";
+      };
     };
 
   config = {
@@ -57,9 +63,9 @@
       # configureRedis = true;
 
       # apps :
-      # autoUpdateApps.enable = false;
-      # appstoreEnable = false;
-      # extraAppsEnable = false;
+      autoUpdateApps.enable = false;
+      appstoreEnable = false;
+      extraAppsEnable = false;
 
       # PHP extensions :
       # phpExtraExtensions = all : with all; [
@@ -80,23 +86,26 @@
 
       # config.php declaration : extraOptions for 23.11, settings for 24.05 and onward
       # see https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html
-      # extraOptions = {
-      #   # addresses you can access:
-      #   # trusted_domains = [
-      #   #   "127.0.0.1"
-      #   #   "localhost"
-      #   #   config.nc.hostName
-      #   # ];
-      #   # log :
-      #   loglevel = 3; # only errors
-      #   log_type = "file";
-      #   logfile = "nextcloud.log";
-      #   logdateformat = "Y-m-d::H:i:s";
-      #   # don't embed documentation
-      #   knowledgebase.embedded = false;
-      #   # my logo replaces nextcloud logo
-      #   logo_url = "https://avatars.githubusercontent.com/u/10871181";
-      # };
+      extraOptions = {
+        # addresses you can access:
+        # trusted_domains = [
+        #   "127.0.0.1"
+        #   "localhost"
+        #   config.nc.hostName
+        # ];
+        # log :
+         loglevel = 3; # only errors
+         log_type = "file";
+         logfile = "nextcloud.log";
+         logdateformat = "Y-m-d::H:i:s";
+         # don't embed documentation
+          "knowledgebase.embedded" = false;
+         # my logo replaces nextcloud logo
+          logo_url = "https://avatars.githubusercontent.com/u/10871181";
+
+          # we need a mail server
+          mail_domain = config.network.domain;
+      };
     };
 
     services.mysql = {

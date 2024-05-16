@@ -4,7 +4,7 @@
 let
   # shortcut
   cfg = config.nixos.server.services.nextcloud;
-  hostName = "nextcloud.${config.networking.domain}";
+  hostName = "nextcloud";
 in {
 
   # interface
@@ -44,34 +44,26 @@ in {
         };
       };
 
-      config = { ... }: {
+      config = { ... } : {
         # import the nextcloud service configuration
         imports = [ ./nc.nix ./apps.nix ];
 
         # TODO : move to all containers !
         config = {
-          # pass the setting from the host to the container
-          nc.hostName = hostName;
-          nc.dataDir  = "/www/nextcloud";
-
           # import the let's encrypt certificate from host
           security.acme = {
             inherit (config.security.acme) acceptTerms defaults;
           };
 
-          # use host resolv.conf
+          networking.domain = config.networking.domain;
           networking.useHostResolvConf = true;
-
-          # use same stateversion as host
           system.stateVersion = config.system.stateVersion;
         };
       };
     };
 
     # make sure the dataDir exists on Host
-    systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0755 root root -"
-    ];
+    systemd.tmpfiles.rules = [ "d ${cfg.dataDir} 0755 root root -" ];
 
     # delay container start to bindMount creation :
     systemd.services."container@nextcloud" = {
