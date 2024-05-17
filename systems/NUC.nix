@@ -54,6 +54,13 @@ in {
     scsiLinkPolicy = "min_power";
   };
 
+  # Use kmscon as the virtual console :
+  services.kmscon = {
+    enable = true;
+    hwRender = true;
+    fonts = [ { name = "Source Code Pro"; package = pkgs.source-code-pro; } ];
+    extraOptions = "--term xterm-256color";
+  };
 
   # maybe consider adding swap ?
   swapDevices = [ ];
