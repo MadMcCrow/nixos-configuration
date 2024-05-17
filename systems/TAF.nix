@@ -43,30 +43,6 @@
     neededForBoot = false;
   };
 
-  # server test
-  nixos.server.adminEmail = "noe.perard@gmail.com";
-  # these are docker images :
-  nixos.server.containers.home-assistant.enable = true;
-  nixos.server.containers.home-assistant.dataDir = "/run/server/homeassistant";
-  nixos.server.containers.adguard.enable = true;
-  nixos.server.containers.adguard.dataDir = "/run/server/adguard";
-  # nixos.server.containers.nextcloud-linux-server.enable = true;
-  # nixos.server.containers.nextcloud-linux-server.dataDir = "/run/server/ncslc";
-  # avoid using this : it's slow As F
-  # nixos.server.containers.nextcloud-aio.enable = true;
-  # nixos.server.containers.nextcloud-aio.dataDir = "/run/server/nextcloud-docker";
-
-  # these are nixos-containers :
-  nixos.server.services.nextcloud.enable = true;
-  nixos.server.services.nextcloud.dataDir = "/run/server/nextcloud";
-
-  fileSystems."/run/server" = {
-    device = "none";
-    fsType = "tmpfs";
-    options =
-      [ "size=3G" "mode=755" ]; # mode=755 so only root can write to those files
-  };
-
   # amd gpu :
   nixos.gpu.vendor = "amd";
 
@@ -81,8 +57,12 @@
     enableRenice = true;
   };
 
-  # maybe consider adding swap ?
-  swapDevices = [ ];
+  # some swap hardware :
+  swapDevices = [{
+    device = "/dev/disk/by-partuuid/509f2c99-0e63-4af1-90fb-5ff8d76efb67";
+    randomEncryption.enable = true;
+    randomEncryption.allowDiscards = true; # less secure but better for the SSD
+  }];
 
   system.stateVersion = "23.11";
 }

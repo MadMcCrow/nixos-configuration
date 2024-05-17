@@ -1,18 +1,17 @@
 # linux/server/nextcloud/nc.nix
 # base nextcloud config.
-{ pkgs, config, lib, ... }:
-{
+{ pkgs, config, lib, ... }: {
   # interface:
   options.nc = with lib; {
-     dataDir  = mkOption {
-       type = types.str;
-       default = "/www/nextcloud";
+    dataDir = mkOption {
+      type = types.str;
+      default = "/www/nextcloud";
     };
-     subdomain = mkOption {
-       type = types.str;
-       default = "nextcloud";
-      };
+    subdomain = mkOption {
+      type = types.str;
+      default = "nextcloud";
     };
+  };
 
   config = {
 
@@ -94,17 +93,17 @@
         #   config.nc.hostName
         # ];
         # log :
-         loglevel = 3; # only errors
-         log_type = "file";
-         logfile = "nextcloud.log";
-         logdateformat = "Y-m-d::H:i:s";
-         # don't embed documentation
-          "knowledgebase.embedded" = false;
-         # my logo replaces nextcloud logo
-          logo_url = "https://avatars.githubusercontent.com/u/10871181";
+        loglevel = 3; # only errors
+        log_type = "file";
+        logfile = "nextcloud.log";
+        logdateformat = "Y-m-d::H:i:s";
+        # don't embed documentation
+        "knowledgebase.embedded" = false;
+        # my logo replaces nextcloud logo
+        logo_url = "https://avatars.githubusercontent.com/u/10871181";
 
-          # we need a mail server
-          mail_domain = config.network.domain;
+        # we need a mail server
+        mail_domain = config.networking.domain;
       };
     };
 
@@ -119,22 +118,22 @@
       }];
     };
 
-  # todo : modify this
-  # PHP-FPM service configuration for Nextcloud
-  # services.phpfpm.pools.nextcloud = {
-  #   user = "nextcloud";
-  #   group = "nextcloud";
-  #   phpOptions = ''
-  #     upload_max_filesize = 1G
-  #     post_max_size = 1G
-  #     memory_limit = 512M
-  #     max_execution_time = 300
-  #     date.timezone = "Europe/Paris"
-  #   '';
-  # };
+    # todo : modify this
+    # PHP-FPM service configuration for Nextcloud
+    # services.phpfpm.pools.nextcloud = {
+    #   user = "nextcloud";
+    #   group = "nextcloud";
+    #   phpOptions = ''
+    #     upload_max_filesize = 1G
+    #     post_max_size = 1G
+    #     memory_limit = 512M
+    #     max_execution_time = 300
+    #     date.timezone = "Europe/Paris"
+    #   '';
+    # };
 
-  # TODO : backup
-  # services.mysqlBackup.enable = false;
+    # TODO : backup
+    # services.mysqlBackup.enable = false;
 
     # create folder for db
     systemd.tmpfiles.rules = [
@@ -142,12 +141,10 @@
       "d ${config.nc.dataDir}/nc-data   0750 nextcloud     nextcloud     -"
     ];
 
-
     systemd.services."mysql" = {
       wants = [ "systemd-tmpfiles-setup.service" ];
       after = [ "systemd-tmpfiles-setup.service" ];
     };
-
 
     # start nextcloud after tmpfiles and db is ready :
     systemd.services."nextcloud-setup" = {

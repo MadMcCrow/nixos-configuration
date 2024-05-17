@@ -23,57 +23,57 @@
     home.packages = with pkgs; [ discord ];
 
     # TODO : clean the CSS !
-    home.file.".config/discord/settings.json".text = ''
-        {
-        "SKIP_HOST_UPDATE": true,
-        "openasar": {
-            "setup": false,
-            "quickstart": true,
-            "noTyping": true,
-            "css": "
-              @import url(\"https://modernx-theme.vercel.app/modernx-discord.theme.source.css\");
-              @import url(\"https://discordstyles.github.io/RadialStatus/dist/RadialStatus.css\");
-              :root {
-                  --username-button-width: 128px;
-                  --username-button-padding: 6px;
-                  --username-button-right-margin: 12px;
-                  --username-text-width: 100px;
-                  --server-icon-size: 32px;
-                  --server-outer-margin: 12px;
-                  --server-spacing: 8px;
-                  --app-info-bar-height: 48px;
-              }
-              :root {
-                --rs-small-spacing: 2px;
-                --rs-medium-spacing: 2px;
-                --rs-large-spacing: 2px;
-                --rs-small-width: 2px;
-                --rs-medium-width: 2px;
-                --rs-large-width: 2px;
-                --rs-avatar-shape: 50%;
-                --rs-online-color: #43b581;
-                --rs-idle-color: #faa61a;
-                --rs-dnd-color: #f04747;
-                --rs-offline-color: #636b75;
-                --rs-streaming-color: #643da7;
-                --rs-invisible-color: #ffffff;
-                --rs-phone-color: var(--rs-online-color);
-                --rs-phone-visible: block; /* block = visible | none = hidden */
-              }
-            ",
-        },
-        "IS_MAXIMIZED": false,
-        "IS_MINIMIZED": false,
-        "MIN_WIDTH": 940,
-        "MIN_HEIGHT": 500,
-        "DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING": false,
-        "trayBalloonShown": true
-        "chromiumSwitches": {}
-      }
-    '';
+    #home.file.".config/discord/settings.json".text = ''
+    #    {
+    #    "DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING": false,
+    #    "SKIP_HOST_UPDATE": true,
+    #    "openasar": {
+    #        "setup": true,
+    #        "quickstart": true,
+    #        "noTyping": true,
+    #        "css": "
+    #          @import url(\"https://modernx-theme.vercel.app/modernx-discord.theme.source.css\");
+    #          @import url(\"https://discordstyles.github.io/RadialStatus/dist/RadialStatus.css\");
+    #          :root {
+    #              --username-button-width: 128px;
+    #              --username-button-padding: 6px;
+    #              --username-button-right-margin: 12px;
+    #              --username-text-width: 100px;
+    #              --server-icon-size: 32px;
+    #              --server-outer-margin: 12px;
+    #              --server-spacing: 8px;
+    #              --app-info-bar-height: 48px;
+    #          }
+    #          :root {
+    #            --rs-small-spacing: 2px;
+    #            --rs-medium-spacing: 2px;
+    #            --rs-large-spacing: 2px;
+    #            --rs-small-width: 2px;
+    #            --rs-medium-width: 2px;
+    #            --rs-large-width: 2px;
+    #            --rs-avatar-shape: 50%;
+    #            --rs-online-color: #43b581;
+    #            --rs-idle-color: #faa61a;
+    #            --rs-dnd-color: #f04747;
+    #            --rs-offline-color: #636b75;
+    #            --rs-streaming-color: #643da7;
+    #            --rs-invisible-color: #ffffff;
+    #            --rs-phone-color: var(--rs-online-color);
+    #            --rs-phone-visible: block; /* block = visible | none = hidden */
+    #          }
+    #        ",
+    #    },
+    #    "IS_MAXIMIZED": false,
+    #    "IS_MINIMIZED": false,
+    #    "MIN_WIDTH": 940,
+    #    "MIN_HEIGHT": 500,
+    #    "trayBalloonShown": true
+    #    "chromiumSwitches": {}
+    #  }
+    # '';
 
     xdg.mimeApps.defaultApplications = {
-      "x-scheme-handler/discord" = ["discord.desktop"];
+      "x-scheme-handler/discord" = [ "discord.desktop" ];
     };
   };
 }

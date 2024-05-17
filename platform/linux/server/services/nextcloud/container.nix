@@ -44,7 +44,7 @@ in {
         };
       };
 
-      config = { ... } : {
+      config = { ... }: {
         # import the nextcloud service configuration
         imports = [ ./nc.nix ./apps.nix ];
 
@@ -72,16 +72,17 @@ in {
     };
 
     # add it to /etc/hosts
-    # networking.hosts = {
-    #   "127.0.0.1" = [ hostName ];
-    #   #     "::1" = "nextcloud.${config.networking.domain}";
-    # };
+    networking.hosts = {
+      "127.0.0.1" = [ hostName ];
+      #   #     "::1" = "nextcloud.${config.networking.domain}";
+      # };
 
-    # open firewall for passthrough on host
-    # networking.firewall = {
-    #   enable = true;
-    #   allowedTCPPorts = [ 80 443 8080 8443];
-    # };
+      # open firewall for passthrough on host
+      # networking.firewall = {
+      #   enable = true;
+      #   allowedTCPPorts = [ 80 443 8080 8443];
+      # };
 
+    };
   };
 }

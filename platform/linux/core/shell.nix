@@ -63,8 +63,12 @@ in {
 
     # use nano as our editor :
     environment.variables.EDITOR = "${lib.getExe editor}";
+
     # disable the sudo warning for users (they might otherwise see it constantly):
     security.sudo.extraConfig = "Defaults        lecture = never";
+
+    # allow users to login via ssh
+    security.pam.enableSSHAgentAuth = true;
 
     # remote shell :
     services.openssh = {

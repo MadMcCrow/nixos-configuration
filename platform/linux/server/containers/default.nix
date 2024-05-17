@@ -7,7 +7,6 @@
     # services :
     ./adguard.nix
     ./home-assistant.nix
-    #./nextcloud-aio.nix
-    ./nextcloud-ls.nix
+    ./nextcloud.nix
   ];
 }

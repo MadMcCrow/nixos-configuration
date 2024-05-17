@@ -1,9 +1,7 @@
 # dns.nix
 #   configuration for the dnsmasq service container
 { config, pkgs, lib, ... }:
-let
-  cfg = config.nixos.server.services.dns;
-  domainName = "dns.${cfg.hostName}";
+let cfg = config.nixos.server.services.dns;
 in {
   # interface
   options.nixos.server.services.dns = with lib; {
@@ -25,7 +23,7 @@ in {
         bogus-priv = true;
         listen-address = [ "127.0.0.1" cfg.serverIP ];
         expand-hosts = true;
-        domain = cfg.domainName;
+        domain = "dns.${config.networking.domain}";
         cache-size = "1000";
         domain-needed = true;
         # fallback servers
@@ -37,8 +35,6 @@ in {
       # default service networking :
       networking.firewall.enable = true;
       networking.firewall.allowedTCPPorts = [ 80 ];
-      # Use systemd-resolved inside the container
-      # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
       networking.useHostResolvConf = lib.mkForce false;
       services.resolved.enable = true;
       system.stateVersion = "23.11";

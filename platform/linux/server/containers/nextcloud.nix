@@ -3,10 +3,10 @@
 { lib, config, pkgs, ... }:
 let
   cts = config.nixos.server.containers;
-  nxc = cts.nextcloud-linux-server;
+  nxc = cts.nextcloud;
 in {
   # interface :
-  options.nixos.server.containers.nextcloud-linux-server = {
+  options.nixos.server.containers.nextcloud = {
     enable = lib.mkEnableOption "nextcloud server";
     dataDir = lib.mkOption {
       description = "storage path for nextcloud";
@@ -35,11 +35,7 @@ in {
       hostname = "nextcloud." + config.networking.domain;
       image = "lscr.io/linuxserver/nextcloud:latest";
       volumes = [ "${nxc.dataDir}/config:/config" "${nxc.dataDir}/data:/data" ];
-      ports = [
-        "443:443"
-        "8443:8443"
-        "8080:8080"
-       ];
+      ports = [ "443:443" "8443:8443" "8080:8080" ];
       environment = {
         PUID = "1000";
         PGID = "1000";

@@ -5,5 +5,7 @@
   imports = [
     # ./dns.nix
     ./nextcloud
+    ./adguard.nix
+    ./traefik.nix
   ];
 }

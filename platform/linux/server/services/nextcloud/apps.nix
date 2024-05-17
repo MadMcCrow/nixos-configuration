@@ -27,7 +27,8 @@
     #   - registration
     #   - ...
     inherit (config.services.nextcloud.package.packages.apps)
-      contacts calendar tasks cospend onlyoffice;
+      contacts calendar tasks cospend onlyoffice unroundedcorners
+      end_to_end_encryption;
 
     # for the rest use :
     # myApp = fetchNextcloudApp {

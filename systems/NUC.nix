@@ -2,23 +2,38 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
 { pkgs, ... }:
-let serverData = "/run/server_data";
+let
+serverDataDir = "/run/server_data";
 in {
 
   networking.hostName = "terminus"; # "Terminus/Foundation";
   networking.domain = "foundation.ovh";
 
+  # HARDWARE :
   nixos.zfs.enable = true;
-
-  # our custom modules config :
-  nixos.flatpak.enable = true;
-  nixos.server.enable = true;
-
   nixos.gpu.vendor = "intel";
-  nixos.server.containers.nextcloud.dataDir = "${serverData}/nextcloud";
 
-  # drive for server databases (Postgre)
-  fileSystems."${serverData}" = {
+  # SERVER :
+  nixos.server = {
+    # email for certificates and notifications
+    adminEmail = "noe.perard+serveradmin@gmail.com";
+
+    # DOCKER IMAGES : :
+    # containers.home-assistant.enable = true;
+    # containers.home-assistant.dataDir = "/run/server/homeassistant";
+
+    # NIXOS SERVICES :
+
+    # nextcloud cloud storage :
+    services.nextcloud.enable = true;
+    services.nextcloud.dataDir = "${serverDataDir}/nextcloud";
+    # adguard DNS/adblocker :
+    services.adguard.enable = true;
+    services.adguard.dataDir = "${serverDataDir}/adguard";
+  };
+
+  # drive for server container and services :
+  fileSystems."${serverDataDir}" = {
     device = "/dev/sda1";
     fsType = "btrfs";
     neededForBoot = false;
@@ -27,17 +42,18 @@ in {
   # scrub
   services.btrfs.autoScrub = {
     enable = true;
-    interval = "weekly";
-    fileSystems = [ "${serverData}" ];
+    interval = "daily";
+    fileSystems = [ "${serverDataDir}" ];
   };
 
   # Power Management : minimize consumption
   powerManagement = {
     enable = true;
     cpuFreqGovernor = "powersave";
-    powertop = true;
+    powertop.enable = true;
     scsiLinkPolicy = "min_power";
   };
+
 
   # maybe consider adding swap ?
   swapDevices = [ ];

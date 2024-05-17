@@ -10,6 +10,7 @@ in {
       description = "Noé Perard-Gayot";
       shell = pkgs.zsh;
       # TODO :
+      # openssh.authorizedKeys.keyFiles = [ /etc/nixos/ssh/authorized_keys ];
       # openssh.authorizedKeys.keys = [  ];
     }
     (lib.attrsets.optionalAttrs isLinux {
