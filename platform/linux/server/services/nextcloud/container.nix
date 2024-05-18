@@ -13,7 +13,7 @@ in {
     dataDir = mkOption {
       description = "path to the nextcloud storage folder";
       type = types.path;
-      example = "/run/persist/serverdata/nextcloud";
+      example = "/www/nextcloud";
     };
   };
 

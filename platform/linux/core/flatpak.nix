@@ -5,7 +5,7 @@ let cfg = config.nixos.flatpak;
 in {
   # interface
   options.nixos.flatpak.enable = lib.mkEnableOption "flatpak apps";
-  imports = [ impermanence.nixosModules.impermanence ];
+
 
   #config
   config = lib.mkIf cfg.enable {
@@ -26,9 +26,19 @@ in {
     };
 
     services.flatpak.enable = true;
-    # bind mounted from /persist/flatpak/var/lib/flatpak to /var/lib/flatpak
-    environment.persistence."/nix/persist" = {
-      directories = [ "/var/lib/flatpak" ];
+
+    #
+    # impermanence module is not necessary
+    # we can instead use bind mounts :
+    # imports = [ impermanence.nixosModules.impermanence ];
+    # environment.persistence."/nix/persist" = {
+    #   directories = [ "/var/lib/flatpak" ];
+    # };
+
+    fileSystems."/var/lib/flatpak" = {
+      device = "/nix/persist/flatpak";
+      options = [ "bind" ];
     };
+
   };
 }

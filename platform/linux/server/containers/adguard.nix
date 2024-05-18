@@ -11,7 +11,7 @@ in {
     dataDir = lib.mkOption {
       description = "storage path for adguard";
       type = lib.types.path;
-      example = "/nix/persist/server/adguard";
+      example = "/www/adguard";
     };
   };
   config = lib.mkIf adg.enable {

@@ -7,7 +7,7 @@
     # Linux:
     nixpkgs-latest.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
-    impermanence.url = "github:nix-community/impermanence";
+
     home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # plasma-manager.url = "github:pjones/plasma-manager";
@@ -60,12 +60,12 @@
 
       #Linux : Nixos
       nixosConfigurations = {
-        trantor = nixOSx86 ./systems/TAF.nix;
-        terminus = nixOSx86 ./systems/NUC.nix;
-        smyrno = nixOSx86 ./systems/SCP.nix;
+        trantor = nixOSx86 ./systems/TAF;
+        terminus = nixOSx86 ./systems/NUC;
+        smyrno = nixOSx86 ./systems/SCP;
       };
       # MacOS
-      darwinConfigurations = { anacreon = darwinAarch64 ./systems/MBA.nix; };
+      darwinConfigurations = { anacreon = darwinAarch64 ./systems/MBA; };
 
       # TODO : move to darwin platform only !
       overlays = {

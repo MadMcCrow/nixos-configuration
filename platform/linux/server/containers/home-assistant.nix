@@ -10,7 +10,7 @@ in {
     dataDir = lib.mkOption {
       description = "storage path for home-assistant";
       type = lib.types.path;
-      example = "/nix/persist/server/home-assistant";
+      example = "/www/home-assistant";
     };
   };
   config = lib.mkIf hma.enable {

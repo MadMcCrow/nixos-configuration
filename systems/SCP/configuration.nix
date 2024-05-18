@@ -11,7 +11,6 @@
 
   nixos.flatpak.enable = true;
   nixos.gpu.vendor = "intel";
-  nixos.boot.extraPackages = [ "acpi_call" ];
 
   # PowerManagement
   powerManagement = {
@@ -26,5 +25,5 @@
 
   # maybe consider adding swap ?
   swapDevices = [ ];
-  system.stateVersion = "23.11";
+  system.stateVersion = "24.05";
 }

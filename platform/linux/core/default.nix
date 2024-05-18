@@ -13,6 +13,7 @@
     ./network.nix
     ./nix.nix
     ./shell.nix
+    ./ssh.nix
     ./upgrade.nix
     ./vm.nix
   ];

@@ -11,7 +11,7 @@ in {
     dataDir = lib.mkOption {
       description = "storage path for nextcloud";
       type = lib.types.path;
-      example = "/nix/persist/server/nextcloud";
+      example = "/www/nextcloud";
     };
   };
   config = lib.mkIf nxc.enable {

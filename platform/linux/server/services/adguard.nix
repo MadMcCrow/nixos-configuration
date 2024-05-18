@@ -8,7 +8,7 @@ in {
     dataDir = mkOption {
       description = "path to the adguardhome storage folder";
       type = types.path;
-      example = "/run/persist/serverdata/adguardhome";
+      example = "/www/adguardhome";
     };
   };
 

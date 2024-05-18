@@ -6,13 +6,6 @@ let
 in {
   options.nixos.boot = with lib; {
 
-    # kernel package for gpus and such
-    extraPackages = mkOption {
-      description = "Extra kernel Packages to add in boot.extraModulePackages";
-      type = types.listOf types.str;
-      default = [ ];
-    };
-
     # allow for different UUID for boot partition
     bootUUID = mkOption {
       description = "uuid for uefi boot partition";
@@ -48,8 +41,7 @@ in {
       kernelParams = [ "nohibernate" "quiet" "idle=nomwait" ];
 
       # map kernel packages to kernel package in use :
-      extraModulePackages = map (x: config.boot.kernelPackages."${x}")
-        (cfg.extraPackages ++ [ "acpi_call" ]);
+      extraModulePackages = [ config.boot.kernelPackages.acpi_call ];
 
       # modules :
       initrd.availableKernelModules = [

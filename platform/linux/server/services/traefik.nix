@@ -8,7 +8,7 @@ in {
     dataDir = mkOption {
       description = "path to the traefik storage folder";
       type = types.path;
-      example = "/run/persist/serverdata/traefik";
+      example = "/www/traefik";
     };
   };
 
