@@ -29,7 +29,7 @@
         inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           specialArgs = {
-            inherit (inputs) impermanence nixpkgs plasma-manager;
+            inherit (inputs) nixpkgs plasma-manager;
             pkgs-latest = import inputs.nixpkgs-latest { inherit system; };
           };
           modules = [

@@ -1,6 +1,6 @@
 # hardware-configuration.nix
 # hardware specific stuff :
-{...} : {
+{ config, ...} : {
 boot.extraModulePackages = map (x: config.boot.kernelPackages."${x}") [
     # asus motherboard
     "asus-wmi-sensors"

@@ -6,7 +6,6 @@ in {
   # interface
   options.nixos.flatpak.enable = lib.mkEnableOption "flatpak apps";
 
-
   #config
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [

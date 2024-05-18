@@ -1,14 +1,12 @@
 # linux.nix
 # linux user configuration
-{ config, pkgs, lib, pkgs-latest, ... }@args: {
+{ config, pkgs, lib, pkgs-latest, ... } @args: {
   # import modules
   imports = [
     ./applications # TODO : make a module with options :
     ./git.nix
     ./shell.nix
-    ./wallpaper.nix
-    # we need this module to work
-    ./nixpkgs.nix
+    ./nixpkgs.nix # we need this module to work
   ];
   # home setup
   config = {

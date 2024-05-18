@@ -1,7 +1,7 @@
 # TAF
 #   previously "AF"
 #   this is my main desktop PC
-{ pkgs, ... }: {
+{ pkgs,  ... }: {
 
   networking.hostName = "trantor"; # previously "nixAF"
   networking.domain = "foundation";

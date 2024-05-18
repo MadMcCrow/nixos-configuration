@@ -1,8 +1,8 @@
 # linux specific ssh config
-{ ... }:
+{ pkgs, ... }:
 {
   # make sure the ssh config is stored on a persistent storage
-  fileSystems."/etc/ssh" = {
+  fileSystems."/etc/static/ssh" = {
       device = "/nix/persist/ssh";
       options = [ "bind" ];
   };

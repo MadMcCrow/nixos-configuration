@@ -38,7 +38,6 @@ in {
       nixfmt # format nix files
       #nixfmt-rfc-style
       wget
-      openssl
       curl
       zip # tar already present
       neofetch # because its cool ;)
@@ -66,23 +65,6 @@ in {
 
     # disable the sudo warning for users (they might otherwise see it constantly):
     security.sudo.extraConfig = "Defaults        lecture = never";
-
-    # allow users to login via ssh
-    security.pam.enableSSHAgentAuth = true;
-
-    # remote shell :
-    services.openssh = {
-      enable = true;
-      # require public key authentication for better security
-      settings = {
-        KbdInteractiveAuthentication = false;
-        PasswordAuthentication = false;
-      };
-      #permitRootLogin = "yes";
-    };
-
-    # same GID for all SSH users
-    users.groups.ssl-cert.gid = 119;
 
   };
 }
