@@ -1,10 +1,8 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
 { config, pkgs, pkgs-latest, lib, ... }:
-let
 
-
-in lib.mkIf config.nixos.desktop.enable {
+lib.mkIf config.nixos.desktop.enable {
   # set tag for version
   system.nixos.tags = [ "KDE" ];
 
@@ -48,8 +46,8 @@ in lib.mkIf config.nixos.desktop.enable {
 
   environment.systemPackages = with pkgs; [
     lightly-boehs
-    (callPackage ./vapor-theme.nix)
-    (callPackage ./plasma-drawer.nix)
+    (callPackage ./vapor-theme.nix { })
+    # (callPackage ./plasma-drawer.nix { })
     papirus-icon-theme
     libsForQt5.kcalc
   ];

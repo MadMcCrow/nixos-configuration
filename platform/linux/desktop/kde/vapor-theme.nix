@@ -1,5 +1,5 @@
 # a plasmoid for a GNOME-ish start menu
-{ stdenvNoCC, fetchurl, zstd }:
+{ stdenvNoCC, fetchurl, zstd, ... }:
 stdenvNoCC.mkDerivation {
   name = "kde-vapor-theme";
   version = "0.16-1";
