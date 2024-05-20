@@ -9,9 +9,6 @@ in {
       uid = 1000;
       description = "Noé Perard-Gayot";
       shell = pkgs.zsh;
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBBAdF/RB3J7J/5YZilb/tTT+gqdVIe/YmTA3OQOhuw8"
-      ];
     }
     (lib.attrsets.optionalAttrs isLinux {
       group = "users";
