@@ -77,8 +77,9 @@ in {
         addresses = true;
         hinfo = true;
       };
-      domainName = config.networking.domain; # defaults to "local"
-      browseDomains = [ "local" config.networking.domain ];
+      # may prevent to detect samba shares
+      # domainName = config.networking.domain; # defaults to "local"
+      browseDomains = [ config.networking.domain ];
     };
   };
 }

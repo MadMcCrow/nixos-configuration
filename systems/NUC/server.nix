@@ -1,7 +1,6 @@
 # Server specific options for NUC
 { pkgs, ... }:
-let
-serverDataDir = "/run/server_data";
+let serverDataDir = "/run/server_data";
 in {
   # SERVER :
   nixos.server = {

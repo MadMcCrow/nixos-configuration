@@ -1,6 +1,6 @@
 # linux.nix
 # linux user configuration
-{ config, pkgs, lib, pkgs-latest, ... } @args: {
+{ config, pkgs, lib, pkgs-latest, ... }@args: {
   # import modules
   imports = [
     ./applications # TODO : make a module with options :

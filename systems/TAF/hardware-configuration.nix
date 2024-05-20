@@ -1,16 +1,15 @@
 # hardware-configuration.nix
 # hardware specific stuff :
-{ config, ...} : {
-boot.extraModulePackages = map (x: config.boot.kernelPackages."${x}") [
+{ config, ... }: {
+  boot.extraModulePackages = with config.boot.kernelPackages; [
     # asus motherboard
-    "asus-wmi-sensors"
-    "asus-ec-sensors"
-    "nct6687d" # https://github.com/Fred78290/nct6687d
-    # zen CPU
-    "zenpower"
+    asus-wmi-sensors
+    asus-ec-sensors
+    nct6687d # https://github.com/Fred78290/nct6687d
     # ACPI
-    "acpi_call"
+    acpi_call
   ];
+
   boot.kernelParams = [ "amd_iommu=on" "iommu=pt" "usbcore.autosuspend=-1" ];
   boot.blacklistedKernelModules = [ "xhci_hcd" ];
 

@@ -1,48 +1,36 @@
 # default.nix
 #	Base of modules
 { pkgs-latest, config, lib, nixpkgs, system, ... }:
-let
-  cfg = config.packages;
+let cfg = config.nixos.nix;
+in {
 
-  # optiontype for overlays
-  overlaysType = with lib;
-    let
-      subType = mkOptionType {
+  # interface :
+  options.nixos.nix = with lib; {
+    # allow select unfree packages
+    unfreePackages = mkOption {
+      description = "list of allowed unfree packages";
+      type = with lib.types; listOf str;
+      default = [ ];
+    };
+    # overlays to add to nix
+    overlays = mkOption {
+      description = "list of nixpks overlays";
+      type = types.listOf (mkOptionType {
         name = "nixpkgs-overlay";
         check = isFunction;
         merge = mergeOneOption;
-      };
-    in types.listOf subType;
-
-in {
-
-  # interface : a way to expose settings
-  options = {
-    packages = {
-      # allow select unfree packages
-      unfreePackages = lib.mkOption {
-        description = "list of allowed unfree packages";
-        type = with lib.types; listOf str;
-        default = [ ];
-      };
-
-      overlays = lib.mkOption {
-        description = "list of nixpks overlays";
-        type =
-          overlaysType; # types.listOf types.listOf (types.functionTo types.attrs);
-        default = [ ];
-      };
-
-      overrides = lib.mkOption {
-        description = "set of package overrides";
-        default = { };
-      };
+      });
+      default = [ ];
+    };
+    # allow to override packages to add options
+    overrides = mkOption {
+      description = "set of package overrides";
+      default = { };
     };
   };
 
   config = {
     nix = {
-
       # pin for nix2
       nixPath = [ "nixpkgs=flake:nixpkgs" ];
       # pin for nix3
@@ -84,7 +72,6 @@ in {
 
       # serve nix store over ssh (the whole network can help each other)
       sshServe.enable = true;
-
     };
 
     nixpkgs = {
@@ -103,5 +90,42 @@ in {
 
     # disable documentation (don't download, online is always up to date)
     documentation.nixos.enable = false;
+
+    # add a shortcut script :
+    environment.systemPackages = [
+      (pkgs-latest.writeShellApplication {
+        name = "nixos-update";
+        runtimeInputs = [ pkgs-latest.nixos-rebuild ];
+        text = ''
+          if [ -z "$1" ]
+          then
+            MODE=$1
+          else
+            MODE="switch"
+          fi
+          if [ "$USER" != "root" ]; then
+            echo "Please run nixos-update as root or with sudo"; exit 2
+          fi
+          ${lib.getExe pkgs-latest.nixos-rebuild} "$MODE" \
+          --flake ${config.system.autoUpgrade.flake}#${config.networking.hostName}
+          exit $?
+        '';
+      })
+    ];
+
+    system.autoUpgrade = {
+      enable = true;
+      operation = "boot"; # just upgrade :)
+      flake = "github:MadMcCrow/nixos-configuration";
+      # reboot at night :
+      allowReboot = true;
+      rebootWindow = {
+        lower = "03:00";
+        upper = "05:00";
+      };
+      # do it everyday
+      persistent = true;
+      dates = "daily";
+    };
   };
 }

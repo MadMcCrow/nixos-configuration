@@ -15,6 +15,6 @@ in {
   config = lib.mkIf enable {
     programs.gamescope.enable = true;
     programs.steam.gamescopeSession.enable = true;
-    packages.unfreePackages = [ "steam" ];
+    nixos.nix.unfreePackages = [ "steam" ];
   };
 }

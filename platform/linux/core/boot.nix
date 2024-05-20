@@ -34,7 +34,9 @@ in {
     };
 
     environment.systemPackages = [ pkgs-latest.linux-firmware ];
-    packages.unfreePackages = [ "linux-firmware" ];
+
+    # use our other module
+    nixos.nix.unfreePackages = [ "linux-firmware" ];
 
     boot = {
       # Kernel

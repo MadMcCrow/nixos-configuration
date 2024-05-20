@@ -2,12 +2,11 @@
 # locale options for nixos
 { config, lib, ... }:
 let
-# glibc locales
-us-utf8 = "en_US.UTF-8";
-fr-utf8 = "fr_FR.UTF-8";
-c-utf8  = "C.UTF-8";
-in
-{
+  # glibc locales
+  us-utf8 = "en_US.UTF-8";
+  fr-utf8 = "fr_FR.UTF-8";
+  c-utf8 = "C.UTF-8";
+in {
   config = {
 
     # language formats :
@@ -22,7 +21,7 @@ in
       extraLocaleSettings = {
         # LC_ALL   = us-utf8;
         # LANGUAGE = us-utf8;
-        LC_TIME  = fr-utf8; # use a reasonable date format
+        LC_TIME = fr-utf8; # use a reasonable date format
       };
     };
 

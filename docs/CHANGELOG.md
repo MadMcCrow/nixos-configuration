@@ -5,9 +5,14 @@
 - started implementing nextcloud with docker
 - cleaned linux code (still needs work)
 
-# 5-10-2024
+# 10-5-2024
 - cleaned linux code for desktop
 - switched to KDE
 - started server services code (DNS, reverse proxy, etc)...
 - updated home apps
 - updated vs-code extensions
+
+
+# 20-5-2024
+- improved server systems
+- reorganized nixos modules

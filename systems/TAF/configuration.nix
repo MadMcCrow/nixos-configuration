@@ -1,7 +1,7 @@
 # TAF
 #   previously "AF"
 #   this is my main desktop PC
-{ pkgs,  ... }: {
+{ pkgs, ... }: {
 
   networking.hostName = "trantor"; # previously "nixAF"
   networking.domain = "foundation";
@@ -27,8 +27,14 @@
     neededForBoot = false;
   };
 
-  # amd gpu :
-  nixos.gpu.vendor = "amd";
+  # cpu and gpu are AMD
+  nixos.amd.gpu.enable = true;
+  nixos.amd.cpu.enable = true;
+
+  # gamepad, mouse, etc ...
+  nixos.hid.logitech.enable = true;
+  nixos.hid.valve.enable = true;
+  nixos.hid.xbox.enable = true;
 
   # Power Management :
   powerManagement.enable = true;

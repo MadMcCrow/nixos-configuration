@@ -2,19 +2,15 @@
 # 	Nixos core definitions
 { ... }: {
   imports = [
+    ./command
     ./disks
-    ./gpu
+    ./hardware
     ./audio.nix
     ./boot.nix
     ./flatpak.nix
-    ./fonts.nix
-    ./hid.nix
-    ./locale.nix
     ./network.nix
     ./nix.nix
-    ./shell.nix
-    ./ssh.nix
-    ./upgrade.nix
     ./vm.nix
+    ./wake.nix
   ];
 }

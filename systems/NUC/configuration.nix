@@ -2,8 +2,7 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
 { pkgs, ... }:
-let
-serverDataDir = "/run/server_data";
+let serverDataDir = "/run/server_data";
 in {
 
   networking.hostName = "terminus"; # "Terminus/Foundation";
@@ -11,7 +10,8 @@ in {
 
   # HARDWARE :
   nixos.zfs.enable = true;
-  nixos.gpu.vendor = "intel";
+  nixos.intel.gpu.enable = true;
+  nixos.intel.cpu.enable = true;
 
   # Power Management : minimize consumption
   powerManagement = {
@@ -25,7 +25,10 @@ in {
   services.kmscon = {
     enable = true;
     hwRender = true;
-    fonts = [ { name = "Source Code Pro"; package = pkgs.source-code-pro; } ];
+    fonts = [{
+      name = "Source Code Pro";
+      package = pkgs.source-code-pro;
+    }];
     extraOptions = "--term xterm-256color";
   };
 
