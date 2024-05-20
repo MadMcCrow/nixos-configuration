@@ -3,15 +3,10 @@
 { config, pkgs, lib, pkgs-latest, ... }@args: {
   # import modules
   imports = [
-    ./dconf.nix
-    ./deezer.nix
-    ./discord.nix
-    ./firefox.nix
-    ./games.nix
+    ./applications # TODO : make a module with options :
     ./git.nix
     ./shell.nix
-    ./vscode.nix
-    ./wallpaper.nix
+    ./nixpkgs.nix # we need this module to work
   ];
   # home setup
   config = {
@@ -19,17 +14,15 @@
     home.homeDirectory = "/home/perard";
     home.stateVersion = "23.11";
 
+    xdg.mimeApps.enable = true;
+
     # packages to install to profile
-    home.packages = with pkgs; [
-      blender
-    ] ++ (with pkgs-latest; [
+    home.packages = with pkgs-latest; [
       jetbrains-mono
       python3
       speechd
       bitwarden
-      openscad
-      solvespace
-    ]);
+    ];
     # gpg key management (linux only)
     services.gpg-agent = {
       enable = true;

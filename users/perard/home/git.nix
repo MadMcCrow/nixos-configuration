@@ -6,7 +6,8 @@
     git
     git-secrets
     git-credential-manager
-    dotnet-runtime_7 # required by gcm
+    #dotnet-runtime_7 # required by gcm
+    dotnet-sdk
   ]);
 
   programs.git = {
@@ -28,7 +29,8 @@
     package = pkgs-latest.gh;
     enable = true;
     settings.git_protocol = "https";
-    extensions = with  pkgs-latest; [ gh-eco gh-cal gh-dash ];
+    extensions = with pkgs-latest; [ gh-eco gh-cal gh-dash ];
+
     gitCredentialHelper.enable = true;
   };
 }

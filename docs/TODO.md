@@ -1,8 +1,16 @@
 # TODO :
 
- - [ ] map unfree programs to unfree automatically
- - [ ] Linux : Clean options and rationalize them between machines
- - [ ] Linux Desktop : Clean environment
+## bugfixes :
+
+ - [X] fix `sshd` : fixed, added `neededForBoot` to bindMount
+ - [X] fix samba Workgroup share not working
+ - [ ] fix `gamemoded.service` : `gamemoded.service: Main process exited, code=exited, status=1/FAILURE`
+
+
+## improvements :
+
+ - [X] Linux : reworked core modules
+ - [ ] Linux Desktop : rework desktop modules
  - [ ] Linux Desktop : Theming
  - [ ] Make a documentation
  - [ ] Update github actions
@@ -10,5 +18,7 @@
  - [ ] Darwin : Auto Update command
 
  ## Possible :
+
  - [ ] Server : pufferpanel for game servers
- - [ ] Nextcloud : on server
+ - [ ] map unfree programs to unfree automatically
+ - [ ] better git hooks (prepush/precommit)

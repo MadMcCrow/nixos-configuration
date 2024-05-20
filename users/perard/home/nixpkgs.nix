@@ -1,7 +1,7 @@
 # default.nix
 # default home config
 # TODO : make it a re-usable user module
-{ lib, pkgs, config, pkgs-latest, ... }: {
+{ lib, config, ... }: {
 
   # custom options
   options = with lib; {
