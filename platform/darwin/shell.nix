@@ -1,5 +1,5 @@
 # shell config for darwin
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   # shortcut :
   cfg = config.darwin;
