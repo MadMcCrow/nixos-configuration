@@ -18,11 +18,10 @@ in {
     # enable oci :
     nixos.server.containers.enable = true;
 
-    # reverse proxy
     # services.nginx.virtualHosts."adguard.${config.networking.domain}" = rec {
     #   enableACME = config.security.acme.acceptTerms;
     #   addSSL = enableACME;
-    #   forceSSL = addSSL;
+    #   forceSSL = false;
     #   locations."/" = {
     #     proxyPass = "http://127.0.0.1:3000";
     #     proxyWebsockets = true;

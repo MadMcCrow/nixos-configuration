@@ -7,9 +7,11 @@ in {
     # email for certificates and notifications
     adminEmail = "noe.perard+serveradmin@gmail.com";
 
-    # DOCKER IMAGES : :
+    # DOCKER IMAGES :
+    containers.adguard.enable = true;
+    containers.adguard.dataDir = "${serverDataDir}/adguard";
     # containers.home-assistant.enable = true;
-    # containers.home-assistant.dataDir = "/run/server/homeassistant";
+    # containers.home-assistant.dataDir = "${serverDataDir}/homeassistant";
 
     # NIXOS SERVICES :
 
@@ -17,8 +19,8 @@ in {
     services.nextcloud.enable = true;
     services.nextcloud.dataDir = "${serverDataDir}/nextcloud";
     # adguard DNS/adblocker :
-    services.adguard.enable = true;
-    services.adguard.dataDir = "${serverDataDir}/adguard";
+    # services.adguard.enable = true;
+    # services.adguard.dataDir = "${serverDataDir}/adguard";
   };
 
   # STORAGE :
@@ -26,12 +28,12 @@ in {
   fileSystems."${serverDataDir}" = {
     device = "/dev/sda1";
     fsType = "btrfs";
-    neededForBoot = false;
+    neededForBoot = true;
     options = [ "compress=zstd" "noatime" ];
   };
   services.btrfs.autoScrub = {
     enable = true;
-    interval = "daily";
+    interval = "monthly";
     fileSystems = [ "${serverDataDir}" ];
   };
 }

@@ -3,7 +3,7 @@
 { config, pkgs, lib, pkgs-latest, ... }: {
 
   imports = [
-    ./applications/vscode.nix 
+    ./applications/vscode.nix
     ./shell.nix
     # ./git.nix # cannot get gcm (because dotnet mirror issue on MacOS)
   ];

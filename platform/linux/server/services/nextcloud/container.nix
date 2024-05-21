@@ -71,18 +71,10 @@ in {
       after = [ "systemd-tmpfiles-setup.service" ];
     };
 
-    # add it to /etc/hosts
-    networking.hosts = {
-      "127.0.0.1" = [ hostName ];
-      #   #     "::1" = "nextcloud.${config.networking.domain}";
-      # };
-
-      # open firewall for passthrough on host
-      # networking.firewall = {
-      #   enable = true;
-      #   allowedTCPPorts = [ 80 443 8080 8443];
-      # };
-
+    networking.firewall = {
+      enable = true;
+      allowedTCPPorts = [ 80 443 8080 8443 ];
     };
+
   };
 }

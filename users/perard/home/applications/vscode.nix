@@ -286,7 +286,8 @@ in {
       "workbench.colorTheme" = "GitHub Dark";
       "workbench.iconTheme" = "material-icon-theme";
       "terminal.integrated.customGlyphs" = false;
-      "terminal.integrated.fontFamily" = "'JetBrains Mono NF Medium', 'JetBrains Mono'";
+      "terminal.integrated.fontFamily" =
+        "'JetBrains Mono NF Medium', 'JetBrains Mono'";
       # something that could be done for colors :
       # "editor.tokenColorCustomizations" ={
       # "functions"= "#179559";

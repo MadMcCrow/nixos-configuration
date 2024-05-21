@@ -25,7 +25,7 @@ in {
       # use host nix-store and nixpkgs config
       nixpkgs = pkgs.path;
       # do not store anything
-      ephemeral = true;
+      ephemeral = false;
       # we can't really set agh working directory so we map the whole container
       bindMounts = {
         "/" = {
@@ -36,20 +36,21 @@ in {
       config = { ... }: {
         services.adguardhome = {
           enable = true;
-          # serve http page on 8124 port
           settings = {
             bind_port = 3002;
             http.address = "0.0.0.0:3002";
             dhcp.enabled = false;
           };
-          # does not open 53 for DNS
           openFirewall = true;
         };
 
         # open firewall
+        # 53   -> DNS
+        # 3002 -> webadmin
+        # 445  -> https webadmin
         networking.firewall = {
           enable = true;
-          allowedTCPPorts = [ 53 3002 ];
+          allowedTCPPorts = [ 53 3002 445 ];
         };
         networking.domain = config.networking.domain;
         system.stateVersion = config.system.stateVersion;
@@ -59,7 +60,7 @@ in {
     # open firewall to access adguard
     networking.firewall = {
       enable = true;
-      allowedTCPPorts = [ 53 8124 ];
+      allowedTCPPorts = [ 53 3002 445 ];
     };
 
     # make sure the dataDir exists on Host
