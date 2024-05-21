@@ -8,6 +8,7 @@
 # nix darwin at least once before )
 #
 # TODO: install without cloning this repo :)
+# TODO: move to python (cleaner and easier to code/maintain)
 
 # flake this script belongs to :
 FLAKE="github:MadMcCrow/nixos-configuration"
@@ -52,24 +53,30 @@ experimental_features()
 switch()
 {
   # find host name
-  if [ -z "$1" ]
+  if [ -e "$1" ]
   then
     HOST=$1
   else
     HOST=$(hostname -s)
   fi
   # local build or call as script :
-  if [ -e $(git rev-parse --show-toplevel)/flake.nix ]
+  if [ -e "$(git rev-parse --show-toplevel)/flake.nix" ]
   then
   echo "building configuration for $HOST"
-  nix build ".#darwinConfigurations.$HOST.system"
-  echo "applying build configuration $HOST"
-  ./result/sw/bin/darwin-rebuild switch --flake .#$HOST
+  nix build ".#darwinConfigurations.$HOST.system" 1> /dev/null
+  RESULT=$?
+  if $RESULT; then
+    echo "applying build configuration $HOST"
+    ./result/sw/bin/darwin-rebuild switch --flake ".#$HOST"
+  else
+    return $RESULT
+  fi
   else
     # you must have already installed once to be there anyway !
     echo "building configuration for $HOST"
-    darwin-rebuild switch --flake $FLAKE#$HOST
+    darwin-rebuild switch --flake "$FLAKE#$HOST"
   fi
+  return $?
 }
 
 # install nix if nix is not present
@@ -77,7 +84,12 @@ install_nix
 # enable experimental features
 experimental_features
 # build MacOS configuration
-switch
+switch "$1"
 
-CURRENT_GEN=$(nix-env --list-generations | grep current | awk '{print $1}')
-echo "Successfully installed $(hostname -s)#$CURRENT_GEN"
+# inform of the result of the script :
+if $?; then
+  CURRENT_GEN=$(nix-env --list-generations | grep current | awk '{print $1}')
+  echo "Successfully installed $(hostname -s)#$CURRENT_GEN"
+else 
+  echo "Error : failed to build $(hostname -s)"
+fi
