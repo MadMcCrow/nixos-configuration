@@ -64,11 +64,9 @@
         terminus = nixOSx86 ./systems/NUC;
         smyrno = nixOSx86 ./systems/SCP;
       };
-      # MacOS
-      darwinConfigurations = { anacreon = darwinAarch64 ./systems/MBA; };
 
-      # TODO :
-      # packages = map (x: import ./packages {}) ["aarch64-darwin"];
+      # MacOS
+      darwinConfigurations.anacreon = darwinAarch64 ./systems/MBA;
 
       # TODO : move to darwin platform only !
       overlays = {
