@@ -1,6 +1,20 @@
+# services/adguard.nix
 # adguard home is a DNS / adblock service
+# TODO :
+#   - private network for container
+#   - port forwarding for container
+#   -
 { config, lib, pkgs, ... }:
-let cfg = config.nixos.server.services.adguard;
+let
+# shortcut
+cfg = config.nixos.server.services.adguard;
+# PORTS :
+# 53   -> DNS
+# 3002 -> webadmin
+# 445  -> https webadmin
+dns = 53;
+http = 3002;
+https = 445;
 in {
   # interface
   options.nixos.server.services.adguard = with lib; {
@@ -14,57 +28,71 @@ in {
 
   # implementation
   config = lib.mkIf cfg.enable {
-
     # our actual container :
     containers."adguard" = {
-      # start at boot :
       autoStart = true;
-      # container networking :
       # TODO : use bindings instead of host networking
       privateNetwork = false;
-      # use host nix-store and nixpkgs config
       nixpkgs = pkgs.path;
-      # do not store anything
-      ephemeral = false;
-      # we can't really set agh working directory so we map the whole container
+      ephemeral = true;
       bindMounts = {
         "/" = {
-          hostPath = "${cfg.dataDir}";
-          isReadOnly = false;
-        };
+           hostPath = "${cfg.dataDir}";
+           isReadOnly = false;
+       };
+      # "/var/lib/AdGuardHome" = {
+      #     hostPath = "${cfg.dataDir}/public";
+      #     isReadOnly = false;
+      #   };
+      # "/var/lib/private/AdGuardHome" = {
+      #     hostPath = "${cfg.dataDir}/private";
+      #     isReadOnly = false;
+      #   };
       };
-      config = { ... }: {
+      config = { ... }:
+      {
         services.adguardhome = {
           enable = true;
-          settings = {
-            bind_port = 3002;
-            http.address = "0.0.0.0:3002";
-            dhcp.enabled = false;
-          };
+          # extra configuration is done in the web interface
+          mutableSettings = true;
+          # DHCP is done by my rooter
+          allowDHCP = false;
+          # Set web interface port
+          settings.bind_port = http;
+          settings.http.address = "0.0.0.0:${builtins.toString http}";
+          # opens firewall for web admin page
           openFirewall = true;
+          settings.users = [ {
+              name = "admin";
+              # nix-shell -p apacheHttpd --command "htpasswd -B -C 10 -n admin"
+              password = "$2y$10$ZsBnFvFVBBYHPUEm4zkd7O.jkJZF4EDWcACxkxG4EZIb6RbtUowfO";
+            } ];
         };
 
         # open firewall
-        # 53   -> DNS
-        # 3002 -> webadmin
-        # 445  -> https webadmin
         networking.firewall = {
           enable = true;
-          allowedTCPPorts = [ 53 3002 445 ];
+          allowedTCPPorts = [ dns http https ];
+          allowedUDPPorts = [ dns ];
         };
         networking.domain = config.networking.domain;
         system.stateVersion = config.system.stateVersion;
       };
     };
 
-    # open firewall to access adguard
+    # open firewall to access container
     networking.firewall = {
-      enable = true;
-      allowedTCPPorts = [ 53 3002 445 ];
-    };
+          enable = true;
+          allowedTCPPorts = [ dns http https ];
+          allowedUDPPorts = [ dns ];
+        };
 
     # make sure the dataDir exists on Host
-    systemd.tmpfiles.rules = [ "d ${cfg.dataDir} 0755 root root -" ];
+    systemd.tmpfiles.rules = [
+      "d ${cfg.dataDir}            0755 root root -"
+      #"d ${cfg.dataDir}/public     0755 root root -"
+      #"d ${cfg.dataDir}/private    0755 root root -"
+      ];
 
     # delay container start to bindMount creation :
     systemd.services."container@adguard" = {

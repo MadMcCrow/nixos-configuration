@@ -2,11 +2,9 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
 { pkgs, ... }:
-let serverDataDir = "/run/server_data";
-in {
-
+{
   networking.hostName = "terminus"; # "Terminus/Foundation";
-  networking.domain = "foundation.ovh";
+  networking.domain = "asimov.ovh";
 
   # HARDWARE :
   nixos.zfs.enable = true;

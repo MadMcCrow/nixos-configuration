@@ -2,7 +2,7 @@
 #	Base of modules
 { pkgs, config, lib, nixpkgs, ... }:
 let
-  # shortcut 
+  # shortcut
   cfg = config.darwin;
 
   # optiontype for overlays
@@ -87,7 +87,17 @@ in {
 
     nixpkgs = {
       # merged overlays
-      overlays = cfg.packages.overlays;
+      overlays = cfg.packages.overlays overlays // {
+        # Overlay useful on Macs with Apple Silicon
+        apple-silicon = final: prev:
+          (prev.stdenv.system == "aarch64-darwin") {
+            # Add access to x86 packages if system is running Apple Silicon
+            pkgs-x86 = import inputs.nixpkgs {
+              system = "x86_64-darwin";
+              inherit (inputs.nixpkgs) config;
+            };
+          };
+      };
 
       # predicate from list
       config.allowUnfreePredicate = pkg:

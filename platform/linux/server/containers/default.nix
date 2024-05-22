@@ -5,8 +5,6 @@
     # docker config :
     ./docker.nix
     # services :
-    ./adguard.nix
     ./home-assistant.nix
-    ./nextcloud.nix
   ];
 }

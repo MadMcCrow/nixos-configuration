@@ -1,11 +1,9 @@
 # linux/server/services.nix
-#   services to run on a server
-#
-{ pkgs, config, lib, ... }: {
+#   nixos native services to run on a server
+{ ... }: {
   imports = [
-    # ./dns.nix
     ./nextcloud
     ./adguard.nix
-    ./traefik.nix
+    # ./networking.nix
   ];
 }

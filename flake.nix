@@ -22,11 +22,11 @@
     home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
   };
 
-  outputs = { self, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
       # shortcut functions :
       nixOSx86 = sysModule:
-        inputs.nixpkgs.lib.nixosSystem rec {
+        nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           specialArgs = {
             inherit (inputs) nixpkgs plasma-manager;
@@ -45,7 +45,7 @@
         inputs.darwin.lib.darwinSystem rec {
           system = "aarch64-darwin";
           specialArgs = {
-            inherit (inputs) impermanence nixpkgs;
+            nixpkgs = inputs.nixpkgs-darwin;
             pkgs-latest = import inputs.nixpkgs-latest { inherit system; };
           };
           modules = [
@@ -68,17 +68,8 @@
       # MacOS
       darwinConfigurations.anacreon = darwinAarch64 ./systems/MBA;
 
-      # TODO : move to darwin platform only !
-      overlays = {
-        # Overlay useful on Macs with Apple Silicon
-        apple-silicon = final: prev:
-          (prev.stdenv.system == "aarch64-darwin") {
-            # Add access to x86 packages if system is running Apple Silicon
-            pkgs-x86 = import inputs.nixpkgs {
-              system = "x86_64-darwin";
-              inherit (inputs.nixpkgs) config;
-            };
-          };
-      };
+      # support packages :
+      packages =  nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ]
+      (system : import ./packages {pkgs = nixpkgs.legacyPackages.${system};});
     };
 }
