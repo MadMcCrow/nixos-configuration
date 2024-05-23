@@ -69,7 +69,8 @@
       darwinConfigurations.anacreon = darwinAarch64 ./systems/MBA;
 
       # support packages :
-      packages =  nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ]
-      (system : import ./packages {pkgs = nixpkgs.legacyPackages.${system};});
+      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" ]
+        (system:
+          import ./packages { pkgs = nixpkgs.legacyPackages.${system}; });
     };
 }

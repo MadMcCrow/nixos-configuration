@@ -1,8 +1,7 @@
 # NUC
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
   networking.hostName = "terminus"; # "Terminus/Foundation";
   networking.domain = "asimov.ovh";
 

@@ -7,7 +7,7 @@
       example = "admin@server.net";
       type = with types;
         nullOr (addCheck str
-          (s: (builtins.match "([a-z0-9.]+@[a-z0-9.]+)" s) != null));
+          (s: (builtins.match "([a-z0-9\+.]+@[a-z0-9.]+)" s) != null));
     };
   };
 
@@ -16,7 +16,7 @@
     environment.systemPackages = [ pkgs.inetutils ];
     # let's encrypt certificate
     security.acme = {
-      acceptTerms = false;
+      acceptTerms = true;
       defaults.email = config.nixos.server.adminEmail;
     };
   };
