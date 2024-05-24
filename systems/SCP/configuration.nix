@@ -4,7 +4,6 @@
 { pkgs, ... }: {
   #
   networking.hostName = "smyrno"; # "Smyrno";
-  networking.domain = "foundation";
 
   # this one does not use zfs
   nixos.btrfs.enable = true;

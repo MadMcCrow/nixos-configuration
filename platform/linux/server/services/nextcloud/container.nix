@@ -15,6 +15,13 @@ in {
       type = types.path;
       example = "/www/nextcloud";
     };
+
+    subDomain = mkOption {
+      description = "subdomain to use for nextcloud service";
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "nextcloud";
+    };
   };
 
   # implementation
@@ -50,6 +57,8 @@ in {
 
         # TODO : move to all containers !
         config = {
+          # set nextcloud settings
+          nc.hostName = "${cfg.subDomain}.${config.nixos.server.domainName}";
           # import the let's encrypt certificate from host
           security.acme = {
             inherit (config.security.acme) acceptTerms defaults;
@@ -75,6 +84,25 @@ in {
       enable = true;
       allowedTCPPorts = [ 80 443 8080 8443 ];
     };
+
+    # Nextcloud module should handle it !
+    # Enable Nginx
+    # services.nginx = {
+    #   enable = true;
+    #   # Use recommended settings
+    #   recommendedGzipSettings = true;
+    #   recommendedOptimisation = true;
+    #   recommendedProxySettings = true;
+    #   recommendedTlsSettings = true;
+    #   # Only allow PFS-enabled ciphers with AES256
+    #   sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
+    #   # Setup Nextcloud virtual host to listen on ports
+    #   virtualHosts.${config.services.nextcloud.hostName} = rec {
+    #     enableACME = config.security.acme.acceptTerms;
+    #     addSSL = enableACME;
+    #     forceSSL = addSSL;
+    #   };
+    # };
 
   };
 }

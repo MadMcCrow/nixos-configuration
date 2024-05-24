@@ -4,6 +4,11 @@ let serverDataDir = "/var/www";
 in {
   # SERVER :
   nixos.server = {
+    enable = true;
+
+    # bought and paid for !
+    domainName = "asimov.ovh";
+
     # email for certificates and notifications
     adminEmail = "noe.perard+serveradmin@gmail.com";
 

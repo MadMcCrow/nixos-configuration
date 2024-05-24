@@ -6,5 +6,6 @@
     ./docker.nix
     # services :
     ./home-assistant.nix
+    ./nextcloud.nix
   ];
 }

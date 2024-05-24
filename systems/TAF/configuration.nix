@@ -4,7 +4,6 @@
 { pkgs, ... }: {
 
   networking.hostName = "trantor"; # previously "nixAF"
-  networking.domain = "foundation";
 
   # enable desktop environment :
   nixos.desktop.enable = true;

@@ -5,12 +5,18 @@ let
   hma = cts.home-assistant;
 in {
   # interface :
-  options.nixos.server.containers.home-assistant = {
-    enable = lib.mkEnableOption "home-assistant";
-    dataDir = lib.mkOption {
+  options.nixos.server.containers.home-assistant = with lib; {
+    enable = mkEnableOption "home-assistant";
+    dataDir = mkOption {
       description = "storage path for home-assistant";
-      type = lib.types.path;
+      type = types.path;
       example = "/www/home-assistant";
+    };
+    subDomain = mkOption {
+      description = "subdomain to use for nextcloud service";
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "nextcloud";
     };
   };
   config = lib.mkIf hma.enable {
@@ -32,7 +38,7 @@ in {
     # Simple configuration based off  https://hub.docker.com/r/home-assistant/home-assistant
     virtualisation.oci-containers.containers."home-assistant" = {
       autoStart = true;
-      hostname = "home-assistant." + config.networking.domain;
+      hostname = "${hma.subDomain}.${config.nixos.server.domainName}";
       image = " homeassistant/home-assistant:stable";
       # devices:
       #   - "/dev/serial/by-id/usb-0658_0200-if00-port0:/dev/ttyACM0"

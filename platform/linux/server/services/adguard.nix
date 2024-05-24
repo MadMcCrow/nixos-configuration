@@ -81,19 +81,19 @@ in {
     services.nginx.enable = true;
     services.nginx.virtualHosts."adguard.${config.networking.domain}" = rec {
       enableACME = config.security.acme.acceptTerms;
-      addSSL     = enableACME;
-      # forceSSL   = enableACME;
+      addSSL = enableACME;
+      # forceSSL = enableACME;
       locations."/" = {
-        proxyPass = "${if addSSL then "https" else "http" }://127.0.0.1:${builtins.toString http}";
-        proxyWebsockets = true;
+        proxyPass = "http://127.0.0.1:${builtins.toString http}/";
+        # proxyWebsockets = true;
       };
     };
 
     # open firewall to access webadmin redirect and DNS server
     networking.firewall = {
-          enable = true;
-          allowedTCPPorts = [ dns 80 443 8080 8443 http https ];
-          allowedUDPPorts = [ dns ];
+      enable = true;
+      allowedTCPPorts = [ dns 80 443 http https ];
+      allowedUDPPorts = [ dns ];
     };
 
     # make sure the dataDir exists on Host

@@ -9,30 +9,11 @@
     };
     hostName = mkOption {
       type = types.str;
-      default = "nextcloud";
+      default = "nextcloud.${config.networking.domain}";
     };
   };
 
   config = {
-
-    # Nextcloud module should handle it !
-    # Enable Nginx
-    # services.nginx = {
-    #   enable = true;
-    #   # Use recommended settings
-    #   recommendedGzipSettings = true;
-    #   recommendedOptimisation = true;
-    #   recommendedProxySettings = true;
-    #   recommendedTlsSettings = true;
-    #   # Only allow PFS-enabled ciphers with AES256
-    #   sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
-    #   # Setup Nextcloud virtual host to listen on ports
-    #   virtualHosts.${config.services.nextcloud.hostName} = rec {
-    #     enableACME = config.security.acme.acceptTerms;
-    #     addSSL = enableACME;
-    #     forceSSL = addSSL;
-    #   };
-    # };
 
     networking.firewall = {
       enable = true;
