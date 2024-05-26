@@ -23,6 +23,12 @@ in {
       type = types.path;
       example = "/www/adguardhome";
     };
+    subDomain = mkOption {
+      description = "subdomain to use for nextcloud service";
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "nextcloud";
+    };
   };
 
   # implementation
@@ -79,7 +85,7 @@ in {
 
     # redirect via reverse proxy :
     services.nginx.enable = true;
-    services.nginx.virtualHosts."adguard.${config.networking.domain}" = rec {
+    services.nginx.virtualHosts."${cfg.subDomain}.${config.nixos.server.domainName}" = rec {
       enableACME = config.security.acme.acceptTerms;
       addSSL = enableACME;
       # forceSSL = enableACME;

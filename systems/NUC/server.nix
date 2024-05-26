@@ -14,16 +14,19 @@ in {
 
     # DOCKER IMAGES :
     ## Home Assistant :
-    containers.home-assistant.enable = false;
-    containers.home-assistant.dataDir = "${serverDataDir}/homeassistant";
+    containers.home-assistant.enable    = true;
+    containers.home-assistant.subDomain = "irobot"; # I Robot
+    containers.home-assistant.dataDir   = "${serverDataDir}/homeassistant";
 
     # NIXOS SERVICES :
     # nextcloud cloud storage :
-    services.nextcloud.enable = false;
-    services.nextcloud.dataDir = "${serverDataDir}/nextcloud";
+    services.nextcloud.enable      = true;
+    services.nextcloud.subDomain   = "foundation";
+    services.nextcloud.dataDir     = "${serverDataDir}/nextcloud";
     # adguard DNS/adblocker :
-    services.adguard.enable = true;
-    services.adguard.dataDir = "${serverDataDir}/adguard";
+    services.adguard.enable    = true;
+    services.adguard.subDomain = "periphery";
+    services.adguard.dataDir   = "${serverDataDir}/adguard";
   };
 
   # STORAGE :

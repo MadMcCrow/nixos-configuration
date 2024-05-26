@@ -3,6 +3,7 @@
 let
   cts = config.nixos.server.containers;
   hma = cts.home-assistant;
+  port = 8123;
 in {
   # interface :
   options.nixos.server.containers.home-assistant = with lib; {
@@ -23,17 +24,17 @@ in {
     # enable oci-containers
     nixos.server.containers.enable = true;
 
-    # reverse proxy
-    # services.nginx.virtualHosts."home-assistant.${config.networking.domain}" =
-    #   rec {
-    #     enableACME = config.security.acme.acceptTerms;
-    #     addSSL = enableACME;
-    #     forceSSL = addSSL;
-    #     locations."/" = {
-    #       proxyPass = "http://127.0.0.1:8123";
-    #       proxyWebsockets = true;
-    #     };
-    #   };
+    # redirect via reverse proxy :
+    services.nginx.enable = true;
+    services.nginx.virtualHosts."${hma.subDomain}.${config.nixos.server.domainName}" = rec {
+      enableACME = config.security.acme.acceptTerms;
+      addSSL = enableACME;
+      # forceSSL = enableACME;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${builtins.toString port}/";
+        # proxyWebsockets = true;
+      };
+    };
 
     # Simple configuration based off  https://hub.docker.com/r/home-assistant/home-assistant
     virtualisation.oci-containers.containers."home-assistant" = {
@@ -44,7 +45,7 @@ in {
       #   - "/dev/serial/by-id/usb-0658_0200-if00-port0:/dev/ttyACM0"
       # volume
       volumes = [ "./config:/${hma.dataDir}/userdata" ];
-      ports = [ "8123:8123" ];
+      ports = [ (let s = builtins.toString port; in "${s}:${s}") ];
       environment = { TZ = "Europe/Paris"; };
     };
   };

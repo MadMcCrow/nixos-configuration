@@ -85,24 +85,17 @@ in {
       allowedTCPPorts = [ 80 443 8080 8443 ];
     };
 
-    # Nextcloud module should handle it !
-    # Enable Nginx
-    # services.nginx = {
-    #   enable = true;
-    #   # Use recommended settings
-    #   recommendedGzipSettings = true;
-    #   recommendedOptimisation = true;
-    #   recommendedProxySettings = true;
-    #   recommendedTlsSettings = true;
-    #   # Only allow PFS-enabled ciphers with AES256
-    #   sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
-    #   # Setup Nextcloud virtual host to listen on ports
-    #   virtualHosts.${config.services.nextcloud.hostName} = rec {
-    #     enableACME = config.security.acme.acceptTerms;
-    #     addSSL = enableACME;
-    #     forceSSL = addSSL;
-    #   };
-    # };
+    # nextcloud module is supposed to do the reverse proxy-ing itself.
+    #services.nginx.enable = true;
+    #services.nginx.virtualHosts."${cfg.subDomain}.${config.nixos.server.domainName}" = rec {
+    #  enableACME = config.security.acme.acceptTerms;
+    #  addSSL = enableACME;
+    #  # forceSSL = enableACME;
+    #  locations."/" = {
+    #    proxyPass = "http://127.0.0.1:${builtins.toString http}/";
+    #    # proxyWebsockets = true;
+    #  };
+    #};
 
   };
 }
