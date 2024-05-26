@@ -3,7 +3,7 @@
 #   it's my central Home Cloud
 { pkgs, ... }: {
   networking.hostName = "terminus"; # "Terminus/Foundation";
-  networking.domain = "asimov.ovh";
+  #networking.domain = "asimov.ovh";
 
   # HARDWARE :
   nixos.zfs.enable = true;
@@ -16,6 +16,13 @@
     cpuFreqGovernor = "powersave";
     powertop.enable = true;
     scsiLinkPolicy = "min_power";
+  };
+
+  # sleep at night :
+  nixos.autowake = {
+    enable = true;
+    time.sleep  = "02:30";
+    time.wakeup = "07:30";
   };
 
   # Use kmscon as the virtual console :
