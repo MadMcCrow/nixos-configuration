@@ -31,9 +31,12 @@
   nixos.amd.cpu.enable = true;
 
   # gamepad, mouse, etc ...
+  # TODO : move to desktop, no need for core
   nixos.hid.logitech.enable = true;
   nixos.hid.valve.enable = true;
   nixos.hid.xbox.enable = true;
+  # open steam firewall for game hosting
+  nixos.desktop.steam.firewall.enable = true;
 
   # Power Management :
   powerManagement.enable = true;

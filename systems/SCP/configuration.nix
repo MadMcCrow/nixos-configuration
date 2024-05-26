@@ -3,7 +3,7 @@
 # this is an old chromebook running NixOS on top of MrChromebox UEFI
 { pkgs, ... }: {
   #
-  networking.hostName = "smyrno"; # "Smyrno";
+  networking.hostName = "smyrno";
 
   # this one does not use zfs
   nixos.btrfs.enable = true;

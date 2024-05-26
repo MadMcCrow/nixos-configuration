@@ -2,8 +2,7 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
 { pkgs, ... }: {
-  networking.hostName = "terminus"; # "Terminus/Foundation";
-  #networking.domain = "asimov.ovh";
+  networking.hostName = "terminus";
 
   # HARDWARE :
   nixos.zfs.enable = true;
@@ -20,8 +19,8 @@
 
   # sleep at night :
   nixos.autowake = {
-    enable = true;
-    time.sleep  = "02:30";
+    # enable = true;
+    time.sleep  = "21:30";
     time.wakeup = "07:30";
   };
 

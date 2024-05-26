@@ -1,6 +1,6 @@
 # steam is handled by home manager.
 # this only opens the necessary firewall ports for steam
-{ config, ... }: {
+{ lib, config, ... }: {
   # interface :
   options.nixos.desktop.steam = {
     firewall.enable = lib.mkEnableOption "open firewall for steam games" // {

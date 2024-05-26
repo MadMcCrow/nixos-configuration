@@ -9,7 +9,7 @@
     };
     hostName = mkOption {
       type = types.str;
-      default = "nextcloud.${config.networking.domain}";
+      example = "nextcloud.${config.networking.domain}";
     };
   };
 
@@ -66,7 +66,7 @@
       # see https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html
       extraOptions = {
         # addresses you can access:
-        trusted_domains = [ "127.0.0.1" "localhost" config.nc.hostName ];
+        # trusted_domains = [ "127.0.0.1" "localhost" config.nc.hostName ];
         # log :
         loglevel = 3; # only errors
         log_type = "file";
@@ -75,10 +75,10 @@
         # don't embed documentation
         "knowledgebase.embedded" = false;
         # my logo replaces nextcloud logo
-        logo_url = "https://avatars.githubusercontent.com/u/10871181";
+        # logo_url = "https://avatars.githubusercontent.com/u/10871181";
 
         # we need a mail server
-        mail_domain = config.networking.domain;
+        # mail_domain = config.networking.domain;
       };
     };
 
