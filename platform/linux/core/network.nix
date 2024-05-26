@@ -63,7 +63,7 @@ in {
     };
 
     # avahi for mdns :
-    services.avahi = {
+    services.avahi = rec {
       enable = true;
       nssmdns = true;
       ipv6 = true;
@@ -78,8 +78,10 @@ in {
         hinfo = true;
       };
       # may prevent to detect samba shares
-      # domainName = config.networking.domain; # defaults to "local"
-      browseDomains = [ config.networking.domain ];
+      domainName = lib.mkIf (config.networking.domain != null) config.networking.domain; # defaults to "local";
+      browseDomains = [
+       domainName
+      ] ++ ( lib.lists.optional (config.nixos.server.domainName != null) config.nixos.server.domainName);
     };
   };
 }
