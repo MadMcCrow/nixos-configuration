@@ -5,17 +5,8 @@ let
   cfg = config.nixos.boot;
 in {
   options.nixos.boot = with lib; {
-
-    # allow for different UUID for boot partition
-    bootUUID = mkOption {
-      description = "uuid for uefi boot partition";
-      type = types.str;
-      default = "8001-EF00";
-    };
-
     # enable faster boot (disable many checks)
     fastBoot = mkEnableOption "Simplify boot process";
-
     # sleep mode
     sleep = mkEnableOption "allow sleep";
   };
@@ -26,11 +17,6 @@ in {
       homeMode = "700"; # home will be erased anyway because on /
       hashedPassword =
         "$y$j9T$W.JAnia2yZEpLY8RwEJ4M0$eS3XjstDqU8/5gRoTHen9RDZg4E1XNKp0ncKxGs0bY.";
-    };
-
-    fileSystems."/boot" = {
-      device = "/dev/disk/by-uuid/${cfg.bootUUID}";
-      fsType = "vfat";
     };
 
     environment.systemPackages = [ pkgs-latest.linux-firmware ];

@@ -14,10 +14,6 @@
   nixos.boot.sleep = true;
   nixos.boot.fastBoot = true;
 
-  # use our zfs setup :
-  # TODO: make this setup more tweakable
-  nixos.zfs.enable = true;
-
   # add steam drive
   # TODO : CLEAN THIS !
   fileSystems."/run/media/steam" = {

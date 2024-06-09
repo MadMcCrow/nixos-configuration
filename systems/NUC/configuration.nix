@@ -5,7 +5,6 @@
   networking.hostName = "terminus";
 
   # HARDWARE :
-  nixos.zfs.enable = true;
   nixos.intel.gpu.enable = true;
   nixos.intel.cpu.enable = true;
 
@@ -20,7 +19,7 @@
   # sleep at night :
   nixos.autowake = {
     # enable = true;
-    time.sleep  = "21:30";
+    time.sleep = "21:30";
     time.wakeup = "07:30";
   };
 

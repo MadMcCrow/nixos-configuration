@@ -85,15 +85,16 @@ in {
 
     # redirect via reverse proxy :
     services.nginx.enable = true;
-    services.nginx.virtualHosts."${cfg.subDomain}.${config.nixos.server.domainName}" = rec {
-      enableACME = config.security.acme.acceptTerms;
-      addSSL = enableACME;
-      # forceSSL = enableACME;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${builtins.toString http}/";
-        # proxyWebsockets = true;
+    services.nginx.virtualHosts."${cfg.subDomain}.${config.nixos.server.domainName}" =
+      rec {
+        enableACME = config.security.acme.acceptTerms;
+        addSSL = enableACME;
+        # forceSSL = enableACME;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:${builtins.toString http}/";
+          # proxyWebsockets = true;
+        };
       };
-    };
 
     # open firewall to access webadmin redirect and DNS server
     networking.firewall = {

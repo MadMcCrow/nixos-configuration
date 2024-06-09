@@ -26,15 +26,16 @@ in {
 
     # redirect via reverse proxy :
     services.nginx.enable = true;
-    services.nginx.virtualHosts."${hma.subDomain}.${config.nixos.server.domainName}" = rec {
-      enableACME = config.security.acme.acceptTerms;
-      addSSL = enableACME;
-      # forceSSL = enableACME;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${builtins.toString port}/";
-        # proxyWebsockets = true;
+    services.nginx.virtualHosts."${hma.subDomain}.${config.nixos.server.domainName}" =
+      rec {
+        enableACME = config.security.acme.acceptTerms;
+        addSSL = enableACME;
+        # forceSSL = enableACME;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:${builtins.toString port}/";
+          # proxyWebsockets = true;
+        };
       };
-    };
 
     # Simple configuration based off  https://hub.docker.com/r/home-assistant/home-assistant
     virtualisation.oci-containers.containers."home-assistant" = {
