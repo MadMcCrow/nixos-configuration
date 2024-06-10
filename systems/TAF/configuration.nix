@@ -4,7 +4,6 @@
 { pkgs, ... }: {
 
   networking.hostName = "trantor"; # previously "nixAF"
-  networking.domain = "foundation";
 
   # enable desktop environment :
   nixos.desktop.enable = true;
@@ -14,10 +13,6 @@
 
   nixos.boot.sleep = true;
   nixos.boot.fastBoot = true;
-
-  # use our zfs setup :
-  # TODO: make this setup more tweakable
-  nixos.zfs.enable = true;
 
   # add steam drive
   # TODO : CLEAN THIS !
@@ -32,9 +27,12 @@
   nixos.amd.cpu.enable = true;
 
   # gamepad, mouse, etc ...
+  # TODO : move to desktop, no need for core
   nixos.hid.logitech.enable = true;
   nixos.hid.valve.enable = true;
   nixos.hid.xbox.enable = true;
+  # open steam firewall for game hosting
+  nixos.desktop.steam.firewall.enable = true;
 
   # Power Management :
   powerManagement.enable = true;

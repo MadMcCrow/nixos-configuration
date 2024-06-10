@@ -6,12 +6,18 @@ let
   nxc = cts.nextcloud;
 in {
   # interface :
-  options.nixos.server.containers.nextcloud = {
-    enable = lib.mkEnableOption "nextcloud server";
-    dataDir = lib.mkOption {
+  options.nixos.server.containers.nextcloud = with lib; {
+    enable = mkEnableOption "nextcloud server";
+    dataDir = mkOption {
       description = "storage path for nextcloud";
-      type = lib.types.path;
+      type = types.path;
       example = "/www/nextcloud";
+    };
+    subDomain = mkOption {
+      description = "subdomain to use for nextcloud service";
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "nextcloud";
     };
   };
   config = lib.mkIf nxc.enable {
@@ -32,7 +38,7 @@ in {
     # Simple configuration based off https://github.com/nextcloud/all-in-one/blob/main/compose.yaml
     virtualisation.oci-containers.containers."nextcloud" = {
       autoStart = true;
-      hostname = "nextcloud." + config.networking.domain;
+      hostname = "${nxc.subDomain}.${config.nixos.server.domainName}";
       image = "lscr.io/linuxserver/nextcloud:latest";
       volumes = [ "${nxc.dataDir}/config:/config" "${nxc.dataDir}/data:/data" ];
       ports = [ "443:443" "8443:8443" "8080:8080" ];

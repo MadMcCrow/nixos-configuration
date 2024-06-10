@@ -3,42 +3,50 @@
 let
   cts = config.nixos.server.containers;
   hma = cts.home-assistant;
+  port = 8123;
 in {
   # interface :
-  options.nixos.server.containers.home-assistant = {
-    enable = lib.mkEnableOption "home-assistant";
-    dataDir = lib.mkOption {
+  options.nixos.server.containers.home-assistant = with lib; {
+    enable = mkEnableOption "home-assistant";
+    dataDir = mkOption {
       description = "storage path for home-assistant";
-      type = lib.types.path;
+      type = types.path;
       example = "/www/home-assistant";
+    };
+    subDomain = mkOption {
+      description = "subdomain to use for nextcloud service";
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "nextcloud";
     };
   };
   config = lib.mkIf hma.enable {
     # enable oci-containers
     nixos.server.containers.enable = true;
 
-    # reverse proxy
-    # services.nginx.virtualHosts."home-assistant.${config.networking.domain}" =
-    #   rec {
-    #     enableACME = config.security.acme.acceptTerms;
-    #     addSSL = enableACME;
-    #     forceSSL = addSSL;
-    #     locations."/" = {
-    #       proxyPass = "http://127.0.0.1:8123";
-    #       proxyWebsockets = true;
-    #     };
-    #   };
+    # redirect via reverse proxy :
+    services.nginx.enable = true;
+    services.nginx.virtualHosts."${hma.subDomain}.${config.nixos.server.domainName}" =
+      rec {
+        enableACME = config.security.acme.acceptTerms;
+        addSSL = enableACME;
+        # forceSSL = enableACME;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:${builtins.toString port}/";
+          # proxyWebsockets = true;
+        };
+      };
 
     # Simple configuration based off  https://hub.docker.com/r/home-assistant/home-assistant
     virtualisation.oci-containers.containers."home-assistant" = {
       autoStart = true;
-      hostname = "home-assistant." + config.networking.domain;
+      hostname = "${hma.subDomain}.${config.nixos.server.domainName}";
       image = " homeassistant/home-assistant:stable";
       # devices:
       #   - "/dev/serial/by-id/usb-0658_0200-if00-port0:/dev/ttyACM0"
       # volume
       volumes = [ "./config:/${hma.dataDir}/userdata" ];
-      ports = [ "8123:8123" ];
+      ports = [ (let s = builtins.toString port; in "${s}:${s}") ];
       environment = { TZ = "Europe/Paris"; };
     };
   };

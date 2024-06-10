@@ -1,15 +1,10 @@
 # NUC
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
-{ pkgs, ... }:
-let serverDataDir = "/run/server_data";
-in {
-
-  networking.hostName = "terminus"; # "Terminus/Foundation";
-  networking.domain = "foundation.ovh";
+{ pkgs, ... }: {
+  networking.hostName = "terminus";
 
   # HARDWARE :
-  nixos.zfs.enable = true;
   nixos.intel.gpu.enable = true;
   nixos.intel.cpu.enable = true;
 
@@ -19,6 +14,13 @@ in {
     cpuFreqGovernor = "powersave";
     powertop.enable = true;
     scsiLinkPolicy = "min_power";
+  };
+
+  # sleep at night :
+  nixos.autowake = {
+    # enable = true;
+    time.sleep = "21:30";
+    time.wakeup = "07:30";
   };
 
   # Use kmscon as the virtual console :

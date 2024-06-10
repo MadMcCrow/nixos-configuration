@@ -18,6 +18,7 @@
 
     # packages to install to profile
     home.packages = with pkgs-latest; [
+      fzf
       jetbrains-mono
       python3
       speechd

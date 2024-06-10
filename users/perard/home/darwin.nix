@@ -3,9 +3,9 @@
 { config, pkgs, lib, pkgs-latest, ... }: {
 
   imports = [
-    ./applications/vscode.nix # only compatible application
+    ./applications/vscode.nix
     ./shell.nix
-    ./git.nix
+    # ./git.nix # cannot get gcm (because dotnet mirror issue on MacOS)
   ];
   config = {
     home.username = "perard";
@@ -16,9 +16,7 @@
     home.packages = with pkgs-latest; [
       git
       git-secrets
-      git-credential-manager
       powerline-go
-      eza
       zsh-autosuggestions
       zsh-syntax-highlighting
       jetbrains-mono

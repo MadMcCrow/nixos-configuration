@@ -7,39 +7,18 @@
       type = types.str;
       default = "/www/nextcloud";
     };
-    subdomain = mkOption {
+    hostName = mkOption {
       type = types.str;
-      default = "nextcloud";
+      example = "nextcloud.${config.networking.domain}";
     };
   };
 
   config = {
 
-    # Nextcloud module should handle it !
-    # Enable Nginx
-    # services.nginx = {
-    #   enable = true;
-    #   # Use recommended settings
-    #   recommendedGzipSettings = true;
-    #   recommendedOptimisation = true;
-    #   recommendedProxySettings = true;
-    #   recommendedTlsSettings = true;
-    #   # Only allow PFS-enabled ciphers with AES256
-    #   sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
-    #   # Setup Nextcloud virtual host to listen on ports
-    #   virtualHosts.${config.services.nextcloud.hostName} = rec {
-    #     enableACME = config.security.acme.acceptTerms;
-    #     addSSL = enableACME;
-    #     forceSSL = addSSL;
-    #   };
-    # };
-
-    # open ports on the container :
-    # do it if split networking
-    # networking.firewall = {
-    #   enable = true;
-    #   allowedTCPPorts = [ 80 443 8080 8443];
-    # };
+    networking.firewall = {
+      enable = true;
+      allowedTCPPorts = [ 80 443 8080 8443 ];
+    };
 
     # Actual Nextcloud Config
     services.nextcloud = {
@@ -52,11 +31,11 @@
       home = "${config.nc.dataDir}/nc-data";
 
       # maybe use "trusted_domains"
-      hostName = "localhost";
+      inherit (config.nc) hostName;
       # hostName = config.nc.hostName;
 
       # Use HTTPS for links
-      # https = true;
+      https = true;
 
       # enable caching with redis :
       # configureRedis = true;
@@ -87,11 +66,7 @@
       # see https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html
       extraOptions = {
         # addresses you can access:
-        # trusted_domains = [
-        #   "127.0.0.1"
-        #   "localhost"
-        #   config.nc.hostName
-        # ];
+        # trusted_domains = [ "127.0.0.1" "localhost" config.nc.hostName ];
         # log :
         loglevel = 3; # only errors
         log_type = "file";
@@ -100,10 +75,10 @@
         # don't embed documentation
         "knowledgebase.embedded" = false;
         # my logo replaces nextcloud logo
-        logo_url = "https://avatars.githubusercontent.com/u/10871181";
+        # logo_url = "https://avatars.githubusercontent.com/u/10871181";
 
         # we need a mail server
-        mail_domain = config.networking.domain;
+        # mail_domain = config.networking.domain;
       };
     };
 

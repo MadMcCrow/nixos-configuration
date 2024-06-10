@@ -12,6 +12,8 @@
  - [X] Linux : reworked core modules
  - [ ] Linux Desktop : rework desktop modules
  - [ ] Linux Desktop : Theming
+ - [ ] Linux : use BTRFS instead of ZFS for root
+ - [ ] Linux : ZFS use better defaults
  - [ ] Make a documentation
  - [ ] Update github actions
  - [ ] Option to enable or disable users by systems

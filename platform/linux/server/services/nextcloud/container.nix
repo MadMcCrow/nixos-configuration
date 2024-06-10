@@ -15,6 +15,13 @@ in {
       type = types.path;
       example = "/www/nextcloud";
     };
+
+    subDomain = mkOption {
+      description = "subdomain to use for nextcloud service";
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "nextcloud";
+    };
   };
 
   # implementation
@@ -50,6 +57,8 @@ in {
 
         # TODO : move to all containers !
         config = {
+          # set nextcloud settings
+          nc.hostName = "${cfg.subDomain}.${config.nixos.server.domainName}";
           # import the let's encrypt certificate from host
           security.acme = {
             inherit (config.security.acme) acceptTerms defaults;
@@ -71,18 +80,22 @@ in {
       after = [ "systemd-tmpfiles-setup.service" ];
     };
 
-    # add it to /etc/hosts
-    networking.hosts = {
-      "127.0.0.1" = [ hostName ];
-      #   #     "::1" = "nextcloud.${config.networking.domain}";
-      # };
-
-      # open firewall for passthrough on host
-      # networking.firewall = {
-      #   enable = true;
-      #   allowedTCPPorts = [ 80 443 8080 8443];
-      # };
-
+    networking.firewall = {
+      enable = true;
+      allowedTCPPorts = [ 80 443 8080 8443 ];
     };
+
+    # nextcloud module is supposed to do the reverse proxy-ing itself.
+    #services.nginx.enable = true;
+    #services.nginx.virtualHosts."${cfg.subDomain}.${config.nixos.server.domainName}" = rec {
+    #  enableACME = config.security.acme.acceptTerms;
+    #  addSSL = enableACME;
+    #  # forceSSL = enableACME;
+    #  locations."/" = {
+    #    proxyPass = "http://127.0.0.1:${builtins.toString http}/";
+    #    # proxyWebsockets = true;
+    #  };
+    #};
+
   };
 }

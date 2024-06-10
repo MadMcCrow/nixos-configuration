@@ -4,7 +4,7 @@
   imports = [
     ./command
     ./disks
-    ./hardware
+    ./vendors
     ./audio.nix
     ./boot.nix
     ./flatpak.nix
