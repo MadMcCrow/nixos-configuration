@@ -49,4 +49,11 @@ in {
     # we can unmount /mnt and continue on the boot process.
     umount /mnt
   '';
+
+  # let's have some swap partition
+  swapDevices = [{
+    device = "/dev/disk/by-partuuid/f0a00102-0eee-4065-91e5-d32b89552ce4";
+    randomEncryption.enable = true;
+    randomEncryption.allowDiscards = true; # less secure but better for the SSD
+  }];
 }

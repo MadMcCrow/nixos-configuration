@@ -34,7 +34,5 @@
     extraOptions = "--term xterm-256color";
   };
 
-  # maybe consider adding swap ?
-  swapDevices = [ ];
   system.stateVersion = "23.11";
 }
