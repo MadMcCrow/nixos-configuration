@@ -31,7 +31,7 @@ in {
     };
   };
 
-  boot.initrd.postDeviceCommands = pkgs.lib.mkBefore ''
+  boot.initrd.postDeviceCommands = pkgs.lib.mkAfter ''
     # mount the root
     mkdir -p /mnt
     mount -o subvol=/ ${btrfsRootDevice} /mnt
