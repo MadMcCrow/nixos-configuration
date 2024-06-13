@@ -35,7 +35,6 @@ in {
     # mount the root
     mkdir -p /mnt
     mount -o subvol=/ ${btrfsRootDevice} /mnt
-
     # remove any subvolume of root
     btrfs sub list -o /mnt/root |
     cut -f9 -d' ' |
@@ -47,7 +46,7 @@ in {
     # write root as a rw snapshot of our blank
     btrfs sub snapshot /mnt/root-blank /mnt/root
     # we can unmount /mnt and continue on the boot process.
-    umount /mnt
+    #umount /mnt
   '';
 
   # let's have some swap partition
