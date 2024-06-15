@@ -6,5 +6,5 @@
 #   Config can be a mix between thoses
 { ... }: {
   # TODO server/desktop priority option
-  imports = [ ./core ./desktop ./server ];
+  imports = [ ./command ./core ./desktop ./server ./vendors ];
 }

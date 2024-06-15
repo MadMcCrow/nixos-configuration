@@ -10,6 +10,11 @@
 
     home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    ## Secure boot
+    lanzaboote.url = "github:nix-community/lanzaboote/v0.4.1";
+    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
+    ## Plasma 
+    # TODO : nix run github:pjones/plasma-manager
     # plasma-manager.url = "github:pjones/plasma-manager";
     # plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
     # plasma-manager.inputs.home-manager.follows = "home-manager";
@@ -35,6 +40,7 @@
           modules = [
             ./platform/linux
             ./users
+            inputs.lanzaboote.nixosModules.lanzaboote
             inputs.home-manager.nixosModule
             inputs.home-manager.nixosModules.home-manager
             sysModule
