@@ -84,5 +84,8 @@ in {
         ++ (lib.lists.optional (config.nixos.server.domainName != null)
           config.nixos.server.domainName);
     };
+
+    # settings to detect and mount samba shares
+    services.samba-wsdd.workgroup = "WORKGROUP";
   };
 }

@@ -7,6 +7,10 @@
   # HARDWARE :
   nixos.intel.gpu.enable = true;
   nixos.intel.cpu.enable = true;
+  nixos.fileSystem.enable = true;
+  nixos.fileSystem.device =
+    "/dev/disk/by-uuid/56943bbf-7206-4e7c-800f-edc9c78621cf";
+  nixos.fileSystem.bootPartition = "/dev/disk/by-uuid/8001-EF00";
 
   # Power Management : minimize consumption
   powerManagement = {

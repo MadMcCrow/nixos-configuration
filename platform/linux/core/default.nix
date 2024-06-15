@@ -2,14 +2,13 @@
 # 	Nixos core definitions
 { ... }: {
   imports = [
-    ./command
-    ./disks
-    ./vendors
     ./audio.nix
-    ./boot.nix
-    ./flatpak.nix
+    ./filesystem.nix
+    ./kernel.nix
     ./network.nix
     ./nix.nix
+    ./secureboot.nix
+    ./tools.nix
     ./vm.nix
     ./wake.nix
   ];
