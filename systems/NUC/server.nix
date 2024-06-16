@@ -30,13 +30,17 @@ in {
   };
 
   # STORAGE :
-  # WIP : Change to ZFS pool with multiple disks as backup !
+  # Encrypted NUC SSD :
   fileSystems."${serverDataDir}" = {
-    device = "/dev/disk/by-uuid/7721a44c-046d-4799-a216-19636dfc775e";
+    device = "/dev/mapper/serverdata";
     fsType = "btrfs";
     neededForBoot = true;
-    options = [ "compress=zstd" "noatime" ];
+    options = [ "compress=zstd:6" "noatime" ];
   };
+  boot.initrd.luks.devices.serverdata = {
+      device = "/dev/disk/by-partuuid/e61ad058-918a-4e23-aa4b-04290a63ded4";
+  };
+
   services.btrfs.autoScrub.fileSystems = [ "${serverDataDir}" ];
 
 }

@@ -2,9 +2,8 @@
 # 	helps play games in nixos
 # TODO : add minecraft
 # TODO : steam stable
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, osConfig, ... }:
 let
-
   # Extest is a drop in replacement for the X11 XTEST extension. It creates a virtual device with the uinput kernel module.
   # It's been primarily developed for allowing the desktop functionality on the Steam Controller to work while Steam is open on Wayland.
   extest = pkgs.rustPlatform.buildRustPackage rec {

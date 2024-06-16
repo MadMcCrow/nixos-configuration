@@ -2,7 +2,7 @@
 # 	packages to view, listen, etc... to medias
 { pkgs, pkgs-latest, config, lib, ... }:
 let
-  # TODO:
+  # TODO :
   # clementine is a minimal music player
   my-clementine = pkgs-latest.clementine.overrideAttrs {
     # update to latest
@@ -16,7 +16,6 @@ let
     withCD = true;
     withCloud = true;
   };
-
   # SEE BAKASABLE FOR A DECENT RIPPER
   # a simple CD rip command with my ASUS drive :
   # cdrip =  with pkgs; writeShellApplication {
