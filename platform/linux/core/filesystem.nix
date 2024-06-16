@@ -13,7 +13,7 @@
 #     - /tmp  -> btrfs, clean on boot, CoW disabled (no checksum)
 #     - /home -> btrfs
 # TODO:
-#   - [ ] encrypt root with luks and TPM
+#   - [ ] encrypt root with luks and TPM see `secureboot.nix`
 #   - [ ] Create a disko nix file to create the necessary filesystem
 #   - [ ] Install script to prepare that structure
 #   - [ ] Make all nixos machines use this 
@@ -21,24 +21,50 @@
 let
   # shortcut
   cfg = config.nixos.fileSystem;
+  # detect encryption :
+  isEncrypted = cfg.luks != "";
 in {
   # interface
   options.nixos.fileSystem = with lib; {
-    enable = mkEnableOption "use standard root layout with btrfs subvolumes";
-    device = mkOption {
+    # use this shared setup :
+    enable = mkEnableOption ''
+      use standard root layout with btrfs subvolumes;
+    '';
+    # btrfs drive partition :
+    btrfs = mkOption {
       description = "block device receiving nixos";
       type = types.str;
+      default = "/dev/mapper/lvm-nixos";
     };
-    bootPartition = mkOption {
+    # allowfully encrypted root :
+    luks = mkOption {
+      description = ''
+        encrypted block device receiving nixos
+        leave empty to disable encrytion
+      '';
+      type = types.str;
+      default = "";
+    };
+    # boot vfat partition
+    boot = mkOption {
       description = "block device receiving /boot";
       type = types.str;
+      default = "/dev/disk/by-uuid/8001-EF00";
     };
+    # swap file :
+    swap = mkOption {
+      description = "block device receiving swap";
+      type = types.str;
+      default = "/dev/mapper/lvm-swap";
+    };
+    # size of tmpfs for root
     tmpfsSize = mkOption {
       description = "Size of tmpfs for root";
       type = types.str;
       default = "100M";
     };
   };
+
   # implementation
   config = lib.mkIf cfg.enable {
 
@@ -59,7 +85,7 @@ in {
     # /boot
     #    Boot is always an Fat32 partition like old times
     fileSystems."/boot" = {
-      device = cfg.bootPartition;
+      device = cfg.boot;
       fsType = "vfat";
     };
 
@@ -67,7 +93,7 @@ in {
     #   Nix store and files
     #   more compression added to save space
     fileSystems."/nix" = {
-      device = cfg.device;
+      device = cfg.btrfs;
       fsType = "btrfs";
       options = [ "subvol=/nix" "lazytime" "noatime" "compress=zstd:5" ];
     };
@@ -76,7 +102,7 @@ in {
     # Logs and variable for running software
     # Limit disk usage with more compression
     fileSystems."/var" = {
-      device = cfg.device;
+      device = cfg.btrfs;
       fsType = "btrfs";
       options = [
         "subvol=/var"
@@ -88,7 +114,7 @@ in {
     #   cleared on boot, not important
     boot.tmp.cleanOnBoot = true;
     fileSystems."/tmp" = {
-      device = cfg.device;
+      device = cfg.btrfs;
       fsType = "btrfs";
       options = [
         "subvol=/tmp"
@@ -99,11 +125,26 @@ in {
     };
 
     # /home
-    #   maybe worth having setup elsewhere ?
+    #   TODO : maybe worth having setup elsewhere ?
     fileSystems."/home" = {
-      device = cfg.device;
+      device = cfg.btrfs;
       fsType = "btrfs";
       options = [ "subvol=/home" "lazytime" "noatime" "compress=zstd" ];
+    };
+
+    # some swap hardware :
+    swapDevices = lib.lists.optionals (cfg.swap != "") [
+    {
+      device = cfg.swap;
+      randomEncryption = lib.mkIf (!isEncrypted) {
+        enable = true;
+        allowDiscards = true;
+      };
+    }];
+
+    # support encryption and decryption at boot
+    boot.initrd.luks.devices.cryptroot = lib.mkIf isEncrypted {
+      device = cfg.luks;
     };
   };
 }

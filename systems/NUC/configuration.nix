@@ -7,10 +7,10 @@
   # HARDWARE :
   nixos.intel.gpu.enable = true;
   nixos.intel.cpu.enable = true;
+
+  # filesystem :
   nixos.fileSystem.enable = true;
-  nixos.fileSystem.device =
-    "/dev/disk/by-uuid/56943bbf-7206-4e7c-800f-edc9c78621cf";
-  nixos.fileSystem.bootPartition = "/dev/disk/by-uuid/8001-EF00";
+  nixos.fileSystem.luks = "/dev/disk/by-partuuid/d2dcb58b-3582-4828-9062-0085f770a493";
 
   # Power Management : minimize consumption
   powerManagement = {
@@ -37,6 +37,5 @@
     }];
     extraOptions = "--term xterm-256color";
   };
-
   system.stateVersion = "23.11";
 }

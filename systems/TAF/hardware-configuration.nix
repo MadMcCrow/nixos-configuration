@@ -65,11 +65,4 @@
       fsType = "vfat";
     };
   };
-
-  # some swap hardware :
-  swapDevices = [{
-    device = "/dev/disk/by-partuuid/509f2c99-0e63-4af1-90fb-5ff8d76efb67";
-    randomEncryption.enable = true;
-    randomEncryption.allowDiscards = true; # less secure but better for the SSD
-  }];
 }
