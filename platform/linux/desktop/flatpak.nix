@@ -1,6 +1,5 @@
 # desktop/apps/flatpak.nix
-# TODO : get rid of impermanence module and link it ourselves
-{ pkgs, config, lib, impermanence, ... }:
+{ pkgs, config, lib, ... }:
 let cfg = config.nixos.flatpak;
 in {
   # interface

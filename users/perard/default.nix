@@ -1,6 +1,6 @@
 # perard.nix
 # 	my User
-{ pkgs, lib, pkgs-latest, ... }:
+{ pkgs, lib, ... }:
 let isLinux = lib.strings.hasSuffix "linux" pkgs.system;
 in {
   # nixos config

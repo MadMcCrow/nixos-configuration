@@ -1,5 +1,5 @@
 # Auto-update darwin with a single command
-{ pkgs, config, lib, nixpkgs, system, ... }:
+{ pkgs, ... }:
 let
   # cool script that installs/update for you :
   darwin-install = pkgs.writeShellApplication {

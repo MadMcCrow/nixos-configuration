@@ -1,6 +1,6 @@
 # containers/docker.nix
 # how to manage docker/podman containers
-{ lib, config, pkgs, ... }:
+{ lib, config, ... }:
 let cts = config.nixos.server.containers;
 in {
   # interface :

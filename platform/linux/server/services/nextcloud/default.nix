@@ -3,6 +3,6 @@
 #   TODO:
 #         - Enable HTTPS
 #         - Remote access (ie from outside of my local network)
-{ pkgs, config, lib, ... }: {
+{ ... }: {
   imports = [ ./container.nix ];
 }

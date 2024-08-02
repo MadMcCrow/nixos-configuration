@@ -1,8 +1,8 @@
 # git.nix
 # 	setup git with my user
-{ lib, pkgs-latest, config, ... }: {
+{ pkgs, ... }: {
 
-  home.packages = (with pkgs-latest; [
+  home.packages = (with pkgs; [
     git
     git-secrets
     git-credential-manager
@@ -11,7 +11,7 @@
   ]);
 
   programs.git = {
-    package = pkgs-latest.git;
+    package = pkgs.git;
     enable = true;
     userName = "MadMcCrow";
     userEmail = "noe.perard+git@gmail.com";
@@ -22,14 +22,14 @@
       core.whitespace = "trailing-space,space-before-tab";
       apply.whitespace = "fix";
       credential.helper =
-        "${pkgs-latest.git-credential-manager}/lib/git-credential-manager/git-credential-manager";
+        "${pkgs.git-credential-manager}/lib/git-credential-manager/git-credential-manager";
     };
   };
   programs.gh = {
-    package = pkgs-latest.gh;
+    package = pkgs.gh;
     enable = true;
     settings.git_protocol = "https";
-    extensions = with pkgs-latest; [ gh-eco gh-cal gh-dash ];
+    extensions = with pkgs; [ gh-eco gh-cal gh-dash ];
 
     gitCredentialHelper.enable = true;
   };

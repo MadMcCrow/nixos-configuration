@@ -1,6 +1,6 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
-{ config, pkgs, pkgs-latest, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 lib.mkIf config.nixos.desktop.enable {
   # set tag for version
@@ -14,7 +14,7 @@ lib.mkIf config.nixos.desktop.enable {
     enable = true;
     useQtScaling = true;
     # default font with extra
-    notoPackage = pkgs-latest.noto-fonts-lgc-plus;
+    notoPackage = pkgs.noto-fonts-lgc-plus;
   };
 
   # enable plasma

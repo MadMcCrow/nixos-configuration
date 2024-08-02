@@ -1,6 +1,6 @@
 # darwin.nix
 # MacOS user configuration
-{ config, pkgs, lib, pkgs-latest, ... }: {
+{ pkgs, ... }: {
 
   imports = [
     ./applications/vscode.nix
@@ -13,7 +13,7 @@
     home.stateVersion = "23.11";
 
     # packages
-    home.packages = with pkgs-latest; [
+    home.packages = with pkgs; [
       git
       git-secrets
       powerline-go

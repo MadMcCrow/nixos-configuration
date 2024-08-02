@@ -1,5 +1,5 @@
 # Nix configuration of MacBook Air
-{ pkgs, lib, ... }: {
+{ ... }: {
 
   # TODO : rename to anacreon
 

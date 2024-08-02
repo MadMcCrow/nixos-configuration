@@ -19,7 +19,7 @@ in {
     '';
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     # make etc/secureboot persistant :
     fileSystems."/etc/secureboot" = {
       device = "/nix/persist/secureboot";

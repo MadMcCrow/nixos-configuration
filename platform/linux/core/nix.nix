@@ -1,6 +1,6 @@
 # default.nix
 #	Base of modules
-{ pkgs-latest, config, lib, nixpkgs, system, ... }:
+{ pkgs, config, lib, nixpkgs, system, ... }:
 let cfg = config.nixos.nix;
 in {
 
@@ -36,7 +36,7 @@ in {
       # pin for nix3
       registry.nixpkgs.flake = nixpkgs;
 
-      package = pkgs-latest.nix;
+      package = pkgs.nix;
 
       # security, might break macOS
       settings.allowed-users = [ "@wheel" ];
@@ -85,7 +85,7 @@ in {
       # each functions gets its pkgs from here :
       config.packageOverrides = pkgs:
         (lib.mkMerge
-          (builtins.mapAttrs (name: value: (value pkgs)) cfg.overrides));
+          (builtins.mapAttrs (n: value: (value pkgs)) cfg.overrides));
     };
 
     # disable documentation (don't download, online is always up to date)
@@ -93,9 +93,9 @@ in {
 
     # add a shortcut script :
     environment.systemPackages = [
-      (pkgs-latest.writeShellApplication {
+      (pkgs.writeShellApplication {
         name = "nixos-update";
-        runtimeInputs = [ pkgs-latest.nixos-rebuild ];
+        runtimeInputs = [ pkgs.nixos-rebuild ];
         text = ''
           if [ -z "$1" ]
           then
@@ -106,7 +106,7 @@ in {
           if [ "$USER" != "root" ]; then
             echo "Please run nixos-update as root or with sudo"; exit 2
           fi
-          ${lib.getExe pkgs-latest.nixos-rebuild} "$MODE" \
+          ${lib.getExe pkgs.nixos-rebuild} "$MODE" \
           --flake ${config.system.autoUpgrade.flake}#${config.networking.hostName}
           exit $?
         '';
