@@ -1,13 +1,13 @@
 # systems/default.nix
 # build the different systems, MacOS and linux all together
 # linux deps :
-{ nixpkgs-unstable, nixpkgs, nixos-hardware, home-manager, lanzaboote, 
+{ nixpkgs-unstable, nixpkgs, nixos-hardware, home-manager, lanzaboote,
 # plasma-manager,
 # darwin deps :
-nixpkgs-darwin, home-manager-darwin, ... } :
+darwin, nixpkgs-darwin, home-manager-darwin, ... }:
 let
   # shortcut function to help  
-  mkLinux = {modules, nixpkgs ? nixpkgs, system ? "x86_64-linux" }:
+  mkLinux = { modules, nixpkgs ? nixpkgs, system ? "x86_64-linux" }:
     nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit nixpkgs nixos-hardware; };
@@ -21,11 +21,10 @@ let
     };
 
   # MACOS 
-  mkMacOS = { module, nixpkgs-darwin ? nixpkgs-darwin, system ? "aarch64-darwin" }:
-    nixpkgs-darwin.lib.darwinSystem {
-      specialArgs = {
-        nixpkgs = nixpkgs-darwin;
-      };
+  mkMacOS = { module, nixpkgs ? nixpkgs-darwin, system ? "aarch64-darwin" }:
+    darwin.lib.darwinSystem {
+      inherit system;
+      specialArgs = { inherit nixpkgs; };
       modules = [
         ../platform/darwin
         ../users
@@ -36,29 +35,25 @@ let
 in {
   nixosConfigurations = {
     # NUC
-    terminus = mkLinux {
-      modules = [./NUC];
-    };
+    terminus = mkLinux { modules = [ ./NUC ]; };
     # desktop PC
     trantor = mkLinux {
-      nixpkgs = nixpkgs-unstable;
-      modules = [./TAF];
+      nixpkgs = nixpkgs; # unstable crashes the nvidia drivers
+      modules = [ ./TAF ];
     };
     # chromebook
-    smyrno = mkLinux {
-      module = [./SCP];
-    };
+    smyrno = mkLinux { module = [ ./SCP ]; };
 
     # live iso for installation :
     iso = mkLinux {
       nixpkgs = nixpkgs-unstable;
-      module = [./ISO];
+      module = [ ./ISO ];
     };
   };
 
   darwinConfigurations = {
     # MacBook Air M1
-    anacreon = mkMacOS { module = ./systems/MBA; };
+    anacreon = mkMacOS { module = ./MBA; };
   };
 }
 

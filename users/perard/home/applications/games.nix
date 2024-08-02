@@ -6,6 +6,7 @@
 let
   # Extest is a drop in replacement for the X11 XTEST extension. It creates a virtual device with the uinput kernel module.
   # It's been primarily developed for allowing the desktop functionality on the Steam Controller to work while Steam is open on Wayland.
+  # this needs to be built as a 32 bit library
   extest = pkgs.rustPlatform.buildRustPackage rec {
     pname = "extest";
     version = "1.0.2";
@@ -64,8 +65,8 @@ in {
       (self: super: {
         steam = super.steam.override {
           extraPkgs = steamLibs;
-          extraProfile =
-            "export LD_PRELOAD=${extest}/lib/libextest.so:$LD_PRELOAD";
+          #extraProfile =
+          #  "export LD_PRELOAD=${extest}/lib/libextest.so:$LD_PRELOAD";
         };
       })
     ];

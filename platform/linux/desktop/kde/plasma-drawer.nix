@@ -1,5 +1,5 @@
 # a plasmoid for a GNOME-ish start menu
-{ stdenv, fetchFromGitHub, libsForQt5, zip }:
+{ stdenv, fetchFromGitHub, libsForQt5, zip, ... }:
 stdenv.mkDerivation rec {
 
   pname = "plasma-drawer";

@@ -54,8 +54,8 @@ in {
   config = lib.mkIf cfg.enable {
 
     # enable btrfs on the machine :
-    boot.supportedFilesystems = [ "btrfs" ];
-    boot.initrd.supportedFilesystems = [ "btrfs" ];
+    boot.supportedFilesystems = [ "btrfs" "fat32" ];
+    boot.initrd.supportedFilesystems = [ "btrfs" "fat32" ];
     services.btrfs.autoScrub.enable = true;
     services.btrfs.autoScrub.interval = "weekly";
 

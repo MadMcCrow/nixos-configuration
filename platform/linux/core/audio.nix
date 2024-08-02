@@ -14,7 +14,7 @@ in {
   };
 
   # implementation :
-  config = lib.mkIf (cfg.enable) {
+  config = lib.mkIf cfg.enable {
     # required by pulseaudio and recommended for pipewire
     security.rtkit.enable = true;
 
