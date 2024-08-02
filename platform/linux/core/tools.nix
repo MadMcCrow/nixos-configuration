@@ -1,6 +1,6 @@
 # core/tools.nix
 # tools for linux systems
-{ pkgs, config, lib, ... }: {
+{ pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     # partition management
     cloud-utils.guest

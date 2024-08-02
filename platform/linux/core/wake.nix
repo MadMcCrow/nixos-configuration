@@ -1,6 +1,6 @@
 # wake.nix
 # options to auto-shutdown and wakeup with rtc-wake
-{ pkgs, lib, config, ... }:
+{ lib, config, ... }:
 let cfg = config.nixos.autowake;
 in {
   # interface
@@ -32,7 +32,7 @@ in {
 
       startAt = cfg.time.sleep;
       # put to sleep until wake time :
-      postStart = ''
+      script = ''
         NEXT=$(systemd-analyze calendar "${cfg.time.wakeup}" | sed -n 's/\W*Next elapse: //p')
         AS_SECONDS=$(date +%s -d "$NEXT")
         echo "will wakeup on $(NEXT)"

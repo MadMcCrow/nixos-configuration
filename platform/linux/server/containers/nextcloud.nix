@@ -1,6 +1,6 @@
 # containers/nextcloud.nix
 # NEXTCLOUD from the linux server team
-{ lib, config, pkgs, ... }:
+{ lib, config, ... }:
 let
   cts = config.nixos.server.containers;
   nxc = cts.nextcloud;

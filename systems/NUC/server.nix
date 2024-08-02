@@ -1,5 +1,5 @@
 # Server specific options for NUC
-{ pkgs, ... }:
+{ ... }:
 let serverDataDir = "/var/www";
 in {
   # SERVER :
@@ -17,7 +17,6 @@ in {
     containers.home-assistant.enable = true;
     containers.home-assistant.subDomain = "irobot"; # I Robot
     containers.home-assistant.dataDir = "${serverDataDir}/homeassistant";
-
     # NIXOS SERVICES :
     # nextcloud cloud storage :
     services.nextcloud.enable = true;
@@ -25,20 +24,21 @@ in {
     services.nextcloud.dataDir = "${serverDataDir}/nextcloud";
     # adguard DNS/adblocker :
     services.adguard.enable = true;
-    services.adguard.subDomain = "periphery";
+    services.adguard.subDomain = "periphery"; # as opposed to the imperium
     services.adguard.dataDir = "${serverDataDir}/adguard";
   };
 
   # STORAGE :
   # Encrypted NUC SSD :
   fileSystems."${serverDataDir}" = {
-    device = "/dev/mapper/serverdata";
+    label = "cryptserver";
     fsType = "btrfs";
     neededForBoot = true;
     options = [ "compress=zstd:6" "noatime" ];
   };
-  boot.initrd.luks.devices.serverdata = {
-      device = "/dev/disk/by-partuuid/e61ad058-918a-4e23-aa4b-04290a63ded4";
+  boot.initrd.luks.devices."cryptserver" = {
+    device = "/dev/disk/by-partuuid/e61ad058-918a-4e23-aa4b-04290a63ded4";
+    allowDiscards = true;
   };
 
   services.btrfs.autoScrub.fileSystems = [ "${serverDataDir}" ];

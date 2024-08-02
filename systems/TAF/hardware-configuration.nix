@@ -1,68 +1,15 @@
 # hardware-configuration.nix
 # hardware specific stuff :
-{ lib, config, pkgs-latest, ... }: {
-  boot.extraModulePackages = with config.boot.kernelPackages; [
-    # asus motherboard
-    asus-wmi-sensors
-    asus-ec-sensors
-    nct6687d # https://github.com/Fred78290/nct6687d
-    # ACPI
-    acpi_call
-  ];
+{ nixos-hardware, ... }: {
 
-  boot.kernelParams = [ "amd_iommu=on" "iommu=pt" "usbcore.autosuspend=-1" ];
-  boot.blacklistedKernelModules = [ "xhci_hcd" ];
+  imports = with nixos-hardware.nixosModules;
+    [
+      asus-rog-strix-x570e # its a B450itx, but it's roughly the same hardware
+    ];
 
-  ## TODO : This is machine specific and should be brought back from core!
-  nixos.network.wakeOnLineInterfaces = [ "enp4s0" ];
-
-  ## ZFS - ERASE YOUR DARLINGS
-
-  # use latest zfs
-  boot.zfs.package = pkgs-latest.zfs;
-  boot.kernelPackages =
-    lib.mkForce pkgs-latest.zfs.latestCompatibleLinuxPackages;
-
-  services.zfs.trim.enable = true;
-  services.zfs.autoScrub.enable = true;
-
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.initrd.supportedFilesystems = [ "zfs" ];
-
-  # append zfs rollback command :
-  boot.initrd.postDeviceCommands =
-    lib.mkAfter "zfs rollback -r nixos-pool/local/root@blank";
-
-  # append zfs options :
-  boot.extraModprobeConfig =
-    lib.mkAfter "options zfs l2arc_noprefetch=0 zfs_arc_max=1073741824";
-
-  # import zfs pools at boot
-  boot.zfs = {
-    forceImportRoot = false; # if it does not work, switch to false
-    forceImportAll = false;
-    allowHibernation = true;
-  };
-
-  # add subvolumes to fileSystems:
-  fileSystems = let
-    mkZFS = name: device: neededForBoot: {
-      inherit name;
-      value = {
-        inherit device neededForBoot;
-        mountPoint = name;
-        fsType = "zfs";
-      };
-    };
-  in (builtins.listToAttrs [
-    (mkZFS "/" "nixos-pool/local/root" true)
-    (mkZFS "/nix" "nixos-pool/local/nix" true)
-    (mkZFS "/nix/persist" "nixos-pool/safe/persist" true)
-    (mkZFS "/home" "nixos-pool/safe/home" false)
-  ]) // {
-    "/boot" = {
-      device = "/dev/disk/by-uuid/8001-EF00";
-      fsType = "vfat";
-    };
+  fileSystems."/run/media/steam" = {
+    device = "nixos-pool/local/steam";
+    fsType = "zfs";
+    neededForBoot = false;
   };
 }

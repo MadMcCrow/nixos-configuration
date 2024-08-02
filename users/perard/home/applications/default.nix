@@ -1,10 +1,8 @@
 # home/applications/default.nix
 # TODO : make this a shareable module (between users)
-{ lib, osConfig, ... }: 
-let
-  graphical = osConfig.services.xserver.enable;
-in
-{
+{ lib, osConfig, ... }:
+let graphical = osConfig.services.xserver.enable;
+in {
   imports = lib.lists.optionals graphical [
     ./discord
     ./deezer.nix

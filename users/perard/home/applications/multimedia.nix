@@ -1,10 +1,10 @@
 # media.nix
 # 	packages to view, listen, etc... to medias
-{ pkgs, pkgs-latest, config, lib, ... }:
+{ pkgs, ... }:
 let
   # TODO :
   # clementine is a minimal music player
-  my-clementine = pkgs-latest.clementine.overrideAttrs {
+  my-clementine = pkgs.clementine.overrideAttrs {
     # update to latest
     src = pkgs.fetchFromGitHub {
       owner = "clementine-player";
@@ -31,7 +31,7 @@ let
   # };
 in {
   # vlc and clementine
-  home.packages = with pkgs-latest; [ vlc ];
+  home.packages = with pkgs; [ vlc ];
 
   # default to opening audio files in vlc
   xdg.mimeApps.defaultApplications = {

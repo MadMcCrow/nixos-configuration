@@ -2,23 +2,22 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
 { pkgs, ... }: {
+
   networking.hostName = "terminus";
 
   # HARDWARE :
-  nixos.intel.gpu.enable = true;
-  nixos.intel.cpu.enable = true;
+  imports = with nixos-hardware.nixosModules; [
+    common-gpu-intel
+    common-cpu-intel
+  ];
 
   # filesystem :
   nixos.fileSystem.enable = true;
-  nixos.fileSystem.luks = "/dev/disk/by-partuuid/d2dcb58b-3582-4828-9062-0085f770a493";
-
-  # Power Management : minimize consumption
-  powerManagement = {
-    enable = true;
-    cpuFreqGovernor = "powersave";
-    powertop.enable = true;
-    scsiLinkPolicy = "min_power";
-  };
+  nixos.fileSystem.boot =
+    "/dev/disk/by-partuuid/840a2fa5-c169-4150-a4eb-2da6f96f7890";
+  nixos.fileSystem.luks =
+    "/dev/disk/by-partuuid/d2dcb58b-3582-4828-9062-0085f770a493";
+  nixos.fileSystem.swap = true;
 
   # sleep at night :
   nixos.autowake = {
@@ -37,5 +36,6 @@
     }];
     extraOptions = "--term xterm-256color";
   };
-  system.stateVersion = "23.11";
+
+  system.stateVersion = "24.04";
 }

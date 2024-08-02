@@ -1,6 +1,6 @@
 # home-manager/vs-code.nix
 # 	vs code and all the extensions I Like
-{ pkgs, lib, config, pkgs-latest, ... }:
+{ pkgs, lib, config, ... }:
 let
 
   # Market place getter
@@ -228,11 +228,11 @@ in {
     # disable update check and notification
     enableUpdateCheck = false;
     # use vscodium as vscode
-    package = pkgs-latest.vscodium;
+    package = pkgs.vscodium;
     # allow installing extensions from marketplace
     mutableExtensionsDir = false;
     # enable extensions
-    extensions = with pkgs-latest.vscode-extensions;
+    extensions = with pkgs.vscode-extensions;
       [
         jnoortheen.nix-ide
         rust-lang.rust-analyzer

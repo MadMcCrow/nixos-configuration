@@ -1,5 +1,5 @@
 # linux/boot.nix
-{ config, lib, pkgs-latest, ... }:
+{ config, lib, pkgs, ... }:
 let
   # shortcut:
   cfg = config.nixos.boot;
@@ -19,7 +19,7 @@ in {
         "$y$j9T$W.JAnia2yZEpLY8RwEJ4M0$eS3XjstDqU8/5gRoTHen9RDZg4E1XNKp0ncKxGs0bY.";
     };
 
-    environment.systemPackages = [ pkgs-latest.linux-firmware ];
+    environment.systemPackages = [ pkgs.linux-firmware ];
 
     # use our other module
     nixos.nix.unfreePackages = [ "linux-firmware" ];

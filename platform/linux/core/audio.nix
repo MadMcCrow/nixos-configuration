@@ -1,6 +1,6 @@
 # desktop/audio.nix
 # Linux audio config
-{ pkgs-latest, lib, config, ... }:
+{ pkgs, lib, config, ... }:
 let
   # shortcut
   cfg = config.nixos.audio;
@@ -18,9 +18,6 @@ in {
     # required by pulseaudio and recommended for pipewire
     security.rtkit.enable = true;
 
-    # disabled for pipewire
-    sound.enable = !cfg.usePipewire;
-
     # disable pipewire if using pulseaudio
     hardware.pulseaudio.enable = cfg.enable && !cfg.usePipewire;
 
@@ -29,7 +26,7 @@ in {
       enable = true;
 
       # use latest pipewire
-      package = pkgs-latest.pipewire;
+      package = pkgs.pipewire;
 
       # use pipewire for all audio streams
       audio.enable = true;

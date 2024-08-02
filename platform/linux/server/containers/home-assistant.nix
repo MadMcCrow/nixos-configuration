@@ -1,5 +1,5 @@
 # containers/home-assistant.nix
-{ lib, config, pkgs, ... }:
+{ lib, config, ... }:
 let
   cts = config.nixos.server.containers;
   hma = cts.home-assistant;

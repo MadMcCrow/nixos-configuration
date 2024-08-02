@@ -9,7 +9,7 @@
 #           - https://apps.nextcloud.com/apps/side_menu
 #           - https://apps.nextcloud.com/apps/unroundedcorners
 #           - https://apps.nextcloud.com/apps/integration_homeassistant
-{ config, pkgs, ... }: {
+{ config, ... }: {
   config.services.nextcloud.extraApps = {
 
     # nixpkgs :

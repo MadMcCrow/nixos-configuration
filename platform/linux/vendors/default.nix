@@ -1,6 +1,9 @@
 # hardware/default.nix
 # 	vendor specific hardware support
-#   TODO : merge valve xbox and logitech
 { ... }: {
-  imports = [ ./amd.nix ./intel.nix ./hid.nix ];
+  imports = [
+    ./logitech.nix # gaming mices
+    ./microsoft.nix # xbox gamepad
+    ./valve.nix # steam controller
+  ];
 }
