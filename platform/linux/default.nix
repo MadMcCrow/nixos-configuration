@@ -5,5 +5,5 @@
 #   Config can be a mix between thoses
 # TODO : clean core vs command
 { ... }: {
-  imports = [ ./command ./core ./desktop ./server ./vendors ];
+  imports = [ ./core ./desktop ./server ./vendors ];
 }

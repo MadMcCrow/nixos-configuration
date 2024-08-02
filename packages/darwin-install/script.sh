@@ -64,8 +64,8 @@ switch()
   then
   echo "building configuration for $HOST"
   nix build ".#darwinConfigurations.$HOST.system" 1> /dev/null
-  RESULT=$?
-  if $RESULT; then
+  if [ $? == 0 ]
+  then
     echo "applying build configuration $HOST"
     ./result/sw/bin/darwin-rebuild switch --flake ".#$HOST"
   else
@@ -87,7 +87,8 @@ experimental_features
 switch "$1"
 
 # inform of the result of the script :
-if $?; then
+if [ $? == 0 ]
+then
   CURRENT_GEN=$(nix-env --list-generations | grep current | awk '{print $1}')
   echo "Successfully installed $(hostname -s)#$CURRENT_GEN"
 else 

@@ -1,6 +1,6 @@
 # firefox.nix
 # 	cooler firefox setup
-{ ... }: {
+{
   programs.firefox = {
     enable = true;
 

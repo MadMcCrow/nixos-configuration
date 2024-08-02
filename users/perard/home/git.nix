@@ -2,13 +2,13 @@
 # 	setup git with my user
 { pkgs, ... }: {
 
-  home.packages = (with pkgs; [
+  home.packages = with pkgs; [
     git
     git-secrets
     git-credential-manager
     #dotnet-runtime_7 # required by gcm
     dotnet-sdk
-  ]);
+  ];
 
   programs.git = {
     package = pkgs.git;

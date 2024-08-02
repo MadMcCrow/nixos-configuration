@@ -21,6 +21,7 @@
     # plasma-manager.inputs.home-manager.follows = "home-manager";
 
     # macOS:
+    # TODO : remove what's not useful
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.05-darwin";
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";

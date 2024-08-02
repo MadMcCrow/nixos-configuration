@@ -14,7 +14,6 @@ let
 in {
   # use latest zfs
   boot.zfs.package = pkgs.zfs;
-  boot.kernelPackages = lib.mkForce pkgs.zfs.latestCompatibleLinuxPackages;
 
   services.zfs.trim.enable = true;
   services.zfs.autoScrub.enable = true;

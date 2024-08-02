@@ -6,5 +6,5 @@
 #     - either keep or remove the TV option
 { lib, ... }: {
   options.nixos.desktop.enable = lib.mkEnableOption "NIXOS desktop experience";
-  imports = [ ./kde ./sddm ./flatpak.nix ./steam.nix ];
+  imports = [ ./flatpak.nix ./sddm.nix ./xfce.nix ./steam.nix ];
 }

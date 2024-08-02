@@ -1,6 +1,6 @@
-# linux/kernel.nix
+# linux/locale.nix
 # locale options for nixos
-{ config, lib, ... }:
+{ config, ... }:
 let
   # glibc locales
   us-utf8 = "en_US.UTF-8";

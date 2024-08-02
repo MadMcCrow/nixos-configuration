@@ -9,7 +9,7 @@
   # environment.etc."ssh/sshd_config".target = environment.etc."ssh/sshd_config"
 
   # allow users to login via ssh
-  security.pam.enableSSHAgentAuth = true;
+  security.pam.sshAgentAuth.enable = true;
 
   # remote shell :
   services.openssh = {

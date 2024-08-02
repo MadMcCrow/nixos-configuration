@@ -3,12 +3,14 @@
 { ... }: {
   imports = [
     ./audio.nix
+    ./boot.nix
     ./filesystem.nix
-    ./kernel.nix
+    ./fonts.nix
+    ./locale.nix
     ./network.nix
     ./nix.nix
     ./secureboot.nix
-    ./tools.nix
+    ./security.nix
     ./vm.nix
     ./wake.nix
   ];

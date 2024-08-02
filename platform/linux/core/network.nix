@@ -11,7 +11,7 @@ in {
   options.nixos.network = with lib.types; {
     # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
     wakeOnLineInterfaces = lib.mkOption {
-      type = (listOf str);
+      type = listOf str;
       description = "Interfaces to enable wakeOnLan";
       default = [ ];
     };
@@ -65,7 +65,7 @@ in {
     # avahi for mdns :
     services.avahi = rec {
       enable = true;
-      nssmdns = true;
+      nssmdns4 = true;
       ipv6 = true;
       ipv4 = true;
       openFirewall = true;
