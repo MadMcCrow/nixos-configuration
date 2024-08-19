@@ -4,8 +4,9 @@
 { nixpkgs-unstable, nixpkgs, nixos-hardware, home-manager, lanzaboote,
 # plasma-manager,
 # darwin deps :
-darwin, nixpkgs-darwin, home-manager-darwin, ... }:
+darwin, nixpkgs-darwin, home-manager-darwin, mac-app-util, ... }:
 let
+  # TODO : move in within platform to have the function there 
   # shortcut function to help  
   mkLinux = { modules, nixpkgs ? nixpkgs, system ? "x86_64-linux" }:
     nixpkgs.lib.nixosSystem {
@@ -28,8 +29,18 @@ let
       modules = [
         ../platform/darwin
         ../users
-        home-manager-darwin.darwinModules.home-manager
         module
+        mac-app-util.darwinModules.default
+        home-manager-darwin.darwinModules.home-manager
+        (
+            { pkgs, config, inputs, ... }:
+            {
+              # To enable it for all users:
+              home-manager.sharedModules = [
+                mac-app-util.homeManagerModules.default
+              ];
+            }
+        )
       ];
     };
 in {

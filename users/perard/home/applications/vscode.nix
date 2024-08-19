@@ -65,14 +65,6 @@ let
     sha256 = "sha256-ZMNQQO1CyyQPg2WJgxKAuk/a1K1miGdCxCqZE0uFg34=";
   };
 
-  # MS python
-  ms-python = vsMarketplace {
-    name = "python";
-    publisher = "ms-python";
-    version = "2024.13.2024080201";
-    sha256 = "sha256-upgme7oS9+OpiqOBy8lxq5Rckvo6zhPJ804DWWCdfWI=";
-  };
-
   # MS cpp
   ms-cpp = vsMarketplace {
     name = "cpptools-extension-pack";
@@ -175,6 +167,9 @@ in {
         xaver.clang-format
         llvm-vs-code-extensions.vscode-clangd
         github.github-vscode-theme
+        ms-python.python
+        ms-pyright.pyright
+        golang.go
       ] ++ [
         godot-tools
         godot-files
@@ -184,7 +179,7 @@ in {
         #material-theme
         intellicode
         haxe
-        ms-python
+        # ms-python we use the version from nix -> otherwise it is hard to synchronise with vscodium versions 
         ms-cpp
         ms-dotnet
         ms-anycode
@@ -199,6 +194,7 @@ in {
 
     # JSon settings
     userSettings = {
+      "telemetry.telemetryLevel" = "off";
       "anycode.language.features" = {
         "diagnostics" = true;
         "folding" = true;

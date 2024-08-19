@@ -11,7 +11,7 @@
     programs.zsh.enable = true;
     # home manager config users :
     home-manager = {
-      # useGlobalPkgs = true;
+      useGlobalPkgs = true;
       useUserPackages = true;
       # extraModules = [ plasma-manager.homeManagerModules.plasma-manager ];
       # extraSpecialArgs = { pkgs = pkgs-latest; };

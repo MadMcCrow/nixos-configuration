@@ -27,6 +27,7 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     home-manager-darwin.url = "github:nix-community/home-manager/release-24.05";
     home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    mac-app-util.url = "github:hraban/mac-app-util";
   };
 
   outputs = { nixpkgs, ... }@inputs:
