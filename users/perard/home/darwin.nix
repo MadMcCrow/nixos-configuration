@@ -5,6 +5,7 @@
   imports = [
     ./applications/vscode.nix
     ./shell.nix
+    ./ssh.nix
     # ./git.nix # cannot get gcm (because dotnet mirror issue on MacOS)
   ];
   config = {

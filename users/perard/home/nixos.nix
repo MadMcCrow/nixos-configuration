@@ -6,6 +6,7 @@
     ./applications # TODO : make a module with options :
     ./git.nix
     ./shell.nix
+    ./ssh.nix
     ./nixpkgs.nix # we need this module to work
   ];
   # home setup
