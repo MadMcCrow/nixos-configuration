@@ -4,7 +4,8 @@
 let
   # shortcut :
   cfg = config.nixos.vendor.valve;
-in {
+in
+{
   # interface :
   options.nixos.vendor.valve = with lib; {
     enable = mkEnableOption "valve hardware (steam controller, Vive, ...)";

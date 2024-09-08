@@ -1,49 +1,10 @@
 # systems/default.nix
 # build the different systems, MacOS and linux all together
 # linux deps :
-{ nixpkgs-unstable, nixpkgs, nixos-hardware, home-manager, lanzaboote,
-# plasma-manager,
-# darwin deps :
-darwin, nixpkgs-darwin, home-manager-darwin, mac-app-util, ... }:
-let
-  # TODO : move in within platform to have the function there 
-  # shortcut function to help  
-  mkLinux = { modules, nixpkgs ? nixpkgs, system ? "x86_64-linux" }:
-    nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = { inherit nixpkgs nixos-hardware; };
-      modules = [
-        ../platform/linux
-        ../users
-        lanzaboote.nixosModules.lanzaboote
-        home-manager.nixosModule
-        home-manager.nixosModules.home-manager
-      ] ++ modules;
-    };
-
-  # MACOS 
-  mkMacOS = { module, nixpkgs ? nixpkgs-darwin, system ? "aarch64-darwin" }:
-    darwin.lib.darwinSystem {
-      inherit system;
-      specialArgs = { inherit nixpkgs; };
-      modules = [
-        ../platform/darwin
-        ../users
-        module
-        mac-app-util.darwinModules.default
-        home-manager-darwin.darwinModules.home-manager
-        (
-            { pkgs, config, inputs, ... }:
-            {
-              # To enable it for all users:
-              home-manager.sharedModules = [
-                mac-app-util.homeManagerModules.default
-              ];
-            }
-        )
-      ];
-    };
-in {
+{ nixos-hardware, ... }@args:
+with (import ./linux.nix args);
+with (import ./darwin.nix args);
+{
   nixosConfigurations = {
     # NUC
     terminus = mkLinux { modules = [ ./NUC ]; };
@@ -53,12 +14,12 @@ in {
       modules = [ ./TAF ];
     };
     # chromebook
-    smyrno = mkLinux { module = [ ./SCP ]; };
+    smyrno = mkLinux { modules = [ ./SCP ]; };
 
     # live iso for installation :
     iso = mkLinux {
       nixpkgs = nixpkgs-unstable;
-      module = [ ./ISO ];
+      modules = [ ./ISO ];
     };
   };
 
@@ -67,4 +28,3 @@ in {
     anacreon = mkMacOS { module = ./MBA; };
   };
 }
-

@@ -1,8 +1,13 @@
 # base configuration for making bootable isos
-{ pkgs, lib, nixpkgs, ... }: {
+{
+  pkgs,
+  lib,
+  nixpkgs,
+  ...
+}:
+{
 
-  imports =
-    [ "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix" ];
+  imports = [ "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix" ];
 
   # use the latest Linux kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;

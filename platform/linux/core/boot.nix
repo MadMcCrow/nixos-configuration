@@ -3,7 +3,8 @@
 let
   # shortcut:
   cfg = config.nixos.boot;
-in {
+in
+{
   options.nixos.boot = with lib; {
     # enable faster boot (disable many checks)
     fastBoot = mkEnableOption "Simplify boot process";

@@ -1,6 +1,11 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 lib.mkIf config.nixos.desktop.enable {
   # set tag for version
@@ -30,7 +35,8 @@ lib.mkIf config.nixos.desktop.enable {
   services.xserver.desktopManager.xterm.enable = false;
   services.xserver.excludePackages = [ pkgs.xterm ];
   # remove useless KDE packages
-  environment.plasma5.excludePackages = with pkgs.libsForQt5;
+  environment.plasma5.excludePackages =
+    with pkgs.libsForQt5;
     [
       oxygen
       khelpcenter
@@ -42,7 +48,8 @@ lib.mkIf config.nixos.desktop.enable {
       kwallet-pam
       kate
       okular
-    ] ++ (with pkgs.libsForQt5; [ kemoticons ]);
+    ]
+    ++ (with pkgs.libsForQt5; [ kemoticons ]);
 
   environment.systemPackages = with pkgs; [
     lightly-boehs

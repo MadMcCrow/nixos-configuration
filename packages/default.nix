@@ -10,8 +10,11 @@ let
     ./termcolors
   ];
 
-  # generate Attrset of all packages :
-in builtins.listToAttrs (map (x: rec {
-  value = callPackage x { };
-  name = lib.getName value;
-}) modules)
+in
+# generate Attrset of all packages :
+builtins.listToAttrs (
+  map (x: rec {
+    value = callPackage x { };
+    name = lib.getName value;
+  }) modules
+)

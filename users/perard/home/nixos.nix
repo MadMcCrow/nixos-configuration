@@ -1,6 +1,7 @@
 # linux.nix
 # linux user configuration
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   # import modules
   imports = [
     ./applications # TODO : make a module with options :
@@ -18,7 +19,13 @@
     xdg.mimeApps.enable = true;
 
     # packages to install to profile
-    home.packages = with pkgs; [ fzf jetbrains-mono python3 speechd bitwarden ];
+    home.packages = with pkgs; [
+      fzf
+      jetbrains-mono
+      python3
+      speechd
+      bitwarden
+    ];
     # gpg key management (linux only)
     services.gpg-agent = {
       enable = true;

@@ -1,6 +1,7 @@
 # hardware-configuration.nix
 # hardware specific stuff :
-{ pkgs, config, ... }: {
+{ pkgs, config, ... }:
+{
 
   boot.extraModulePackages = with config.boot.kernelPackages; [
     # asus motherboard
@@ -12,8 +13,12 @@
   ];
   # LTS version :
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_6; # lts
-  boot.kernelParams =
-    [ "nohibernate" "quiet" "idle=nomwait" "usbcore.autosuspend=-1" ];
+  boot.kernelParams = [
+    "nohibernate"
+    "quiet"
+    "idle=nomwait"
+    "usbcore.autosuspend=-1"
+  ];
   boot.blacklistedKernelModules = [ "xhci_hcd" ];
 
   fileSystems."/run/media/steam" = {

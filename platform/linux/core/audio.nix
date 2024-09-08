@@ -1,14 +1,24 @@
 # desktop/audio.nix
 # Linux audio config
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   # shortcut
   cfg = config.nixos.audio;
-in {
+in
+{
   # audio options :
   options.nixos.audio = with lib; {
-    enable = mkEnableOption "audio support" // { default = true; };
-    usePipewire = mkEnableOption "pipewire for audio" // { default = true; };
+    enable = mkEnableOption "audio support" // {
+      default = true;
+    };
+    usePipewire = mkEnableOption "pipewire for audio" // {
+      default = true;
+    };
     # TODO :
     mkChromecast = lib.mkEnableOption "Chromecast for desktop linux";
   };

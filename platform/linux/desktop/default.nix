@@ -4,7 +4,13 @@
 #     - if KDE gets better, switch to KDE
 #     - investigate cosmic
 #     - either keep or remove the TV option
-{ lib, ... }: {
+{ lib, ... }:
+{
   options.nixos.desktop.enable = lib.mkEnableOption "NIXOS desktop experience";
-  imports = [ ./flatpak.nix ./sddm.nix ./xfce.nix ./steam.nix ];
+  imports = [
+    ./flatpak.nix
+    ./sddm.nix
+    ./xfce.nix
+    ./steam.nix
+  ];
 }

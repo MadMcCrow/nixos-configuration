@@ -1,6 +1,7 @@
 # darwin.nix
 # MacOS user configuration
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
 
   imports = [
     ./applications/vscode.nix

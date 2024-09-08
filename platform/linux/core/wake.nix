@@ -1,22 +1,27 @@
 # wake.nix
 # options to auto-shutdown and wakeup with rtc-wake
 { lib, config, ... }:
-let cfg = config.nixos.autowake;
-in {
+let
+  cfg = config.nixos.autowake;
+in
+{
   # interface
   options.nixos.autowake = with lib; {
     enable = mkEnableOption "auto sleep/wake up timer";
     # timer options :
-    time = let
-      mkTimeOption = desc:
-        mkOption {
-          type = types.str; # TODO : use systemdUtils timers
-          description = desc;
-        };
-    in {
-      sleep = mkTimeOption "time to put to sleep";
-      wakeup = mkTimeOption "time to wake up";
-    };
+    time =
+      let
+        mkTimeOption =
+          desc:
+          mkOption {
+            type = types.str; # TODO : use systemdUtils timers
+            description = desc;
+          };
+      in
+      {
+        sleep = mkTimeOption "time to put to sleep";
+        wakeup = mkTimeOption "time to wake up";
+      };
   };
 
   # implementation :

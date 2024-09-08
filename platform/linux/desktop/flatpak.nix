@@ -1,7 +1,14 @@
 # desktop/apps/flatpak.nix
-{ pkgs, config, lib, ... }:
-let cfg = config.nixos.flatpak;
-in {
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+let
+  cfg = config.nixos.flatpak;
+in
+{
   # interface
   options.nixos.flatpak.enable = lib.mkEnableOption "flatpak apps";
 
@@ -19,8 +26,13 @@ in {
     xdg.portal = {
       enable = true;
       config.common.default = lib.mkDefault "xapp"; # default to Xapp
-      extraPortals = lib.mkDefault
-        (with pkgs; [ xdg-desktop-portal-wlr xdg-desktop-portal-xapp ]);
+      extraPortals = lib.mkDefault (
+        with pkgs;
+        [
+          xdg-desktop-portal-wlr
+          xdg-desktop-portal-xapp
+        ]
+      );
     };
 
     services.flatpak.enable = true;

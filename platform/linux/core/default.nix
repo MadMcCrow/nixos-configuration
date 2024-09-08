@@ -1,6 +1,7 @@
 # core/default.nix
 # 	Nixos core definitions
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./audio.nix
     ./boot.nix

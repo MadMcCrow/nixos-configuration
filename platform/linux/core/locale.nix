@@ -5,8 +5,9 @@ let
   # glibc locales
   us-utf8 = "en_US.UTF-8";
   fr-utf8 = "fr_FR.UTF-8";
-  # c-utf8 = "C.UTF-8";
-in {
+in
+# c-utf8 = "C.UTF-8";
+{
   config = {
 
     # language formats :
@@ -27,7 +28,10 @@ in {
 
     # time zone stuff :
     time.timeZone = "Europe/Paris";
-    services.timesyncd.servers = [ "fr.pool.ntp.org" "europe.pool.ntp.org" ];
+    services.timesyncd.servers = [
+      "fr.pool.ntp.org"
+      "europe.pool.ntp.org"
+    ];
     location.provider = "geoclue2";
 
     # keyboard settings :

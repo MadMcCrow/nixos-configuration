@@ -1,7 +1,8 @@
 # TAF
 #   previously "AF"
 #   this is my main desktop PC
-{ ... }: {
+{ ... }:
+{
 
   networking.hostName = "trantor"; # previously "nixAF"
 

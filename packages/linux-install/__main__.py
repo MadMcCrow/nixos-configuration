@@ -14,7 +14,7 @@ if __name__ == "__main__" :
     try:
         parser = argparse.ArgumentParser(
                         prog='nixos install script generator',
-                        description='build a shell script to help you install your os!',
+                        description='install nixos with python !',
                         epilog='used for every system !')
         parser.add_argument('hostname')
         parser.add_argument('-f', '--flake', default='.')

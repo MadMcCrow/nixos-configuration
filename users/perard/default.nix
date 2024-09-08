@@ -1,8 +1,10 @@
 # perard.nix
 # 	my User
 { pkgs, lib, ... }:
-let isLinux = lib.strings.hasSuffix "linux" pkgs.system;
-in {
+let
+  isLinux = lib.strings.hasSuffix "linux" pkgs.system;
+in
+{
   # nixos config
   users.users.perard = lib.mkMerge [
     {
@@ -12,9 +14,14 @@ in {
     }
     (lib.attrsets.optionalAttrs isLinux {
       group = "users";
-      extraGroups = [ "wheel" "steam" "flatpak" "networkmanager" "docker" ];
-      initialHashedPassword =
-        "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
+      extraGroups = [
+        "wheel"
+        "steam"
+        "flatpak"
+        "networkmanager"
+        "docker"
+      ];
+      initialHashedPassword = "$6$7aX/uB.Zx8T.2UVO$RWDwkP1eVwwmz3n5lCAH3Nb7k/Q6wYZh05V8xai.NMtq1g3jjVNLvG8n.4DlOtR/vlPCjGXNSHTZSlB2sO7xW.";
       isNormalUser = true;
     })
     (lib.attrsets.optionalAttrs (!isLinux) { home = "/Users/perard"; })

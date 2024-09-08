@@ -1,7 +1,8 @@
 # SCP
 # Samsung Chromebook Pro (Caroline)
 # this is an old chromebook running NixOS on top of MrChromebox UEFI
-{ ... }: {
+{ ... }:
+{
   #
   networking.hostName = "smyrno";
 
