@@ -4,6 +4,12 @@
 #        - Servers  -> TUI , remote and virtualisation
 #   Config can be a mix between thoses
 # TODO : clean core vs command
-{ ... }: {
-  imports = [ ./core ./desktop ./server ./vendors ];
+{ ... }:
+{
+  imports = [
+    ./core
+    ./desktop
+    ./server
+    ./vendors
+  ];
 }

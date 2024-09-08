@@ -1,8 +1,17 @@
 # default.nix
 #	Base of modules
-{ pkgs, config, lib, nixpkgs, system, ... }:
-let cfg = config.nixos.nix;
-in {
+{
+  pkgs,
+  config,
+  lib,
+  nixpkgs,
+  system,
+  ...
+}:
+let
+  cfg = config.nixos.nix;
+in
+{
 
   # interface :
   options.nixos.nix = with lib; {
@@ -43,7 +52,10 @@ in {
         allowed-users = [ "@wheel" ];
 
         # enable flakes and commands
-        experimental-features = [ "nix-command" "flakes" ];
+        experimental-features = [
+          "nix-command"
+          "flakes"
+        ];
 
         # binary caches
         substituters = [
@@ -83,13 +95,11 @@ in {
       inherit (cfg) overlays;
 
       # predicate from list
-      config.allowUnfreePredicate = pkg:
-        builtins.elem (lib.getName pkg) cfg.unfreePackages;
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
 
       # each functions gets its pkgs from here :
-      config.packageOverrides = pkgs:
-        (lib.mkMerge
-          (builtins.mapAttrs (n: value: (value pkgs)) cfg.overrides));
+      config.packageOverrides =
+        pkgs: (lib.mkMerge (builtins.mapAttrs (n: value: (value pkgs)) cfg.overrides));
     };
 
     # disable documentation (don't download, online is always up to date)

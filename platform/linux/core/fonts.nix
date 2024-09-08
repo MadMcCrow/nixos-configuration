@@ -1,6 +1,11 @@
 # fonts.nix
 # 	cool fonts I need on my systems
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   nerdFonts = with pkgs; [
     nerdfonts
@@ -8,9 +13,15 @@ let
     powerline-fonts
     fira-code-nerdfont
   ];
-  displayFonts = with pkgs; [ noto-fonts open-sans roboto ubuntu_font_family ];
+  displayFonts = with pkgs; [
+    noto-fonts
+    open-sans
+    roboto
+    ubuntu_font_family
+  ];
   monoFonts = with pkgs; [ jetbrains-mono ];
-in {
+in
+{
   config = {
     environment.defaultPackages = nerdFonts ++ displayFonts ++ monoFonts;
     fonts.fontDir.enable = true;

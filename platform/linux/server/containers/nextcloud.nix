@@ -4,7 +4,8 @@
 let
   cts = config.nixos.server.containers;
   nxc = cts.nextcloud;
-in {
+in
+{
   # interface :
   options.nixos.server.containers.nextcloud = with lib; {
     enable = mkEnableOption "nextcloud server";
@@ -15,8 +16,7 @@ in {
     };
     subDomain = mkOption {
       description = "subdomain to use for nextcloud service";
-      type = with types;
-        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
       default = "nextcloud";
     };
   };
@@ -40,8 +40,15 @@ in {
       autoStart = true;
       hostname = "${nxc.subDomain}.${config.nixos.server.domainName}";
       image = "lscr.io/linuxserver/nextcloud:latest";
-      volumes = [ "${nxc.dataDir}/config:/config" "${nxc.dataDir}/data:/data" ];
-      ports = [ "443:443" "8443:8443" "8080:8080" ];
+      volumes = [
+        "${nxc.dataDir}/config:/config"
+        "${nxc.dataDir}/data:/data"
+      ];
+      ports = [
+        "443:443"
+        "8443:8443"
+        "8080:8080"
+      ];
       environment = {
         PUID = "1000";
         PGID = "1000";

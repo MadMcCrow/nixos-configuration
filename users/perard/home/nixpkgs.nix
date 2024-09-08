@@ -1,7 +1,8 @@
 # default.nix
 # default home config
 # TODO : make it a re-usable user module
-{ lib, config, ... }: {
+{ lib, config, ... }:
+{
 
   # custom options
   options = with lib; {
@@ -28,8 +29,7 @@
   config = {
     # HM Setup
     nixpkgs.overlays = config.packages.overlays;
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) config.packages.unfree;
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config.packages.unfree;
     programs.home-manager.enable = true;
   };
 }

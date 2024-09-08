@@ -1,8 +1,10 @@
 # hardware/hid.nix
 # support for logitech mouses
 { lib, config, ... }:
-let cfg = config.nixos.vendor.xbox;
-in {
+let
+  cfg = config.nixos.vendor.xbox;
+in
+{
   # interface :
   options.nixos.vendor.xbox = with lib; {
     enable = mkEnableOption "xbox hardware (controller, dongle, ...)";

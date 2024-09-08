@@ -20,7 +20,8 @@ let
   cfg = config.nixos.fileSystem;
   # detect encryption :
   isEncrypted = cfg.luks != "";
-in {
+in
+{
   # interface
   options.nixos.fileSystem = with lib; {
     # use this shared setup :
@@ -54,8 +55,14 @@ in {
   config = lib.mkIf cfg.enable {
 
     # enable btrfs on the machine :
-    boot.supportedFilesystems = [ "btrfs" "fat32" ];
-    boot.initrd.supportedFilesystems = [ "btrfs" "fat32" ];
+    boot.supportedFilesystems = [
+      "btrfs"
+      "fat32"
+    ];
+    boot.initrd.supportedFilesystems = [
+      "btrfs"
+      "fat32"
+    ];
     services.btrfs.autoScrub.enable = true;
     services.btrfs.autoScrub.interval = "weekly";
 
@@ -64,7 +71,11 @@ in {
     fileSystems."/" = {
       device = "none";
       fsType = "tmpfs";
-      options = [ "defaults" "size=${cfg.tmpfsSize}" "mode=755" ];
+      options = [
+        "defaults"
+        "size=${cfg.tmpfsSize}"
+        "mode=755"
+      ];
     };
 
     # /boot
@@ -80,7 +91,12 @@ in {
     fileSystems."/nix" = {
       label = "nixos";
       fsType = "btrfs";
-      options = [ "subvol=/nix" "lazytime" "noatime" "compress=zstd:5" ];
+      options = [
+        "subvol=/nix"
+        "lazytime"
+        "noatime"
+        "compress=zstd:5"
+      ];
     };
 
     # /var/log
@@ -127,25 +143,33 @@ in {
     fileSystems."/home" = {
       label = "nixos";
       fsType = "btrfs";
-      options = [ "subvol=/home" "lazytime" "noatime" "compress=zstd" ];
+      options = [
+        "subvol=/home"
+        "lazytime"
+        "noatime"
+        "compress=zstd"
+      ];
     };
 
     # some swap hardware :
-    swapDevices = with lib;
-      lists.optionals (cfg.swap) [{
-        label = "swap";
-        randomEncryption = mkIf (!isEncrypted) {
-          enable = true;
-          allowDiscards = true;
-        };
-        # there's no need to do this, because it
-        # will be on the same encrypted disk as 
-        # root.
-        #encrypted = mkIf isEncrypted {
-        #  enable = true;
-        #  device = cfg.luks;
-        #};
-      }];
+    swapDevices =
+      with lib;
+      lists.optionals (cfg.swap) [
+        {
+          label = "swap";
+          randomEncryption = mkIf (!isEncrypted) {
+            enable = true;
+            allowDiscards = true;
+          };
+          # there's no need to do this, because it
+          # will be on the same encrypted disk as 
+          # root.
+          #encrypted = mkIf isEncrypted {
+          #  enable = true;
+          #  device = cfg.luks;
+          #};
+        }
+      ];
 
     # support encryption and decryption at boot
     boot.initrd.luks.devices.cryptroot = lib.mkIf isEncrypted {

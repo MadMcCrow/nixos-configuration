@@ -1,11 +1,17 @@
 # secureboot.nix
 # module to use secureboot, full disk encryption
 # and TPM enrollment for keys.
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   # shortcut
   cfg = config.nixos.secureboot;
-in {
+in
+{
   # interface
   options.nixos.secureboot = with lib; {
     enable = mkEnableOption ''

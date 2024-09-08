@@ -1,8 +1,10 @@
 # hardware/hid.nix
 # support for logitech mouses
 { lib, config, ... }:
-let cfg = config.nixos.vendor.logitech;
-in {
+let
+  cfg = config.nixos.vendor.logitech;
+in
+{
   # interface :
   options.nixos.vendor.logitech = with lib; {
     enable = mkEnableOption "logitech hardware";

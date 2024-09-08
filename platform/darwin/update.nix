@@ -6,6 +6,7 @@ let
     name = "darwin-install";
     text = builtins.readFile ./scripts/install-darwin.sh;
   };
-in {
+in
+{
   #environment.systemPackages = [ darwin-install ];
 }

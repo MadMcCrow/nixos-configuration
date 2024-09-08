@@ -1,11 +1,17 @@
 # container.nix
 # Changes to the host system to have a nextcloud container
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # shortcut
   cfg = config.nixos.server.services.nextcloud;
   hostName = "nextcloud";
-in {
+in
+{
 
   # interface
   options.nixos.server.services.nextcloud = with lib; {
@@ -18,8 +24,7 @@ in {
 
     subDomain = mkOption {
       description = "subdomain to use for nextcloud service";
-      type = with types;
-        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
       default = "nextcloud";
     };
   };
@@ -51,24 +56,29 @@ in {
         };
       };
 
-      config = { ... }: {
-        # import the nextcloud service configuration
-        imports = [ ./nc.nix ./apps.nix ];
+      config =
+        { ... }:
+        {
+          # import the nextcloud service configuration
+          imports = [
+            ./nc.nix
+            ./apps.nix
+          ];
 
-        # TODO : move to all containers !
-        config = {
-          # set nextcloud settings
-          nc.hostName = "${cfg.subDomain}.${config.nixos.server.domainName}";
-          # import the let's encrypt certificate from host
-          security.acme = {
-            inherit (config.security.acme) acceptTerms defaults;
+          # TODO : move to all containers !
+          config = {
+            # set nextcloud settings
+            nc.hostName = "${cfg.subDomain}.${config.nixos.server.domainName}";
+            # import the let's encrypt certificate from host
+            security.acme = {
+              inherit (config.security.acme) acceptTerms defaults;
+            };
+
+            networking.domain = config.networking.domain;
+            networking.useHostResolvConf = true;
+            system.stateVersion = config.system.stateVersion;
           };
-
-          networking.domain = config.networking.domain;
-          networking.useHostResolvConf = true;
-          system.stateVersion = config.system.stateVersion;
         };
-      };
     };
 
     # make sure the dataDir exists on Host
@@ -82,7 +92,12 @@ in {
 
     networking.firewall = {
       enable = true;
-      allowedTCPPorts = [ 80 443 8080 8443 ];
+      allowedTCPPorts = [
+        80
+        443
+        8080
+        8443
+      ];
     };
 
     # nextcloud module is supposed to do the reverse proxy-ing itself.

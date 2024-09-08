@@ -1,4 +1,5 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }:
+{
 
   programs.zsh = {
     enable = true;
@@ -7,16 +8,18 @@
     enableCompletion = true;
     oh-my-zsh.enable = true;
     autocd = true;
-    plugins = [{
-      name = "zsh-nix-shell";
-      file = "nix-shell.plugin.zsh";
-      src = pkgs.fetchFromGitHub {
-        owner = "chisui";
-        repo = "zsh-nix-shell";
-        rev = "v0.8.0";
-        hash = "sha256-Z6EYQdasvpl1P78poj9efnnLj7QQg13Me8x1Ryyw+dM=";
-      };
-    }];
+    plugins = [
+      {
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "chisui";
+          repo = "zsh-nix-shell";
+          rev = "v0.8.0";
+          hash = "sha256-Z6EYQdasvpl1P78poj9efnnLj7QQg13Me8x1Ryyw+dM=";
+        };
+      }
+    ];
     history = {
       size = 100;
       ignoreDups = true;
@@ -39,7 +42,10 @@
     enable = true;
     # programs.eza.enableBashIntegration <- defaults to true
     git = true;
-    extraOptions = [ "--group-directories-first" "--header" ];
+    extraOptions = [
+      "--group-directories-first"
+      "--header"
+    ];
   };
 
   # fuzzy search :
@@ -84,14 +90,30 @@
 
   programs.powerline-go = {
     enable = true;
-    modules = [ "user" "host" "nix-shell" "cwd" "gitlite" "root" ];
-    modulesRight = [ "exit" "time" ];
+    modules = [
+      "user"
+      "host"
+      "nix-shell"
+      "cwd"
+      "gitlite"
+      "root"
+    ];
+    modulesRight = [
+      "exit"
+      "time"
+    ];
     settings = {
       hostname-only-if-ssh = true;
       numeric-exit-codes = true;
       cwd-max-depth = 3;
       git-mode = "compact";
-      priority = [ "root" "cwd" "user" "nix-shell" "gitlite" ];
+      priority = [
+        "root"
+        "cwd"
+        "user"
+        "nix-shell"
+        "gitlite"
+      ];
     };
   };
 

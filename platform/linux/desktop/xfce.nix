@@ -1,6 +1,11 @@
 # desktop/xfce.nix
 # 	XFCE FOR DESKTOP
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 lib.mkIf config.nixos.desktop.enable {
   # set tag for version
@@ -15,6 +20,5 @@ lib.mkIf config.nixos.desktop.enable {
   };
   # disable xterm
   services.xserver.desktopManager.xterm.enable = false;
-
 
 }

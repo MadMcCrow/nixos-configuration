@@ -1,21 +1,30 @@
 # default.nix
 #	Base of modules
-{ pkgs, config, lib, nixpkgs, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  nixpkgs,
+  ...
+}:
 let
   # shortcut
   cfg = config.darwin;
 
   # optiontype for overlays
-  overlaysType = with lib;
+  overlaysType =
+    with lib;
     let
       subType = mkOptionType {
         name = "nixpkgs-overlay";
         check = isFunction;
         merge = mergeOneOption;
       };
-    in types.listOf subType;
+    in
+    types.listOf subType;
 
-in {
+in
+{
 
   # interface : a way to expose settings
   options.darwin = {
@@ -50,7 +59,10 @@ in {
 
       settings = {
         # keep flake and commands
-        experimental-features = [ "nix-command" "flakes" ];
+        experimental-features = [
+          "nix-command"
+          "flakes"
+        ];
 
         # cache providers
         substituters = [
@@ -77,12 +89,14 @@ in {
       gc.automatic = true;
 
       # redo what's in settings + add x86 to M1 macs
-      extraOptions = ''
-        auto-optimise-store = true
-        experimental-features = nix-command flakes
-      '' + lib.optionalString (pkgs.system == "aarch64-darwin") ''
-        extra-platforms = x86_64-darwin aarch64-darwin
-      '';
+      extraOptions =
+        ''
+          auto-optimise-store = true
+          experimental-features = nix-command flakes
+        ''
+        + lib.optionalString (pkgs.system == "aarch64-darwin") ''
+          extra-platforms = x86_64-darwin aarch64-darwin
+        '';
     };
 
     nixpkgs = {
@@ -100,13 +114,11 @@ in {
       #  };
 
       # predicate from list
-      config.allowUnfreePredicate = pkg:
-        builtins.elem (lib.getName pkg) cfg.packages.unfreePackages;
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.packages.unfreePackages;
 
       # each functions gets its pkgs from here :
-      config.packageOverrides = pkgs:
-        (lib.mkMerge (builtins.mapAttrs (name: value: (value pkgs))
-          cfg.packages.overrides));
+      config.packageOverrides =
+        pkgs: (lib.mkMerge (builtins.mapAttrs (name: value: (value pkgs)) cfg.packages.overrides));
     };
 
     programs.nix-index.enable = true;

@@ -1,7 +1,9 @@
 # Server specific options for NUC
 { ... }:
-let serverDataDir = "/var/www";
-in {
+let
+  serverDataDir = "/var/www";
+in
+{
   # SERVER :
   nixos.server = {
     enable = true;
@@ -34,7 +36,10 @@ in {
     label = "cryptserver";
     fsType = "btrfs";
     neededForBoot = true;
-    options = [ "compress=zstd:6" "noatime" ];
+    options = [
+      "compress=zstd:6"
+      "noatime"
+    ];
   };
   boot.initrd.luks.devices."cryptserver" = {
     device = "/dev/disk/by-partuuid/e61ad058-918a-4e23-aa4b-04290a63ded4";

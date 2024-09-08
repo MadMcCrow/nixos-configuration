@@ -1,5 +1,6 @@
 # packages I want available on my live iso :
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     # as much python as one can want :
     python311Full

@@ -1,24 +1,27 @@
-{ config, lib, pkgs, ... }:
-let cfg = config.nixos.server;
-in {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  cfg = config.nixos.server;
+in
+{
   # interface
   options.nixos.server = with lib; {
     enable = mkEnableOption "server services and packages";
     # Domain Name for the services
     domainName = mkOption {
       description = "a domain name for all the hosted services";
-      type = with types;
-        nullOr
-        (addCheck str (s: (builtins.match "([a-z0-9-]+.[a-z]+)" s) != null));
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+.[a-z]+)" s) != null));
       example = "cool-domain.com";
       default = config.networking.domain;
     };
     # email
     adminEmail = mkOption {
       description = "email to contact in case of problem";
-      type = with types;
-        nullOr (addCheck str
-          (s: (builtins.match "([a-z0-9+.]+@[a-z0-9.]+)" s) != null));
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9+.]+@[a-z0-9.]+)" s) != null));
       example = "admin@server.net";
     };
 
@@ -63,8 +66,7 @@ in {
         # Lazy IPv6 connectivity for the container
         enableIPv6 = true;
       };
-      bridges."${cfg.containerBridge.name}".interfaces =
-        [ cfg.containerBridge.interface ];
+      bridges."${cfg.containerBridge.name}".interfaces = [ cfg.containerBridge.interface ];
       interfaces."${cfg.containerBridge.name}".useDHCP = true;
     };
 

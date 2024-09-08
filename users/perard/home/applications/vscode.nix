@@ -150,7 +150,8 @@ let
     sha256 = "sha256-hp1RoOacqM016NEtGXhdza4LxHZ0/rxyrTI2pwpjnas=";
   };
 
-in {
+in
+{
   programs.vscode = {
     enable = true;
     # disable update check and notification
@@ -160,7 +161,8 @@ in {
     # allow installing extensions from marketplace
     mutableExtensionsDir = false;
     # enable extensions
-    extensions = with pkgs.vscode-extensions;
+    extensions =
+      with pkgs.vscode-extensions;
       [
         jnoortheen.nix-ide
         rust-lang.rust-analyzer
@@ -170,7 +172,8 @@ in {
         ms-python.python
         ms-pyright.pyright
         golang.go
-      ] ++ [
+      ]
+      ++ [
         godot-tools
         godot-files
         glsl-canvas
@@ -216,8 +219,7 @@ in {
       "workbench.colorTheme" = "GitHub Dark";
       "workbench.iconTheme" = "material-icon-theme";
       "terminal.integrated.customGlyphs" = false;
-      "terminal.integrated.fontFamily" =
-        "'JetBrains Mono NF Medium', 'JetBrains Mono'";
+      "terminal.integrated.fontFamily" = "'JetBrains Mono NF Medium', 'JetBrains Mono'";
       # something that could be done for colors :
       # "editor.tokenColorCustomizations" ={
       # "functions"= "#179559";

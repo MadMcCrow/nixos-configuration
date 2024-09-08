@@ -1,6 +1,7 @@
 # hardware-configuration.nix
 # using nixos maintained configuration
-{ nixos-hardware, ... }: {
+{ nixos-hardware, ... }:
+{
   # HARDWARE :
   imports = with nixos-hardware.nixosModules; [
     common-gpu-intel
