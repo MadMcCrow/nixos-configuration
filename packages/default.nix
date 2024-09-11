@@ -5,8 +5,6 @@ let
     ./bcrypt
     ./darwin-rebuild
     ./darwin-install
-    ./linux-gensh
-    ./linux-install
     ./termcolors
   ];
 

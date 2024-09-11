@@ -36,7 +36,7 @@
       enable = true;
 
       # upgrade manually here !
-      package = pkgs.nextcloud28;
+      package = pkgs.nextcloud29;
 
       # where to store the data
       home = "${config.nc.dataDir}/nc-data";
@@ -75,7 +75,7 @@
 
       # config.php declaration : extraOptions for 23.11, settings for 24.05 and onward
       # see https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html
-      extraOptions = {
+      settings = {
         # addresses you can access:
         # trusted_domains = [ "127.0.0.1" "localhost" config.nc.hostName ];
         # log :

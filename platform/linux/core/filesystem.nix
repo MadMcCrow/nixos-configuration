@@ -43,11 +43,16 @@ in
       type = types.str;
       default = "";
     };
+    vg = mkOption {
+      description = "lvm volume group for nixos";
+      type = types.str;
+      default = "vg_nixos";
+    };
     # size of tmpfs for root
     tmpfsSize = mkOption {
       description = "Size of tmpfs for root";
       type = types.str;
-      default = "100M";
+      default = "2G";
     };
   };
 
@@ -89,7 +94,7 @@ in
     #   Nix store and files
     #   more compression added to save space
     fileSystems."/nix" = {
-      label = "nixos";
+      device = "/dev/${cfg.vg}/nixos";
       fsType = "btrfs";
       options = [
         "subvol=/nix"
@@ -103,7 +108,7 @@ in
     # Logs and variable for running software
     # Limit disk usage with more compression
     fileSystems."/var/log" = {
-      label = "nixos";
+      device = "/dev/${cfg.vg}/nixos";
       fsType = "btrfs";
       options = [
         "subvol=/log"
@@ -116,7 +121,7 @@ in
     # fast access with lower compression
     # TODO : check if this is necessary
     # fileSystems."/var/lib" = {
-    #   label =  "nixos";
+    #   device = "/dev/${cfg.vg}/nixos";
     #   fsType = "btrfs";
     #   options = [
     #     "subvol=/lib"
@@ -128,7 +133,7 @@ in
     #   cleared on boot, not important
     boot.tmp.cleanOnBoot = true;
     fileSystems."/tmp" = {
-      label = "nixos";
+      device = "/dev/${cfg.vg}/nixos";
       fsType = "btrfs";
       options = [
         "subvol=/tmp"
@@ -141,7 +146,7 @@ in
     # /home
     #   TODO : maybe worth having setup elsewhere ?
     fileSystems."/home" = {
-      label = "nixos";
+      device = "/dev/${cfg.vg}/nixos";
       fsType = "btrfs";
       options = [
         "subvol=/home"
@@ -152,22 +157,15 @@ in
     };
 
     # some swap hardware :
-    swapDevices =
-      with lib;
+    swapDevices = with lib;
       lists.optionals (cfg.swap) [
         {
           label = "swap";
+          device = lib.mkForce "/dev/${cfg.vg}/swap";
           randomEncryption = mkIf (!isEncrypted) {
             enable = true;
             allowDiscards = true;
           };
-          # there's no need to do this, because it
-          # will be on the same encrypted disk as 
-          # root.
-          #encrypted = mkIf isEncrypted {
-          #  enable = true;
-          #  device = cfg.luks;
-          #};
         }
       ];
 
@@ -176,5 +174,7 @@ in
       device = cfg.luks;
       allowDiscards = true;
     };
+    # support thin provisionning :
+    services.lvm.boot.thin.enable = true;
   };
 }

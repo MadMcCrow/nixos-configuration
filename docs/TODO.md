@@ -6,7 +6,6 @@
  - [X] fix samba Workgroup share not working
  - [ ] fix `gamemoded.service` : `gamemoded.service: Main process exited, code=exited, status=1/FAILURE`
 
-
 ## improvements :
 
  - [X] Linux : reworked core modules
@@ -18,6 +17,7 @@
  - [ ] Update github actions
  - [ ] Option to enable or disable users by systems
  - [ ] Darwin : Auto Update command
+ - [ ] Home-Manager : set useGlobalPkgs to true and remove nixpkgs options.
 
  ## Possible :
 

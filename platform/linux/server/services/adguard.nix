@@ -62,12 +62,11 @@ in
             allowDHCP = false;
             # opens firewall for web admin page
             openFirewall = true;
-
+            # Set web interface port
+            port = http;
             settings = {
-              # Set web interface port
-              bind_port = http;
+              # all adresses with port
               http.address = "0.0.0.0:${builtins.toString http}";
-
               # set admin user :
               users = [
                 {

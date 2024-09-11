@@ -6,6 +6,19 @@ _NL = '\\n'
 _labelpath = '/dev/mapper/'
 _btrfsdir  = '/mnt/btrfs/'
     
+def format_fs(config, writer) :
+    writer.append('#' + '-' * 30)
+    writer.append('echo "formating drives"')
+    # TODO : sort filesystems by their path
+    for fs in [VFat, Btrfs, Tmpfs, Auto] :
+        fs(config).fformat(writer)
+
+def mount_fs(config, writer) :
+    writer.append('#' + '-' * 30)
+    writer.append('echo "mounting device for install"')
+    # TODO : sort filesystems by their path
+    for fs in [Tmpfs, VFat, Btrfs, Auto] :
+        fs(config).fmount(writer)
 
 
 def _ask_format(dev, mountpoint, fstype, command ) :
@@ -72,6 +85,7 @@ class VFat (Filesystem) :
             writer.append(_ask_format(dev, lbl, 'vfat', f'''
             printf "{_NL}Formatting {dev} to FAT32{_NL}"
             mkfs.vfat -F 32 {dev}
+            partprobe
             '''))
             if askyes(f'is {lbl} ({dev}) bootable ?') :
                 writer.append(f'''
@@ -104,7 +118,10 @@ class Btrfs(Filesystem) :
             label = ask(f'what btrfs label for {b} ?', r'[a-z0-9\-_]+')
             bdict[b] = label
             if forceformat :
-                writer.append(f'mkfs.btrfs -f -L {label} {b}')
+                writer.append(f'''
+                    mkfs.btrfs -f -L {label} {b}
+                    partprobe
+                ''')
             else :
                 writer.append(_ask_format(b, label, 'btrfs', f'mkfs.btrfs -f -L {label} {b}'))
             mp = f'{_btrfsdir}{label}'
@@ -145,13 +162,22 @@ class Tmpfs(Filesystem) :
         super().__init__(config,'tmpfs')
     
     def fmount(self, writer) :
+        from re import search
         for f in self._fs :
             dev = self._block(f)
-            opts = list(filter(lambda x: x != 'x-initrd.mount', f['options']))
+            opts = ['size=${SIZE}G']
+            for o in f['options']:
+                for r in ['x-initrd.mount' r'size=.*'] :
+                    if search(r, o) is not None :
+                        continue
+                opts.append(o)
+
+            
             writer.append(f'''
-                printf "{_NL}mounting {f['mountPoint']}{_NL}"
-                mkdir -p {f['mountPoint']} {dev if 'mount' in opts else ''}
-                mount -t tmpfs {'-o ' + ','.join(opts) if len(opts) > 0 else ''} {dev} {f['mountPoint']}
+                printf "{_NL}mounting /mnt{f['mountPoint']}{_NL}"
+                SIZE=$(free -tg | awk 'END {{print $2}}')
+                mkdir -p /mnt{f['mountPoint']} {dev if 'mount' in opts else ''}
+                mount -t tmpfs {'-o ' + ','.join(opts) if len(opts) > 0 else ''} {dev} /mnt{f['mountPoint']}
             ''')
    
 class Auto(Filesystem) :
