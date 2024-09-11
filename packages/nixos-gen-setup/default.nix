@@ -1,7 +1,7 @@
 { python311Packages, ... }:
 with python311Packages;
 buildPythonApplication {
-  pname = "linux-gensh";
+  pname = "nixos-gen-setup";
   version = "1.0";
   buildInputs = [ ];
   src = ./.;

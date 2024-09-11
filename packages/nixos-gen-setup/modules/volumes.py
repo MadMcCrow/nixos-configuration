@@ -1,3 +1,32 @@
+# Handle logical volumes
+from .question import ask, askyes
+# for f-strings
+_NL = '\\n'
+
+def lvm(config) :
+    global _lvm
+    try :
+        return _lvm
+    except NameError:
+        _lvm = LogicalVolumes(config)
+    return _lvm
+
+def crypt(config) : 
+    global _crypt
+    try :
+        return _crypt
+    except NameError:
+        _crypt = Cryptsetup(config)
+    return _crypt
+    
+def format_luks(config, writer) :
+    crypt(config).format_luks(writer)
+
+def open_luks(config, writer) :
+    crypt(config).open_luks(writer)
+
+def create_lvm(config, writer) :
+    lvm(config).create_lvm(writer)
 
 
 class Cryptsetup :
@@ -21,18 +50,23 @@ class Cryptsetup :
                 ''')
             else :
                 writer.append(f'''
+                if ! [ -e {dev} ]
+                then
+                    printf "\e[0;31;1mError\e[0m : cannot find disk {dev} : please fix your config !{_NL}"
+                    return 1 # error
+                fi
                 TYPE=$(blkid {dev} -s TYPE -o value)
                 if ! [ -e /dev/mapper/{vn} ]
                 then
                 if [ $TYPE == "crypto_LUKS" ]
                 then
-                    printf "{_NL}luks encrypted drive \e[0;35;3m{vn}\e[0m already exists, trying to open it{_NL}"
+                    printf "luks encrypted drive \e[0;35;3m{vn}\e[0m already exists, trying to open it{_NL}"
                     cryptsetup -v luksClose {vn} &> /dev/null || true
                     if cryptsetup -v luksOpen {dev} {vn}
                     then
-                        printf "{_NL}luks encrypted drive \e[0;35;3m{vn}\e[0m successfully decrypted{_NL}"
+                        printf "luks encrypted drive \e[0;35;3m{vn}\e[0m successfully decrypted{_NL}"
                     else
-                        printf "{_NL}rebuilding luks encrypted drive \e[0;35;3m{vn}\e[0m{_NL}"
+                        printf "rebuilding luks encrypted drive \e[0;35;3m{vn}\e[0m{_NL}"
                         cryptsetup --verbose luksFormat --verify-passphrase {dev}
                     fi
                 else
@@ -62,24 +96,32 @@ class LogicalVolumes:
             get the list of lvms used in config
         '''
         nixluks = config.get('boot.initrd.luks.devices')
-        luks = list(([(x, nixluks[x]) for x in set(nixluks.keys())]))
+        luks = list(nixluks[x]['name'] for x in set(nixluks.keys()))
         filesystems = [x for x in config.get('fileSystems').values()]
         swapdevices = [x for x in config.get('swapDevices')]
         lvms = []
         for dev in (filesystems + swapdevices) :
+            lvm = dev
             try:
-                if dev['device'] in map (lambda x: x[1]['device'], luks) :
+                path = dev['device']
+                if any(map(lambda x: x in path, luks)) :
                     continue
-                for prefix in ['/dev/disk/by-label', '/dev/mapper/'] :
-                    if dev['device'].startswith(prefix) :
-                        self.lvms.append(block.removeprefix(prefix))
-                    else :
-                        continue # not an lvm block device
+                # ignore devices that are on 
+                if any(map(lambda x: x in path,  ['by-label', 'by-uuid', 'by-partlabel', 'by-partuuid'] )):
+                    continue
+                split = path.split('/')
+                if len(split) == 4 :
+                    lvm['label'] = split[-1]
+                    lvm['vg'] = split[-2]
+                    lvms.append(lvm)
             except : 
-                if dev['label'] in map (lambda x: x[0], luks) :
+                if any(map(lambda x: x in dev['label'], luks)) :
                     continue
-                lvms.append(dev['label'])
-        lvms = sorted(list(set(lvms)))
+                lvm['device'] = f"/dev/disk/by-label/{dev['label']}"
+                lvm['label'] = dev['label']
+                lvms.append(lvm)
+        lvms = [i for n, i in enumerate(lvms) if i['label'] not in map(lambda x: x['label'],lvms[n + 1:])]
+        lvms = sorted(lvms, key = lambda x: x['label'])
         if len(lvms) <= 0 :
             return
         self._vgs  = {}
@@ -88,23 +130,34 @@ class LogicalVolumes:
         while len(lvms) > 0 :
             if len(lvms) > 1 :
                 for idx in range(len(lvms)) :
-                    print(f'{idx} - {lvms[idx]}')
+                    print(f"{idx} - {lvms[idx]['label']}")
                 num = int(ask('what volume to build first', f'[0-{min(len(lvms)-1,9)}]', '0'))
-                lvname = lvms[num]
+                lv = lvms[num]
             else :
-                lvname = lvms[0]
+                lv = lvms[0]
+            lvname = lv['label']
+            # check if truely a lvm :
+            if not askyes(f'is {lvname} a LVM2 device ?') :
+                continue
             print(f'LVM block {lvname} :')
-            # block device
-            try :
-                block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+', block)
-            except :
-                block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+')
             # vg name
-            try :
-                vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', vgname )
+            try : 
+                vgname = lv['vg']
+                print(f'Found : {lvname} volume group is {vgname}')
             except :
-                vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', 'vg01' )
-            # block size
+                try :
+                    vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', vgname )
+                except :
+                    vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', 'vg01' )
+            # find block device
+            if vgname not in self._vgs :
+                try :
+                    block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+', block)
+                except :
+                    block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+')
+            else : 
+                print(f'Found : {lvname} is physically on {self._vgs[vgname]} ')
+            # volume size
             size = ask(f'what size for {lvname} ?', r'[0-9.]+[MGT]|%(?:FREE|VG)?')
             size = f'-l {size}' if '%' in size else f'-L {size}'
             self._lvs[lvname] = {
@@ -114,7 +167,7 @@ class LogicalVolumes:
             self._vgs[vgname] = block
             # for other systems :
             self.paths[lvname] = f'/dev/{vgname}/{lvname}'
-            lvms.remove(lvname)
+            lvms.remove(lv)
 
     def create_lvm(self, writer) :
         for vgname, block in self._vgs.items()  :

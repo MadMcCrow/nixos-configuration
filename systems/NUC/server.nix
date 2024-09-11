@@ -1,8 +1,9 @@
 # Server specific options for NUC
-{ ... }:
+{ lib, ... }:
 let
+  enable_server = true; # disabled for installation
   serverDataDir = "/var/www";
-in
+in lib.mkIf enable_server
 {
   # SERVER :
   nixos.server = {
@@ -42,7 +43,7 @@ in
     ];
   };
   boot.initrd.luks.devices."cryptserver" = {
-    device = "/dev/disk/by-partuuid/e61ad058-918a-4e23-aa4b-04290a63ded4";
+    device = "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae";
     allowDiscards = true;
   };
 

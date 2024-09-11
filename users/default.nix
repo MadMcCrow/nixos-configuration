@@ -12,7 +12,7 @@
     programs.zsh.enable = true;
     # home manager config users :
     home-manager = {
-      useGlobalPkgs = true;
+      useGlobalPkgs = false; #TODO : move to true and remove nixpkgs options from HM
       useUserPackages = true;
       # extraModules = [ plasma-manager.homeManagerModules.plasma-manager ];
       # extraSpecialArgs = { pkgs = pkgs-latest; };

@@ -6,10 +6,13 @@
 
   networking.hostName = "terminus";
 
+  # disable desktop
+  nixos.desktop.enable = false;
+
   # filesystem :
   nixos.fileSystem.enable = true;
-  nixos.fileSystem.boot = "/dev/disk/by-partuuid/840a2fa5-c169-4150-a4eb-2da6f96f7890";
-  nixos.fileSystem.luks = "/dev/disk/by-partuuid/d2dcb58b-3582-4828-9062-0085f770a493";
+  nixos.fileSystem.boot = "/dev/disk/by-partuuid/5bd1959a-7a82-4bad-868a-a601df058489";
+  nixos.fileSystem.luks = "/dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03";
   nixos.fileSystem.swap = true;
 
   # sleep at night :
