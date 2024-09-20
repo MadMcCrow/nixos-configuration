@@ -12,6 +12,7 @@
     ./nix.nix
     ./secureboot.nix
     ./security.nix
+    ./ssh.nix
     ./vm.nix
     ./wake.nix
   ];

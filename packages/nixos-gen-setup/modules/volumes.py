@@ -20,12 +20,24 @@ def crypt(config) :
     return _crypt
     
 def format_luks(config, writer) :
+    writer.append(f'''
+        #{'-' * 30}
+        echo "creating luks devices"
+    ''')
     crypt(config).format_luks(writer)
 
 def open_luks(config, writer) :
+    writer.append(f'''
+        #{'-' * 30}
+        echo "opening luks devices"
+    ''')
     crypt(config).open_luks(writer)
 
 def create_lvm(config, writer) :
+    writer.append(f'''
+        #{'-' * 30}
+        echo "creating lvm partitions"
+    ''')
     lvm(config).create_lvm(writer)
 
 
@@ -95,6 +107,9 @@ class LogicalVolumes:
         '''
             get the list of lvms used in config
         '''
+        self._vgs  = {}
+        self._lvs  = {}
+        self.paths = {}
         nixluks = config.get('boot.initrd.luks.devices')
         luks = list(nixluks[x]['name'] for x in set(nixluks.keys()))
         filesystems = [x for x in config.get('fileSystems').values()]
@@ -106,8 +121,10 @@ class LogicalVolumes:
                 path = dev['device']
                 if any(map(lambda x: x in path, luks)) :
                     continue
+                if not path.startswith('/dev') :
+                    continue
                 # ignore devices that are on 
-                if any(map(lambda x: x in path,  ['by-label', 'by-uuid', 'by-partlabel', 'by-partuuid'] )):
+                if any(map(lambda x: x in path,  ['by-label', 'by-uuid', 'by-partlabel', 'by-partuuid', 'none'] )):
                     continue
                 split = path.split('/')
                 if len(split) == 4 :
@@ -124,9 +141,6 @@ class LogicalVolumes:
         lvms = sorted(lvms, key = lambda x: x['label'])
         if len(lvms) <= 0 :
             return
-        self._vgs  = {}
-        self._lvs  = {}
-        self.paths = {}
         while len(lvms) > 0 :
             if len(lvms) > 1 :
                 for idx in range(len(lvms)) :

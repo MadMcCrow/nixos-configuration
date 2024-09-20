@@ -5,11 +5,71 @@ if [ "$EUID" -ne 0 ]
 exit
 fi
 
-printf "\ncreating luks encrypted drive \e[0;35;3mcryptroot\e[0m\n"
-cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03     
+#------------------------------
+echo "unmounting everything from /mnt"
+    
+umount /mnt/var/www &> /dev/null || true
+umount /mnt/var/log &> /dev/null || true
+umount /mnt/tmp &> /dev/null || true
+umount /mnt/nix &> /dev/null || true
+umount /mnt/home &> /dev/null || true
+umount /mnt/etc/ssh &> /dev/null || true
+umount /mnt/boot &> /dev/null || true
+umount /mnt/ &> /dev/null || true
+umount /mnt/* &> /dev/null || true
+    
+#------------------------------
+echo "creating luks devices"
+    
+if ! [ -e /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03 ]
+then
+    printf "\e[0;31;1mError\e[0m : cannot find disk /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03 : please fix your config !\n"
+    return 1 # error
+fi
+TYPE=$(blkid /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03 -s TYPE -o value)
+if ! [ -e /dev/mapper/cryptroot ]
+then
+if [ $TYPE == "crypto_LUKS" ]
+then
+    printf "luks encrypted drive \e[0;35;3mcryptroot\e[0m already exists, trying to open it\n"
+    cryptsetup -v luksClose cryptroot &> /dev/null || true
+    if cryptsetup -v luksOpen /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03 cryptroot
+    then
+        printf "luks encrypted drive \e[0;35;3mcryptroot\e[0m successfully decrypted\n"
+    else
+        printf "rebuilding luks encrypted drive \e[0;35;3mcryptroot\e[0m\n"
+        cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03
+    fi
+else
+    printf "\ncreating luks encrypted drive \e[0;35;3mcryptroot\e[0m\n"
+    cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03          
+fi
+fi
 
-printf "\ncreating luks encrypted drive \e[0;35;3mcryptserver\e[0m\n"
-cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae     
+if ! [ -e /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae ]
+then
+    printf "\e[0;31;1mError\e[0m : cannot find disk /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae : please fix your config !\n"
+    return 1 # error
+fi
+TYPE=$(blkid /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae -s TYPE -o value)
+if ! [ -e /dev/mapper/cryptserver ]
+then
+if [ $TYPE == "crypto_LUKS" ]
+then
+    printf "luks encrypted drive \e[0;35;3mcryptserver\e[0m already exists, trying to open it\n"
+    cryptsetup -v luksClose cryptserver &> /dev/null || true
+    if cryptsetup -v luksOpen /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae cryptserver
+    then
+        printf "luks encrypted drive \e[0;35;3mcryptserver\e[0m successfully decrypted\n"
+    else
+        printf "rebuilding luks encrypted drive \e[0;35;3mcryptserver\e[0m\n"
+        cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae
+    fi
+else
+    printf "\ncreating luks encrypted drive \e[0;35;3mcryptserver\e[0m\n"
+    cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae          
+fi
+fi
 
 if ! [ -e /dev/mapper/cryptroot ]
 then
@@ -23,6 +83,9 @@ then
     cryptsetup -v luksOpen /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae cryptserver
 fi
 
+#------------------------------
+echo "opening luks devices"
+    
 if ! [ -e /dev/mapper/cryptroot ]
 then
     printf "\nopen luks encrypted drive \e[0;35;3mcryptroot\e[0m\n"
@@ -35,6 +98,9 @@ then
     cryptsetup -v luksOpen /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae cryptserver
 fi
 
+#------------------------------
+echo "creating lvm partitions"
+    
 if [ "$(pvdisplay /dev/mapper/cryptroot 2>/dev/null)" ]
 then
     printf "physical volume on /dev/mapper/cryptroot already exists, skipping\n"
@@ -62,6 +128,7 @@ else
 fi
 #------------------------------
 echo "formating drives"
+    
 if [ $(blkid /dev/disk/by-partuuid/5bd1959a-7a82-4bad-868a-a601df058489 -s TYPE -o value) == "vfat" ];
 then
     read -r -p "/dev/disk/by-partuuid/5bd1959a-7a82-4bad-868a-a601df058489 (boot) already formated as vfat, format anyway? [Y/n]" response
@@ -131,12 +198,11 @@ btrfs subvolume snapshot  /mnt/btrfs/nixos/log /mnt/btrfs/nixos/log@blank
 umount /mnt/btrfs/serverdata
 umount /mnt/btrfs/nixos
 #------------------------------
-echo "mounting device for install"
-printf "\nmounting /mnt/\n"
-SIZE=$(free -tg | awk 'END {print $2}')
-mkdir -p /mnt/ 
-mount -t tmpfs -o size=${SIZE}G,x-initrd.mount,defaults,size=2G,mode=755 none /mnt/
-            
+echo "mounting drives"
+    
+printf "\nmounting /mnt/ root tmpfs\n"
+mount -t tmpfs none /mnt/
+                
 if $(mount | awk '{if ($3 == "/mnt/boot") { exit 0}} ENDFILE{exit -1}')
 then
     printf "\n/mnt/boot already mounted"
@@ -189,6 +255,15 @@ else
     printf "\nmounting /mnt/var/www\n"
     mkdir -p /mnt/var/www 
     mount -o compress=zstd:6,noatime /dev/mapper/cryptserver /mnt/var/www
+fi
+
+if $(mount | awk '{if ($3 == "/mnt/etc/ssh") { exit 0}} ENDFILE{exit -1}')
+then
+    printf "\n/mnt/etc/ssh already mounted"
+else
+    printf "\nmounting /mnt/etc/ssh\n"
+    mkdir -p /mnt/etc/ssh /nix/persist/ssh
+    mount -o bind /nix/persist/ssh /mnt/etc/ssh
 fi
 
 echo "starting nixos install :"

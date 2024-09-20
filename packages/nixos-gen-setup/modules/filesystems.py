@@ -6,16 +6,32 @@ _NL = '\\n'
 _labelpath = '/dev/mapper/'
 _btrfsdir  = '/mnt/btrfs/'
     
+def umount(config, writer) : 
+    writer.append(f'''
+        #{'-' * 30}
+        echo "unmounting everything from /mnt"
+    ''')
+    mps = [fs['mountPoint'] for n, fs in config.get('fileSystems').items()]
+    mps.sort(reverse=True)
+    for mp in mps :
+        writer.append(f'umount /mnt{mp} &> /dev/null || true')
+    writer.append(f'''umount /mnt/* &> /dev/null || true
+    ''')
+
 def format_fs(config, writer) :
-    writer.append('#' + '-' * 30)
-    writer.append('echo "formating drives"')
+    writer.append(f'''
+        #{'-' * 30}
+        echo "formating drives"
+    ''')
     # TODO : sort filesystems by their path
     for fs in [VFat, Btrfs, Tmpfs, Auto] :
         fs(config).fformat(writer)
 
 def mount_fs(config, writer) :
-    writer.append('#' + '-' * 30)
-    writer.append('echo "mounting device for install"')
+    writer.append(f'''
+        #{'-' * 30}
+        echo "mounting drives"
+    ''')
     # TODO : sort filesystems by their path
     for fs in [Tmpfs, VFat, Btrfs, Auto] :
         fs(config).fmount(writer)
@@ -165,21 +181,30 @@ class Tmpfs(Filesystem) :
         from re import search
         for f in self._fs :
             dev = self._block(f)
+            if f['mountPoint'] == '/' :
+                writer.append(f'''
+                    printf "{_NL}mounting /mnt/ root tmpfs{_NL}"
+                    mount -t tmpfs none /mnt/
+                ''')
+                continue
+
             opts = ['size=${SIZE}G']
             for o in f['options']:
                 for r in ['x-initrd.mount' r'size=.*'] :
                     if search(r, o) is not None :
                         continue
-                opts.append(o)
-
-            
+                opts.append(o)            
             writer.append(f'''
                 printf "{_NL}mounting /mnt{f['mountPoint']}{_NL}"
                 SIZE=$(free -tg | awk 'END {{print $2}}')
                 mkdir -p /mnt{f['mountPoint']} {dev if 'mount' in opts else ''}
-                mount -t tmpfs {'-o ' + ','.join(opts) if len(opts) > 0 else ''} {dev} /mnt{f['mountPoint']}
+                mount -t tmpfs {'-o ' + ','.join(opts) if len(opts) > 0 else ''} none /mnt{f['mountPoint']}
             ''')
    
 class Auto(Filesystem) :
     def __init__(self, config) :
         super().__init__(config, 'auto')
+
+    def fformat(self, writer):
+        # do not implement
+        pass

@@ -7,6 +7,7 @@ def script(hostname, path, flake = '.', local = True) :
     conf = config.Config(hostname, flake if not local else '.')
     wtr  = writer.Writer(path)
     _sudocheck(wtr)
+    _umount(conf, wtr)
     _format(conf, wtr)
     _nixos_install(flake, hostname, wtr)
 
@@ -17,6 +18,9 @@ def _sudocheck(wtr) :
     exit
     fi
     ''')
+
+def _umount(conf, wtr) :
+    filesystems.umount(conf, wtr)
 
 def _format(conf, wtr) :
     # first off build volumes :

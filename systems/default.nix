@@ -10,7 +10,6 @@ with (import ./darwin.nix args);
     terminus = mkLinux { modules = [ ./NUC ]; };
     # desktop PC
     trantor = mkLinux {
-      nixpkgs = nixpkgs; # unstable crashes the nvidia drivers
       modules = [ ./TAF ];
     };
     # chromebook
