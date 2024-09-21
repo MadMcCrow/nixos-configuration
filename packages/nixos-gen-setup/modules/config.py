@@ -4,6 +4,7 @@
 
 # python default imports
 import json, subprocess, time, itertools, shlex, fcntl, os, shutil, atexit
+from typing import Tuple
 
 _NL = '\n'
 
@@ -22,7 +23,7 @@ def _non_block_read(output):
         return ""
 
 # simple exec command
-def _exec(command : str, display : str = "") -> (str, str) :
+def _exec(command : str, display : str = "") -> Tuple[str, str] :
     _check_cmd(command)
     p = subprocess.Popen(shlex.split(command),
         bufsize = 1,

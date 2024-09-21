@@ -3,43 +3,6 @@ from .question import ask, askyes
 # for f-strings
 _NL = '\\n'
 
-def lvm(config) :
-    global _lvm
-    try :
-        return _lvm
-    except NameError:
-        _lvm = LogicalVolumes(config)
-    return _lvm
-
-def crypt(config) : 
-    global _crypt
-    try :
-        return _crypt
-    except NameError:
-        _crypt = Cryptsetup(config)
-    return _crypt
-    
-def format_luks(config, writer) :
-    writer.append(f'''
-        #{'-' * 30}
-        echo "creating luks devices"
-    ''')
-    crypt(config).format_luks(writer)
-
-def open_luks(config, writer) :
-    writer.append(f'''
-        #{'-' * 30}
-        echo "opening luks devices"
-    ''')
-    crypt(config).open_luks(writer)
-
-def create_lvm(config, writer) :
-    writer.append(f'''
-        #{'-' * 30}
-        echo "creating lvm partitions"
-    ''')
-    lvm(config).create_lvm(writer)
-
 
 class Cryptsetup :
     def __init__(self, config) :
@@ -57,14 +20,14 @@ class Cryptsetup :
             print(f"will create luks volume \x1b[0;35;3m{vn}\x1b[0m on device \x1b[0;35;3m{dev}\x1b[0m")
             if askyes(f'Force recreate {vn} ? (this will erase everything)', False) :
                 writer.append(f'''
-                printf "{_NL}creating luks encrypted drive \e[0;35;3m{vn}\e[0m{_NL}"
+                printf "{_NL}creating luks encrypted drive \x1b[0;35;3m{vn}\x1b[0m{_NL}"
                 cryptsetup --verbose luksFormat --verify-passphrase {dev}     
                 ''')
             else :
                 writer.append(f'''
                 if ! [ -e {dev} ]
                 then
-                    printf "\e[0;31;1mError\e[0m : cannot find disk {dev} : please fix your config !{_NL}"
+                    printf "\x1b[0;31;1mError\x1b[0m : cannot find disk {dev} : please fix your config !{_NL}"
                     return 1 # error
                 fi
                 TYPE=$(blkid {dev} -s TYPE -o value)
@@ -72,17 +35,17 @@ class Cryptsetup :
                 then
                 if [ $TYPE == "crypto_LUKS" ]
                 then
-                    printf "luks encrypted drive \e[0;35;3m{vn}\e[0m already exists, trying to open it{_NL}"
+                    printf "luks encrypted drive \x1b[0;35;3m{vn}\x1b[0m already exists, trying to open it{_NL}"
                     cryptsetup -v luksClose {vn} &> /dev/null || true
                     if cryptsetup -v luksOpen {dev} {vn}
                     then
-                        printf "luks encrypted drive \e[0;35;3m{vn}\e[0m successfully decrypted{_NL}"
+                        printf "luks encrypted drive \x1b[0;35;3m{vn}\x1b[0m successfully decrypted{_NL}"
                     else
-                        printf "rebuilding luks encrypted drive \e[0;35;3m{vn}\e[0m{_NL}"
+                        printf "rebuilding luks encrypted drive \x1b[0;35;3m{vn}\x1b[0m{_NL}"
                         cryptsetup --verbose luksFormat --verify-passphrase {dev}
                     fi
                 else
-                    printf "{_NL}creating luks encrypted drive \e[0;35;3m{vn}\e[0m{_NL}"
+                    printf "{_NL}creating luks encrypted drive \x1b[0;35;3m{vn}\x1b[0m{_NL}"
                     cryptsetup --verbose luksFormat --verify-passphrase {dev}          
                 fi
                 fi
@@ -97,7 +60,7 @@ class Cryptsetup :
             writer.append(f'''
             if ! [ -e /dev/mapper/{vn} ]
             then
-                printf "{_NL}open luks encrypted drive \e[0;35;3m{vn}\e[0m{_NL}"
+                printf "{_NL}open luks encrypted drive \x1b[0;35;3m{vn}\x1b[0m{_NL}"
                 cryptsetup -v luksOpen {vd['device']} {vn}
             fi
             ''')
@@ -160,16 +123,19 @@ class LogicalVolumes:
                 print(f'Found : {lvname} volume group is {vgname}')
             except :
                 try :
-                    vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', vgname )
-                except :
-                    vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', 'vg01' )
+                    default = [ x['vg'] for x in self._lvs if 'vg' in x][0]
+                except:
+                    default = "vg01"
+                vgname = ask(f'what is the name of the volume group for {lvname} ?', r'[a-z0-9\-_]+', default )
             # find block device
             if vgname not in self._vgs :
                 try :
-                    block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+', block)
-                except :
-                    block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+')
+                    default = [ x for x,z in self._vgs.items()][0]
+                except:
+                    default = "vg01"
+                block = ask(f'what is the underlying block device for {lvname} ?', r'/dev/[a-z0-9\-/]+', default)
             else : 
+                block = self._vgs[vgname]
                 print(f'Found : {lvname} is physically on {self._vgs[vgname]} ')
             # volume size
             size = ask(f'what size for {lvname} ?', r'[0-9.]+[MGT]|%(?:FREE|VG)?')
@@ -207,3 +173,42 @@ class LogicalVolumes:
                 else
                      lvcreate {lvinfo['size']} -n {lvname} {lvinfo['vg']}
                 fi''')
+
+
+# get lvm config only once
+_lvm = None
+def lvm(config)  -> LogicalVolumes:
+    global _lvm
+    if _lvm is None :
+        _lvm = LogicalVolumes(config)
+    return _lvm
+    
+# get Crypt config only once
+_crypt = None
+def crypt(config) -> Cryptsetup: 
+    global _crypt
+    if _crypt is None :
+        _crypt = Cryptsetup(config)
+    return _crypt
+   
+  
+def format_luks(config, writer) :
+    writer.append(f'''
+        #{'-' * 30}
+        echo "creating luks devices"
+    ''')
+    crypt(config).format_luks(writer)
+
+def open_luks(config, writer) :
+    writer.append(f'''
+        #{'-' * 30}
+        echo "opening luks devices"
+    ''')
+    crypt(config).open_luks(writer)
+
+def create_lvm(config, writer) :
+    writer.append(f'''
+        #{'-' * 30}
+        echo "creating lvm partitions"
+    ''')
+    lvm(config).create_lvm(writer)
