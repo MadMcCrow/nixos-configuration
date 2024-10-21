@@ -9,6 +9,7 @@
   imports = [
     ./core
     ./desktop
+    ./extra
     ./server
     ./vendors
   ];

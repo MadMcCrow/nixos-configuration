@@ -9,9 +9,7 @@ with (import ./darwin.nix args);
     # NUC
     terminus = mkLinux { modules = [ ./NUC ]; };
     # desktop PC
-    trantor = mkLinux {
-      modules = [ ./TAF ];
-    };
+    trantor = mkLinux { modules = [ ./TAF ]; };
     # chromebook
     smyrno = mkLinux { modules = [ ./SCP ]; };
 

@@ -76,5 +76,8 @@ in
     #     privateNetwork = lib.mkForce true;
     #     hostBridge = cfg.containerBridge.name;
     #   })) config.containers;
+
+    # enable extra layer of security on servers
+    security.apparmor.enable = true;
   };
 }

@@ -5,7 +5,8 @@
   fileSystems."/etc/ssh" = {
     device = "/nix/persist/ssh";
     options = [ "bind" ];
-    neededForBoot = true;
+    neededForBoot = false;
+    noCheck = true;
   };
   # environment.etc."ssh/sshd_config".target = environment.etc."ssh/sshd_config"
 

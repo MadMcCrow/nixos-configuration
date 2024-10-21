@@ -12,6 +12,7 @@
     ./flatpak.nix
     ./sddm.nix
     ./steam.nix
+    ./audio.nix
   ];
   # config
   config = lib.mkIf (!config.nixos.desktop.enable) {
