@@ -3,16 +3,10 @@
 { ... }:
 {
   imports = [
-    ./audio.nix
-    ./boot.nix
-    ./filesystem.nix
-    ./fonts.nix
+    ./filesystems.nix
     ./locale.nix
-    ./network.nix
+    ./networking.nix
     ./nix.nix
-    ./secureboot.nix
-    ./security.nix
-    ./vm.nix
-    ./wake.nix
+    ./ssh.nix
   ];
 }

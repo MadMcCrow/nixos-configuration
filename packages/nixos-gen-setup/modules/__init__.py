@@ -1,39 +1,31 @@
 #
 # main function to perform 
 #
-from . import volumes, config, filesystems, writer
+from .singletons import setflake, sethost, setoutput, write, config
+from .volumes import volumes
+from .filesystems import umountall, filesystems
+from .swap import swap
+from .install import install
 
-def script(hostname, path, flake = '.', local = True) :
-    conf = config.Config(hostname, flake if not local else '.')
-    wtr  = writer.Writer(path)
-    _sudocheck(wtr)
-    _format(conf, wtr)
-    _nixos_install(flake, hostname, wtr)
-
-def _sudocheck(wtr) :
-    wtr.append('''
+def script(hostname, path, flake = '.') :
+    setoutput(path)
+    sethost(hostname)
+    setflake('.') # always local !
+    # parse config :
+    config('fileSystems')
+    config('swapDevices')
+    config('boot.initrd.luks.devices')
+    # check sript is run with sudo
+    write('''
     if [ "$EUID" -ne 0 ]
         then echo "Please run as root"
     exit
     fi
     ''')
-
-def _format(conf, wtr) :
-    # first off build volumes :
-    volumes.format_luks(conf,wtr)
-    volumes.open_luks(conf,wtr)
-    volumes.create_lvm(conf,wtr)
-    filesystems.format_fs(conf,wtr)
-    filesystems.mount_fs(conf,wtr)
-
-def _mount(conf, wtr) :
-    volumes.open_luks(conf,wtr)
-    filesystems.mount_fs(conf,wtr)
-
-def _nixos_install(flake, hostname, wtr) :
-    wtr.append(f'''
-    echo "starting nixos install :"
-    nixos-install --flake {flake}#{hostname}
-    ''')
-  
-
+    # make filesystems
+    umountall()
+    volumes()
+    swap()
+    filesystems()
+    # perform install :
+    install(flake, hostname)

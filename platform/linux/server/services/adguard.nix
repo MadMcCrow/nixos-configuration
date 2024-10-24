@@ -11,7 +11,8 @@
 }:
 let
   # shortcut
-  cfg = config.nixos.server.services.adguard;
+  srv = config.nixos.server;
+  cfg = srv.services.adguard;
   # PORTS FOR THE CONTAINER :
   # 53   -> DNS
   # 3002 -> webadmin
@@ -75,6 +76,17 @@ in
                   password = "$2y$10$ZsBnFvFVBBYHPUEm4zkd7O.jkJZF4EDWcACxkxG4EZIb6RbtUowfO";
                 }
               ];
+              #filtering = {
+              #  filtering_enabled = true;
+              #  safe_search = {
+              #    enabled = true;
+              #    google = true;
+              # };
+              # # not sure about this : 
+              # rewrites = {
+              #    domain = "*.{srv.domainName}";
+              #    answer = "0.0.0.0";
+              # };
               # TODO :
               #querylog.dir_path
               #statistics.dir_path

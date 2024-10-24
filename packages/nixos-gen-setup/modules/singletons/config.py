@@ -4,8 +4,11 @@
 
 # python default imports
 import json, subprocess, time, itertools, shlex, fcntl, os, shutil, atexit
+from typing import Tuple
+from .metasingleton import MetaSingleton
 
 _NL = '\n'
+
 
 def _check_cmd(command) :
     program = shlex.split(command)[0]
@@ -22,7 +25,7 @@ def _non_block_read(output):
         return ""
 
 # simple exec command
-def _exec(command : str, display : str = "") -> (str, str) :
+def _exec(command : str, display : str = "") -> Tuple[str, str] :
     _check_cmd(command)
     p = subprocess.Popen(shlex.split(command),
         bufsize = 1,
@@ -40,17 +43,21 @@ def _exec(command : str, display : str = "") -> (str, str) :
     print(f"{display} ... \x1b[0;32;6mDONE\x1b[0m")
     return (_NL.join(out)), (_NL.join(err))
 
-class Config :
+class Config(metaclass = MetaSingleton) :
 
-    def __init__(self,  hostname : str, flake : str = ".") :
-        self.hostname = hostname
-        self.flake = flake
-        self._dict = dict()
-        self.load()
+    def flake(self, flake) :
+        self._flake = flake
+        self.load() 
+        
+    def hostname(self, hostname) :
+        self._host = hostname
+        self.load() 
+
+    def __init__(self) :
         atexit.register(self.dump)
-
-    def append(self, attribute, value) :
-         self._dict[attribute] = value
+        self._dict = dict()
+        self._host = ''
+        self._flake = '.'
 
     def get(self, attribute) :
         if attribute in self._dict.keys() :
@@ -74,7 +81,7 @@ class Config :
             pass
 
     def _parse(self, attribute : str) :
-        nix_config = f"{self.flake}#nixosConfigurations.{self.hostname}.config.{attribute}"
+        nix_config = f"{self._flake}#nixosConfigurations.{self._host}.config.{attribute}"
         nix_command = f"nix eval -v -L {nix_config} --json --extra-experimental-features nix-command --extra-experimental-features flakes"
         nix_output, nix_error = _exec(nix_command, f"\x1b[0;36;3mevaluating\x1b[0m \x1b[2;35;2m{nix_config}\x1b[0m")
         try :
@@ -89,5 +96,5 @@ class Config :
             exit(2)
 
     def _filename(self):
-        return f'.config.{self.hostname}.json'
+        return f'.config.{self._host}.json'
 

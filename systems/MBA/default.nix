@@ -11,6 +11,7 @@
 
   system = {
     keyboard.enableKeyMapping = true;
+    stateVersion = 5;
   };
 
 }

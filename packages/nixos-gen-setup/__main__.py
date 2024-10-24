@@ -18,12 +18,11 @@ if __name__ == "__main__" :
                         epilog='used for every system !')
         parser.add_argument('hostname')
         parser.add_argument('-f', '--flake', default='.')
-        parser.add_argument('-l', '--local',action='store_true')
         parser.add_argument('-o', '--output',default='')
         args = parser.parse_args()
         destination = f'./install-{args.hostname}.sh' if args.output == "" else args.output
-        print(f'generating install script for system : \x1b[2;25;10m{args.hostname}#{args.flake}\x1b[0m')
-        modules.script(args.hostname, destination, args.flake, args.local)
+        print(f'generating install script for system : \x1b[2;25;10m{args.flake}#{args.hostname}\x1b[0m')
+        modules.script(args.hostname, destination, args.flake)
         # end the program in class !
     except Exception as E:
         print(f'Error occured: {E}') 

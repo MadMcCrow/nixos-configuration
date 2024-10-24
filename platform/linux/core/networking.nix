@@ -9,12 +9,12 @@
 with builtins;
 let
   # shortcut
-  cfg = config.nixos.network;
+  cfg = config.nixos.networking;
 
 in
 {
   # interface
-  options.nixos.network = with lib.types; {
+  options.nixos.networking = with lib.types; {
     # useDHCP = mkEnableOptionDefault "use DHCP" true; # useless, just use dhcp with rooter configuration
     wakeOnLineInterfaces = lib.mkOption {
       type = listOf str;
@@ -45,25 +45,11 @@ in
 
       dhcpcd.persistent = true;
 
-      #
+      # it's necessary to have GUI and dynamically set netwoking options on the go.
       networkmanager.enable = true;
 
       # enable firewall with quite open ports
-      firewall = {
-        allowedTCPPorts = [
-          27036
-          27015
-          22
-        ];
-        allowedUDPPortRanges = [
-          {
-            from = 27031;
-            to = 27036;
-          }
-          # Steam remote play support
-        ];
-        allowedUDPPorts = [ 27015 ]; # Gameplay traffic
-      };
+      firewall = { };
 
       # WOL needs hard definition of interfaces
       interfaces = listToAttrs (
@@ -75,6 +61,11 @@ in
         }) cfg.wakeOnLineInterfaces
       );
     };
+
+    # Faster boot:
+    # disable waiting for networking to be online for servers
+    systemd.network.wait-online.enable = config.nixos.server.enable;
+    boot.initrd.systemd.network.wait-online.enable = config.nixos.server.enable;
 
     # avahi for mdns :
     services.avahi = rec {

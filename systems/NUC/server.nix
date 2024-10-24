@@ -3,8 +3,12 @@
 let
   enable_server = true; # disabled for installation
   serverDataDir = "/var/www";
-in lib.mkIf enable_server
-{
+in
+lib.mkIf enable_server {
+
+  # we are headless : add some way to know if we run normally
+  nixos.extra.beep.enable = true;
+
   # SERVER :
   nixos.server = {
     enable = true;
@@ -34,7 +38,12 @@ in lib.mkIf enable_server
   # STORAGE :
   # Encrypted NUC SSD :
   fileSystems."${serverDataDir}" = {
-    label = "cryptserver";
+    device = "/dev/mapper/cryptserver";
+    encrypted = {
+      enable = true;
+      blkDev = "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae";
+      label = "cryptserver"; # luks device
+    };
     fsType = "btrfs";
     neededForBoot = true;
     options = [

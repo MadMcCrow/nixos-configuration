@@ -14,13 +14,11 @@ in
   # audio options :
   options.nixos.audio = with lib; {
     enable = mkEnableOption "audio support" // {
-      default = true;
+      default = config.nixos.desktop.enable;
     };
     usePipewire = mkEnableOption "pipewire for audio" // {
       default = true;
     };
-    # TODO :
-    mkChromecast = lib.mkEnableOption "Chromecast for desktop linux";
   };
 
   # implementation :

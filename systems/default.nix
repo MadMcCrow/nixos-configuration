@@ -9,10 +9,7 @@ with (import ./darwin.nix args);
     # NUC
     terminus = mkLinux { modules = [ ./NUC ]; };
     # desktop PC
-    trantor = mkLinux {
-      nixpkgs = nixpkgs; # unstable crashes the nvidia drivers
-      modules = [ ./TAF ];
-    };
+    trantor = mkLinux { modules = [ ./TAF ]; };
     # chromebook
     smyrno = mkLinux { modules = [ ./SCP ]; };
 
