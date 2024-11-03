@@ -16,25 +16,25 @@ umount /mnt/ &> /dev/null || true
 #------------------------------
 echo "creating LUKS devices"
     
-printf "\ncreating luks encrypted drive [0;35;3mcryptroot[0m\n"
-cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03     
-
 printf "\ncreating luks encrypted drive [0;35;3mcryptserver[0m\n"
 cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae     
+
+printf "\ncreating luks encrypted drive [0;35;3mcryptroot[0m\n"
+cryptsetup --verbose luksFormat --verify-passphrase /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03     
 
 #------------------------------
 echo "opening luks devices"
     
-if ! [ -e /dev/mapper/cryptroot ]
-then
-    printf "\nopen luks encrypted drive [0;35;3mcryptroot[0m\n"
-    cryptsetup -v luksOpen /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03 cryptroot
-fi
-
 if ! [ -e /dev/mapper/cryptserver ]
 then
     printf "\nopen luks encrypted drive [0;35;3mcryptserver[0m\n"
     cryptsetup -v luksOpen /dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae cryptserver
+fi
+
+if ! [ -e /dev/mapper/cryptroot ]
+then
+    printf "\nopen luks encrypted drive [0;35;3mcryptroot[0m\n"
+    cryptsetup -v luksOpen /dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03 cryptroot
 fi
 
 printf "create LVM2 devices :\n"
@@ -56,7 +56,7 @@ if [ "$(lvdisplay /dev/vg_nixos/swap 2>/dev/null)" ]
 then
     printf "logical volume swap already exists, skipping\n"
 else
-     lvcreate -L 16G -n swap vg_nixos
+     lvcreate -L 32G -n swap vg_nixos
 fi
 if [ "$(lvdisplay /dev/vg_nixos/nixos 2>/dev/null)" ]
 then
@@ -246,5 +246,5 @@ else
 fi
 
 echo "starting nixos install :"
-TMPDIR=/mnt/tmp nixos-install --flake github:MadMcCrow/nixos-configuration#terminus --no-root-passwd
+TMPDIR=/mnt/tmp nixos-install --flake github:/MadMcCrow/nixos-configuration/dev#terminus --no-root-passwd
     

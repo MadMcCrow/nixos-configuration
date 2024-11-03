@@ -29,7 +29,7 @@
     };
     # alias vscodium to vscode
     shellAliases = rec {
-      code = "codium";
+      #code = "codium";
       ls = "${lib.getExe pkgs.eza}";
       exa = ls;
       htop = "${lib.getExe pkgs.btop}";

@@ -21,7 +21,7 @@ lib.mkIf enable_server {
 
     # DOCKER IMAGES :
     ## Home Assistant :
-    containers.home-assistant.enable = true;
+    containers.home-assistant.enable = false;
     containers.home-assistant.subDomain = "irobot"; # I Robot
     containers.home-assistant.dataDir = "${serverDataDir}/homeassistant";
     # NIXOS SERVICES :

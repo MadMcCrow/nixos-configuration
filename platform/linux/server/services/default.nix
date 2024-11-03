@@ -3,7 +3,9 @@
 { ... }:
 {
   imports = [
+    ./dashboard
+    ./dns
     ./nextcloud
-    ./adguard.nix
+    ./proxy
   ];
 }

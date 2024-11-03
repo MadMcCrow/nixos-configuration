@@ -76,6 +76,18 @@ in
                   password = "$2y$10$ZsBnFvFVBBYHPUEm4zkd7O.jkJZF4EDWcACxkxG4EZIb6RbtUowfO";
                 }
               ];
+              # cool upstream to avoid to retype at every reboot !
+                dns.upstream_dns = [
+                    "# Open DNS (Cisco)"
+                    "208.67.222.222"
+                    "208.67.220.220"
+                    "208.67.222.220"
+                    "2620:119:35::35"
+                    "2620:119:53::53"
+                    "# Level3"
+                    "4.2.2.1"
+                    "4.2.2.2"
+                ];
               #filtering = {
               #  filtering_enabled = true;
               #  safe_search = {
@@ -114,7 +126,7 @@ in
       # forceSSL = enableACME;
       locations."/" = {
         proxyPass = "http://127.0.0.1:${builtins.toString http}/";
-        # proxyWebsockets = true;
+        proxyWebsockets = true;
       };
     };
 

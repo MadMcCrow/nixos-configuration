@@ -22,7 +22,7 @@
 
     # macOS:
     # TODO : remove what's not useful
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.05-darwin";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/release-24.05";
     darwin.url = "github:LnL7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     home-manager-darwin.url = "github:nix-community/home-manager/release-24.05";
