@@ -31,9 +31,9 @@ in
       example = "/www/adguardhome";
     };
     subDomain = mkOption {
-      description = "subdomain to use for nextcloud service";
+      description = "subdomain to use for adguard service";
       type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
-      default = "nextcloud";
+      default = "adguard";
     };
   };
 
@@ -119,16 +119,10 @@ in
     };
 
     # redirect via reverse proxy :
-    services.nginx.enable = true;
-    services.nginx.virtualHosts."${cfg.subDomain}.${config.nixos.server.domainName}" = rec {
-      enableACME = config.security.acme.acceptTerms;
-      addSSL = enableACME;
-      # forceSSL = enableACME;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${builtins.toString http}/";
-        proxyWebsockets = true;
-      };
-    };
+    nixos.server.proxy.nginx.proxies = [{
+      host = "${cfg.subDomain}.${config.nixos.server.domainName}";
+      port = http;
+    }];
 
     # open firewall to access webadmin redirect and DNS server
     networking.firewall = {
