@@ -12,20 +12,21 @@
   ];
   # home setup
   config = {
-    home.username = "perard";
-    home.homeDirectory = "/home/perard";
-    home.stateVersion = "23.11";
+    home = {
+      username = "perard";
+      homeDirectory = "/home/perard";
+      stateVersion = "23.11";
+      packages = with pkgs; [
+        fzf
+        jetbrains-mono
+        python3
+        speechd
+        bitwarden
+      ];
+    };
 
     xdg.mimeApps.enable = true;
 
-    # packages to install to profile
-    home.packages = with pkgs; [
-      fzf
-      jetbrains-mono
-      python3
-      speechd
-      bitwarden
-    ];
     # gpg key management (linux only)
     services.gpg-agent = {
       enable = true;

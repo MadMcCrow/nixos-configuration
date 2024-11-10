@@ -119,15 +119,17 @@ in
     };
 
     # redirect via reverse proxy :
-    nixos.server.proxy.nginx.proxies = [{
-      host = "${cfg.subDomain}.${config.nixos.server.domainName}";
-      port = http;
-    }
-    {
-      host = "${cfg.subDomain}.${config.nixos.server.domainName}";
-      port = https;
-      forceSSL = true;
-    }];
+    nixos.server.proxy.nginx.hosts = [
+      {
+        inherit (cfg) subDomain;
+        port = http;
+      }
+      {
+        inherit (cfg) subDomain;
+        port = https;
+        forceSSL = true;
+      }
+    ];
 
     # open firewall to access webadmin redirect and DNS server
     networking.firewall = {

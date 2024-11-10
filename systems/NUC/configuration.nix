@@ -39,5 +39,5 @@
     extraOptions = "--term xterm-256color";
   };
 
-  system.stateVersion = "24.04";
+  system.stateVersion = "24.05";
 }

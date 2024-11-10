@@ -21,18 +21,29 @@ lib.mkIf enable_server {
 
     # DOCKER IMAGES :
     ## Home Assistant :
-    containers.home-assistant.enable = false;
-    containers.home-assistant.subDomain = "irobot"; # I Robot
-    containers.home-assistant.dataDir = "${serverDataDir}/homeassistant";
+    containers.home-assistant = {
+      enable = false;
+      subDomain = "irobot"; # I Robot
+      dataDir = "${serverDataDir}/homeassistant";
+    };
     # NIXOS SERVICES :
     # nextcloud cloud storage :
-    services.nextcloud.enable = true;
-    services.nextcloud.subDomain = "foundation";
-    services.nextcloud.dataDir = "${serverDataDir}/nextcloud";
+    services.nextcloud = {
+      enable = true;
+      subDomain = "foundation";
+      dataDir = "${serverDataDir}/nextcloud";
+    };
     # adguard DNS/adblocker :
-    services.adguard.enable = true;
-    services.adguard.subDomain = "periphery"; # as opposed to the imperium
-    services.adguard.dataDir = "${serverDataDir}/adguard";
+    services.adguard = {
+      enable = true;
+      subDomain = "periphery";
+      dataDir = "${serverDataDir}/adguard";
+    };
+    # cockpit service :
+    services.cockpit = {
+      enable = true;
+      subDomain = "imperium";
+    };
   };
 
   # STORAGE :

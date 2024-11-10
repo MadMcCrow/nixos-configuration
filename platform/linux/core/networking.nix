@@ -37,7 +37,7 @@ in
     #
     networking = {
       # unique identifier for machines
-      hostId = (elemAt (elemAt (split "(.{8})" (hashString "md5" config.networking.hostName)) 1) 0);
+      hostId = elemAt (elemAt (split "(.{8})" (hashString "md5" config.networking.hostName)) 1) 0;
 
       # use dhcp for addresses. static adresses are given by the rooter
       useDHCP = lib.mkForce true;
