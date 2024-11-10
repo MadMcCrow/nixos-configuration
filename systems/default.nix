@@ -1,7 +1,7 @@
 # systems/default.nix
 # build the different systems, MacOS and linux all together
 # linux deps :
-{ nixos-hardware, ... }@args:
+{ ... }@args:
 with (import ./linux.nix args);
 with (import ./darwin.nix args);
 {

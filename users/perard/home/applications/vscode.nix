@@ -50,12 +50,12 @@ let
 
   # material-theme
   # https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme
-  material-theme = vsMarketplace {
-    name = "vsc-community-material-theme";
-    publisher = "Equinusocio";
-    version = "34.4.0";
-    sha256 = "sha256-L16dxKXmzK7pI5E4sZ6nBXRazBbg84rp2XY9R1jkEuk=";
-  };
+  # material-theme = vsMarketplace {
+  #   name = "vsc-community-material-theme";
+  #   publisher = "Equinusocio";
+  #   version = "34.4.0";
+  #   sha256 = "sha256-L16dxKXmzK7pI5E4sZ6nBXRazBbg84rp2XY9R1jkEuk=";
+  # };
 
   # MS intellicode
   intellicode = vsMarketplace {
@@ -98,12 +98,12 @@ let
   };
 
   # github action : https://marketplace.visualstudio.com/items?itemName=github.vscode-github-actions
-  github-action = vsMarketplace {
-    name = "vscode-github-actions";
-    publisher = "GitHub";
-    version = "0.26.3";
-    sha256 = "";
-  };
+  # github-action = vsMarketplace {
+  #   name = "vscode-github-actions";
+  #   publisher = "GitHub";
+  #   version = "0.26.3";
+  #   sha256 = "";
+  # };
 
   # Codespaces : https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces
   github-codespaces = vsMarketplace {

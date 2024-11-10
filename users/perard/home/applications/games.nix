@@ -6,7 +6,6 @@
   pkgs,
   config,
   lib,
-  osConfig,
   ...
 }:
 let

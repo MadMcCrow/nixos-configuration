@@ -7,6 +7,5 @@
     ./font.nix # custom fonts
     ./nix.nix # nixpkgs configuration
     ./shell.nix # use zsh
-    # ./update.nix # update script 
   ];
 }

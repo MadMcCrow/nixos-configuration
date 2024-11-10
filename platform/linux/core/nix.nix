@@ -104,7 +104,7 @@ in
 
     programs.nh = {
       enable = true;
-      clean.enable = true;
+      clean.enable = !config.nix.gc.automatic;
       clean.extraArgs = "--keep-since 4d --keep 3";
       # flake = "/home/user/my-nixos-config";
     };
