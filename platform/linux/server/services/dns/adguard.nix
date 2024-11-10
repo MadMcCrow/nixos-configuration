@@ -122,6 +122,11 @@ in
     nixos.server.proxy.nginx.proxies = [{
       host = "${cfg.subDomain}.${config.nixos.server.domainName}";
       port = http;
+    }
+    {
+      host = "${cfg.subDomain}.${config.nixos.server.domainName}";
+      port = https;
+      forceSSL = true;
     }];
 
     # open firewall to access webadmin redirect and DNS server
