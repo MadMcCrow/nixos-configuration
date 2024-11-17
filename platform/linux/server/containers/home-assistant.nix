@@ -24,7 +24,7 @@ in
     # enable oci-containers
     nixos.server.containers.enable = true;
 
-    nixos.server.proxy.nginx.hosts = [
+    nixos.server.proxy.nginx.virtualHosts = [
       {
         inherit (hma) subDomain;
         inherit port;

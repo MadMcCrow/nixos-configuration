@@ -119,7 +119,7 @@ in
     };
 
     # redirect via reverse proxy :
-    nixos.server.proxy.nginx.hosts = [
+    nixos.server.proxy.nginx.virtualHosts = [
       {
         inherit (cfg) subDomain;
         port = http;

@@ -37,11 +37,13 @@ in
             openFirewall = true;
             inherit port;
           };
+          users.users = lib.attrsets.filterAttrs (n: v: v.isNormalUser) config.users.users;
+          programs.zsh = config.programs.zsh; # some users might need it
           system.stateVersion = config.system.stateVersion;
         };
     };
 
-    nixos.server.proxy.nginx.hosts = [
+    nixos.server.proxy.nginx.virtualHosts = [
       {
         subDomain = cfg.subDomain;
         inherit port;
