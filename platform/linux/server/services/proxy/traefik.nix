@@ -40,7 +40,7 @@
 
         # Configure certification
         certificatesResolvers.acme-challenge.acme = {
-          email = "nicolas.guilloux@proton.me";
+          email = config.security.acme.defaults.email;
           storage = "/var/lib/traefik/acme.json";
           httpChallenge.entryPoint = "web";
         };

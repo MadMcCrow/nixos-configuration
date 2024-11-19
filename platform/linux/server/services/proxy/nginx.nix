@@ -109,12 +109,12 @@ in
       preliminarySelfsigned = true;
       # accept lets encrypt 
       acceptTerms = true;
-      certs."${config.nixos.server.domainName}" = rec {
-      domain = config.nixos.server.domainName;
-      extraDomainNames = [ domain ] ++ (map mkDomain cfg.virtualHosts);
-      dnsProvider = "ovh";
-      group = config.services.nginx.group; # use ngninx group
-    };
+      # certs."${config.nixos.server.domainName}" = rec {
+      # domain = config.nixos.server.domainName;
+      # extraDomainNames = [ domain ] ++ (map mkDomain cfg.virtualHosts);
+      # dnsProvider = "ovh";
+      # group = config.services.nginx.group; # use ngninx group
+    #};
     };
 
     # end of config  
