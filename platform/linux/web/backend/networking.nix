@@ -1,30 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+# networking options for web server
+{lib, config, ...} :
 let
-  cfg = config.nixos.server;
+  cfg = config.nixos.web.networking;
 in
 {
-  # interface
-  options.nixos.server = with lib; {
-    enable = mkEnableOption "server services and packages";
-    # Domain Name for the services
-    domainName = mkOption {
-      description = "a domain name for all the hosted services";
-      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+.[a-z]+)" s) != null));
-      example = "cool-domain.com";
-      default = config.networking.domain;
-    };
-    # email
-    adminEmail = mkOption {
-      description = "email to contact in case of problem";
-      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9+.]+@[a-z0-9.]+)" s) != null));
-      example = "admin@server.net";
-    };
-
+  # interface :
+  options.nixos.web.networking = with lib; {
     containerBridge = {
       enable = mkEnableOption "host bridge for nixos containers";
       name = mkOption {
@@ -39,25 +20,11 @@ in
     };
   };
 
+  # 
   config = lib.mkIf cfg.enable {
     # let's have ping
     environment.systemPackages = [ pkgs.inetutils ];
-    # let's encrypt certificate
-    security.acme = {
-      acceptTerms = true;
-      defaults.email = cfg.adminEmail;
-    };
-
-    # nginx reverse proxy :
-    services.nginx = {
-      enable = true;
-      # Use recommended settings
-      recommendedGzipSettings = true;
-      recommendedOptimisation = true;
-      recommendedProxySettings = true;
-      recommendedTlsSettings = true;
-    };
-
+    # 
     networking = lib.mkIf cfg.containerBridge.enable {
       nat = {
         enable = true;

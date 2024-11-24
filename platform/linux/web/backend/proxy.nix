@@ -2,24 +2,14 @@
 { config, lib, ... }:
 let
   # shortcuts
-  cfg = config.nixos.server.proxy.nginx;
+  cfg = config.nixos.server.proxy;
 
   # custom option for building proxies
-  proxyOption =
+  proxyOption = 
     with lib;
     with lib.types;
     submodule {
       options = {
-        absoluteDomain = mkOption {
-          type = nullOr str;
-          description = "Fully Qualified domain name";
-          default = null;
-        };
-        domain = mkOption {
-          type = nullOr str;
-          description = "domain to reverse proxy";
-          default = config.nixos.server.domainName;
-        };
         subDomain = mkOption {
           type = nullOr str;
           description = "subdomain to reverse proxy";
@@ -53,7 +43,7 @@ let
 
 in
 {
-  options.nixos.server.proxy.nginx = with lib; {
+  options.nixos.server.proxy = with lib; {
     # list of host to redirect
     virtualHosts = mkOption {
       description = "list of proxies to add to nginx";
@@ -69,6 +59,7 @@ in
   };
 
   config = lib.mkIf (cfg.virtualHosts != null) {
+    # reverse proxy using nginx
     services.nginx = {
       enable = true;
       # Use recommended settings
@@ -106,9 +97,10 @@ in
 
     # CA Certificates
     security.acme = {
-      preliminarySelfsigned = true;
-      # accept lets encrypt 
+      # accept lets encrypt terms and conditions
       acceptTerms = true;
+      defaults.email = cfg.adminEmail;
+      preliminarySelfsigned = true;
       # certs."${config.nixos.server.domainName}" = rec {
       # domain = config.nixos.server.domainName;
       # extraDomainNames = [ domain ] ++ (map mkDomain cfg.virtualHosts);
