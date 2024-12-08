@@ -79,79 +79,125 @@ in
   # implementation
   config = lib.mkIf cfg.enable {
 
-    # /boot
-    # Boot is always an Fat32 partition like old times
-    fileSystems."/boot" = {
-      device = cfg.boot;
-      fsType = "vfat";
-    };
+    fileSystems = {
+      # /boot
+      # Boot is always an Fat32 partition like old times
+      "/boot" = {
+        device = cfg.boot;
+        fsType = "vfat";
+      };
 
-    # LVM-on-LUKS
-    services.lvm.boot.thin.enable = true;
-    boot.initrd = {
-      inherit (config.boot) supportedFilesystems;
-      luks.devices = lib.mkIf cfg.luks.enable {
-        # support encryption and decryption at boot
-        cryptroot = {
-          device = cfg.luks.device;
-          allowDiscards = true;
-        };
+      # /
+      #   root is always tmpfs
+      "/" = {
+        device = "none";
+        fsType = "tmpfs";
+        options = [
+          "defaults"
+          "size=${cfg.tmpfsSize}"
+          "mode=755"
+        ];
+      };
+
+      # /nix
+      #   Nix store and files
+      #   more compression added to save space
+      "/nix" = {
+        device = "/dev/${cfg.volumeGroup}/nixos";
+        fsType = "btrfs";
+        options = [
+          "subvol=/nix"
+          "lazytime"
+          "noatime"
+          "compress=zstd:5"
+        ];
+      };
+
+      # /var/log
+      # Logs and variable for running software
+      # Limit disk usage with more compression
+      # maybe move to /nix/persist ?
+      "/var/log" = {
+        device = "/dev/${cfg.volumeGroup}/nixos";
+        fsType = "btrfs";
+        options = [
+          "subvol=/log"
+          "compress=zstd:6" # higher level, default is 3
+        ];
+      };
+
+      # /tmp : cleared on boot, but on physical disk to avoid filling up ram
+      "/tmp" = {
+        device = "/dev/${cfg.volumeGroup}/nixos";
+        fsType = "btrfs";
+        options = [
+          "subvol=/tmp"
+          "lazytime"
+          "noatime"
+          "nodatacow" # no compression, but cleared on boot
+        ];
+      };
+
+      "/etc/secureboot" = lib.mkIf cfg.secureboot.enable {
+        device = "/nix/persist/secureboot";
+        options = [ "bind" ];
+        neededForBoot = true;
+      };
+
+      # /home
+      #   TODO : maybe worth having setup elsewhere ?
+      "/home" = {
+        device = "/dev/${cfg.volumeGroup}/nixos";
+        fsType = "btrfs";
+        options = [
+          "subvol=/home"
+          "lazytime"
+          "noatime"
+          "compress=zstd"
+        ];
       };
     };
 
-    # /
-    #   root is always tmpfs
-    fileSystems."/" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [
-        "defaults"
-        "size=${cfg.tmpfsSize}"
-        "mode=755"
-      ];
-    };
-    # disable the sudo warnings about calling sudo (it will get wiped every reboot)
-    security.sudo.extraConfig = "Defaults        lecture = never";
+    boot = {
 
-    # /nix
-    #   Nix store and files
-    #   more compression added to save space
-    fileSystems."/nix" = {
-      device = "/dev/${cfg.volumeGroup}/nixos";
-      fsType = "btrfs";
-      options = [
-        "subvol=/nix"
-        "lazytime"
-        "noatime"
-        "compress=zstd:5"
+      # support for luks at boot
+      initrd = {
+        inherit (config.boot) supportedFilesystems;
+        luks.devices = lib.mkIf cfg.luks.enable {
+          # support encryption and decryption at boot
+          cryptroot = {
+            inherit (cfg.luks) device;
+            allowDiscards = true;
+          };
+        };
+      };
+      # support only what's necessary during the boot process
+      supportedFilesystems = [
+        "btrfs"
+        "fat32"
       ];
-    };
 
-    # /var/log
-    # Logs and variable for running software
-    # Limit disk usage with more compression
-    # maybe move to /nix/persist ?
-    fileSystems."/var/log" = {
-      device = "/dev/${cfg.volumeGroup}/nixos";
-      fsType = "btrfs";
-      options = [
-        "subvol=/log"
-        "compress=zstd:6" # higher level, default is 3
-      ];
-    };
+      # clear tmp on boot
+      tmp.cleanOnBoot = true;
 
-    # /tmp : cleared on boot, but on physical disk to avoid filling up ram
-    fileSystems."/tmp" = {
-      device = "/dev/${cfg.volumeGroup}/nixos";
-      fsType = "btrfs";
-      options = [
-        "subvol=/tmp"
-        "lazytime"
-        "noatime"
-        "nodatacow" # no compression, but cleared on boot
+      loader.systemd-boot = lib.mkMerge [
+        {
+          enable = true; # make sure it's bootable
+          editor = false; # safety !
+        }
+        (lib.attrsets.optionalAttrs cfg.secureboot.enable { enable = lib.mkForce cfg.secureboot.install; })
       ];
+      # Lanzaboote currently replaces the systemd-boot module.
+      lanzaboote = lib.mkIf cfg.secureboot.enable {
+        enable = !cfg.secureboot.install;
+        pkiBundle = "/etc/secureboot";
+      };
+
+      # clean boot process
+      plymouth.enable = true; # hide wall-of-text
+      consoleLogLevel = 3; # avoid useless errors
+
     };
-    boot.tmp.cleanOnBoot = true;
 
     # some swap hardware :
     swapDevices = lib.lists.optionals cfg.swap [
@@ -165,12 +211,8 @@ in
       }
     ];
 
-    # our config only need to support btrfs 
-    boot.supportedFilesystems = [
-      "btrfs"
-      "fat32"
-    ];
-
+    # thin provisioning for lvm
+    services.lvm.boot.thin.enable = true;
     # scrub-ba-dub-dub
     services.btrfs.autoScrub = {
       enable = true;
@@ -182,31 +224,10 @@ in
       ];
     };
 
-    # SECURE_BOOT 
-    fileSystems."/etc/secureboot" = lib.mkIf cfg.secureboot.enable {
-      device = "/nix/persist/secureboot";
-      options = [ "bind" ];
-      neededForBoot = true;
-    };
     environment.systemPackages = lib.lists.optionals cfg.secureboot.enable [ pkgs.sbctl ];
 
-    # BOOT LOADER :
-    boot.loader.systemd-boot = lib.mkMerge [
-      {
-        enable = true; # make sure it's bootable
-        editor = false; # safety !
-      }
-      (lib.attrsets.optionalAttrs cfg.secureboot.enable { enable = lib.mkForce cfg.secureboot.install; })
-    ];
-    # Lanzaboote currently replaces the systemd-boot module.
-    boot.lanzaboote = lib.mkIf cfg.secureboot.enable {
-      enable = !cfg.secureboot.install;
-      pkiBundle = "/etc/secureboot";
-    };
-
-    # clean boot console :
-    boot.plymouth.enable = true; # hide wall-of-text
-    boot.consoleLogLevel = 3; # avoid useless errors
+    # disable the sudo warnings about calling sudo (it will get wiped every reboot)
+    security.sudo.extraConfig = "Defaults        lecture = never";
 
     # enable or disable sleep/suspend
     systemd.targets = lib.mkIf false {
@@ -214,19 +235,6 @@ in
       suspend.enable = cfg.sleep;
       hibernate.enable = cfg.sleep;
       hybrid-sleep.enable = cfg.sleep;
-    };
-
-    # /home
-    #   TODO : maybe worth having setup elsewhere ?
-    fileSystems."/home" = {
-      device = "/dev/${cfg.volumeGroup}/nixos";
-      fsType = "btrfs";
-      options = [
-        "subvol=/home"
-        "lazytime"
-        "noatime"
-        "compress=zstd"
-      ];
     };
 
   };

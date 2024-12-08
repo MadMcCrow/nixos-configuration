@@ -11,7 +11,7 @@ let
   cfg = config.nixos.server.services.cockpit;
 in
 {
-  options.nixos.server.services.cockpit = with lib; {
+  options.nixos.web.home.cockpit = with lib; {
     enable = mkEnableOption "cockpit, the simplest dashboard";
     subDomain = mkOption {
       description = "subdomain to use for the cockpit service";
@@ -29,7 +29,7 @@ in
       nixpkgs = pkgs.path;
       ephemeral = true;
       config =
-        { ... }:
+        { _ }:
         {
           # cockpit (web-based server interface )
           services.cockpit = {
@@ -45,7 +45,7 @@ in
 
     nixos.server.proxy.nginx.virtualHosts = [
       {
-        subDomain = cfg.subDomain;
+        inherit (cfg) subDomain;
         inherit port;
       }
     ];

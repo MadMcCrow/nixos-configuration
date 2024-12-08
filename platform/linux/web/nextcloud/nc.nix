@@ -126,24 +126,26 @@
     # services.mysqlBackup.enable = false;
 
     # create folder for db
-    systemd.tmpfiles.rules = [
-      "d ${config.nc.dataDir}/mysql     0750 mysql         mysql         -"
-      "d ${config.nc.dataDir}/nc-data   0750 nextcloud     nextcloud     -"
-    ];
-
-    systemd.services."mysql" = {
-      wants = [ "systemd-tmpfiles-setup.service" ];
-      after = [ "systemd-tmpfiles-setup.service" ];
-    };
-
-    # start nextcloud after tmpfiles and db is ready :
-    systemd.services."nextcloud-setup" = {
-      wants = [ "systemd-tmpfiles-setup.service" ];
-      requires = [ "mysql.service" ];
-      after = [
-        "mysql.service"
-        "systemd-tmpfiles-setup.service"
+    systemd = {
+      tmpfiles.rules = [
+        "d ${config.nc.dataDir}/mysql     0750 mysql         mysql         -"
+        "d ${config.nc.dataDir}/nc-data   0750 nextcloud     nextcloud     -"
       ];
+
+      services."mysql" = {
+        wants = [ "systemd-tmpfiles-setup.service" ];
+        after = [ "systemd-tmpfiles-setup.service" ];
+      };
+
+      # start nextcloud after tmpfiles and db is ready :
+      services."nextcloud-setup" = {
+        wants = [ "systemd-tmpfiles-setup.service" ];
+        requires = [ "mysql.service" ];
+        after = [
+          "mysql.service"
+          "systemd-tmpfiles-setup.service"
+        ];
+      };
     };
   };
 }

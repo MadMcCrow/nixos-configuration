@@ -1,13 +1,12 @@
 # server/default.nix
 # 	each server service is enabled in a separate sub-module
-{ ... }:
+{ lib, ... }:
 {
-
   # interface
-  options.nixos.server = with lib; {
+  options.nixos.web = with lib; {
     enable = mkEnableOption "server services and packages";
     # Domain Name for the services
-    domainName = mkOption {
+    domain = mkOption {
       description = "a domain name for all the hosted services";
       type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+.[a-z]+)" s) != null));
       example = "cool-domain.com";
@@ -21,13 +20,14 @@
     };
   };
 
-  # definitions are in another module
+  # implementations
   imports = [
-    ./auth
-    ./dashboard
+    #./auth
+    ./backend
     ./dns
-    ./nextcloud
-    ./video
+    ./home
+    #./media
+    #./nextcloud
   ];
 
 }

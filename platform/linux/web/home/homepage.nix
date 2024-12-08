@@ -1,26 +1,25 @@
 # Homepage is a nice dashboard to see everything
 # https://github.com/gethomepage/homepage/
-{ config, lib, ...} : 
+{ config, lib, ... }:
 let
-   web = config.nixos.web;
-   port = 8082;
+  inherit (config.nixos) web;
+  port = 8082;
 in
 {
   # interface
-  options.nixos.web.homepage = with lib; {
-    subDomain = mkOption {
-      description = "subdomain for the web service acting as home folder";
-      default = "home";
+  options.nixos.web.home.homepage = with lib; {
+    enable = mkEnableOption "" // {
+      default = web.enable;
     };
   };
   # 
-  config = lib.mkIf web.enable {
-    nixos.web.containers."homepage" = {
-     services.homepage-dashboard = {
+  config = lib.mkIf web.home.homepage.enable {
+    nixos.web.services."homepage" = {
+      services.homepage-dashboard = {
         enable = true;
-        listenPort = 8082;
+        listenPort = port;
         openFirewall = true;
-     };
+      };
     };
   };
 }

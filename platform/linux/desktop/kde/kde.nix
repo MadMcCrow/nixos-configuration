@@ -12,14 +12,20 @@ lib.mkIf config.nixos.desktop.enable {
   system.nixos.tags = [ "KDE" ];
 
   #
-  services.xserver.enable = true;
-
-  # Enable Plasma 5 or 6
-  services.xserver.desktopManager.plasma5 = {
+  services.xserver = {
     enable = true;
-    useQtScaling = true;
-    # default font with extra
-    notoPackage = pkgs.noto-fonts-lgc-plus;
+
+    # Enable Plasma 5 or 6
+    desktopManager.plasma5 = {
+      enable = true;
+      useQtScaling = true;
+      # default font with extra
+      notoPackage = pkgs.noto-fonts-lgc-plus;
+    };
+    # remove xterm
+    desktopManager.xterm.enable = false;
+    excludePackages = [ pkgs.xterm ];
+
   };
 
   # enable plasma
@@ -27,13 +33,12 @@ lib.mkIf config.nixos.desktop.enable {
   qt.platformTheme = "kde";
 
   # enable tools
-  programs.dconf.enable = true;
-  programs.kdeconnect.enable = true;
-  programs.partition-manager.enable = true;
+  programs = {
+    dconf.enable = true;
+    kdeconnect.enable = true;
+    partition-manager.enable = true;
+  };
 
-  # remove xterm
-  services.xserver.desktopManager.xterm.enable = false;
-  services.xserver.excludePackages = [ pkgs.xterm ];
   # remove useless KDE packages
   environment.plasma5.excludePackages =
     with pkgs.libsForQt5;

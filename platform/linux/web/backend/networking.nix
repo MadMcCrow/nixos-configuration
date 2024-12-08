@@ -1,7 +1,13 @@
 # networking options for web server
-{lib, config, ...} :
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
-  cfg = config.nixos.web.networking;
+  inherit (config.nixos) web;
+  cfg = web.networking;
 in
 {
   # interface :
@@ -21,7 +27,7 @@ in
   };
 
   # 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf web.enable {
     # let's have ping
     environment.systemPackages = [ pkgs.inetutils ];
     # 
@@ -36,6 +42,8 @@ in
       bridges."${cfg.containerBridge.name}".interfaces = [ cfg.containerBridge.interface ];
       interfaces."${cfg.containerBridge.name}".useDHCP = true;
     };
+
+    services.avahi.browseDomains = [ web.domain ];
 
     # make all containers use the bridge
     # containers = builtins.mapAttrs (name: value:

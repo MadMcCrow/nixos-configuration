@@ -2,10 +2,11 @@
 { config, lib, ... }:
 let
   # shortcuts
-  cfg = config.nixos.server.proxy;
+  inherit (config.nixos) web;
+  cfg = web.proxy;
 
   # custom option for building proxies
-  proxyOption = 
+  virtualHostOption =
     with lib;
     with lib.types;
     submodule {
@@ -19,96 +20,106 @@ let
           type = int;
           description = "port to redirect to";
         };
-        forceSSL = mkOption {
+        https = mkOption {
           type = bool;
-          description = "set to true to force SSL";
-          default = false;
-        };
-        protocol = mkOption {
-          type = str;
-          description = "protocol to use";
-          default = "http";
-        };
-        address = mkOption {
-          type = str;
-          description = "IPv4 address";
-          default = "127.0.0.1";
+          description = "serve as https";
+          default = true;
         };
       };
     };
-
-    # helper function
-    mkDomain = opt: if (opt.absoluteDomain != null) 
-                then opt.absoluteDomain else "${opt.subDomain}.${opt.domain}";
-
 in
 {
-  options.nixos.server.proxy = with lib; {
+  options.nixos.web.proxy = with lib; {
     # list of host to redirect
     virtualHosts = mkOption {
       description = "list of proxies to add to nginx";
-      default = null;
-      type = types.nullOr (types.nonEmptyListOf (proxyOption));
+      default = { };
+      type = types.attrsOf virtualHostOption;
     };
     # ACME certificate
     certificates = {
-      enableACME = mkEnableOption "Lets Encrpyt certificates" // { default = true; };
-      useHost = mkEnableOption "generate only one certificate" // { default = true; };
+      enableACME = mkEnableOption "Lets Encrpyt certificates" // {
+        default = true;
+      };
+      useHost = mkEnableOption "generate only one certificate" // {
+        default = true;
+      };
     };
-    
+
   };
 
-  config = lib.mkIf (cfg.virtualHosts != null) {
+  config = lib.mkIf web.enable {
     # reverse proxy using nginx
     services.nginx = {
       enable = true;
       # Use recommended settings
-      recommendedGzipSettings = lib.mkDefault true;
-      recommendedOptimisation = lib.mkDefault true;
-      recommendedProxySettings = lib.mkDefault true;
-      recommendedTlsSettings = lib.mkDefault true;
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
 
-      # add every virtualHosts :
-      virtualHosts = builtins.listToAttrs (
-        map (x: {
-          name = mkDomain x;
-          value = with lib; mkMerge [
-            {
-              locations."/" = {
-              proxyPass = "${x.protocol}://${x.address}:${builtins.toString x.port}/";
-              proxyWebsockets = true;
+      # redirect home :
+      virtualHosts =
+        {
+          "${web.domain}" = {
+            forceSSL = true;
+            enableACME = true;
+            locations."/" = {
+              # redirect to home (this might redirect then to auth)
+              return = "301 ${web.home.subDomain}.${web.domain}";
             };
-          }
-           (attrsets.optionalAttrs (cfg.certificates.enableACME) {
-              addSSL   = !x.forceSSL;
-              forceSSL = x.forceSSL;
-          })
-          (attrsets.optionalAttrs (cfg.certificates.enableACME && cfg.certificates.useHost) {
-              useACMEHost = config.nixos.server.domainName;
-          })
+          };
+        }
+        # other redirections : 
+        // (
+          with builtins;
+          listToAttrs (
+            map (name: {
+              # attrName
+              name = "${name}.${web.domain}";
+              # attrValue
+              value =
+                let
+                  value = cfg.virtualHosts."${name}";
+                in
+                {
+                  useACMEHost = "${web.domain}";
+                  forceSSL = value.https;
+                  locations."/" = {
+                    proxyPass = "http://localhost:${toString value.port}";
+                    proxyWebsockets = true;
+                  };
+                };
+            }) (attrNames cfg.virtualHosts)
+          )
+        );
 
-          (attrsets.optionalAttrs (cfg.certificates.enableACME && !cfg.certificates.useHost) {
-              enableACME = true;
-          })
-          ];
-        }) cfg.virtualHosts
-      );
+      # end of nginx setup
+    };
+
+    # Authentification support
+    services.oauth2-proxy = {
+      enable = true;
+      provider = "keycloak-oidc"; # maybe try "oidc" next
+      oidcIssuerUrl = "${web.auth.subDomain}.${web.domain}";
     };
 
     # CA Certificates
     security.acme = {
       # accept lets encrypt terms and conditions
       acceptTerms = true;
-      defaults.email = cfg.adminEmail;
+      defaults.email = web.adminEmail;
       preliminarySelfsigned = true;
-      # certs."${config.nixos.server.domainName}" = rec {
-      # domain = config.nixos.server.domainName;
-      # extraDomainNames = [ domain ] ++ (map mkDomain cfg.virtualHosts);
-      # dnsProvider = "ovh";
-      # group = config.services.nginx.group; # use ngninx group
-    #};
+      # default cert created by "enableACME";
+      certs."${web.domain}" = {
+        extraDomainNames =
+          # all the subdomain from virtual hosts 
+          map (x: "${x}.${web.domain}") (builtins.attrNames cfg.virtualHosts)
+          # add home domain name to cert
+          ++ [ "${web.home.subDomain}.${web.domain}" ];
+      };
     };
-
     # end of config  
   };
+
 }

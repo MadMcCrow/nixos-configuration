@@ -1,10 +1,12 @@
-{...} :
+# support logging-in with authelia
+{ lib, config, ... }:
 let
-srv = nixos.server;
-authelia = srv.services.authelia;
+  # shortcuts
+  inherit (config.nixos) web;
+  inherit (web.auth) authelia;
 in
 {
-  config = mkIf authelia.enable {
+  config = lib.mkIf authelia.enable {
     services.nextcloud.settings = {
       "$CONFIG" = {
         allow_user_to_change_display_name = false;
@@ -18,10 +20,10 @@ in
         oidc_login_hide_password_form = false;
         oidc_login_use_id_token = true;
         oidc_login_attributes = {
-            id = "preferred_username";
-            name = "name";
-            mail = "email";
-            groups = "groups";
+          id = "preferred_username";
+          name = "name";
+          mail = "email";
+          groups = "groups";
         };
         oidc_login_default_group' = "oidc";
         oidc_login_use_external_storage = false;
@@ -37,7 +39,7 @@ in
         oidc_login_min_time_between_jwks_requests = 10;
         oidc_login_well_known_caching_time = 86400;
         oidc_login_update_avatar = false;
-        oidc_login_code_challenge_method = 'S256;
+        oidc_login_code_challenge_method = "S256";
       };
     };
   };

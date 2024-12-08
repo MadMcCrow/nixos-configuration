@@ -1,9 +1,15 @@
 # use authelia in nixos
-{lib, config, ...} :
+{ lib, ... }:
 {
-  # auth
-  imports = [./authelia.nix];  
+  # interface
   options.nixos.web.auth = with lib; {
-    enable = mkEnableOption "authentification service for web" // {default = true;};
+    subDomain = mkOption {
+      description = "subdomain for authentification service";
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      default = "auth";
+    };
   };
+
+  # implementation
+  imports = [ ./authelia.nix ];
 }

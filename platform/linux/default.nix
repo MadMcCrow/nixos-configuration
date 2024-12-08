@@ -10,7 +10,7 @@
     ./core
     ./desktop
     ./extra
-    ./server
+    ./web
     ./vendors
   ];
 }

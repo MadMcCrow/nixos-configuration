@@ -1,44 +1,45 @@
 # Authelia is a services for authentifying
-{config, lib, ...} :
+{ config, lib, ... }:
 let
-web = config.nixos.web;
-port = 9091;
+  inherit (config.nixos) web;
+  port = 9091;
 in
 {
-  options.nixos.web.authelia = with lib; {
+  options.nixos.web.auth.authelia = with lib; {
     dataPath = mkOption {
       description = "path to the authelia storage folder";
       type = types.path;
-      example = "/www/authelia";
+      default = "/www/authelia";
     };
   };
 
-  config = lib.mkIf web.auth.enable {
-    nixos.containers."authelia" = {
-      config = {
-        inherit (web.authelia) dataPath;
-        config = {
-          services.authelia.instances.main = {
-            settings = {
-      theme = "dark";
-      default_redirection_url = "https://example.com";
-  
-            server = {
-              host = "127.0.0.1";
-              inherit port;
-            };
-            log = {
-              level = "debug";
-              format = "text";
+  config = lib.mkIf web.enable {
+    nixos.web.containers."authelia" = {
+      config =
+        { _ }:
+        {
+          inherit (web.authelia) dataPath;
+          config = {
+            services.authelia.instances.main = {
+              settings = {
+                theme = "dark";
+                server = {
+                  host = "127.0.0.1"; # maybe use localhost ?
+                  inherit port;
+                };
+                log = {
+                  level = "debug";
+                  format = "text";
+                };
+              };
             };
           };
         };
-      };
     };
-  };
 
-  nixos.web.proxy."authelia" = {
-
-  };
+    nixos.web.proxy."authelia" = {
+      inherit port;
+      inherit (config.nixos.web.auth) subDomain;
+    };
   };
 }

@@ -10,40 +10,17 @@ lib.mkIf enable_server {
   nixos.extra.beep.enable = true;
 
   # SERVER :
-  nixos.server = {
+  nixos.web = {
     enable = true;
 
     # bought and paid for !
-    domainName = "asimov.ovh";
+    domain = "asimov.ovh";
 
     # email for certificates and notifications
     adminEmail = "noe.perard+serveradmin@gmail.com";
-
-    # DOCKER IMAGES :
-    ## Home Assistant :
-    containers.home-assistant = {
-      enable = false;
-      subDomain = "irobot"; # I Robot
-      dataDir = "${serverDataDir}/homeassistant";
-    };
-    # NIXOS SERVICES :
-    # nextcloud cloud storage :
-    services.nextcloud = {
-      enable = true;
-      subDomain = "foundation";
-      dataDir = "${serverDataDir}/nextcloud";
-    };
-    # adguard DNS/adblocker :
-    services.adguard = {
-      enable = true;
-      subDomain = "periphery";
-      dataDir = "${serverDataDir}/adguard";
-    };
-    # cockpit service :
-    services.cockpit = {
-      enable = true;
-      subDomain = "imperium";
-    };
+    # auth.subDomain = "kan";
+    dns.subDomain = "periphery";
+    # home.subDomain = "imperium";
   };
 
   # STORAGE :

@@ -27,7 +27,7 @@
         mac-app-util.darwinModules.default
         home-manager-darwin.darwinModules.home-manager
         (
-          { }:
+          { _ }:
           {
             # To enable it for all users:
             home-manager.sharedModules = [ mac-app-util.homeManagerModules.default ];

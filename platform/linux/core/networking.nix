@@ -84,9 +84,7 @@ in
       };
       # may prevent to detect samba shares
       domainName = lib.mkIf (config.networking.domain != null) config.networking.domain; # defaults to "local";
-      browseDomains = [
-        domainName
-      ] ++ (lib.lists.optional (config.nixos.server.domainName != null) config.nixos.server.domainName);
+      browseDomains = [ domainName ];
     };
 
     # settings to detect and mount samba shares

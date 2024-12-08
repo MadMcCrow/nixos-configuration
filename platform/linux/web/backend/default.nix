@@ -1,6 +1,6 @@
 # linux/web/containers/default.nix
 #   nixos containers
-{ config, lib, ... } :
+{ config, lib, ... }:
 {
   # maybe regroup :
   imports = [
