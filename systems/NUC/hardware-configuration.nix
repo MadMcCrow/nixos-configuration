@@ -14,7 +14,7 @@
       enable = true;
       cpuFreqGovernor = "powersave";
       powertop.enable = true;
-      scsiLinkPolicy = "min_power";
+      # scsiLinkPolicy = "med_power_with_dipm"; # maybe it isn't worth to deal with this
     };
     services.thermald.enable = true;
   };
