@@ -1,9 +1,16 @@
 # desktop/kde.nix
 # 	KDE FOR DESKTOP
-{ config, pkgs, pkgs-latest, lib, ... }:
+{
+  config,
+  pkgs,
+  pkgs-latest,
+  lib,
+  ...
+}:
 let
   # a plasmoid for start menu
-  plasma-drawer = with pkgs;
+  plasma-drawer =
+    with pkgs;
     stdenv.mkDerivation rec {
       pname = "plasma-drawer";
       version = "1.4";
@@ -13,7 +20,11 @@ let
         rev = "v${version}";
         hash = "sha256-oqEjClHupSJt5BE2i/qRZp1cEpf5vPfdR2qVYiX6gI0=";
       };
-      nativeBuildInputs = [ libsForQt5.kpackage libsForQt5.wrapQtAppsHook zip ];
+      nativeBuildInputs = [
+        libsForQt5.kpackage
+        libsForQt5.wrapQtAppsHook
+        zip
+      ];
       # installPhase = ''
       #   mkdir -p $out/share/plasma/plasmoids/plasma-drawer
       #   cd $src
@@ -27,8 +38,7 @@ let
     version = "0.16-1";
     nativeBuildInputs = with pkgs; [ zstd ];
     src = pkgs.fetchurl {
-      url =
-        "https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-rel/os/x86_64/steamdeck-kde-presets-0.16-1-any.pkg.tar.zst";
+      url = "https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-rel/os/x86_64/steamdeck-kde-presets-0.16-1-any.pkg.tar.zst";
       hash = "sha256-3SOzqBUEPWLk7OIv5715whRJa3qmJaMXL1Gf/DKs5bU=";
     };
     unpackPhase = ''
@@ -39,26 +49,29 @@ let
       cp -r ./usr/share/* $out/share/
     '';
   };
-in lib.mkIf config.nixos.desktop.enable {
+in
+lib.mkIf config.nixos.desktop.enable {
   # set tag for version
   system.nixos.tags = [ "KDE" ];
 
-  #
-  services.xserver.enable = true;
-
-  # SDDM :
-  services.xserver.displayManager.sddm = {
+  services.xserver = {
     enable = true;
-    enableHidpi = true;
-    settings.General.DisplayServer = "x11-user";
-  };
-
-  # Enable Plasma 5 or 6
-  services.xserver.desktopManager.plasma5 = {
-    enable = true;
-    useQtScaling = true;
-    # default font with extra
-    notoPackage = pkgs-latest.noto-fonts-lgc-plus;
+    # SDDM :
+    displayManager.sddm = {
+      enable = true;
+      enableHidpi = true;
+      settings.General.DisplayServer = "x11-user";
+    };
+    # Enable Plasma 5 or 6
+    desktopManager.plasma5 = {
+      enable = true;
+      useQtScaling = true;
+      # default font with extra
+      notoPackage = pkgs-latest.noto-fonts-lgc-plus;
+    };
+    # remove xterm
+    services.xserver.desktopManager.xterm.enable = false;
+    services.xserver.excludePackages = [ pkgs.xterm ];
   };
 
   # enable plasma
@@ -66,41 +79,44 @@ in lib.mkIf config.nixos.desktop.enable {
   qt.platformTheme = "kde";
 
   # enable tools
-  programs.dconf.enable = true;
-  programs.kdeconnect.enable = true;
-  programs.partition-manager.enable = true;
+  programs = {
+    dconf.enable = true;
+    kdeconnect.enable = true;
+    partition-manager.enable = true;
+  };
 
-  # remove xterm
-  services.xserver.desktopManager.xterm.enable = false;
-  services.xserver.excludePackages = [ pkgs.xterm ];
-  # remove useless KDE packages
-  environment.plasma5.excludePackages = with pkgs.libsForQt5;
-    [
-      oxygen
-      khelpcenter
-      plasma-browser-integration
-      print-manager
-      kio-extras
-      khelpcenter
-      kwallet
-      kwallet-pam
-      kate
-      okular
-    ] ++ (with pkgs.libsForQt5; [ kemoticons ]);
+  environment = {
+    # remove useless KDE packages
+    plasma5.excludePackages =
+      with pkgs.libsForQt5;
+      [
+        oxygen
+        khelpcenter
+        plasma-browser-integration
+        print-manager
+        kio-extras
+        khelpcenter
+        kwallet
+        kwallet-pam
+        kate
+        okular
+      ]
+      ++ (with pkgs.libsForQt5; [ kemoticons ]);
 
-  # extra tools
-  environment.systemPackages = with pkgs; [
-    dconf
-    dconf2nix
-    # theme
-    lightly-boehs
-    vapor-theme
-    # icons
-    papirus-icon-theme
-    # plasmoid :
-    # plasma-drawer
-    # apps not installed from KDE :
-    libsForQt5.kcalc
-  ];
+    # extra tools
+    systemPackages = with pkgs; [
+      dconf
+      dconf2nix
+      # theme
+      lightly-boehs
+      vapor-theme
+      # icons
+      papirus-icon-theme
+      # plasmoid :
+      # plasma-drawer
+      # apps not installed from KDE :
+      libsForQt5.kcalc
+    ];
+  };
 
 }

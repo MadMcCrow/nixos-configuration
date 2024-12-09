@@ -1,7 +1,14 @@
 # Traefik is a dynamic reverse proxy
-{ config, lib, pkgs, ... }:
-let cfg = config.nixos.server.services.traefik;
-in {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  cfg = config.nixos.server.services.traefik;
+in
+{
   # interface
   options.nixos.server.services.traefik = with lib; {
     enable = mkEnableOption "traefik instance";
@@ -33,17 +40,19 @@ in {
         };
       };
 
-      config = { ... }: {
-        services.traefik = {
-          enable = true;
-          package = pkgs.traefik;
-          dataDir = "/www/traefik";
-          # todo :
-          # staticConfigOptions
+      config =
+        { _ }:
+        {
+          services.traefik = {
+            enable = true;
+            package = pkgs.traefik;
+            dataDir = "/www/traefik";
+            # todo :
+            # staticConfigOptions
+          };
+          networking.domain = config.networking.domain;
+          system.stateVersion = config.system.stateVersion;
         };
-        networking.domain = config.networking.domain;
-        system.stateVersion = config.system.stateVersion;
-      };
     };
   };
 }

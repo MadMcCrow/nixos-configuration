@@ -158,7 +158,7 @@ in
       };
     };
 
-    boot = {
+    boot = rec {
 
       # support for luks at boot
       initrd = {
@@ -179,28 +179,20 @@ in
 
       # clear tmp on boot
       tmp.cleanOnBoot = true;
-
-      loader.systemd-boot = lib.mkMerge [
-        (lib.attrsets.optionalAttrs !cfg.secureboot.enable 
-        {
-          enable = true; # make sure it's bootable
-          editor = false; # safety !
-        })
-        (lib.attrsets.optionalAttrs cfg.secureboot.enable { 
-          enable = lib.mkForce cfg.secureboot.install;
-          editor = false;
-          })
-      ];
-      # Lanzaboote currently replaces the systemd-boot module.
-      lanzaboote = lib.mkIf cfg.secureboot.enable {
-        enable = !cfg.secureboot.install;
+      # choose correct bootloader :
+      #   Lanzaboote currently replaces the systemd-boot module.
+      loader.systemd-boot = {
+        # enable if we're not using lanzaboote
+        enable = lib.mkForce (!lanzaboote.enable);
+        editor = false; # safety !
+      };
+      lanzaboote = {
+        enable = cfg.secureboot.enable && !cfg.secureboot.install;
         pkiBundle = "/etc/secureboot";
       };
-
       # clean boot process
       plymouth.enable = true; # hide wall-of-text
       consoleLogLevel = 3; # avoid useless errors
-
     };
 
     # some swap hardware :
