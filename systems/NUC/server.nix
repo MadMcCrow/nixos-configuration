@@ -10,18 +10,18 @@ lib.mkIf enable_server {
   nixos.extra.beep.enable = true;
 
   # SERVER :
-  nixos.web = {
-    enable = true;
-
-    # bought and paid for !
-    domain = "asimov.ovh";
-
-    # email for certificates and notifications
-    adminEmail = "noe.perard+serveradmin@gmail.com";
-    # auth.subDomain = "kan";
-    # dns.subDomain = "periphery";
-    # home.subDomain = "imperium";
-  };
+  #nixos.web = {
+  #  enable = true;
+  #
+  #  # bought and paid for !
+  #  domain = "asimov.ovh";
+  #
+  #  # email for certificates and notifications
+  #  adminEmail = "noe.perard+serveradmin@gmail.com";
+  #  # auth.subDomain = "kan";
+  #  # dns.subDomain = "periphery";
+  #  # home.subDomain = "imperium";
+  #};
 
   # STORAGE :
   # Encrypted NUC SSD :
