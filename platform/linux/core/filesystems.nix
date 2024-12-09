@@ -168,7 +168,10 @@ in
           cryptroot = {
             inherit (cfg.luks) device;
             allowDiscards = true;
-            crypttabExtraOpts = lib.lists.optionals (!cfg.install) [ "tpm2-device=auto" "tpm2-measure-pcr=yes" ];
+            crypttabExtraOpts = lib.lists.optionals (!cfg.install) [
+              "tpm2-device=auto"
+              "tpm2-measure-pcr=yes"
+            ];
           };
         };
         systemd.enable = lib.mkForce (!lanzaboote.enable);
@@ -223,7 +226,23 @@ in
       ];
     };
 
-    environment.systemPackages = lib.lists.optionals cfg.secureboot.enable (with pkgs; [ sbctl  tpm2-tss ]);
+    # everything needed to deal with encrypted file systems
+    environment.systemPackages = (
+      lib.lists.optionals cfg.secureboot.enable (
+        with pkgs;
+        [
+          sbctl
+          tpm2-tss
+          (writeShellApplication {
+            name = "nixos-enroll-tpm";
+            runtimeInputs = [systemd];
+            text = lib.strings.concatMapStringsSep "\n" (
+                d: "${systemd}/bin/systemd-cryptenroll  ${d} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+2+3+7+15"
+              ) (map (v: v.device) (builtins.attrValues config.boot.initrd.luks.devices));
+          })
+        ]
+      )
+    );
 
     # disable the sudo warnings about calling sudo (it will get wiped every reboot)
     security.sudo.extraConfig = "Defaults        lecture = never";
