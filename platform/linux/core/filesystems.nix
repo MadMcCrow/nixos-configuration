@@ -168,8 +168,11 @@ in
           cryptroot = {
             inherit (cfg.luks) device;
             allowDiscards = true;
+            crypttabExtraOpts = lib.lists.optionals (!cfg.install) [ "tpm2-device=auto" "tpm2-measure-pcr=yes" ];
           };
         };
+        systemd.enable = lib.mkForce (!lanzaboote.enable);
+
       };
       # support only what's necessary during the boot process
       supportedFilesystems = [
@@ -220,7 +223,7 @@ in
       ];
     };
 
-    environment.systemPackages = lib.lists.optionals cfg.secureboot.enable [ pkgs.sbctl ];
+    environment.systemPackages = lib.lists.optionals cfg.secureboot.enable (with pkgs; [ sbctl  tpm2-tss ]);
 
     # disable the sudo warnings about calling sudo (it will get wiped every reboot)
     security.sudo.extraConfig = "Defaults        lecture = never";
