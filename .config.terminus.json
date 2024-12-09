@@ -1,0 +1,334 @@
+{
+    "fileSystems": {
+        "/": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "none",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "tmpfs",
+            "label": null,
+            "mountPoint": "/",
+            "neededForBoot": false,
+            "noCheck": false,
+            "options": [
+                "x-initrd.mount",
+                "defaults",
+                "size=2G",
+                "mode=755"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/boot": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "/dev/disk/by-partuuid/5bd1959a-7a82-4bad-868a-a601df058489",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "vfat",
+            "label": null,
+            "mountPoint": "/boot",
+            "neededForBoot": false,
+            "noCheck": false,
+            "options": [
+                "defaults"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/etc/ssh": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "/nix/persist/ssh",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "auto",
+            "label": null,
+            "mountPoint": "/etc/ssh",
+            "neededForBoot": true,
+            "noCheck": true,
+            "options": [
+                "x-initrd.mount",
+                "bind"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/home": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "/dev/vg_nixos/nixos",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "btrfs",
+            "label": null,
+            "mountPoint": "/home",
+            "neededForBoot": false,
+            "noCheck": false,
+            "options": [
+                "subvol=/home",
+                "lazytime",
+                "noatime",
+                "compress=zstd"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/nix": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "/dev/vg_nixos/nixos",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "btrfs",
+            "label": null,
+            "mountPoint": "/nix",
+            "neededForBoot": false,
+            "noCheck": false,
+            "options": [
+                "x-initrd.mount",
+                "subvol=/nix",
+                "lazytime",
+                "noatime",
+                "compress=zstd:5"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/tmp": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "/dev/vg_nixos/nixos",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "btrfs",
+            "label": null,
+            "mountPoint": "/tmp",
+            "neededForBoot": false,
+            "noCheck": false,
+            "options": [
+                "subvol=/tmp",
+                "lazytime",
+                "noatime",
+                "nodatacow"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/var/log": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": "/dev/vg_nixos/nixos",
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "formatOptions": null,
+            "fsType": "btrfs",
+            "label": null,
+            "mountPoint": "/var/log",
+            "neededForBoot": false,
+            "noCheck": false,
+            "options": [
+                "x-initrd.mount",
+                "subvol=/log",
+                "compress=zstd:6"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        },
+        "/var/www": {
+            "autoFormat": false,
+            "autoResize": false,
+            "depends": [],
+            "device": null,
+            "encrypted": {
+                "blkDev": null,
+                "enable": true,
+                "keyFile": null,
+                "label": "cryptserver"
+            },
+            "formatOptions": null,
+            "fsType": "btrfs",
+            "label": null,
+            "mountPoint": "/var/www",
+            "neededForBoot": true,
+            "noCheck": false,
+            "options": [
+                "x-initrd.mount",
+                "compress=zstd:6",
+                "noatime"
+            ],
+            "overlay": {
+                "lowerdir": null,
+                "upperdir": null,
+                "workdir": null
+            },
+            "stratis": {
+                "poolUuid": null
+            }
+        }
+    },
+    "swapDevices": [
+        {
+            "device": "/dev/vg_nixos/swap",
+            "deviceName": "dev-vg_nixos-swap",
+            "discardPolicy": null,
+            "encrypted": {
+                "blkDev": null,
+                "enable": false,
+                "keyFile": null,
+                "label": null
+            },
+            "label": "swap",
+            "options": [
+                "defaults"
+            ],
+            "priority": null,
+            "randomEncryption": {
+                "allowDiscards": false,
+                "cipher": "aes-xts-plain64",
+                "enable": false,
+                "keySize": null,
+                "sectorSize": null,
+                "source": "/dev/urandom"
+            },
+            "realDevice": "/dev/vg_nixos/swap",
+            "size": null
+        }
+    ],
+    "boot.initrd.luks.devices": {
+        "cryptroot": {
+            "allowDiscards": true,
+            "bypassWorkqueues": false,
+            "crypttabExtraOpts": [],
+            "device": "/dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03",
+            "fallbackToPassword": false,
+            "fido2": {
+                "credential": null,
+                "credentials": [],
+                "gracePeriod": 10,
+                "passwordLess": false
+            },
+            "gpgCard": null,
+            "header": null,
+            "keyFile": null,
+            "keyFileOffset": null,
+            "keyFileSize": null,
+            "keyFileTimeout": null,
+            "name": "cryptroot",
+            "postOpenCommands": "",
+            "preLVM": true,
+            "preOpenCommands": "",
+            "tryEmptyPassphrase": false,
+            "yubikey": null
+        },
+        "cryptserver": {
+            "allowDiscards": true,
+            "bypassWorkqueues": false,
+            "crypttabExtraOpts": [],
+            "device": "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae",
+            "fallbackToPassword": false,
+            "fido2": {
+                "credential": null,
+                "credentials": [],
+                "gracePeriod": 10,
+                "passwordLess": false
+            },
+            "gpgCard": null,
+            "header": null,
+            "keyFile": null,
+            "keyFileOffset": null,
+            "keyFileSize": null,
+            "keyFileTimeout": null,
+            "name": "cryptserver",
+            "postOpenCommands": "",
+            "preLVM": true,
+            "preOpenCommands": "",
+            "tryEmptyPassphrase": false,
+            "yubikey": null
+        }
+    }
+}

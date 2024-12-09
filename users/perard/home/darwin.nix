@@ -1,27 +1,31 @@
 # darwin.nix
 # MacOS user configuration
-{ config, pkgs, lib, pkgs-latest, ... }: {
+{ pkgs, ... }:
+{
 
   imports = [
     ./applications/vscode.nix
     ./shell.nix
+    ./ssh.nix
     # ./git.nix # cannot get gcm (because dotnet mirror issue on MacOS)
   ];
   config = {
-    home.username = "perard";
-    home.homeDirectory = "/Users/perard";
-    home.stateVersion = "23.11";
+    home = {
+      username = "perard";
+      homeDirectory = "/Users/perard";
+      stateVersion = "24.05";
 
-    # packages
-    home.packages = with pkgs-latest; [
-      git
-      git-secrets
-      powerline-go
-      zsh-autosuggestions
-      zsh-syntax-highlighting
-      jetbrains-mono
-      python3
-      nss_latest
-    ];
+      # packages
+      packages = with pkgs; [
+        git
+        git-secrets
+        powerline-go
+        zsh-autosuggestions
+        zsh-syntax-highlighting
+        jetbrains-mono
+        python3
+        nss_latest
+      ];
+    };
   };
 }

@@ -1,5 +1,6 @@
 # Nix configuration of MacBook Air
-{ pkgs, lib, ... }: {
+{ _ }:
+{
 
   # TODO : rename to anacreon
 
@@ -8,6 +9,9 @@
   #  TERMINFO_DIRS = "${pkgs.kitty.terminfo.outPath}/share/terminfo";
   #};
 
-  system = { keyboard.enableKeyMapping = true; };
+  system = {
+    keyboard.enableKeyMapping = true;
+    stateVersion = 5;
+  };
 
 }

@@ -1,5 +1,11 @@
 # a plasmoid for a GNOME-ish start menu
-{ stdenv, fetchFromGitHub, libsForQt5, zip }:
+{
+  stdenv,
+  fetchFromGitHub,
+  libsForQt5,
+  zip,
+  ...
+}:
 stdenv.mkDerivation rec {
 
   pname = "plasma-drawer";
@@ -12,7 +18,11 @@ stdenv.mkDerivation rec {
     hash = "sha256-oqEjClHupSJt5BE2i/qRZp1cEpf5vPfdR2qVYiX6gI0=";
   };
 
-  nativeBuildInputs = [ libsForQt5.kpackage libsForQt5.wrapQtAppsHook zip ];
+  nativeBuildInputs = [
+    libsForQt5.kpackage
+    libsForQt5.wrapQtAppsHook
+    zip
+  ];
 
   # TODO :
   # installPhase = ''

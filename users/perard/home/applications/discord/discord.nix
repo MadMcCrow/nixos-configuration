@@ -1,6 +1,7 @@
 # discord.nix
 #   Get a faster discord thanks to OpenASAR and Vencord
-{ lib, pkgs, ... }: {
+{ lib, pkgs, ... }:
+{
   config = {
     packages = {
       unfree = [ "discord" ];
@@ -30,8 +31,9 @@
         setup = true;
         noTyping = true;
         quickstart = true;
-        css = lib.strings.stringAsChars (x: if x == "/n" then "//n" else x)
-          (builtins.readFile ./Material-Discord.theme.css);
+        css = lib.strings.stringAsChars (x: if x == "/n" then "//n" else x) (
+          builtins.readFile ./Material-Discord.theme.css
+        );
       };
       chromiumSwitches = { };
       IS_MAXIMIZED = false;

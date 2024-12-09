@@ -1,28 +1,20 @@
 # SCP
 # Samsung Chromebook Pro (Caroline)
 # this is an old chromebook running NixOS on top of MrChromebox UEFI
-{ pkgs, ... }: {
+{ _ }:
+{
   #
   networking.hostName = "smyrno";
 
-  # this one does not use zfs
-  nixos.btrfs.enable = true;
-
-  nixos.flatpak.enable = true;
-  nixos.gpu.vendor = "intel";
-
-  # PowerManagement
-  powerManagement = {
+  # our settings :
+  nixos.fileSystem = {
     enable = true;
-    cpuFreqGovernor = "powersave"; # try to optimise that batterie
-    powertop.enable = true;
+    boot = "TODO";
+    luks = "TODO";
+    swap = true;
   };
 
-  # Kernel Params :
-  boot.kernelParams = [ "amd_iommu=on" "iommu=pt" "usbcore.autosuspend=-1" ];
-  boot.blacklistedKernelModules = [ "xhci_hcd" ];
+  nixos.flatpak.enable = true;
 
-  # maybe consider adding swap ?
-  swapDevices = [ ];
   system.stateVersion = "24.05";
 }

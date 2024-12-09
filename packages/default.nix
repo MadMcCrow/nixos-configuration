@@ -1,11 +1,18 @@
-{ pkgs, ... }:
+{ callPackage, lib, ... }:
 let
   # list all the packages :
-  packages = [ ./bcrypt ];
-  # generate Attrset of all packages :
-in builtins.listToAttrs (map (x:
-  let p = pkgs.callPackage x { };
-  in {
-    name = pkgs.lib.getName p;
-    value = p;
-  }) packages)
+  modules = [
+    ./bcrypt
+    ./darwin-rebuild
+    ./darwin-install
+    ./termcolors
+  ];
+
+in
+# generate Attrset of all packages :
+builtins.listToAttrs (
+  map (x: rec {
+    value = callPackage x { };
+    name = lib.getName value;
+  }) modules
+)

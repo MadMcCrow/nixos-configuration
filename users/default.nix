@@ -2,17 +2,20 @@
 # 	users for nixos and Darwin systems
 #   TODO : clean and simplify
 #   TODO : option to enable or disable users
-{ config, pkgs, lib, plasma-manager, pkgs-latest, ... }: {
+{ config, ... }:
+{
   # import users
   imports = [ ./perard ];
 
   config = {
+    # our users uses zsh so we need to enable those
+    programs.zsh.enable = true;
     # home manager config users :
     home-manager = {
-      # useGlobalPkgs = true;
+      useGlobalPkgs = false; # TODO : move to true and remove nixpkgs options from HM
       useUserPackages = true;
       # extraModules = [ plasma-manager.homeManagerModules.plasma-manager ];
-      extraSpecialArgs = { inherit pkgs-latest; };
+      # extraSpecialArgs = { pkgs = pkgs-latest; };
     };
   };
 }

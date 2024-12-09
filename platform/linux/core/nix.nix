@@ -1,8 +1,17 @@
 # default.nix
 #	Base of modules
-{ pkgs-latest, config, lib, nixpkgs, system, ... }:
-let cfg = config.nixos.nix;
-in {
+{
+  pkgs,
+  config,
+  lib,
+  nixpkgs,
+  system,
+  ...
+}:
+let
+  cfg = config.nixos.nix;
+in
+{
 
   # interface :
   options.nixos.nix = with lib; {
@@ -36,25 +45,35 @@ in {
       # pin for nix3
       registry.nixpkgs.flake = nixpkgs;
 
-      package = pkgs-latest.nix;
+      package = pkgs.nix;
 
-      # security, might break macOS
-      settings.allowed-users = [ "@wheel" ];
+      settings = {
+        # only sudo and root
+        allowed-users = [ "@wheel" ];
 
-      # enable flakes and commands
-      settings.experimental-features = [ "nix-command" "flakes" ];
+        # enable flakes and commands
+        experimental-features = [
+          "nix-command"
+          "flakes"
+        ];
 
-      # substituters
-      settings.substituters = [
-        "https://nix-community.cachix.org"
-        "https://cache.nixos.org/"
-        "https://nixos-configuration.cachix.org"
-      ];
-      settings.trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      ];
+        # binary caches
+        substituters = [
+          "https://nix-community.cachix.org"
+          "https://cache.nixos.org/"
+          "https://nixos-configuration.cachix.org"
+        ];
+        # ssh keys of binary caches
+        trusted-public-keys = [
+          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+          "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
+          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        ];
+
+        # detect files in the store that have identical contents,
+        # and replaces them with hard links to a single copy.
+        auto-optimise-store = true;
+      };
 
       # GarbageCollection
       gc = {
@@ -62,9 +81,6 @@ in {
         dates = "daily";
         persistent = true;
       };
-      # detect files in the store that have identical contents,
-      # and replaces them with hard links to a single copy.
-      settings.auto-optimise-store = true;
 
       # this is linux only :
       optimise.automatic = true;
@@ -76,16 +92,21 @@ in {
 
     nixpkgs = {
       # merged overlays
-      overlays = cfg.overlays;
+      inherit (cfg) overlays;
 
       # predicate from list
-      config.allowUnfreePredicate = pkg:
-        builtins.elem (lib.getName pkg) cfg.unfreePackages;
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
 
       # each functions gets its pkgs from here :
-      config.packageOverrides = pkgs:
-        (lib.mkMerge
-          (builtins.mapAttrs (name: value: (value pkgs)) cfg.overrides));
+      config.packageOverrides =
+        pkgs: (lib.mkMerge (builtins.mapAttrs (n: value: (value pkgs)) cfg.overrides));
+    };
+
+    programs.nh = {
+      enable = true;
+      clean.enable = !config.nix.gc.automatic;
+      clean.extraArgs = "--keep-since 4d --keep 3";
+      # flake = "/home/user/my-nixos-config";
     };
 
     # disable documentation (don't download, online is always up to date)
@@ -93,9 +114,9 @@ in {
 
     # add a shortcut script :
     environment.systemPackages = [
-      (pkgs-latest.writeShellApplication {
+      (pkgs.writeShellApplication {
         name = "nixos-update";
-        runtimeInputs = [ pkgs-latest.nixos-rebuild ];
+        runtimeInputs = [ pkgs.nixos-rebuild ];
         text = ''
           if [ -z "$1" ]
           then
@@ -106,7 +127,7 @@ in {
           if [ "$USER" != "root" ]; then
             echo "Please run nixos-update as root or with sudo"; exit 2
           fi
-          ${lib.getExe pkgs-latest.nixos-rebuild} "$MODE" \
+          ${lib.getExe pkgs.nixos-rebuild} "$MODE" \
           --flake ${config.system.autoUpgrade.flake}#${config.networking.hostName}
           exit $?
         '';
