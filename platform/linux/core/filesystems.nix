@@ -170,7 +170,6 @@ in
             allowDiscards = true;
             crypttabExtraOpts = lib.lists.optionals (!cfg.install) [
               "tpm2-device=auto"
-              "tpm2-measure-pcr=yes"
             ];
           };
         };
@@ -232,21 +231,26 @@ in
         with pkgs;
         [
           sbctl
+          tpm-luks
           tpm2-tss
           (writeShellApplication {
             name = "nixos-enroll-tpm";
-            runtimeInputs = [systemd];
+            runtimeInputs = [ systemd ];
             text = lib.strings.concatMapStringsSep "\n" (
-                d: "${systemd}/bin/systemd-cryptenroll  ${d} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+2+3+7+15"
-              ) (map (v: v.device) (builtins.attrValues config.boot.initrd.luks.devices));
+              device:
+              "${systemd}/bin/systemd-cryptenroll  ${device} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7+11"
+            ) (map (v: v.device) (builtins.attrValues config.boot.initrd.luks.devices));
           })
         ]
       )
     );
 
-    # disable the sudo warnings about calling sudo (it will get wiped every reboot)
-    security.sudo.extraConfig = "Defaults        lecture = never";
-
+     security = {
+      # disable the sudo warnings about calling sudo (it will get wiped every reboot)
+      sudo.extraConfig = "Defaults        lecture = never";
+      # add support for TPM2 
+      tpm2.enable = true; 
+     };
     # enable or disable sleep/suspend
     systemd.targets = lib.mkIf false {
       sleep.enable = cfg.sleep;

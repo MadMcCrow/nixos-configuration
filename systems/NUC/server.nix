@@ -42,6 +42,7 @@ lib.mkIf enable_server {
   boot.initrd.luks.devices."cryptserver" = {
     device = "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae";
     allowDiscards = true;
+    crypttabExtraOpts = ["tpm2-device=auto"];
   };
 
   services.btrfs.autoScrub.fileSystems = [ "${serverDataDir}" ];
