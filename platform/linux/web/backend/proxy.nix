@@ -98,11 +98,11 @@ in
     };
 
     # Authentification support
-    services.oauth2-proxy = {
-      enable = true;
-      provider = "keycloak-oidc"; # maybe try "oidc" next
-      oidcIssuerUrl = "${web.auth.subDomain}.${web.domain}";
-    };
+    # services.oauth2-proxy = {
+    #   enable = true;
+    #   provider = "keycloak-oidc"; # maybe try "oidc" next
+    #   oidcIssuerUrl = "${web.auth.subDomain}.${web.domain}";
+    # };
 
     # CA Certificates
     security.acme = {

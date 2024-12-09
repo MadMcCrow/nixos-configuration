@@ -19,7 +19,7 @@ lib.mkIf enable_server {
     # email for certificates and notifications
     adminEmail = "noe.perard+serveradmin@gmail.com";
     # auth.subDomain = "kan";
-    dns.subDomain = "periphery";
+    # dns.subDomain = "periphery";
     # home.subDomain = "imperium";
   };
 

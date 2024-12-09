@@ -5,7 +5,7 @@
   # maybe regroup :
   imports = [
     ./container.nix
-    ./networking.nix
-    ./proxy.nix
+    #./networking.nix
+    #./proxy.nix
   ];
 }

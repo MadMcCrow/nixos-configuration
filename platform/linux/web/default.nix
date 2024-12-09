@@ -24,8 +24,8 @@
   imports = [
     #./auth
     ./backend
-    ./dns
-    ./home
+    # ./dns
+    # ./home
     #./media
     #./nextcloud
   ];
