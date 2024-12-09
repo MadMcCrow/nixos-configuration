@@ -181,11 +181,15 @@ in
       tmp.cleanOnBoot = true;
 
       loader.systemd-boot = lib.mkMerge [
+        (lib.attrsets.optionalAttrs !cfg.secureboot.enable 
         {
           enable = true; # make sure it's bootable
           editor = false; # safety !
-        }
-        (lib.attrsets.optionalAttrs cfg.secureboot.enable { enable = lib.mkForce cfg.secureboot.install; })
+        })
+        (lib.attrsets.optionalAttrs cfg.secureboot.enable { 
+          enable = lib.mkForce cfg.secureboot.install;
+          editor = false;
+          })
       ];
       # Lanzaboote currently replaces the systemd-boot module.
       lanzaboote = lib.mkIf cfg.secureboot.enable {

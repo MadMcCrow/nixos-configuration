@@ -17,7 +17,6 @@
       boot = "/dev/disk/by-partuuid/5bd1959a-7a82-4bad-868a-a601df058489";
       luks.device = "/dev/disk/by-partuuid/9e5262a8-7264-4455-8af8-f00472e8ca03";
       swap = true;
-      secureboot.enable = false;
       secureboot.install = true; # remove after installation
     };
 
