@@ -1,10 +1,16 @@
 # containers/adguard.nix
 # adguard is a better alternative to pihole with more options
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cts = config.nixos.server.containers;
   adg = cts.adguard;
-in {
+in
+{
   # interface :
   options.nixos.server.containers.adguard = {
     enable = lib.mkEnableOption "adguard";
@@ -35,8 +41,10 @@ in {
       hostname = "adguard." + config.networking.domain;
       image = "adguard/adguardhome";
       # volume
-      volumes =
-        [ "./workdir:${adg.dataDir}/work" "./confdir:${adg.dataDir}/conf" ];
+      volumes = [
+        "./workdir:${adg.dataDir}/work"
+        "./confdir:${adg.dataDir}/conf"
+      ];
       ports = [
         "53:53/tcp"
         "53:53/udp"
@@ -45,7 +53,9 @@ in {
         "3000:3000/tcp"
         "443:443/tcp"
       ];
-      environment = { TZ = "Europe/Paris"; };
+      environment = {
+        TZ = "Europe/Paris";
+      };
     };
   };
 }

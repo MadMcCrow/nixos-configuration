@@ -10,18 +10,18 @@ lib.mkIf enable_server {
   nixos.extra.beep.enable = true;
 
   # SERVER :
-  nixos.web = {
-    enable = true;
-
-    # bought and paid for !
-    domain = "asimov.ovh";
-
-    # email for certificates and notifications
-    adminEmail = "noe.perard+serveradmin@gmail.com";
-    # auth.subDomain = "kan";
-    # dns.subDomain = "periphery";
-    # home.subDomain = "imperium";
-  };
+  #nixos.web = {
+  #  enable = true;
+  #
+  #  # bought and paid for !
+  #  domain = "asimov.ovh";
+  #
+  #  # email for certificates and notifications
+  #  adminEmail = "noe.perard+serveradmin@gmail.com";
+  #  # auth.subDomain = "kan";
+  #  # dns.subDomain = "periphery";
+  #  # home.subDomain = "imperium";
+  #};
 
   # STORAGE :
   # Encrypted NUC SSD :
@@ -42,6 +42,7 @@ lib.mkIf enable_server {
   boot.initrd.luks.devices."cryptserver" = {
     device = "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae";
     allowDiscards = true;
+    crypttabExtraOpts = ["tpm2-device=auto"];
   };
 
   services.btrfs.autoScrub.fileSystems = [ "${serverDataDir}" ];

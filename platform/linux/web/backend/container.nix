@@ -85,7 +85,7 @@ in
   };
 
   # implementation
-  config = lib.mkIf (web.enable) {
+  config = lib.mkIf web.enable {
     # systemd-nspawn containers :
     containers."web" = {
       autoStart = true;
@@ -104,7 +104,7 @@ in
         };
       };
       config =
-        { ... }:
+        { _ }:
         {
           containers."test" = {
             autoStart = true;
@@ -122,7 +122,7 @@ in
               };
             };
             config =
-              { ... }:
+              { _ }:
               {
                 programs.zsh.enable = true;
               };
