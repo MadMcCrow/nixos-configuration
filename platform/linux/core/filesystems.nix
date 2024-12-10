@@ -159,23 +159,24 @@ in
     };
 
     boot = rec {
-
+      bootspec.enable = true;
       # support for luks at boot
       initrd = {
+        # verbose = false;
+        systemd.enable = true; # TPM2 unlock
         inherit (config.boot) supportedFilesystems;
         luks.devices = lib.mkIf cfg.luks.enable {
           # support encryption and decryption at boot
           cryptroot = {
             inherit (cfg.luks) device;
             allowDiscards = true;
-            crypttabExtraOpts = lib.lists.optionals (!cfg.install) [
+            crypttabExtraOpts = [
               "tpm2-device=auto"
             ];
           };
         };
-        systemd.enable = lib.mkForce (!lanzaboote.enable);
-
       };
+
       # support only what's necessary during the boot process
       supportedFilesystems = [
         "btrfs"
@@ -238,7 +239,7 @@ in
             runtimeInputs = [ systemd ];
             text = lib.strings.concatMapStringsSep "\n" (
               device:
-              "${systemd}/bin/systemd-cryptenroll  ${device} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7+11"
+              "${systemd}/bin/systemd-cryptenroll  ${device} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+7+11"
             ) (map (v: v.device) (builtins.attrValues config.boot.initrd.luks.devices));
           })
         ]
@@ -249,8 +250,16 @@ in
       # disable the sudo warnings about calling sudo (it will get wiped every reboot)
       sudo.extraConfig = "Defaults        lecture = never";
       # add support for TPM2 
-      tpm2.enable = true; 
-     };
+      tpm2 = {
+        enable = true;
+        pkcs11.enable = true;
+      };
+
+      # Prevent kernel tampering
+      #lockKernelModules = true; # maybe too much !
+      protectKernelImage = true;
+    };
+
     # enable or disable sleep/suspend
     systemd.targets = lib.mkIf false {
       sleep.enable = cfg.sleep;
