@@ -7,7 +7,7 @@
 { ... }:
 {
   imports = [
-    ./core
+    ./core.nix
     ./desktop
     ./extra
     #   ./web

@@ -5,6 +5,10 @@
   pkgs,
   ...
 }:
+
+#### TODO : wait for network-online.target
+# use :
+# system.switch.enable = false
 let
   # shortcut
   inherit (config.nixos) web;
