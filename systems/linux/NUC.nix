@@ -12,7 +12,7 @@ let
   serverData = {
     uuid = "71a2031a-c081-4437-87e0-53b1eb749dae";
     name = "cryptserver";
-    mountPoint= "/var/www";
+    mountPoint = "/var/www";
   };
 in
 {
@@ -24,7 +24,7 @@ in
     ]
     ++ (addModules [
       "linux"
-    #  "web"
+      "web"
     ]);
 
   config = {
@@ -103,15 +103,15 @@ in
 
     system.stateVersion = "24.05";
 
-    # web = lib.attrsets.optionalAttrs false {
-    #   enable = false;
-    #   # bought and paid for !
-    #   domain = "asimov.ovh";
-    #   # email for certificates and notifications
-    #   adminEmail = "noe.perard+serveradmin@gmail.com";
-    #   #   # auth.subDomain = "kan";
-    #   #   # dns.subDomain = "periphery";
-    #   #   # home.subDomain = "imperium";
-    # };
+    web = {
+      enable = false;
+      # bought and paid for !
+      domain = "asimov.ovh";
+      # email for certificates and notifications
+      adminEmail = "noe.perard+serveradmin@gmail.com";
+      #   # auth.subDomain = "kan";
+      #   # dns.subDomain = "periphery";
+      #   # home.subDomain = "imperium";
+    };
   };
 }

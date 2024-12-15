@@ -32,6 +32,17 @@
 }:
 let
   cfg = config.nixos;
+  # auto-enroll app
+  nixos-enroll-tpm =
+    with pkgs;
+    writeShellApplication {
+      name = "nixos-enroll-tpm";
+      runtimeInputs = [ systemd ];
+      text = lib.strings.concatMapStringsSep "\n" (
+        v:
+        "${systemd}/bin/systemd-cryptenroll  ${v.device} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+7+11"
+      ) (builtins.attrValues config.boot.initrd.luks.devices);
+    };
 in
 {
   # interface
@@ -199,8 +210,8 @@ in
         editor = false; # safety !
       };
       lanzaboote = {
-         inherit (cfg.secureboot) enable;
-         pkiBundle = "/etc/secureboot";
+        inherit (cfg.secureboot) enable;
+        pkiBundle = "/etc/secureboot";
       };
       # clean boot process
       plymouth.enable = true; # hide wall-of-text
@@ -223,21 +234,7 @@ in
         sbctl
         tpm-luks
         tpm2-tss
-        (writeShellApplication {
-          name = "nixos-enroll-tpm";
-          runtimeInputs = [ systemd ];
-          text =
-            lib.strings.concatMapStringsSep "\n"
-              (
-                device:
-                "${systemd}/bin/systemd-cryptenroll  ${device} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+7+11"
-              )
-              (
-                map (v: v.device) (
-                  builtins.attrValues config.boot.initrd.luks.devices
-                )
-              );
-        })
+        nixos-enroll-tpm
       ])
       ++ [
         openssl
@@ -546,19 +543,27 @@ in
     };
 
     #nix update :
-    system.autoUpgrade = {
-      enable = true;
-      operation = "boot"; # just upgrade :)
-      flake = "github:MadMcCrow/nixos-configuration";
-      # reboot at night :
-      allowReboot = true;
-      rebootWindow = {
-        lower = "03:00";
-        upper = "05:00";
+    system = {
+      autoUpgrade = {
+        enable = true;
+        operation = "boot"; # just upgrade :)
+        flake = "github:MadMcCrow/nixos-configuration";
+        # reboot at night :
+        allowReboot = true;
+        rebootWindow = {
+          lower = "03:00";
+          upper = "05:00";
+        };
+        # do it everyday
+        persistent = true;
+        dates = "daily";
       };
-      # do it everyday
-      persistent = true;
-      dates = "daily";
+      userActivationScripts = lib.mkIf cfg.secureboot.enable {
+        # this does not work because it requires a user to type the password
+        # "enroll-tpm" = {
+        #   text = "${lib.getExe nixos-enroll-tpm}";
+        # };
+      };
     };
 
     # enable or disable sleep/suspend
