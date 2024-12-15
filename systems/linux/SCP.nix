@@ -3,10 +3,16 @@
 #   lightweight device with very minimal performance
 { nixos-hardware, ... }:
 {
-  imports = with nixos-hardware.nixosModules; [
-    common-gpu-intel
-    common-cpu-intel
-  ] ++ (addModules ["linux" "desktop"]);
+  imports =
+    with nixos-hardware.nixosModules;
+    [
+      common-gpu-intel
+      common-cpu-intel
+    ]
+    ++ (addModules [
+      "linux"
+      "desktop"
+    ]);
 
   config = {
 

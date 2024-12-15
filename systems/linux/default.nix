@@ -4,18 +4,27 @@
   nixpkgs,
   nixpkgs-unstable,
   nixos-hardware,
+  lanzaboote,
+  home-manager,
   self,
   ...
 }:
 let
-  addModules = list : map (x: self + "/modules/${x}") list; 
+  addModules = list: map (x: self + "/modules/${x}") list;
   # helper function 
   mkX86Linux =
     mod:
     nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
-        inherit nixpkgs nixpkgs-unstable nixos-hardware addModules;
+        inherit
+          nixpkgs
+          nixpkgs-unstable
+          nixos-hardware
+          addModules
+          lanzaboote
+          home-manager
+          ;
       };
       modules = [
         mod

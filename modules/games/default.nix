@@ -3,7 +3,7 @@
 { lib, config, ... }:
 let
   cfg = config.games;
-  mkDisableOption = d: mkEnableOption d // {default = true;};
+  mkDisableOption = d: mkEnableOption d // { default = true; };
 in
 {
   # interface :

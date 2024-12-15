@@ -28,16 +28,10 @@
   config,
   pkgs,
   nixpkgs,
-  lanzaboote,
   ...
 }:
 let
   cfg = config.nixos;
-  # cool function to disable everything :
-  debug_disable = v: with builtins;
-  if v isAttrset then lib.attrsets.optionalAttrs false v
-  else if v isList then lib.lists.optionals false v 
-  else false;
 in
 {
   # interface
@@ -154,16 +148,16 @@ in
       };
       # read install.md to install secureboot
       secureboot.enable = mkDisableOption "secureboot for unlocking the luks device";
-    };
 
-  # this is needed :
-  imports = [ lanzaboote.nixosModules.lanzaboote ];
+      # sleep support:
+      sleep.enable = mkEnableOption "sleep mode support";
+    };
 
   # implementation
   # TODO : maybe make mkDefault !
   config = lib.mkIf cfg.enable {
     #
-    boot = debug_disable {
+    boot = {
       bootspec.enable = true;
       initrd = {
         # TODO : try later :
@@ -201,12 +195,12 @@ in
       #   Lanzaboote currently replaces the systemd-boot module.
       loader.systemd-boot = {
         # enable if we're not using lanzaboote
-        enable = lib.mkForce (!config.boot.lanzaboote.enable);
+        enable = lib.mkForce (!cfg.secureboot.enable);
         editor = false; # safety !
       };
       lanzaboote = {
-        inherit (cfg.secureboot) enable;
-        pkiBundle = "/etc/secureboot";
+         inherit (cfg.secureboot) enable;
+         pkiBundle = "/etc/secureboot";
       };
       # clean boot process
       plymouth.enable = true; # hide wall-of-text
@@ -214,7 +208,7 @@ in
     };
 
     # font and use of keyboard options from the xserver
-    console = debug_disable {
+    console = {
       inherit (config.fonts) packages;
       # font = config.fonts.fontconfig.defaultFonts.monospace;
       font = lib.mkIf cfg.french.enable "Lat2-Terminus16";
@@ -222,7 +216,7 @@ in
     };
 
     # everything needed to deal with encrypted file systems
-    environment.defaultPackages = debug_disable(
+    environment.defaultPackages = (
       with pkgs;
       config.fonts.packages
       ++ (lib.lists.optionals cfg.secureboot.enable [
@@ -279,9 +273,10 @@ in
         libportal
         libportal-gtk3
         packagekit
-      ]));
+      ])
+    );
 
-    fileSystems = debug_disable (
+    fileSystems = (
       let
         btrfsVolume = options: {
           device = "/dev/${cfg.fileSystems.root.lvm.vgroup}/nixos";
@@ -365,10 +360,11 @@ in
             "flatpak" = "/var/lib/flatpak";
           })
         )
-      ));
+      )
+    );
 
     # add all of our favorites fonts
-    fonts = debug_disable {
+    fonts = {
       fontDir.enable = true;
       packages = with pkgs; [
         noto-fonts
@@ -387,13 +383,13 @@ in
       };
     };
 
-    hardware = debug_disable {
+    hardware = {
       # disable pulseaudio if using pipewire 
       pulseaudio.enable = cfg.audio.enable && !cfg.audio.usePipewire;
     };
 
     # nix needs a lot of settings
-    nix = debug_disable {
+    nix = {
       nixPath = [ "nixpkgs=flake:nixpkgs" ];
       registry.nixpkgs.flake = nixpkgs;
       package = pkgs.nix;
@@ -423,7 +419,7 @@ in
       };
 
       # GarbageCollection
-      gc =  {
+      gc = {
         automatic = true;
         dates = "daily";
         persistent = true;
@@ -434,7 +430,7 @@ in
       sshServe.enable = true;
     };
 
-    nixpkgs = debug_disable {
+    nixpkgs = {
       # predicate from list
       config.allowUnfreePredicate =
         pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
@@ -446,14 +442,14 @@ in
         ));
     };
 
-    programs.nh = debug_disable {
+    programs.nh = {
       enable = true;
       clean.enable = !config.nix.gc.automatic;
       clean.extraArgs = "--keep-since 4d --keep 3";
       # flake = "/home/user/my-nixos-config";
     };
 
-    services = debug_disable {
+    services = {
       # avahi for mdns :
       avahi = rec {
         enable = true;
@@ -531,7 +527,7 @@ in
     };
 
     #
-    security = debug_disable {
+    security = {
       # lockKernelModules = true; # maybe too much !
       # Prevent kernel tampering
       protectKernelImage = true;
@@ -550,7 +546,7 @@ in
     };
 
     #nix update :
-    system.autoUpgrade = debug_disable {
+    system.autoUpgrade = {
       enable = true;
       operation = "boot"; # just upgrade :)
       flake = "github:MadMcCrow/nixos-configuration";
@@ -566,16 +562,16 @@ in
     };
 
     # enable or disable sleep/suspend
-    systemd = debug_disable {
+    systemd = {
       # TODO : make sleep a thing !
-      targets = debug_disable {
-        sleep.enable = cfg.sleep or cfg.autowake.enable;
-        suspend.enable = cfg.sleep;
-        hibernate.enable = cfg.sleep;
-        hybrid-sleep.enable = cfg.sleep;
+      targets = {
+        sleep.enable = cfg.sleep.enable or cfg.autowake.enable;
+        suspend.enable = cfg.sleep.enable;
+        hibernate.enable = cfg.sleep.enable;
+        hybrid-sleep.enable = cfg.sleep.enable;
       };
 
-      services = debug_disable {
+      services = {
         # beeps when we reach multi-user :
         "beep" = lib.mkIf cfg.beep.enable {
           after = [ "systemd-user-sessions.service" ];
@@ -617,7 +613,7 @@ in
     #   }
     # ];
 
-    networking = debug_disable {
+    networking = {
       # unique identifier for machines
       hostId =
         with builtins;
@@ -633,7 +629,7 @@ in
     };
 
     # language formats :
-    # i18n = debug_disable ( lib.mkIf cfg.french.enable {
+    # i18n =  ( lib.mkIf cfg.french.enable {
     #   defaultLocale = "en_US.UTF-8";
     #   supportedLocales = [
     #     "en_US.UTF-8"

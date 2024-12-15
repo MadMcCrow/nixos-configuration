@@ -1,40 +1,55 @@
 # NUC
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
-{ nixos-hardware, addModules, ... }:
+{
+  lib,
+  config,
+  nixos-hardware,
+  addModules,
+  ...
+}:
 let
-serverDataDir = "/var/www";
+  serverData = {
+    uuid = "71a2031a-c081-4437-87e0-53b1eb749dae";
+    name = "cryptserver";
+    mountPoint= "/var/www";
+  };
 in
 {
-  imports = with nixos-hardware.nixosModules; [
-    common-gpu-intel
-    common-cpu-intel
-  ]++ (addModules ["linux"]);
+  imports =
+    with nixos-hardware.nixosModules;
+    [
+      common-gpu-intel
+      common-cpu-intel
+    ]
+    ++ (addModules [
+      "linux"
+    #  "web"
+    ]);
 
   config = {
 
-    boot.initrd.luks.devices."cryptserver" = {
-      device = "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae";
+    boot.initrd.luks.devices."${serverData.name}" = {
+      device = "/dev/disk/by-partuuid/${serverData.uuid}";
       allowDiscards = true;
       crypttabExtraOpts = [ "tpm2-device=auto" ];
     };
 
-    # STORAGE :
     # Encrypted NUC SSD :
-    # fileSystems."${serverDataDir}" = {
-    #   device = "/dev/mapper/cryptserver";
-    #   encrypted = {
-    #     enable = true;
-    #     blkDev = "/dev/disk/by-partuuid/71a2031a-c081-4437-87e0-53b1eb749dae";
-    #     label = "cryptserver"; # luks device
-    #   };
-    #   fsType = "btrfs";
-    #   neededForBoot = true;
-    #   options = [
-    #     "compress=zstd:6"
-    #     "noatime"
-    #   ];
-    # };
+    fileSystems."${serverData.mountPoint}" = {
+      device = "/dev/mapper/${serverData.name}";
+      encrypted = {
+        enable = true;
+        blkDev = "/dev/disk/by-partuuid/${serverData.uuid}";
+        label = serverData.name; # luks device
+      };
+      fsType = "btrfs";
+      neededForBoot = true;
+      options = [
+        "compress=zstd:6"
+        "noatime"
+      ];
+    };
 
     networking.hostName = "terminus";
 
@@ -65,6 +80,9 @@ in
       # scsiLinkPolicy = "med_power_with_dipm"; # maybe it isn't worth to deal with this
     };
 
+    # enable extra layer of security on server
+    security.apparmor.enable = true;
+
     services = {
       thermald.enable = true;
       # Use kmscon as the virtual console :
@@ -80,20 +98,20 @@ in
       #   extraOptions = "--term xterm-256color";
       # };
 
-      # btrfs.autoScrub.fileSystems = [ "${serverDataDir}" ];
+      btrfs.autoScrub.fileSystems = [ "${serverData.mountPoint}" ];
     };
 
     system.stateVersion = "24.05";
 
-    # web = {
+    # web = lib.attrsets.optionalAttrs false {
     #   enable = false;
     #   # bought and paid for !
     #   domain = "asimov.ovh";
     #   # email for certificates and notifications
     #   adminEmail = "noe.perard+serveradmin@gmail.com";
-    #   # auth.subDomain = "kan";
-    #   # dns.subDomain = "periphery";
-    #   # home.subDomain = "imperium";
+    #   #   # auth.subDomain = "kan";
+    #   #   # dns.subDomain = "periphery";
+    #   #   # home.subDomain = "imperium";
     # };
   };
 }

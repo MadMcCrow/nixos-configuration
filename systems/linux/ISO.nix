@@ -3,14 +3,19 @@
   pkgs,
   lib,
   nixpkgs,
-  addModules
+  addModules,
   ...
 }:
 {
 
-  imports = [
-    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-  ]  ++ (addModules ["linux" "desktop"]);
+  imports =
+    [
+      "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    ]
+    ++ (addModules [
+      "linux"
+      "desktop"
+    ]);
 
   config = {
     # use the latest Linux kernel

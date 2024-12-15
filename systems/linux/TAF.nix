@@ -9,7 +9,11 @@
       common-gpu-amd
       common-cpu-amd
     ]
-    ++ (addModules ["linux" "games" "desktop"]);
+    ++ (addModules [
+      "linux"
+      "games"
+      "desktop"
+    ]);
 
   config = {
     boot = {
@@ -32,6 +36,7 @@
       blacklistedKernelModules = [ "xhci_hcd" ];
     };
 
+    # make mount depend on user : just define the dependency only for the specific user@ instance
     fileSystems."/run/media/steam" = {
       device = "nixos-pool/local/steam";
       fsType = "zfs";

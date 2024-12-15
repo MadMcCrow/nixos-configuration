@@ -1,11 +1,10 @@
 # import all linux modules :
-_ :
+{ lanzaboote, ... }:
 {
   imports = [
     # the base linux config :
     ./config.nix
-    # the desktop experience :
-    # ./desktop
-    # unfree packages :
+    # dependancy :
+    lanzaboote.nixosModules.lanzaboote
   ];
 }
