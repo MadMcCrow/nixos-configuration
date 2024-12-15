@@ -79,7 +79,7 @@ in
     ];
 
     packages.overlays = [
-      (self: super: {
+      (_: super: {
         steam = super.steam.override {
           extraPkgs = steamLibs;
           #extraProfile =

@@ -3,9 +3,16 @@
 #   TODO : clean and simplify
 #   TODO : option to enable or disable users
 { config, ... }:
+let
+  # TODO : rename and change how they are merged
+  users = [ ./perard ];
+in
 {
   # import users
-  imports = [ ./perard ];
+  imports = [
+    home-manager.nixosModule
+    home-manager.nixosModules.home-manager
+  ] ++ users;
 
   config = {
     # our users uses zsh so we need to enable those

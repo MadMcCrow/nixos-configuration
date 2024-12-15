@@ -16,3 +16,10 @@
 # 20-5-2024
 - improved server systems
 - reorganized nixos modules
+
+# 15-12-2024
+- reorganized all modules
+- started detailled doc
+- enabled secureboot on linux
+- simplified systems
+- optimised imports

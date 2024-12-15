@@ -6,7 +6,7 @@
     packages = {
       unfree = [ "discord" ];
       overlays = [
-        (self: super: {
+        (_: super: {
           discord = super.discord.override {
             nss = pkgs.nss_latest;
             withOpenASAR = true;
@@ -24,7 +24,8 @@
 
     home.file.".config/discord/settings.json".text = builtins.toJSON {
       SKIP_HOST_UPDATE = true;
-      DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING = true;
+      DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING =
+        true;
       MIN_WIDTH = 940;
       MIN_HEIGHT = 500;
       openasar = {
