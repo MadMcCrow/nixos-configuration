@@ -32,17 +32,6 @@
 }:
 let
   cfg = config.nixos;
-  # auto-enroll app
-  nixos-enroll-tpm =
-    with pkgs;
-    writeShellApplication {
-      name = "nixos-enroll-tpm";
-      runtimeInputs = [ systemd ];
-      text = lib.strings.concatMapStringsSep "\n" (
-        v:
-        "${systemd}/bin/systemd-cryptenroll  ${v.device} --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+1+7+11"
-      ) (builtins.attrValues config.boot.initrd.luks.devices);
-    };
 in
 {
   # interface
@@ -244,28 +233,6 @@ in
         nmap
         ltunify # logitech unifying support
       ]
-      ++
-        # nixos script 
-        [
-          (writeShellApplication {
-            name = "nixos-update";
-            runtimeInputs = [ nixos-rebuild ];
-            text = ''
-              if [ -z "$1" ]
-              then
-                MODE=$1
-              else
-                MODE="switch"
-              fi
-              if [ "$USER" != "root" ]; then
-                echo "Please run nixos-update as root or with sudo"; exit 2
-              fi
-              ${lib.getExe nixos-rebuild} "$MODE" \
-              --flake ${config.system.autoUpgrade.flake}#${config.networking.hostName}
-              exit $?
-            '';
-          })
-        ]
       ++ (lib.lists.optionals cfg.flatpak.enable [
         libportal
         libportal-gtk3
