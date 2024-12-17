@@ -5,7 +5,7 @@
     # the base linux config :
     ./config.nix
     # auto-update script :
-    ./update.nix
+    ./update
     # dependancy :
     lanzaboote.nixosModules.lanzaboote
   ];

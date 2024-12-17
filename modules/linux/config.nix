@@ -119,6 +119,9 @@ in
           };
         };
 
+      # repo to use for this device 
+      flake = mkNonEmptyStrOption "flake to use when updating, rebuilding" "github:/MadMcCrow/nixos-configuration";
+
       # flatpak is supposed to be just a simple setting, 
       # but because of impermanence it may require extra-change
       flatpak.enable = mkEnableOption "flatpak software installation";
@@ -223,7 +226,6 @@ in
         sbctl
         tpm-luks
         tpm2-tss
-        nixos-enroll-tpm
       ])
       ++ [
         openssl
