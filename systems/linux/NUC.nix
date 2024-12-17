@@ -89,7 +89,7 @@ in
       # Use kmscon as the virtual console :
       kmscon =  {
          enable = true;
-         hwRender = false;
+         hwRender = true;
          fonts = [
            {
              name = "Source Code Pro";

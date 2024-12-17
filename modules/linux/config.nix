@@ -206,7 +206,7 @@ in
         pkiBundle = "/etc/secureboot";
       };
       # clean boot process
-      plymouth.enable = true; # hide wall-of-text
+      #plymouth.enable = true; # hide wall-of-text
       consoleLogLevel = 3; # avoid useless errors
     };
 
@@ -552,16 +552,16 @@ in
     };
 
     # some swap hardware :
-    # swapDevices = lib.lists.optionals cfg.fileSystems.swap.enable [
-    #   {
-    #     label = "swap";
-    #     device = lib.mkForce "/dev/${cfg.fileSystems.lvm.vgroup}/swap";
-    #     randomEncryption = lib.mkIf (!cfg.fileSystems.root.luks.enable) {
-    #       enable = true;
-    #       allowDiscards = true;
-    #     };
-    #   }
-    # ];
+    swapDevices = lib.lists.optionals cfg.fileSystems.swap.enable [
+       {
+         label = "swap";
+         device = lib.mkForce "/dev/${cfg.fileSystems.root.lvm.vgroup}/swap";
+         randomEncryption = lib.mkIf (!cfg.fileSystems.root.luks.enable) {
+           enable = true;
+           allowDiscards = true;
+         };
+       }
+    ];
 
     networking = {
       # unique identifier for machines
@@ -581,7 +581,7 @@ in
     # language formats :
     i18n = lib.mkIf cfg.french.enable {
        defaultLocale = "en_US.UTF-8";
-       supportedLocales = [
+       supportedLocales =  map (x: x+ "/UTF-8") [
          "en_US.UTF-8"
          "fr_FR.UTF-8"
          "C.UTF-8"

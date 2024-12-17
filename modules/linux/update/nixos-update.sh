@@ -8,7 +8,7 @@ fi
 # helper function
 enroll() {
   if [ $# -eq 0 ]; then return; fi
-  return "@systemd@/bin/systemd-cryptenroll $1 --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=@pcrs@"
+  echo "@systemd@/bin/systemd-cryptenroll $1 --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=@pcrs@"
 }
 
 # nixos-rebuild command
@@ -18,12 +18,13 @@ rebuild() {
   else
     BRANCH="";
   fi
-  return "@nixos-rebuild@/bin/nixos-rebuild boot --flake @flake@$BRANCH#@host@ --refresh"
+  echo "@nixos-rebuild@/bin/nixos-rebuild boot --flake @flake@$BRANCH#@host@ --refresh"
 }
 
 spinner() {
   eval $1 &
   PID=$!
+  echo "$1 started with PID $PID"
   i=1
   sp="/-\|"
   echo -n ' '
@@ -31,12 +32,13 @@ spinner() {
   do
     printf "\b${sp:i++%${#sp}:1}"
   done
-  return wait $PID
+  return $(wait $PID)
 }
 
 
 # nixos-rebuild command
 printf "updating @host@ from @flake@"
+rebuild
 if [ $# -eq 1 ]; then 
 spinner $(rebuild $1); 
 else 
