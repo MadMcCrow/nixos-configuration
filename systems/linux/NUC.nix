@@ -6,6 +6,7 @@
   config,
   nixos-hardware,
   addModules,
+  pkgs,
   ...
 }:
 let
@@ -86,17 +87,17 @@ in
     services = {
       thermald.enable = true;
       # Use kmscon as the virtual console :
-      # kmscon =  {
-      #   enable = true;
-      #   hwRender = true;
-      #   fonts = [
-      #     {
-      #       name = "Source Code Pro";
-      #       package = pkgs.source-code-pro;
-      #     }
-      #   ];
-      #   extraOptions = "--term xterm-256color";
-      # };
+      kmscon =  {
+         enable = true;
+         hwRender = false;
+         fonts = [
+           {
+             name = "Source Code Pro";
+             package = pkgs.source-code-pro;
+           }
+         ];
+         extraOptions = "--term xterm-256color";
+      };
 
       btrfs.autoScrub.fileSystems = [ "${serverData.mountPoint}" ];
     };
