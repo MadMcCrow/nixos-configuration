@@ -511,30 +511,6 @@ in
       };
     };
 
-    #nix update :
-    system = {
-      autoUpgrade = {
-        enable = true;
-        operation = "boot"; # just upgrade :)
-        flake = "github:MadMcCrow/nixos-configuration";
-        # reboot at night :
-        allowReboot = true;
-        rebootWindow = {
-          lower = "03:00";
-          upper = "05:00";
-        };
-        # do it everyday
-        persistent = true;
-        dates = "daily";
-      };
-      userActivationScripts = lib.mkIf cfg.secureboot.enable {
-        # this does not work because it requires a user to type the password
-        # "enroll-tpm" = {
-        #   text = "${lib.getExe nixos-enroll-tpm}";
-        # };
-      };
-    };
-
     # enable or disable sleep/suspend
     systemd = {
       # TODO : make sleep a thing !

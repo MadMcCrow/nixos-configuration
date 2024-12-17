@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/sh
 
 # check privileges
 if [ "$USER" != "root" ]; then

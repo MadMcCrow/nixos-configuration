@@ -36,10 +36,22 @@ let
         (lib.getBin nixos-rebuild)
         "--subst-var-by"
         "disks"
-        (lib.strings.escapeShellArgs (
-          map (v: v.device) (builtins.attrValues config.boot.initrd.luks.devices)
+        ((x: "(${x})") (
+          lib.strings.escapeShellArgs (
+            map (v: v.device) (
+              builtins.attrValues config.boot.initrd.luks.devices
+            )
+          )
         ))
       ];
+      #TODO #installManPage #./nixos-update.8
+      # installShellCompletion --bash ${./_nixos-rebuild}
+      postInstall = "";
+      meta = {
+        description = "wrapper around nixos-rebuild";
+        license = lib.licenses.mit;
+        mainProgram = "nixos-update";
+      };
     };
 in
 {
