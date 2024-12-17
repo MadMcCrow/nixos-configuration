@@ -57,6 +57,8 @@ in
 {
   config = lib.mkIf config.nixos.enable {
     # add our tool to the configuration
-    environment.defaultPackages = [ nixos-update ];
+    environment.systemPackages = [ nixos-update ];
+    # TODO :
+    # Add systemd.services."auto-update" 
   };
 }
