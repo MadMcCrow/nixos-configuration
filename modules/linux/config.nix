@@ -579,20 +579,20 @@ in
     };
 
     # language formats :
-    # i18n =  ( lib.mkIf cfg.french.enable {
-    #   defaultLocale = "en_US.UTF-8";
-    #   supportedLocales = [
-    #     "en_US.UTF-8"
-    #     "fr_FR.UTF-8"
-    #     "C.UTF-8"
-    #   ];
-    #   # set all the variable
-    #   extraLocaleSettings = {
-    #     # LC_ALL   = us-utf8;
-    #     # LANGUAGE = us-utf8;
-    #     LC_TIME = "fr_FR.UTF-8"; # use a reasonable date format
-    #   };
-    # });
+    i18n = lib.mkIf cfg.french.enable {
+       defaultLocale = "en_US.UTF-8";
+       supportedLocales = [
+         "en_US.UTF-8"
+         "fr_FR.UTF-8"
+         "C.UTF-8"
+       ];
+       # set all the variable
+       extraLocaleSettings = {
+         # LC_ALL   = us-utf8;
+         # LANGUAGE = us-utf8;
+         LC_TIME = "fr_FR.UTF-8"; # use a reasonable date format
+       };
+    };
 
     # time zone stuff :
     time.timeZone = lib.mkIf cfg.french.enable "Europe/Paris";
