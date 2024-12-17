@@ -8,7 +8,7 @@ fi
 # helper function
 enroll() {
   if [ $# -eq 0 ]; then return; fi
-  return "@systemd@/bin/systemd-cryptenroll $1 --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=@pcrs@"
+  echo "@systemd@/bin/systemd-cryptenroll $1 --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=@pcrs@"
 }
 
 # nixos-rebuild command
@@ -18,12 +18,14 @@ rebuild() {
   else
     BRANCH="";
   fi
-  return "@nixos-rebuild@/bin/nixos-rebuild boot --flake @flake@$BRANCH#@host@ --refresh"
+  echo "@nixos-rebuild@/bin/nixos-rebuild boot --flake @flake@$BRANCH#@host@ --refresh"
 }
 
 spinner() {
+  echo $1
   eval $1 &
   PID=$!
+  echo "$1 started with PID $PID"
   i=1
   sp="/-\|"
   echo -n ' '
