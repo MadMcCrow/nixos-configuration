@@ -59,13 +59,6 @@ in
       # make a sound when ready
       beep.enable = true;
 
-      # filesystem :
-      fileSystems = {
-        boot.partuuid = "5bd1959a-7a82-4bad-868a-a601df058489";
-        root.partuuid = "9e5262a8-7264-4455-8af8-f00472e8ca03";
-        swap.enable = true;
-      };
-
       # sleep at night :
       autowake = {
         # enable = true;

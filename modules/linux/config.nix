@@ -70,26 +70,13 @@ in
       beep.enable = mkEnableOption "make some noise when we boot successfully";
 
       # simplified filesystem setup : use install script to be helped with installation
-      fileSystems =
-        let
-          mkuuidOption =
-            name:
-            mkOption {
-              description = "${name} partition uuid";
-              type =
-                with types;
-                nullOr (
-                  addCheck str (s: (builtins.match "[a-zA-Z0-9\-]+" s) != null)
-                );
-            };
-        in
-        {
+      fileSystems = {
           # enable option
           enable = mkDisableOption "use default filesystems module";
-          boot.partuuid = mkuuidOption "boot";
+          boot.partlabel = mkNonEmptyStrOption "boot partition label" "nixos-boot";
           swap.enable = mkDisableOption "enable swap partition";
           root = {
-            partuuid = mkuuidOption "root";
+            partlabel = mkNonEmptyStrOption "root partition label" "nixos-root";
             luks = {
               enable = mkDisableOption "use LUKS2 for root volume";
               name = mkNonEmptyStrOption "lvm partition name" "cryptroot";
@@ -174,7 +161,7 @@ in
           (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
             # support encryption and decryption at boot
             "${cfg.fileSystems.root.luks.name}" = {
-              device = "/dev/disk/by-partuuid/${cfg.fileSystems.root.partuuid}";
+              device = "/dev/disk/by-partlabel/${cfg.fileSystems.root.partlabel}";
               allowDiscards = true;
               crypttabExtraOpts = [ "tpm2-device=auto" ];
             };
@@ -266,7 +253,7 @@ in
         # /boot
         # Boot is always an Fat32 partition like old times
         "/boot" = {
-          device = "/dev/disk/by-partuuid/${cfg.fileSystems.boot.partuuid}";
+          device = "/dev/disk/by-partlabel/${cfg.fileSystems.boot.partlabel}";
           fsType = "vfat";
         };
 
