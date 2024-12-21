@@ -61,12 +61,11 @@ in
       # sleep at night :
       autowake = {
         #   # enable = true;
-        #   time.sleep = "21:30";
-        #   time.wakeup = "07:30";
-        # };
-        # no need, as it's a server
-        french.enable = false;
+        time.sleep = "21:30";
+        time.wakeup = "07:30";
       };
+      # no need, as it's a server
+      french.enable = false;
     };
     # Power Management : minimize consumption
     powerManagement = {
