@@ -43,6 +43,9 @@ let
             )
           )
         )
+        "--subst-var-by"
+        "pcrs"
+        (lib.strings.concatStringsSep "+" (map builtins.toString config.nixos.secureboot.pcrs))
       ];
       #TODO #installManPage #./nixos-update.8
       # installShellCompletion --bash ${./_nixos-rebuild}

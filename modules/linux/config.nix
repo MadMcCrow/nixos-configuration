@@ -137,7 +137,18 @@ in
         };
       };
       # read install.md to install secureboot
-      secureboot.enable = mkDisableOption "secureboot for unlocking the luks device";
+      secureboot = {
+        enable = mkDisableOption "secureboot for unlocking the luks device";
+        # list of pcrs to enroll to,
+        # necessary for auto unlock of disks
+        # for some reason, 11 (systemd-stub) does not work as intended.
+        # https://uapi-group.org/specifications/specs/linux_tpm_pcr_registry/
+        pcrs = mkOption {
+          description = "list of PCRS to enroll disks to";
+          type = types.listOf types.int;
+          default = [0 2 7 9];
+          };
+      };
 
       # sleep support:
       sleep.enable = mkEnableOption "sleep mode support";
@@ -158,7 +169,6 @@ in
         };
         inherit (config.boot) supportedFilesystems;
         luks = {
-          reusePassphrases = true;
           devices =
           (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
             # support encryption and decryption at boot
@@ -196,6 +206,7 @@ in
         inherit (cfg.secureboot) enable;
         pkiBundle = "/etc/secureboot";
         configurationLimit = 5;
+        editor = false;
       };
       # clean boot process
       plymouth.enable = false; # hide wall-of-text
