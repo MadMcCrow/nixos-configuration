@@ -193,7 +193,7 @@ in
         pkiBundle = "/etc/secureboot";
       };
       # clean boot process
-      #plymouth.enable = true; # hide wall-of-text
+      plymouth.enable = false; # hide wall-of-text
       consoleLogLevel = 3; # avoid useless errors
     };
 
