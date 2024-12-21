@@ -157,7 +157,9 @@ in
           network.wait-online.enable = config.nixos.server.enable;
         };
         inherit (config.boot) supportedFilesystems;
-        luks.devices =
+        luks = {
+          reusePassphrases = true;
+          devices =
           (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
             # support encryption and decryption at boot
             "${cfg.fileSystems.root.luks.name}" = {
@@ -171,6 +173,7 @@ in
             allowDiscards = true;
             crypttabExtraOpts = [ "tpm2-device=auto" ];
           }) cfg.fileSystems.luks);
+        };
       };
 
       # support only what's necessary during the boot process

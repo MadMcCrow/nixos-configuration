@@ -22,7 +22,7 @@ rebuild() {
 }
 
 spinner() {
-  eval $1 &
+  eval "$1" &
   PID=$!
   echo "$1 started with PID $PID"
   i=1
@@ -37,8 +37,7 @@ spinner() {
 
 
 # nixos-rebuild command
-printf "updating @host@ from @flake@"
-rebuild
+printf "updating @host@ from @flake@\n"
 if [ $# -eq 1 ]; then 
 spinner $(rebuild $1); 
 else 
@@ -47,9 +46,10 @@ fi
 REBUILD=$?
 
 # we continue with enrolling disks to TPM
+declare -a DISKS=(@disks@)
 if [ REBUILD -eq 0 ]; then
     printf "\nenrolling LUKS devices in TPM\n"
-    for DISK in @disks@;
+    for DISK in "${DISKS[@]}";
     do
     printf "enrolling $DISK to TPM"
     spinner $(enroll $DISK)
