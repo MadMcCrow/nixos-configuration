@@ -71,40 +71,40 @@ in
 
       # simplified filesystem setup : use install script to be helped with installation
       fileSystems = {
-          # enable option
-          enable = mkDisableOption "use default filesystems module";
-          boot.partlabel = mkNonEmptyStrOption "boot partition label" "nixos-boot";
-          swap.enable = mkDisableOption "enable swap partition";
-          root = {
-            partlabel = mkNonEmptyStrOption "root partition label" "nixos-root";
-            luks = {
-              enable = mkDisableOption "use LUKS2 for root volume";
-              name = mkNonEmptyStrOption "lvm partition name" "cryptroot";
+        # enable option
+        enable = mkDisableOption "use default filesystems module";
+        boot.partlabel = mkNonEmptyStrOption "boot partition label" "nixos-boot";
+        swap.enable = mkDisableOption "enable swap partition";
+        root = {
+          partlabel = mkNonEmptyStrOption "root partition label" "nixos-root";
+          luks = {
+            enable = mkDisableOption "use LUKS2 for root volume";
+            name = mkNonEmptyStrOption "lvm partition name" "cryptroot";
+          };
+          lvm = {
+            enable = mkEnableOption "use lvm on luks" // {
+              defaults = config.nixos.fileSystems.volume.luks;
             };
-            lvm = {
-              enable = mkEnableOption "use lvm on luks" // {
-                defaults = config.nixos.fileSystems.volume.luks;
-              };
-              vgroup = mkNonEmptyStrOption "lvm volume group for nixos" "vg_nixos";
-            };
-          };
-          # size of tmpfs for root
-          tmpfsSize = mkOption {
-            description = "Size of tmpfs for root";
-            type = types.str;
-            default = "2G";
-          };
-          persists = mkOption {
-            description = "paths to make sure to persist";
-            type = with types; attrsOf nonEmptyStr;
-            default = { };
-          };
-          luks = mkOption {
-            description = "devices to decrypt at boot";
-            type = with types; attrsOf nonEmptyStr;
-            default = { };
+            vgroup = mkNonEmptyStrOption "lvm volume group for nixos" "vg_nixos";
           };
         };
+        # size of tmpfs for root
+        tmpfsSize = mkOption {
+          description = "Size of tmpfs for root";
+          type = types.str;
+          default = "2G";
+        };
+        persists = mkOption {
+          description = "paths to make sure to persist";
+          type = with types; attrsOf nonEmptyStr;
+          default = { };
+        };
+        luks = mkOption {
+          description = "devices to decrypt at boot";
+          type = with types; attrsOf nonEmptyStr;
+          default = { };
+        };
+      };
 
       # repo to use for this device 
       flake = mkNonEmptyStrOption "flake to use when updating, rebuilding" "github:/MadMcCrow/nixos-configuration";
@@ -231,7 +231,7 @@ in
       ])
     );
 
-    fileSystems = 
+    fileSystems =
       let
         btrfsVolume = options: {
           device = "/dev/${cfg.fileSystems.root.lvm.vgroup}/nixos";
@@ -315,8 +315,7 @@ in
             "flatpak" = "/var/lib/flatpak";
           })
         )
-      )
-    ;
+      );
 
     # add all of our favorites fonts
     fonts = {
@@ -511,7 +510,7 @@ in
       };
 
       # TODO : maybe add persist folders 
-      tmpfiles.rules = [];
+      tmpfiles.rules = [ ];
 
       services = {
         # beeps when we reach multi-user :
@@ -545,14 +544,14 @@ in
 
     # some swap hardware :
     swapDevices = lib.lists.optionals cfg.fileSystems.swap.enable [
-       {
-         label = "swap";
-         device = lib.mkForce "/dev/${cfg.fileSystems.root.lvm.vgroup}/swap";
-         randomEncryption = lib.mkIf (!cfg.fileSystems.root.luks.enable) {
-           enable = true;
-           allowDiscards = true;
-         };
-       }
+      {
+        label = "swap";
+        device = lib.mkForce "/dev/${cfg.fileSystems.root.lvm.vgroup}/swap";
+        randomEncryption = lib.mkIf (!cfg.fileSystems.root.luks.enable) {
+          enable = true;
+          allowDiscards = true;
+        };
+      }
     ];
 
     networking = {
@@ -572,18 +571,18 @@ in
 
     # language formats :
     i18n = lib.mkIf cfg.french.enable {
-       defaultLocale = "en_US.UTF-8";
-       supportedLocales =  map (x: x+ "/UTF-8") [
-         "en_US.UTF-8"
-         "fr_FR.UTF-8"
-         "C.UTF-8"
-       ];
-       # set all the variable
-       extraLocaleSettings = {
-         # LC_ALL   = us-utf8;
-         # LANGUAGE = us-utf8;
-         LC_TIME = "fr_FR.UTF-8"; # use a reasonable date format
-       };
+      defaultLocale = "en_US.UTF-8";
+      supportedLocales = map (x: x + "/UTF-8") [
+        "en_US.UTF-8"
+        "fr_FR.UTF-8"
+        "C.UTF-8"
+      ];
+      # set all the variable
+      extraLocaleSettings = {
+        # LC_ALL   = us-utf8;
+        # LANGUAGE = us-utf8;
+        LC_TIME = "fr_FR.UTF-8"; # use a reasonable date format
+      };
     };
 
     # time zone stuff :
