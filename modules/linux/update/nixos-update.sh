@@ -5,22 +5,23 @@ if [ "$USER" != "root" ]; then
   printf "Please run nixos-update as root or with sudo\n"; exit 2
 fi
 
-# helper function
-enroll() {
-  if [ $# -eq 0 ]; then return; fi
-  echo "@systemd@/bin/systemd-cryptenroll $1 --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=@pcrs@"
-}
 
-# nixos-rebuild command
-rebuild() {
-  if [ $# -eq 1 ]; then
-    BRANCH="/$1";
-  else
-    BRANCH="";
+# parse arguments :
+MODE="boot"
+BRANCH_REGEX="-{1,2}b(ranch)*"
+MODE_REGEX="-{1,2}m(ode)*"
+while [ "$#" -gt 0 ]; do
+  if [[ $1 =~ $BRANCH_REGEX ]]; then
+    BRANCH=$2; shift 2;
   fi
-  echo "@nixos-rebuild@/bin/nixos-rebuild boot --flake @flake@$BRANCH#@host@ --refresh"
-}
+  if [[ $1 =~ $MODE_REGEX ]]; then
+    MODE=$2; shift 2;
+  fi
+  shift
+done
 
+# wrapper function :
+# hide wall of text and let a spinner do the talking
 spinner() {
   eval "$1" &
   PID=$!
@@ -35,14 +36,10 @@ spinner() {
   return $(wait $PID)
 }
 
-
 # nixos-rebuild command
 printf "updating @host@ from @flake@\n"
 if [ $# -eq 1 ]; then 
-spinner $(rebuild $1); 
-else 
-spinner $(rebuild);
-fi
+spinner "@nixos-rebuild@/bin/nixos-rebuild $MODE --flake @flake@$BRANCH#@host@ --refresh"
 REBUILD=$?
 
 # we continue with enrolling disks to TPM
@@ -52,7 +49,7 @@ if [ REBUILD -eq 0 ]; then
     for DISK in "${DISKS[@]}";
     do
     printf "enrolling $DISK to TPM"
-    spinner $(enroll $DISK)
+    spinner "@systemd@/bin/systemd-cryptenroll $DISK --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=@pcrs@"
     ENROLL=$?
     if [ ENROLL -eq 0 ]; then
       printf "failed ! ($ENROLL)\n"
