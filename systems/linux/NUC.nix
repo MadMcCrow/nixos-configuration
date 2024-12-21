@@ -57,14 +57,15 @@ in
     # our config :
     nixos = {
       # make a sound when ready
-      beep.enable = true;
-
+      # beep.enable = true;
       # sleep at night :
-      autowake = {
-        # enable = true;
-        time.sleep = "21:30";
-        time.wakeup = "07:30";
-      };
+      # autowake = {
+      #   # enable = true;
+      #   time.sleep = "21:30";
+      #   time.wakeup = "07:30";
+      # };
+      secureboot.enable = false;
+      french.enable = false;
     };
     # Power Management : minimize consumption
     powerManagement = {
