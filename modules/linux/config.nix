@@ -158,7 +158,6 @@ in
         };
         inherit (config.boot) supportedFilesystems;
         luks = {
-          reusePassphrases = true;
           devices =
           (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
             # support encryption and decryption at boot
