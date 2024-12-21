@@ -94,7 +94,7 @@ in
             type = types.str;
             default = "2G";
           };
-          persist = mkOption {
+          persists = mkOption {
             description = "paths to make sure to persist";
             type = with types; attrsOf nonEmptyStr;
             default = { };
@@ -187,10 +187,12 @@ in
         # enable if we're not using lanzaboote
         enable = lib.mkForce (!cfg.secureboot.enable);
         editor = false; # safety !
+        configurationLimit = 5;
       };
       lanzaboote = {
         inherit (cfg.secureboot) enable;
         pkiBundle = "/etc/secureboot";
+        configurationLimit = 5;
       };
       # clean boot process
       plymouth.enable = false; # hide wall-of-text
@@ -229,7 +231,7 @@ in
       ])
     );
 
-    fileSystems = (
+    fileSystems = 
       let
         btrfsVolume = options: {
           device = "/dev/${cfg.fileSystems.root.lvm.vgroup}/nixos";
@@ -237,7 +239,7 @@ in
           inherit options;
         };
       in
-      lib.mkIf cfg.fileSystems.enable {
+      (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
         # /
         #   root is always tmpfs
         "/" = {
@@ -292,12 +294,12 @@ in
           "noatime"
           "compress=zstd"
         ];
-      }
+      })
       // (lib.attrsets.mapAttrs'
         (n: v: {
-          name = "/nix/persist/${n}";
+          name = v;
           value = {
-            device = v;
+            device = "/nix/persist/${n}";
             options = [ "bind" ];
             neededForBoot = true;
             noCheck = true;
@@ -308,13 +310,13 @@ in
             "secureboot" = "/etc/secureboot";
             "ssh" = "/etc/ssh";
           }
-          // cfg.fileSystems.persist
+          // cfg.fileSystems.persists
           // (lib.attrsets.optionalAttrs cfg.flatpak.enable {
             "flatpak" = "/var/lib/flatpak";
           })
         )
       )
-    );
+    ;
 
     # add all of our favorites fonts
     fonts = {
@@ -507,6 +509,9 @@ in
         hibernate.enable = cfg.sleep.enable;
         hybrid-sleep.enable = cfg.sleep.enable;
       };
+
+      # TODO : maybe add persist folders 
+      tmpfiles.rules = [];
 
       services = {
         # beeps when we reach multi-user :

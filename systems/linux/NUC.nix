@@ -64,7 +64,7 @@ in
       #   time.sleep = "21:30";
       #   time.wakeup = "07:30";
       # };
-      secureboot.enable = false;
+      # secureboot.enable = false;
       french.enable = false;
     };
     # Power Management : minimize consumption
