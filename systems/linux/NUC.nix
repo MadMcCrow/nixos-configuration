@@ -25,7 +25,7 @@ in
     ]
     ++ (addModules [
       "linux"
-      "web"
+      # "web"
     ]);
 
   config = {
@@ -97,15 +97,15 @@ in
 
     system.stateVersion = "24.05";
 
-    web = {
-      enable = false;
-      # bought and paid for !
-      domain = "asimov.ovh";
-      # email for certificates and notifications
-      adminEmail = "noe.perard+serveradmin@gmail.com";
-      #   # auth.subDomain = "kan";
-      #   # dns.subDomain = "periphery";
-      #   # home.subDomain = "imperium";
-    };
+    # web = {
+    #   enable = false;
+    #   # bought and paid for !
+    #   domain = "asimov.ovh";
+    #   # email for certificates and notifications
+    #   adminEmail = "noe.perard+serveradmin@gmail.com";
+    #   #   # auth.subDomain = "kan";
+    #   #   # dns.subDomain = "periphery";
+    #   #   # home.subDomain = "imperium";
+    # };
   };
 }
