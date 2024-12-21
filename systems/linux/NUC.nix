@@ -37,20 +37,20 @@ in
     };
 
     # Encrypted NUC SSD :
-    fileSystems."${serverData.mountPoint}" = {
-      device = "/dev/mapper/${serverData.name}";
-      encrypted = {
-        enable = true;
-        blkDev = "/dev/disk/by-partuuid/${serverData.uuid}";
-        label = serverData.name; # luks device
-      };
-      fsType = "btrfs";
-      neededForBoot = true;
-      options = [
-        "compress=zstd:6"
-        "noatime"
-      ];
-    };
+    # fileSystems."${serverData.mountPoint}" = {
+    #   device = "/dev/mapper/${serverData.name}";
+    #   encrypted = {
+    #     enable = true;
+    #     blkDev = "/dev/disk/by-partuuid/${serverData.uuid}";
+    #     label = serverData.name; # luks device
+    #   };
+    #   fsType = "btrfs";
+    #   neededForBoot = true;
+    #   options = [
+    #     "compress=zstd:6"
+    #     "noatime"
+    #   ];
+    # };
 
     networking.hostName = "terminus";
 
