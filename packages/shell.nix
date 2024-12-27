@@ -11,5 +11,7 @@ let
 in
 pkgs.mkShell {
   buildInputs = pythonPackages;
-  inputsFrom = builtins.attrValues (pkgs.callPackages ./default.nix { });
+  inputsFrom = builtins.attrValues (
+    pkgs.callPackages ./default.nix { }
+  );
 }

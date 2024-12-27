@@ -2,10 +2,14 @@
 # 	users for nixos and Darwin systems
 #   TODO : clean and simplify
 #   TODO : option to enable or disable users
-{ config, ... }:
+{ home-manager, config, ... }:
+let
+  # TODO : rename and change how they are merged
+  users = [ ./perard ];
+in
 {
   # import users
-  imports = [ ./perard ];
+  imports = [ home-manager.nixosModules.home-manager ] ++ users;
 
   config = {
     # our users uses zsh so we need to enable those

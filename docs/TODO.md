@@ -2,25 +2,31 @@
 
 ## bugfixes :
 
- - [X] fix `sshd` : fixed, added `neededForBoot` to bindMount
- - [X] fix samba Workgroup share not working
  - [ ] fix `gamemoded.service` : `gamemoded.service: Main process exited, code=exited, status=1/FAILURE`
 
 ## improvements :
 
+### NixOS
  - [X] Linux : reworked core modules
- - [ ] Linux Desktop : rework desktop modules
- - [ ] Linux Desktop : Theming
- - [ ] Linux : use BTRFS instead of ZFS for root
- - [ ] Linux : ZFS use better defaults
+ - [X] Linux Desktop : rework desktop modules
+ - [X] Linux : use BTRFS instead of ZFS for root
+ - [X] Update github actions
  - [ ] Make a documentation
- - [ ] Update github actions
+
+ ### Web
+ - [ ] web use latest nixpkgs;
+ - [ ] web hosts services
+ ### Users
+ - [ ] Users use HM options
  - [ ] Option to enable or disable users by systems
- - [ ] Darwin : Auto Update command
  - [ ] Home-Manager : set useGlobalPkgs to true and remove nixpkgs options.
 
- ## Possible :
+ ### MacOS
+ - [ ] Darwin : Auto Update command
 
+
+ ## Possible :
  - [ ] Server : pufferpanel for game servers
  - [ ] map unfree programs to unfree automatically
  - [ ] better git hooks (prepush/precommit)
+ - [ ] split very long module

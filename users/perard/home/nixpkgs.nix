@@ -29,7 +29,8 @@
   config = {
     # HM Setup
     nixpkgs.overlays = config.packages.overlays;
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config.packages.unfree;
+    nixpkgs.config.allowUnfreePredicate =
+      pkg: builtins.elem (lib.getName pkg) config.packages.unfree;
     programs.home-manager.enable = true;
   };
 }

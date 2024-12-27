@@ -31,6 +31,9 @@ in
     ];
 
     home-manager.users.perard =
-      if isLinux then (import ./home/nixos.nix) else (import ./home/darwin.nix);
+      if isLinux then
+        (import ./home/nixos.nix)
+      else
+        (import ./home/darwin.nix);
   };
 }
