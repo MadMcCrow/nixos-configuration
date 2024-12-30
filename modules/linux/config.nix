@@ -238,6 +238,9 @@ in
         tpm2-tss
       ])
       ++ [
+        libfido2
+        onlykey-cli
+        onlykey-agent
         openssl
         ifwifi
         networkmanager

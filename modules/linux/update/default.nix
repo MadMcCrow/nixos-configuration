@@ -24,7 +24,7 @@ let
       substitutions = [
         "--subst-var-by"
         "flake"
-        config.nixos.flake
+        config.nixos.update.flake
         "--subst-var-by"
         "host"
         config.networking.hostName
