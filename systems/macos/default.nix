@@ -1,34 +1,40 @@
 # macos/default.nix
 # all darwin machines
-{ mac-app-util, home-manager-darwin }:
+{
+  addModules,
+  addUsers,
+  darwin,
+  home-manager-darwin,
+  mac-app-util,
+  nixpkgs-darwin,
+  self,
+  ...
+}:
 let
   mkMacOS =
-    {
-      module,
-      nixpkgs ? nixpkgs-darwin,
-      system ? "aarch64-darwin",
-    }:
+    module:
     darwin.lib.darwinSystem {
-      inherit system;
+      system = "aarch64-darwin";
       specialArgs = {
-        inherit nixpkgs;
+        nixpkgs = nixpkgs-darwin;
       };
-      modules = [
-        ../modules/darwin
-        (self + /users)
-        module
-        mac-app-util.darwinModules.default
-        home-manager-darwin.darwinModules.home-manager
-        (_: {
-          # To enable it for all users:
-          home-manager.sharedModules = [
-            mac-app-util.homeManagerModules.default
-          ];
-        })
-      ];
+      modules =
+        (addModules [ "macos" ])
+        ++ (addUsers [ "perard" ])
+        ++ [
+          module
+          mac-app-util.darwinModules.default
+          home-manager-darwin.darwinModules.home-manager
+          (_: {
+            # To enable it for all users:
+            home-manager.sharedModules = [
+              mac-app-util.homeManagerModules.default
+            ];
+          })
+        ];
     };
 in
 {
   # MacBook Air M1
-  anacreon = mkMacOS ./MBA;
+  anacreon = mkMacOS ./MBA.nix;
 }

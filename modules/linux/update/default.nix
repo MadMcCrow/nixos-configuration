@@ -36,16 +36,16 @@ let
         (lib.getBin nixos-rebuild)
         "--subst-var-by"
         "disks"
-        (
-          lib.strings.escapeShellArgs (
-            map (v: v.device) (
-              builtins.attrValues config.boot.initrd.luks.devices
-            )
+        (lib.strings.escapeShellArgs (
+          map (v: v.device) (
+            builtins.attrValues config.boot.initrd.luks.devices
           )
-        )
+        ))
         "--subst-var-by"
         "pcrs"
-        (lib.strings.concatStringsSep "+" (map builtins.toString config.nixos.secureboot.pcrs))
+        (lib.strings.concatStringsSep "+" (
+          map builtins.toString config.nixos.secureboot.pcrs
+        ))
       ];
       #TODO #installManPage #./nixos-update.8
       # installShellCompletion --bash ${./_nixos-rebuild}

@@ -1,6 +1,8 @@
 # linux/default.nix
 # all linux systems
 {
+  addModules,
+  addUsers,
   nixpkgs,
   nixpkgs-unstable,
   nixos-hardware,
@@ -10,7 +12,6 @@
   ...
 }:
 let
-  addModules = list: map (x: self + "/modules/${x}") list;
   # helper function 
   mkX86Linux =
     mod:
@@ -28,8 +29,7 @@ let
       };
       modules = [
         mod
-        (self + /users) # TODO : change
-      ];
+        ] ++ addUsers ["perard"];
     };
 in
 {

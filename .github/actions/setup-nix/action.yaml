@@ -9,7 +9,6 @@ runs:
       uses: cachix/install-nix-action@v19
       with:
         extra_nix_config: |
-          auto-optimise-store = true
           access-tokens = github.com=${{ github.token }}
           experimental-features = nix-command flakes
           substituters = https://cache.nixos.org/ https://nix-community.cachix.org

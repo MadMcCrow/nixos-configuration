@@ -7,6 +7,9 @@
       autosuggestion.enable = true;
       enableCompletion = true;
       oh-my-zsh.enable = true;
+      # add profiling
+      zprof.enable = true;
+      # initExtraFirst = "";
       autocd = true;
       plugins = [
         {

@@ -107,7 +107,9 @@ in
       };
 
       # repo to use for this device 
-      flake = mkNonEmptyStrOption "flake to use when updating, rebuilding" "github:/MadMcCrow/nixos-configuration";
+      update = {
+        flake = mkNonEmptyStrOption "flake to use when updating, rebuilding" "github:/MadMcCrow/nixos-configuration";
+      };
 
       # flatpak is supposed to be just a simple setting, 
       # but because of impermanence it may require extra-change
@@ -146,8 +148,13 @@ in
         pcrs = mkOption {
           description = "list of PCRS to enroll disks to";
           type = types.listOf types.int;
-          default = [0 2 7 9];
-          };
+          default = [
+            0
+            2
+            7
+            9
+          ]; # check tpm2_pcrread !!
+        };
       };
 
       # sleep support:
@@ -170,19 +177,19 @@ in
         inherit (config.boot) supportedFilesystems;
         luks = {
           devices =
-          (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
-            # support encryption and decryption at boot
-            "${cfg.fileSystems.root.luks.name}" = {
-              device = "/dev/disk/by-partlabel/${cfg.fileSystems.root.partlabel}";
+            (lib.attrsets.optionalAttrs cfg.fileSystems.enable {
+              # support encryption and decryption at boot
+              "${cfg.fileSystems.root.luks.name}" = {
+                device = "/dev/disk/by-partlabel/${cfg.fileSystems.root.partlabel}";
+                allowDiscards = true;
+                crypttabExtraOpts = [ "tpm2-device=auto" ];
+              };
+            })
+            // (lib.attrsets.mapAttrs (_: v: {
+              device = v;
               allowDiscards = true;
               crypttabExtraOpts = [ "tpm2-device=auto" ];
-            };
-          })
-          // (lib.attrsets.mapAttrs (_: v: {
-            device = v;
-            allowDiscards = true;
-            crypttabExtraOpts = [ "tpm2-device=auto" ];
-          }) cfg.fileSystems.luks);
+            }) cfg.fileSystems.luks);
         };
       };
 
@@ -356,6 +363,16 @@ in
       pulseaudio.enable = cfg.audio.enable && !cfg.audio.usePipewire;
     };
 
+    imports = [ home-manager.nixosModules.home-manager ] ++ users;
+
+    # home manager config users :
+    home-manager = {
+      useGlobalPkgs = false; # TODO : move to true and remove nixpkgs options from HM
+      useUserPackages = true;
+      # extraModules = [ plasma-manager.homeManagerModules.plasma-manager ];
+      # extraSpecialArgs = { pkgs = pkgs-latest; };
+    };
+
     # nix needs a lot of settings
     nix = {
       nixPath = [ "nixpkgs=flake:nixpkgs" ];
@@ -381,9 +398,6 @@ in
           "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
           "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         ];
-        # detect files in the store that have identical contents,
-        # and replaces them with hard links to a single copy.
-        auto-optimise-store = true;
       };
 
       # GarbageCollection
@@ -392,6 +406,7 @@ in
         dates = "daily";
         persistent = true;
       };
+      # replaces nix.settings.auto-optimise-store
       optimise.automatic = true;
       optimise.dates = [ "daily" ];
       # serve nix store over ssh (the whole network can help each other)
@@ -410,11 +425,16 @@ in
         ));
     };
 
-    programs.nh = {
-      enable = true;
-      clean.enable = !config.nix.gc.automatic;
-      clean.extraArgs = "--keep-since 4d --keep 3";
-      # flake = "/home/user/my-nixos-config";
+    programs = {
+      nh = {
+        enable = true;
+        clean.enable = !config.nix.gc.automatic;
+        clean.extraArgs = "--keep-since 4d --keep 3";
+        # flake = "/home/user/my-nixos-config";
+      };
+
+      # zsh is the better shell
+      zsh.enable = true;
     };
 
     services = {

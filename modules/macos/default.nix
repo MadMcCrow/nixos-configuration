@@ -152,18 +152,16 @@ in
         trusted-users = [ "@admin" ];
         allowed-users = [ "@wheel" ];
 
-        # detect files in the store that have identical contents,
-        # and replaces them with hard links to a single copy.
-        auto-optimise-store = true;
-
       };
+
+      optimise.automatic = true;
+
       # GarbageCollection
       gc.automatic = true;
 
       # redo what's in settings + add x86 to M1 macs
       extraOptions =
         ''
-          auto-optimise-store = true
           experimental-features = nix-command flakes
         ''
         + lib.optionalString (pkgs.system == "aarch64-darwin") ''
@@ -211,7 +209,9 @@ in
 
     };
 
-    services = mkDarwinAttr { nix-daemon.enable = true; };
+    services = { 
+      nix-daemon.enable = true; 
+    };
 
     # PAM support
     system.activationScripts.extraActivation =
