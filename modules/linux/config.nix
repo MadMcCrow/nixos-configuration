@@ -213,7 +213,6 @@ in
         inherit (cfg.secureboot) enable;
         pkiBundle = "/etc/secureboot";
         configurationLimit = 5;
-        editor = false;
       };
       # clean boot process
       plymouth.enable = false; # hide wall-of-text
@@ -366,8 +365,6 @@ in
       pulseaudio.enable = cfg.audio.enable && !cfg.audio.usePipewire;
     };
 
-    imports = [ home-manager.nixosModules.home-manager ] ++ users;
-
     # home manager config users :
     home-manager = {
       useGlobalPkgs = false; # TODO : move to true and remove nixpkgs options from HM
@@ -437,7 +434,9 @@ in
       };
 
       # zsh is the better shell
-      zsh.enable = true;
+      zsh = {
+        enable = true;
+      };
     };
 
     services = {

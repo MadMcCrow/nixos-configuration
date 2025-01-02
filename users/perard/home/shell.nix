@@ -4,12 +4,10 @@
     zsh = {
       enable = true;
       dotDir = ".config/zsh";
-      autosuggestion.enable = true;
+      # autosuggestion.enable = true;
       enableCompletion = true;
-      oh-my-zsh.enable = true;
       # add profiling
       zprof.enable = true;
-      # initExtraFirst = "";
       autocd = true;
       plugins = [
         {

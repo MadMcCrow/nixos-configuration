@@ -214,7 +214,8 @@ in
     };
 
     # PAM support
-    system.activationScripts.extraActivation =
+    system = {
+      activationScripts.extraActivation =
       lib.mkIf cfg.sudoTouchIdAuth.enable
         {
           text = ''
@@ -223,6 +224,8 @@ in
             ${mkSudoTouchIdAuthScript cfg.enable}
           '';
         };
+        keyboard.enableKeyMapping = true;
+    };
   };
 
 }

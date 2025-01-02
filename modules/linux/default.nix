@@ -1,5 +1,5 @@
 # import all linux modules :
-{ lanzaboote, ... }:
+{ lanzaboote, home-manager, ... }:
 {
   imports = [
     # the base linux config :
@@ -8,5 +8,6 @@
     ./update
     # dependancy :
     lanzaboote.nixosModules.lanzaboote
+    home-manager.nixosModules.home-manager
   ];
 }
