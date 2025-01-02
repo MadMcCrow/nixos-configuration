@@ -44,10 +44,10 @@ DISKS=("/dev/nvme0n1p1")
 
 for disk in $DISKS; do
     #command="$cryptenroll $disk"
-    command="echo 'ded tpm'"
+    command="echo 'fido tpm'"
     # check if already enrolled
     status=$(eval "$command")
-        echo "here !"
+    echo "here !"
     use_fido=$([[ $status =~ *fido* ]]);
     echo "here !"
     use_tpm=$([[ $status =~ *tpm* ]]);
