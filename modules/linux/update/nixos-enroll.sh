@@ -3,9 +3,6 @@
 set -e # stop at errors
 
 # vars that will get replaced by nix or arguments :
-FLAKE="." #@flake@
-HOST="terminus" #@host@ # use uname -n
-BRANCH=""
 INTERACTIVE=0
 ENROLL_FIDO=1
 ENROLL_TPM=1
@@ -14,17 +11,13 @@ PCRS=(0 1 2 7 9)  #@pcrs@
 
 # get path to dependencies 
 fido2=$(which fido2-token)
-cryptenroll=$(which systemd-cryptenroll) #@systemd@/bin/systemd-cryptenroll
+# cryptenroll=$(which systemd-cryptenroll) #@systemd@/bin/systemd-cryptenroll
 
 # Parse Inputs
 # TODO : simplify this 
 while [ "$#" -gt 0 ]; do
   if [[ $1  == "--script" ]]; then
     INTERACTIVE=1; shift;
-    continue
-  fi
-  if [[ $1 =~ "(-b)|(--branch)" ]]; then
-    BRANCH="/$2"; shift 2;
     continue
   fi
   if [[ $1 =~ (-f)|(--enroll-fido) ]]; then
@@ -41,16 +34,22 @@ while [ "$#" -gt 0 ]; do
 done
 
 # parse config for encrypted disk to re-enroll
-declare -a initrd_disk=$(nix eval -v -L $FLAKE$BRANCH#nixosConfigurations.$HOST.config.boot.initrd.luks.devices --json --extra-experimental-features 'nix-command flakes' --apply 'with builtins; a: concatStringsSep " " (map (x: x.device) (filter (x: any (s: match "tpm2-device.*" s != null) x.crypttabExtraOpts) (attrValues a)))' 2> /dev/null | tr -d '"')
-DISKS+=( "${DISKS[@]}" "${initrd_disk[@]}")
+FLAKE="." #@flake@
+HOST="terminus" #@host@ # use uname -n
+BRANCH=""
 
+#declare -a initrd_disk=$(nix eval -v -L $FLAKE$BRANCH#nixosConfigurations.$HOST.config.boot.initrd.luks.devices --json --extra-experimental-features 'nix-command flakes' --apply 'with builtins; a: concatStringsSep " " (map (x: x.device) (filter (x: any (s: match "tpm2-device.*" s != null) x.crypttabExtraOpts) (attrValues a)))' 2> /dev/null | tr -d '"')
+#DISKS+=( "${DISKS[@]}" "${initrd_disk[@]}")
+DISKS=("/dev/nvme0n1p1")
 
 for disk in $DISKS; do
     #command="$cryptenroll $disk"
     command="echo 'ded tpm'"
     # check if already enrolled
     status=$(eval "$command")
+        echo "here !"
     use_fido=$([[ $status =~ *fido* ]]);
+    echo "here !"
     use_tpm=$([[ $status =~ *tpm* ]]);
 
     grep=$( eval "$fido2 -L" 2> /dev/null | grep "vendor")
