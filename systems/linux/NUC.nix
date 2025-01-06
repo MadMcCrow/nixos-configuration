@@ -2,7 +2,6 @@
 #   this is a 12th gen Intel NUC
 #   it's my central Home Cloud
 {
-  lib,
   config,
   nixos-hardware,
   addModules,

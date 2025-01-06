@@ -2,13 +2,23 @@
 {
   programs = {
     zsh = {
-      enable = true;
-      dotDir = ".config/zsh";
-      # autosuggestion.enable = true;
-      enableCompletion = true;
-      # add profiling
-      zprof.enable = true;
       autocd = true;
+      autosuggestion.enable = true;
+
+      dotDir = ".config/zsh";
+
+      enable = true;
+
+      enableCompletion = true;
+
+      history = {
+        size = 100;
+        ignoreDups = true;
+        ignoreSpace = true;
+        extended = false;
+        share = true;
+      };
+
       plugins = [
         {
           name = "zsh-nix-shell";
@@ -21,13 +31,13 @@
           };
         }
       ];
-      history = {
-        size = 100;
-        ignoreDups = true;
-        ignoreSpace = true;
-        extended = false;
-        share = true;
-      };
+      # 
+      # prezto is faster than OMZ
+      prezto.enable = true;
+
+      # profiling :
+      # zprof.enable = true;
+
       # alias vscodium to vscode
       shellAliases = rec {
         #code = "codium";
@@ -64,7 +74,7 @@
     bash = {
       # enable powerline-go in bash
       bashrcExtra = ''
-            # Workaround for nix-shell --pure
+        # Workaround for nix-shell --pure
         if [ "$IN_NIX_SHELL" == "pure" ]; then
             if [ -x "$HOME/.nix-profile/bin/powerline-go" ]; then
                 alias powerline-go="$HOME/.nix-profile/bin/powerline-go"

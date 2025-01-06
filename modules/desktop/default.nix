@@ -21,10 +21,7 @@
           enableHidpi = true;
           autoNumlock = true;
           # this prevents issues with nvidia drivers
-          wayland.enable =
-            !(builtins.any (
-              x: x == "nvidia"
-            ) config.services.xserver.videoDrivers);
+          wayland.enable = !(builtins.any (x: x == "nvidia") config.services.xserver.videoDrivers);
         };
       };
 

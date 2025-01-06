@@ -18,9 +18,7 @@ in
     };
     subDomain = mkOption {
       description = "subdomain to use for nextcloud service";
-      type =
-        with types;
-        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
       default = "nextcloud";
     };
   };

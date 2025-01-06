@@ -28,8 +28,7 @@ in
 
     nixos.nix.unfreePackages =
       with lib.lists;
-      (optional cfg.valve.enable "steam-original")
-      ++ (optional cfg.xbox.enable "xow_dongle-firmware");
+      (optional cfg.valve.enable "steam-original") ++ (optional cfg.xbox.enable "xow_dongle-firmware");
 
     networking.firewall = lib.mkIf cfg.valve.enable {
       allowedTCPPorts = [

@@ -35,9 +35,7 @@ in
           openFirewall = true;
           inherit port;
         };
-        users.users = lib.attrsets.filterAttrs (
-          _: v: v.isNormalUser
-        ) config.users.users;
+        users.users = lib.attrsets.filterAttrs (_: v: v.isNormalUser) config.users.users;
         programs.zsh = config.programs.zsh; # some users might need it
         system.stateVersion = config.system.stateVersion;
       };

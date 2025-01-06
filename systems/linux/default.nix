@@ -8,7 +8,6 @@
   nixos-hardware,
   lanzaboote,
   home-manager,
-  self,
   ...
 }:
 let
@@ -27,9 +26,7 @@ let
           home-manager
           ;
       };
-      modules = [
-        mod
-        ] ++ addUsers ["perard"];
+      modules = [ mod ] ++ addUsers [ "perard" ];
     };
 in
 {

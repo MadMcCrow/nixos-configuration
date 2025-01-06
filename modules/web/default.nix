@@ -20,9 +20,7 @@ in
         mkOption (
           (builtins.removeAttrs args [ "regex" ])
           // {
-            type =
-              with types;
-              addCheck nonEmptyStr (s: (builtins.match regex s) != null);
+            type = with types; addCheck nonEmptyStr (s: (builtins.match regex s) != null);
           }
         );
     in
@@ -144,9 +142,7 @@ in
         };
 
         # Get bridge-ip with DHCP
-        bridges."${web.container.bridge}".interfaces = [
-          web.container.interface
-        ];
+        bridges."${web.container.bridge}".interfaces = [ web.container.interface ];
         interfaces."${web.container.bridge}".useDHCP = true;
       };
 

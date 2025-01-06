@@ -227,8 +227,9 @@ in
       useXkbConfig = true; # use xkbOptions in tty.
     };
 
-    # everything needed to deal with encrypted file systems
-    environment.defaultPackages = (
+    environment = {
+      # everything needed to deal with encrypted file systems
+      defaultPackages = (
       with pkgs;
       config.fonts.packages
       ++ (lib.lists.optionals cfg.secureboot.enable [
@@ -253,6 +254,13 @@ in
         packagekit
       ])
     );
+    # helps with shells in home manager :
+    pathsToLink = [ 
+      "/share/zsh"
+      "/share/bash-completion"
+      "/share/fish"
+      ];
+    };
 
     fileSystems =
       let
@@ -334,9 +342,7 @@ in
             "ssh" = "/etc/ssh";
           }
           // cfg.fileSystems.persists
-          // (lib.attrsets.optionalAttrs cfg.flatpak.enable {
-            "flatpak" = "/var/lib/flatpak";
-          })
+          // (lib.attrsets.optionalAttrs cfg.flatpak.enable { "flatpak" = "/var/lib/flatpak"; })
         )
       );
 
@@ -415,14 +421,10 @@ in
 
     nixpkgs = {
       # predicate from list
-      config.allowUnfreePredicate =
-        pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
       # each functions gets its pkgs from here :
       config.packageOverrides =
-        pkgs:
-        (lib.mkMerge (
-          builtins.mapAttrs (_: value: (value pkgs)) cfg.overrides
-        ));
+        pkgs: (lib.mkMerge (builtins.mapAttrs (_: value: (value pkgs)) cfg.overrides));
     };
 
     programs = {
@@ -456,9 +458,7 @@ in
           hinfo = true;
         };
         # may prevent to detect samba shares
-        domainName = lib.mkIf (
-          config.networking.domain != null
-        ) config.networking.domain; # defaults to "local";
+        domainName = lib.mkIf (config.networking.domain != null) config.networking.domain; # defaults to "local";
         browseDomains = [ domainName ];
       };
 
@@ -594,9 +594,7 @@ in
       # unique identifier for machines
       hostId =
         with builtins;
-        elemAt (elemAt (split "(.{8})" (
-          hashString "md5" config.networking.hostName
-        )) 1) 0;
+        elemAt (elemAt (split "(.{8})" (hashString "md5" config.networking.hostName)) 1) 0;
       # use dhcp for addresses. static adresses are given by the rooter
       useDHCP = lib.mkForce true;
       enableIPv6 = true;

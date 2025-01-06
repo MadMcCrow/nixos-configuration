@@ -113,6 +113,8 @@ in
 
   config = lib.mkIf cfg.enable {
 
+    # environment.pathsToLink = [ "/share/zsh" ];
+
     # Fonts
     fonts = {
       packages = with pkgs; [
@@ -184,15 +186,11 @@ in
       #  };
 
       # predicate from list
-      config.allowUnfreePredicate =
-        pkg: builtins.elem (lib.getName pkg) cfg.packages.unfreePackages;
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.packages.unfreePackages;
 
       # each functions gets its pkgs from here :
       config.packageOverrides =
-        pkgs:
-        (lib.mkMerge (
-          builtins.mapAttrs (_: value: (value pkgs)) cfg.packages.overrides
-        ));
+        pkgs: (lib.mkMerge (builtins.mapAttrs (_: value: (value pkgs)) cfg.packages.overrides));
     };
 
     programs = {
@@ -205,26 +203,27 @@ in
           ${fishInit}
         end
       '';
-      zsh.enable = true;
-
+      # minimal zsh :
+      zsh = {
+        enable = true;
+        enableCompletion = false;
+      };
     };
 
-    services = { 
-      nix-daemon.enable = true; 
+    services = {
+      nix-daemon.enable = true;
     };
 
     # PAM support
     system = {
-      activationScripts.extraActivation =
-      lib.mkIf cfg.sudoTouchIdAuth.enable
-        {
-          text = ''
-            # PAM settings
-            echo >&2 "setting up pam..."
-            ${mkSudoTouchIdAuthScript cfg.enable}
-          '';
-        };
-        keyboard.enableKeyMapping = true;
+      activationScripts.extraActivation = lib.mkIf cfg.sudoTouchIdAuth.enable {
+        text = ''
+          # PAM settings
+          echo >&2 "setting up pam..."
+          ${mkSudoTouchIdAuthScript cfg.enable}
+        '';
+      };
+      keyboard.enableKeyMapping = true;
     };
   };
 

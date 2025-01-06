@@ -8,54 +8,65 @@
   config,
   ...
 }:
+with pkgs;
 let
-  # update config and enroll the new tpm keys !
-  nixos-update =
-    with pkgs;
-    substitute {
-      name = "nixos-update";
-      src = ./nixos-update.sh;
-      dir = "bin";
-      buildInputs = [
-        systemd
-        nixos-rebuild
-      ];
-      isExecutable = true;
-      substitutions = [
-        "--subst-var-by"
-        "flake"
-        config.nixos.update.flake
-        "--subst-var-by"
-        "host"
-        config.networking.hostName
-        "--subst-var-by"
-        "systemd"
-        (lib.getBin systemd)
-        "--subst-var-by"
-        "nixos-rebuild"
-        (lib.getBin nixos-rebuild)
-        "--subst-var-by"
-        "disks"
-        (lib.strings.escapeShellArgs (
-          map (v: v.device) (
-            builtins.attrValues config.boot.initrd.luks.devices
-          )
-        ))
-        "--subst-var-by"
-        "pcrs"
-        (lib.strings.concatStringsSep "+" (
-          map builtins.toString config.nixos.secureboot.pcrs
-        ))
-      ];
-      #TODO #installManPage #./nixos-update.8
-      # installShellCompletion --bash ${./_nixos-rebuild}
-      postInstall = "";
-      meta = {
-        description = "wrapper around nixos-rebuild";
-        license = lib.licenses.mit;
-        mainProgram = "nixos-update";
-      };
+  nixos-enroll = substitute {
+    name = "nixos-enroll";
+    src = ./nixos-enroll.sh;
+    dir = "bin";
+    buildInputs = [
+      libfido2
+      systemd
+    ];
+    isExecutable = true;
+    substitutions = [
+      "--replace"
+      "$(which fido2-token)"
+      "${libfido2}/bin/fido2-token"
+      "--replace"
+      "$(which systemd-cryptenroll)"
+      "${systemd}/bin/systemd-cryptenroll"
+      "--repkace"
+      "DISKS=()"
+      (lib.toShellVar (map (v: v.device) (builtins.attrValues config.boot.initrd.luks.devices)))
+    ];
+  };
+
+  # All in one command :
+  nixos-update = substitute {
+    name = "nixos-update";
+    src = ./nixos-update.sh;
+    dir = "bin";
+    buildInputs = [
+      nixos-enroll
+      nixos-rebuild
+    ];
+    isExecutable = true;
+    substitutions = [
+      "--replace"
+      "flake"
+      config.nixos.update.flake
+      "--subst-var-by"
+      "host"
+      config.networking.hostName
+      "--replace"
+      "$(which nixos-rebuild)"
+      (lib.getBin nixos-rebuild)
+      "--subst-var-by"
+      "disks"
+      "--subst-var-by"
+      "pcrs"
+      (lib.strings.concatStringsSep "+" (map builtins.toString config.nixos.secureboot.pcrs))
+    ];
+    #TODO #installManPage #./nixos-update.8
+    # installShellCompletion --bash ${./_nixos-rebuild}
+    postInstall = "";
+    meta = {
+      description = "wrapper around nixos-rebuild";
+      license = lib.licenses.mit;
+      mainProgram = "nixos-update";
     };
+  };
 in
 {
   config = lib.mkIf config.nixos.enable {
