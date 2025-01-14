@@ -4,11 +4,8 @@
     zsh = {
       autocd = true;
       autosuggestion.enable = true;
-
       dotDir = ".config/zsh";
-
       enable = true;
-
       enableCompletion = true;
 
       history = {
@@ -68,21 +65,6 @@
     nix-index = {
       enable = true;
       enableZshIntegration = true;
-    };
-
-    # bash is used in nix-shell
-    bash = {
-      # enable powerline-go in bash
-      bashrcExtra = ''
-        # Workaround for nix-shell --pure
-        if [ "$IN_NIX_SHELL" == "pure" ]; then
-            if [ -x "$HOME/.nix-profile/bin/powerline-go" ]; then
-                alias powerline-go="$HOME/.nix-profile/bin/powerline-go"
-            elif [ -x "/run/current-system/sw/bin/powerline-go" ]; then
-                alias powerline-go="/run/current-system/sw/bin/powerline-go"
-            fi
-        fi
-      '';
     };
 
     # Bash And Zsh shell history suggest box

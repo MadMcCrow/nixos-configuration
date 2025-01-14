@@ -24,10 +24,11 @@
 # These machines are used by tasteful french users: us. Intl keyboard, but
 # French timezone and time notation.
 {
-  lib,
   config,
-  pkgs,
+  lib,
   nixpkgs,
+  pkgs,
+  self,
   ...
 }:
 let
@@ -105,7 +106,6 @@ in
           default = { };
         };
       };
-
       # repo to use for this device 
       update = {
         flake = mkNonEmptyStrOption "flake to use when updating, rebuilding" "github:/MadMcCrow/nixos-configuration";
@@ -230,35 +230,35 @@ in
     environment = {
       # everything needed to deal with encrypted file systems
       defaultPackages = (
-      with pkgs;
-      config.fonts.packages
-      ++ (lib.lists.optionals cfg.secureboot.enable [
-        sbctl
-        tpm-luks
-        tpm2-tss
-      ])
-      ++ [
-        libfido2
-        onlykey-cli
-        onlykey-agent
-        openssl
-        ifwifi
-        networkmanager
-        dnsutils
-        nmap
-        ltunify # logitech unifying support
-      ]
-      ++ (lib.lists.optionals cfg.flatpak.enable [
-        libportal
-        libportal-gtk3
-        packagekit
-      ])
-    );
-    # helps with shells in home manager :
-    pathsToLink = [ 
-      "/share/zsh"
-      "/share/bash-completion"
-      "/share/fish"
+        with pkgs;
+        config.fonts.packages
+        ++ (lib.lists.optionals cfg.secureboot.enable [
+          sbctl
+          tpm-luks
+          tpm2-tss
+        ])
+        ++ [
+          libfido2
+          onlykey-cli
+          onlykey-agent
+          openssl
+          ifwifi
+          networkmanager
+          dnsutils
+          nmap
+          ltunify # logitech unifying support
+        ]
+        ++ (lib.lists.optionals cfg.flatpak.enable [
+          libportal
+          libportal-gtk3
+          packagekit
+        ])
+      );
+      # helps with shells in home manager :
+      pathsToLink = [
+        "/share/zsh"
+        "/share/bash-completion"
+        "/share/fish"
       ];
     };
 
@@ -372,11 +372,15 @@ in
     };
 
     # home manager config users :
+    # TODO : move to another module
     home-manager = {
-      useGlobalPkgs = false; # TODO : move to true and remove nixpkgs options from HM
+      useGlobalPkgs = true; # TODO : move to true and remove nixpkgs options from HM
       useUserPackages = true;
       # extraModules = [ plasma-manager.homeManagerModules.plasma-manager ];
-      # extraSpecialArgs = { pkgs = pkgs-latest; };
+      extraSpecialArgs = {
+        inherit self;
+        #pkgs = pkgs-latest;
+      };
     };
 
     # nix needs a lot of settings

@@ -5,9 +5,9 @@ let
     ./bcrypt
     ./darwin-rebuild
     ./darwin-install
+    ./nbl
     ./termcolors
   ];
-
 in
 # generate Attrset of all packages :
 builtins.listToAttrs (

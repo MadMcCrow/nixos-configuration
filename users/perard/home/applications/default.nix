@@ -5,7 +5,7 @@ let
   graphical = osConfig.services.xserver.enable;
 in
 {
-  imports = lib.lists.optionals graphical [
+  imports = lib.optionals graphical [
     ./discord
     ./deezer.nix
     ./firefox.nix

@@ -7,6 +7,7 @@
   home-manager-darwin,
   mac-app-util,
   nixpkgs-darwin,
+  self,
   ...
 }:
 let
@@ -26,7 +27,12 @@ let
           home-manager-darwin.darwinModules.home-manager
           (_: {
             # To enable it for all users:
-            home-manager.sharedModules = [ mac-app-util.homeManagerModules.default ];
+            home-manager = {
+              sharedModules = [ mac-app-util.homeManagerModules.default ];
+              extraSpecialArgs = {
+                inherit self;
+              };
+            };
           })
         ];
     };
