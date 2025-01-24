@@ -41,6 +41,8 @@
         ls = "${lib.getExe pkgs.eza}";
         exa = ls;
         htop = "${lib.getExe pkgs.btop}";
+        #TODO : add a "get colors tool" 
+        #colors=''for x in {0..99}; do printf "\033[;${x}m $x \033[;0m"; done'';
       };
       syntaxHighlighting.enable = true;
     };

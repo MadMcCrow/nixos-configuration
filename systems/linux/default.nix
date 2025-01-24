@@ -19,7 +19,6 @@ let
       specialArgs = {
         inherit
           nixpkgs
-          nixpkgs-unstable
           nixos-hardware
           addModules
           lanzaboote

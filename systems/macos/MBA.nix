@@ -1,11 +1,16 @@
 # Nix configuration of MacBook Air
-_: {
+{ pkgs, nix-rosetta-builder, ... }:
+{
 
-  # https://github.com/nix-community/home-manager/issues/423
-  #environment.variables = {
-  #  TERMINFO_DIRS = "${pkgs.kitty.terminfo.outPath}/share/terminfo";
-  #};
+  #imports = [ nix-rosetta-builder.darwinModules.default ];
 
-  system.stateVersion = 5;
+  config = {
+    # nix.linux-builder = {
+    #   enable = true;
+    #   systems = [ "x86_64-linux" ];
+    #   package = pkgs.darwin.linux-builder-x86_64;
+    # };
+    system.stateVersion = 5;
+  };
 
 }

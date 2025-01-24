@@ -4,37 +4,19 @@
   addModules,
   addUsers,
   darwin,
-  home-manager-darwin,
-  mac-app-util,
-  nixpkgs-darwin,
   self,
   ...
-}:
+} @args :
 let
   mkMacOS =
     module:
-    darwin.lib.darwinSystem {
+    darwin.lib.darwinSystem rec {
       system = "aarch64-darwin";
-      specialArgs = {
-        nixpkgs = nixpkgs-darwin;
-      };
-      modules =
-        (addModules [ "macos" ])
-        ++ (addUsers [ "perard" ])
-        ++ [
-          module
-          mac-app-util.darwinModules.default
-          home-manager-darwin.darwinModules.home-manager
-          (_: {
-            # To enable it for all users:
-            home-manager = {
-              sharedModules = [ mac-app-util.homeManagerModules.default ];
-              extraSpecialArgs = {
-                inherit self;
-              };
-            };
-          })
-        ];
+      specialArgs = args;
+      modules = 
+      (addModules [ "macos" ]) ++
+      (addUsers [ "perard" ]) ++
+      [ module ];
     };
 in
 {

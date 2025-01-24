@@ -2,17 +2,18 @@
 # the flake responsible for all my systems and apps
 {
   description = "MadMcCrow Systems configurations";
+
   # flake inputs :
   inputs = {
-    # Linux:
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:nixos/nixpkgs/refs/tags/24.05";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # nixpkgs
+    nixpkgs.url = "github:nixos/nixpkgs/release-24.11";
     # HM :
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Linux:
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     ## Secure boot
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.4.1";
@@ -27,16 +28,15 @@
     # };
 
     # macOS:
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/release-24.05";
     darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
-    };
-    home-manager-darwin = {
-      url = "github:nix-community/home-manager/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     mac-app-util.url = "github:hraban/mac-app-util";
+    nix-rosetta-builder = {
+      url = "github:cpick/nix-rosetta-builder";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -60,7 +60,7 @@
             let
               pkgs = nixpkgs.legacyPackages.${system};
             in
-            pkgs.callPackages ./packages { }
+            pkgs.callPackages ./packages inputs
           );
     };
 }
