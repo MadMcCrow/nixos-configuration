@@ -66,7 +66,7 @@ fi
 # install nix if nix is not present
 if ! [ -x "$(command -v nix)" ]; then
   declare -a array=("bashrc" "zshrc" "bash.bashrc")
-  for backup in array; do
+  for backup in "${array[@]}"; do
   if [ -f "/etc/$1.backup-before-nix" ]; then
     printf "\033[;2mreverting backup of $1\n"
     sudo mv "/etc/$1.backup-before-nix" "/etc/$1"
