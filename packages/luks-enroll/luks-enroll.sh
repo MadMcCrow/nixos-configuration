@@ -78,6 +78,7 @@ for disk in "${devices[@]}"; do
   command="$cryptenroll $disk"
   # check if already enrolled
   status=$(eval "$command")
+  # shellcheck disable=SC2319 # it is actually the desired behaviour !
   use_fido=$([[ $status =~ .*fido.* ]]; echo $?)
   use_tpm=$([[ $status =~ .*tpm.* ]]; echo $?)
 

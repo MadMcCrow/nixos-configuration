@@ -8,22 +8,24 @@
 # nix darwin at least once before )
 
 # TODO : replace by the correct command name
-script=$(basename $(dirname $0))
+script_dir=$(dirname "$0")
+script=$(basename "$script_dir")
 log=/tmp/$script
 drybuild=1
+logview=10
 
 function background() {
-  exec 3<> $log #open fd 3.
+  exec 3<> "$log" #open fd 3.
   eval "$1 " 1>&3 2>&3 &
   pid=$!
   i=1
   sp="/-\|"
-  trap "kill $pid 2> /dev/null" EXIT
+  trap 'kill "$pid" 2> /dev/null' EXIT
   while kill -0 $pid 2> /dev/null;
   do
-    read <&3 line;
-    line="$(printf "$line" | tr -d '\n')"
-    printf "\r\033[2K${sp:i++%${#sp}:1} \033[;2m$line\033[;0m"
+    read -r <&3 line;
+    line="$(printf "%s" "$line" | tr -d '\n')"
+    printf "\r\033[2K%s \033[;2m%s\033[;0m" "${sp:i++%${#sp}:1}" "$line"
     sleep 0.01
   done
   printf "\r\033[2K"
@@ -67,14 +69,15 @@ fi
 if ! [ -x "$(command -v nix)" ]; then
   declare -a array=("bashrc" "zshrc" "bash.bashrc")
   for backup in "${array[@]}"; do
-  if [ -f "/etc/$1.backup-before-nix" ]; then
-    printf "\033[;2mreverting backup of $1\n"
-    sudo mv "/etc/$1.backup-before-nix" "/etc/$1"
-  fi
+    if [ -f "/etc/$backup.backup-before-nix" ]; then
+      printf "\033[;2mreverting backup of %s\n" "$backup"
+      sudo mv "/etc/$backup.backup-before-nix" "/etc/$backup"
+    fi
   done
   # launch installer
   curl -L https://nixos.org/nix/install | sh
-  if [ $? != 0 ]; then 
+  retcurl=$?
+  if [ $retcurl -ne 0 ]; then 
     printf "\033[;31mError:\033[;m failed to install nix\n" 1>&2
     exit 3
   fi
@@ -93,47 +96,61 @@ fi
 # build MacOS configuration
 #TODO: wrap build command in threaded function 
 target="\"$flake#darwinConfigurations.$host.system\""
+
+# DRY BUILD
 if [ $drybuild -eq 0 ]; then
-  printf "dry-building configuration for \033[;35m$host\033[0m\n"
+  printf "dry-building configuration for \033[;35m%s\033[0m\n" "$host"
   background "nix build $target --dry-run --no-eval-cache --quiet"
-  if [ $? == 0 ]; then
-    printf "Successfully built \033[;35m$host\033[0m\n"
-    rm $log
-    exit 0
+  retbuild=$?
+  if [ $retbuild -ne 0 ]; then
+    printf "\033[;31mError:\033[;m failed to dry build \033[;35m%s\033[0m\n" "$host" 1>&2
   else
-    printf "\033[;31mError:\033[;m failed to dry build \033[;35m$host\033[0m\n" 1>&2
-    cat $log | tail -n 8
-    rm $log
-    exit 1
+    printf "Successfully built \033[;35m%s\033[0m\n" "$host"
   fi
-elif [[ -x "$(command -v darwin-rebuild)" ]]; then
+  < "$log" tail -n $logview
+  rm "$log"
+  exit $retbuild
+fi
+
+# ROOT IS NECESSARY PAST THIS POINT
+if [ "$USER" != "root" ]; then
+    >&2 printf "\033[0;33merror:\033[0m please run nixos-update as root or with sudo\n"
+    exit 2
+fi
+
+# REBUILD with darwin-rebuild :
+if [[ -x "$(command -v darwin-rebuild)" ]]; then
   echo "rebuilding configuration for $host"
   darwin-rebuild switch --flake "$flake#$host"
-  if [ $? == 0 ]; then
+  retrebuild=$?
+  if [ $retrebuild -eq 0 ]; then
     currentgen=$(nix-env --list-generations | grep current | awk '{print $1}')
-    printf "Successfully switched \033[;35m$host#$currentgen\033[0m\n"
+    printf "Successfully switched \033[;35m%s#%s\033[0m\n" "$host" "$currentgen"
   else 
-    printf "\033[;31mError:\033[;m failed to rebuild \033[;35m$host\033[0m\n" 1>&2
+    printf "\033[;31mError:\033[;m failed to rebuild \033[;35m%s\033[0m\n" "$host" 1>&2
   fi
+# build from scratch
 else
-  printf "building configuration for \033[;35m$host\033[0m\n"
+  printf "building configuration for \033[;35m%s\033[0m\n" "$host"
   background "nix build $target"
-  if [ $? == 0 ]; then
-      rm $log
-      printf "applying build configuration \033[;35m$host\033[0m\n"
-      ./result/sw/bin/darwin-rebuild switch --flake ".#$HOST"
+  retbuild=$?
+  if [[ retbuild -eq 0 ]]; then
+      rm "$log"
+      printf "applying build configuration \033[;35m%s\033[0m\n" "$host"
+      ./result/sw/bin/darwin-rebuild switch --flake ".#$host"
+      retapply=$?
       rm ./result || true # remove symlink for cleaner install
-      if [ $? == 0 ]; then 
-        printf "Successfully installed 033[;35m$host\033[0m\n"
+      if [ $retapply -eq 0 ]; then 
+        printf "Successfully installed 033[;35m%s\033[0m\n" "$host"
         exit 0
       else
-        printf "\033[;31mError:\033[;m failed to apply \033[;35m$host\033[0m\n" 1>&2
-        exit 2
+        printf "\033[;31mError:\033[;m failed to apply \033[;35m%s\033[0m\n" "$host" 1>&2
+        exit 1
       fi
   else
-    printf "\033[;31mError:\033[;m failed to build \033[;35m$host\033[0m\n" 1>&2
-    cat $log | tail -n 8
-    rm $log
+    printf "\033[;31mError:\033[;m failed to build \033[;35m%s\033[0m\n" "$host" 1>&2
+    < "$log" tail -n $logview
+    rm "$log"
     exit 1
   fi
 fi

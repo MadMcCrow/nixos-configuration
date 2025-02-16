@@ -6,18 +6,18 @@ if [ $# -eq 0 ]; then
   printf "\033[0;35mUsage\033[0m: nbl <build-argument>\n"
   exit 1
 fi
-printf "building \033[0;36m$1\033[0m with options : \033[0;33m${@: -2}\033[0m"
+printf "building \033[0;36m%s\033[0m with options : \033[0;33m%s\033[0m" "$1" "${@: -2}" 
 
 # run build command in a background process
-exec 3<(nix build "$@" 2>&1)
+eval 3<(nix build "$@" 2>&1)
 PID=$!
 i=1
 sp="/-\|"
 echo -n ' '
 while [ -d /proc/$PID ]
 do
-  read <&3 line;
-  printf "\b$line ${sp:i++%${#sp}:1}"
+  read -r <&3 line;
+  printf "\b%s %s" "$line" "${sp:i++%${#sp}:1}"
   build_output+="$line"$'\n'
   sleep 0.1
 done
