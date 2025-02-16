@@ -4,7 +4,6 @@
   addModules,
   addUsers,
   darwin,
-  self,
   ...
 } @args :
 let

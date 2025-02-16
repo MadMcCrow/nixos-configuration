@@ -1,5 +1,5 @@
 # bash settings:
-{ ... }:
+ _ :
 # bash is used in nix-shell
 # enable powerline-go in bash
 {

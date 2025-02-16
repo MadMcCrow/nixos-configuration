@@ -2,7 +2,6 @@
 {
   mac-app-util,
   home-manager,
-  self,
   ...
 }:
 {

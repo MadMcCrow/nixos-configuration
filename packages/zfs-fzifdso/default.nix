@@ -33,5 +33,10 @@ stdenv.mkDerivation rec {
   ];
   meta = {
     mainProgram = "zfs-fido2-load-key";
+    licences = with lib.licenses; [
+          bsd0
+          mit
+        ];
+    homepage = "https://git.sr.ht/~nabijaczleweli/fzifdso";
   };
 }

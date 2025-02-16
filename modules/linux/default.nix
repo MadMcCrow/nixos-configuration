@@ -1,5 +1,5 @@
 # import all linux modules :
-{ lanzaboote, home-manager, ... }:
+{ lanzaboote, ... }:
 {
   imports = [
     # the base linux config :

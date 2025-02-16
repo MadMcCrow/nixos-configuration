@@ -1,5 +1,5 @@
 # Linux specific config for home-manager
-{config, home-manager, self, ... } :
+{config, home-manager, ... } :
 {
   imports = [ 
     home-manager.nixosModules.home-manager 

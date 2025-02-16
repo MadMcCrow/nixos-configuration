@@ -28,7 +28,6 @@
   lib,
   nixpkgs,
   pkgs,
-  self,
   ...
 }:
 let
@@ -226,7 +225,7 @@ in
 
     environment = {
       # everything needed to deal with encrypted file systems
-      defaultPackages = (
+      defaultPackages = 
         with pkgs;
         config.fonts.packages
         ++ (lib.lists.optionals cfg.secureboot.enable [
@@ -250,7 +249,7 @@ in
           libportal-gtk3
           packagekit
         ])
-      );
+      ;
       # helps with shells in home manager :
       pathsToLink = [
         "/share/zsh"
