@@ -48,9 +48,6 @@ in
         };
     in
     {
-      # just don't import if you don't want to enable !
-      enable = mkDisableOption "nixos configuration";
-
       audio = {
         enable = mkDisableOption "audio support";
         # some intel drivers behave poorly so I left the ability to disable
@@ -163,7 +160,7 @@ in
 
   # implementation
   # TODO : maybe make mkDefault !
-  config = lib.mkIf cfg.enable {
+  config = {
     #
     boot = {
       bootspec.enable = true;
@@ -369,18 +366,6 @@ in
     hardware = {
       # disable pulseaudio if using pipewire 
       pulseaudio.enable = cfg.audio.enable && !cfg.audio.usePipewire;
-    };
-
-    # home manager config users :
-    # TODO : move to another module
-    home-manager = {
-      useGlobalPkgs = true; # TODO : move to true and remove nixpkgs options from HM
-      useUserPackages = true;
-      # extraModules = [ plasma-manager.homeManagerModules.plasma-manager ];
-      extraSpecialArgs = {
-        inherit self;
-        #pkgs = pkgs-latest;
-      };
     };
 
     # nix needs a lot of settings

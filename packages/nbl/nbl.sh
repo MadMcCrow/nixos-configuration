@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -o
 
 # Check if an argument is provided
@@ -18,9 +18,11 @@ while [ -d /proc/$PID ]
 do
   read <&3 line;
   printf "\b$line ${sp:i++%${#sp}:1}"
+  build_output+="$line"$'\n'
   sleep 0.1
 done
-build_exit_code=wait $PID
+# wait for execution
+wait $PID
 build_exit_code=$?
 
 # Check if the build failed

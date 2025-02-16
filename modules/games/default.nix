@@ -3,20 +3,18 @@
 { lib, config, ... }:
 let
   cfg = config.games;
-  mkDisableOption = d: mkEnableOption d // { default = true; };
 in
 {
   # interface :
   options.games = with lib; {
-    enable = mkDisableOption "game support on nixos";
-    xbox.enable = mkDisableOption "xbox hardware (controller, dongle, ...)";
+    xbox.enable = mkDisableOption "xbox hardware (controller, dongle, ...)" // { default = true; };
     valve = {
-      enable = mkEnableOption "steam, the video game service";
-      firewall.enable = mkDisableOption "open firewall for steam games";
+      enable = lib.mkEnableOption "steam, the video game service";
+      firewall.enable = mkDisableOption "open firewall for steam games"  // { default = true; };
     };
   };
   # merge all options :
-  config = lib.mkIf cfg.enable {
+  config = {
     hardware = {
       xone = {
         inherit (cfg.xbox) enable;

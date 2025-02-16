@@ -24,6 +24,7 @@ in
     ]
     ++ (addModules [
       "linux"
+      "home-manager/linux"
       # "web"
     ]);
 

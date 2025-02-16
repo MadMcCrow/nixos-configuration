@@ -60,7 +60,7 @@
             let
               pkgs = nixpkgs.legacyPackages.${system};
             in
-            pkgs.callPackages ./packages inputs
+            pkgs.callPackage ./packages inputs
           );
     };
 }

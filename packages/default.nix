@@ -1,17 +1,20 @@
-args @{ callPackage, lib, ... }:
-let
-  # list all the packages :
-  modules = [
+# default.nix
+args @{ callPackage, lib, pkgs, ... }:
+let 
+  # helper function :
+  wrapbash = callPackage ./wrapbash.nix {};
+  appendPackage = acc: x: let 
+    p = callPackage x {inherit wrapbash;};
+    in acc // (lib.listToAttrs [ { name = lib.getName p; value = p; }]);
+in
+lib.foldl' appendPackage {} [
     ./bcrypt
     ./darwin-install
-    ./nbl
     ./termcolors
-  ];
-in
-# generate Attrset of all packages :
-builtins.listToAttrs (
-  map (x: rec {
-    value = callPackage x args;
-    name = lib.getName value;
-  }) modules
-)
+    ./luks-enroll
+    ./nbl
+    ./nixos-gen-setup
+    # ./nixos-update # TODO
+    ./zfs-fzifdso
+    ./zfs-tzpfms
+  ]

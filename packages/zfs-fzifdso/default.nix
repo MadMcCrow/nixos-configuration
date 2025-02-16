@@ -1,17 +1,18 @@
 # FIDO2 support for ZFS
 {
+  lib,
   stdenv,
   fetchgit,
   pkgconf,
   shellcheck,
   zfs,
   libfido2,
-  make,
+  gnumake,
   mandoc,
   ...
 }:
 stdenv.mkDerivation rec {
-  pname = "fzidso";
+  pname = "fzifdso";
   version = "v0.4.0";
   src = fetchgit {
     url = "https://git.sr.ht/~nabijaczleweli/fzifdso";
@@ -23,7 +24,7 @@ stdenv.mkDerivation rec {
     shellcheck
     zfs.dev
     libfido2.dev
-    make
+    gnumake
     mandoc
   ];
   buildInputs = [

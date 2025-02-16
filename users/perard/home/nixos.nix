@@ -5,8 +5,7 @@
   # import modules
   imports = [
     ./applications # TODO : make a module with options :
-    ./git.nix
-    ./shell.nix
+    ./shell
     ./ssh.nix
     ./nixpkgs.nix # we need this module to work
   ];

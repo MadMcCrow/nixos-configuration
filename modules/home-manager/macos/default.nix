@@ -9,16 +9,14 @@
   imports = [
     mac-app-util.darwinModules.default
     home-manager.darwinModules.home-manager
+    ./shared.nix
   ];
-
+  
   config = {
     home-manager = {
       sharedModules = [ 
         mac-app-util.homeManagerModules.default
         ];
-      extraSpecialArgs = {
-        inherit self;
-      };
     };
   };
 }

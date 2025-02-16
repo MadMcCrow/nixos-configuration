@@ -5,9 +5,8 @@
     # the base linux config :
     ./config.nix
     # auto-update script :
-    ./update
+    # ./update
     # dependancy :
     lanzaboote.nixosModules.lanzaboote
-    home-manager.nixosModules.home-manager
   ];
 }

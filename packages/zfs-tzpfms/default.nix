@@ -1,11 +1,12 @@
 # TPM2 support for ZFS
 {
+  lib,
   stdenv,
   fetchgit,
   pkgconf,
   shellcheck,
   zfs,
-  make,
+  gnumake,
   mandoc,
   ...
 }:
@@ -21,13 +22,13 @@ stdenv.mkDerivation rec {
     pkgconf
     shellcheck
     zfs.dev
-    make
+    gnumake
     mandoc
   ];
   buildInputs = [ zfs.dev ];
   meta = {
     mainProgram = "zfs-tpm2-load-key";
-    licences = with pkgs.lib.licenses; [
+    licences = with lib.licenses; [
       bsd0
       mit
     ];

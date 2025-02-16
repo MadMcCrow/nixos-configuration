@@ -1,7 +1,7 @@
 # TAF
 #   previously "AF"
 #   this is my main desktop PC
-{ nixos-hardware, addModules, ... }:
+{ addModules, config, nixos-hardware, pkgs, ... }:
 {
   imports =
     with nixos-hardware.nixosModules;

@@ -3,11 +3,11 @@
 {
   addModules,
   addUsers,
-  nixpkgs,
-  nixpkgs-unstable,
-  nixos-hardware,
-  lanzaboote,
   home-manager,
+  lanzaboote,
+  nixos-hardware,
+  nixpkgs,
+  self,
   ...
 }:
 let
@@ -23,16 +23,18 @@ let
           addModules
           lanzaboote
           home-manager
-          ;
+          self;
       };
-      modules = [ mod ] ++ addUsers [ "perard" ];
+      modules = [ mod ] 
+      # TODO : move user out of here and specify it in devices :
+      ++ (addUsers [ "perard" ]);
     };
 in
 {
   # NUC
   terminus = mkX86Linux ./NUC.nix;
   # desktop PC
-  # trantor = mkX86Linux ./TAF.nix;
+  trantor = mkX86Linux ./TAF.nix;
   # chromebook
   # smyrno = mkX86Linux ./SCP.nix;
   # live iso for installation :
