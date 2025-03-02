@@ -11,6 +11,9 @@
  - [X] Linux Desktop : rework desktop modules
  - [X] Linux : use BTRFS instead of ZFS for root
  - [X] Update github actions
+ - [ ] Add nix-flatpak
+ - [ ] Move Games/Steam out of home manager (because of unfree licences)
+    - [ ] Possibly move to flatpaked steam (and local apps)
  - [ ] Make a documentation
 
  ### Web

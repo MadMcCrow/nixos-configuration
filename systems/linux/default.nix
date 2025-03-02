@@ -36,7 +36,7 @@ in
   # desktop PC
   trantor = mkX86Linux ./TAF.nix;
   # chromebook
-  # smyrno = mkX86Linux ./SCP.nix;
+  smyrno = mkX86Linux ./SCP.nix;
   # live iso for installation :
   # iso = mkX86Linux ./ISO.nix;
 }

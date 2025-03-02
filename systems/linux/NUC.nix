@@ -96,7 +96,7 @@ in
       btrfs.autoScrub.fileSystems = [ "${serverData.mountPoint}" ];
     };
 
-    system.stateVersion = "24.05";
+    system.stateVersion = "24.11";
 
     # web = {
     #   enable = false;

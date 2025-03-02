@@ -3,7 +3,7 @@
   lib,
   stdenv,
   fetchgit,
-  pkgconf,
+  pkg-config,
   shellcheck,
   zfs,
   libfido2,
@@ -20,17 +20,20 @@ stdenv.mkDerivation rec {
     hash = "sha256-UNvQCGBYH94VMLZ25z8g/iW9r1x4MdjThe+tMbg1qZk=";
   };
   nativeBuildInputs = [
-    pkgconf
+    pkg-config
     shellcheck
-    zfs.dev
-    libfido2.dev
+    zfs
+    libfido2
     gnumake
     mandoc
   ];
-  buildInputs = [
-    zfs.dev
-    libfido2.dev
-  ];
+  buildInputs = nativeBuildInputs;
+
+  postPatch = ''
+    substituteInPlace Makefile  --replace-fail \
+    'FZIFDSO_VERSION ?= "$(patsubst v%,%,$(shell git describe || echo 0))"' 'FZIFDSO_VERSION ?= "${version}"'
+  '';
+
   meta = {
     mainProgram = "zfs-fido2-load-key";
     licences = with lib.licenses; [

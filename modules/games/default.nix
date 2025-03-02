@@ -6,42 +6,18 @@ let
 in
 {
   # interface :
-  options.games = with lib; {
-    xbox.enable = mkDisableOption "xbox hardware (controller, dongle, ...)" // { default = true; };
-    valve = {
-      enable = lib.mkEnableOption "steam, the video game service";
-      firewall.enable = mkDisableOption "open firewall for steam games"  // { default = true; };
+  options.games =
+    with lib;
+    {
     };
-  };
-  # merge all options :
+
+  imports = [
+    ./gog.nix
+    ./hardware.nix
+    ./steam.nix
+  ];
+
   config = {
-    hardware = {
-      xone = {
-        inherit (cfg.xbox) enable;
-      };
-      steam-hardware = {
-        inherit (cfg.valve) enable;
-      }; # Steam udev rules
-    };
-
-    nixos.nix.unfreePackages =
-      with lib.lists;
-      (optional cfg.valve.enable "steam-original") ++ (optional cfg.xbox.enable "xow_dongle-firmware");
-
-    networking.firewall = lib.mkIf cfg.valve.enable {
-      allowedTCPPorts = [
-        27015 # remote play
-        27036 # SRCDS Rcon port
-      ];
-      allowedUDPPorts = [ 27015 ]; # Gameplay traffic
-      allowedUDPPortRanges = [
-        {
-          from = 27031;
-          to = 27036;
-        }
-      ]; # remote play
-    };
-
     # 
     programs = {
       # gamemode improves performances

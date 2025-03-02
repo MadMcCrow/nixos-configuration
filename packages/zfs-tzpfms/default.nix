@@ -1,9 +1,10 @@
 # TPM2 support for ZFS
+# TODO : try build
 {
   lib,
   stdenv,
   fetchgit,
-  pkgconf,
+  pkg-config,
   shellcheck,
   zfs,
   gnumake,
@@ -11,7 +12,7 @@
   ...
 }:
 stdenv.mkDerivation rec {
-  pname = "fzidso";
+  pname = "tzpfms";
   version = "v0.4.0";
   src = fetchgit {
     url = "https://git.sr.ht/~nabijaczleweli/tzpfms";
@@ -19,13 +20,16 @@ stdenv.mkDerivation rec {
     hash = "sha256-pXQzbKq4DiL0WtxeuoMF1EtzRFpR6fVzDR+ubQD8IEI=";
   };
   nativeBuildInputs = [
-    pkgconf
+    pkg-config
     shellcheck
-    zfs.dev
+    zfs
     gnumake
     mandoc
   ];
-  buildInputs = [ zfs.dev ];
+
+  buildInputs = nativeBuildInputs;
+
+
   meta = {
     mainProgram = "zfs-tpm2-load-key";
     licences = with lib.licenses; [

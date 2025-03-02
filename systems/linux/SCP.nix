@@ -1,7 +1,7 @@
 # SCP
 #   Samsung chromebook pro
 #   lightweight device with very minimal performance
-{ nixos-hardware, ... }:
+{ nixos-hardware, addModules, ... }:
 {
   imports =
     with nixos-hardware.nixosModules;
@@ -11,6 +11,7 @@
     ]
     ++ (addModules [
       "linux"
+      "home-manager/linux"
       "desktop"
     ]);
 
@@ -20,12 +21,6 @@
 
     # our config :
     nixos = {
-      # filesystem :
-      fileSystems = {
-        boot.partuuid = "TODO";
-        root.partuuid = "TODO";
-        swap.enable = true;
-      };
       flatpak.enable = true;
     };
 

@@ -1,4 +1,4 @@
-# a plasmoid for a GNOME-ish start menu
+# The KDE Theme of the steam deck.
 {
   stdenvNoCC,
   fetchurl,
