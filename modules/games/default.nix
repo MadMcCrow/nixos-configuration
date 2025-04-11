@@ -6,9 +6,9 @@ let
 in
 {
   # interface :
-  options.games =
-    with lib;
+  options.games = with lib;
     {
+      enable = mkEnableOption "Games support";
     };
 
   imports = [
@@ -17,7 +17,7 @@ in
     ./steam.nix
   ];
 
-  config = {
+  config = lib.mkIf cfg.enable {
     # 
     programs = {
       # gamemode improves performances

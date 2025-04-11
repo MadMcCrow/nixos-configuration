@@ -41,5 +41,6 @@ stdenv.mkDerivation rec {
           mit
         ];
     homepage = "https://git.sr.ht/~nabijaczleweli/fzifdso";
+    platforms = ["x86_64-linux"];
   };
 }

@@ -16,7 +16,7 @@ in
     # enable the nixos hardware modules
     hardware = {
       xone.enable = cfg.xbox-one-controller;
-      steam-hardware = cfg.steam-controller;
+      steam-hardware.enable = cfg.steam-controller;
     };
 
     programs.steam.extest.enable = cfg.steam-controller;

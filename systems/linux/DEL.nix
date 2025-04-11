@@ -1,6 +1,6 @@
-# NUC
-#   this is a 12th gen Intel NUC
-#   it's my central Home Cloud
+# DEL
+#   Dell Wyse 5070
+#   home lightweight server
 {
   config,
   nixos-hardware,
@@ -17,30 +17,27 @@
     ]
     ++ (addModules [
       "linux"
+      "web"
       "home/linux"
-      "tv"
-      "desktop"
     ]);
 
   config = {
 
-  # this device is used on a TV hence the "situation room"
-  networking.hostName = "situation";
+  # research-labs because it's for home labing ;)
+  networking.hostName = "research";
 
     # Power Management : minimize consumption
+    # TODO : power module 
     powerManagement = {
       enable = true;
-      cpuFreqGovernor = "performance";
+      cpuFreqGovernor = "powersave";
+      powertop.enable = true;
+      # scsiLinkPolicy = "med_power_with_dipm"; # maybe it isn't worth to deal with this
     };
 
     # enable extra layer of security
     security.apparmor.enable = true;
 
-    # fixed revision
-    system.stateVersion = "24.11";
-
-    # we use waydroid on nixOS instead of Android X86
-    tv.waydroid.enable = true;
-
+    system.stateVersion = "25.04";
   };
 }

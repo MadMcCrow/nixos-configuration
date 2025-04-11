@@ -59,7 +59,7 @@
     #};
 
     # this should be handled by steam nixos module, but there's no way I'm not making sure my games works
-    networking.firewall = lib.mkIf cfg.valve.enable {
+    networking.firewall = {
       allowedTCPPorts = [
         27015 # remote play
         27036 # SRCDS Rcon port

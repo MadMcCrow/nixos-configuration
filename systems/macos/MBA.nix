@@ -1,3 +1,4 @@
+# MBA.nix
 # Nix configuration of MacBook Air
 { pkgs, nix-rosetta-builder, ... }:
 {

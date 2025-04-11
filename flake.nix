@@ -39,14 +39,12 @@
     };
   };
 
-  outputs =
-    { nixpkgs, ... }@inputs:
-    let
-      systems = import ./systems inputs;
-    in
+  outputs = { nixpkgs, ... }@inputs:
     {
       # all of our systems
-      inherit (systems) nixosConfigurations darwinConfigurations;
+      inherit (import ./systems inputs) 
+        nixosConfigurations # linux machines
+        darwinConfigurations; # macOS machines
 
       # support packages :
       packages =
@@ -57,10 +55,7 @@
           ]
           (
             system:
-            let
-              pkgs = nixpkgs.legacyPackages.${system};
-            in
-            pkgs.callPackage ./packages inputs
+            (import nixpkgs {inherit system;}).callPackages ./packages inputs
           );
     };
 }

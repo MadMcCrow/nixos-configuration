@@ -3,7 +3,9 @@
 #   A simple script to format your nix files
 # Format with nixfmt
 printf "formatting with \033[0;34mnixfmt\033[0m...\n"
-for file in $1; do
+files=$(git diff --name-only | sed '/.*.nix$/!d')
+for file in $files; do
+    printf "fixing \033[0;34m%s\033[0m\n" "$file"
     nix-shell -p nixfmt-rfc-style --run "nixfmt  <$file" 1> /dev/null;
     ret=$?
     if [ $ret -ne 0 ]; then

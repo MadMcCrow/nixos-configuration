@@ -11,6 +11,7 @@
     ]
     ++ (addModules [
       "linux"
+      "home/linux"
       "games"
       "desktop"
     ]);
@@ -44,7 +45,7 @@
       options = [ "x-systemd.automount" ];
     };
 
-    networking.hostName = "trantor"; # previously "nixAF"
+    # maybe not the best name but it's XCom central, so...
 
     # our config :
     nixos = {

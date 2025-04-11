@@ -430,6 +430,7 @@ in
     };
 
     services = {
+      
       # avahi for mdns :
       avahi = rec {
         enable = true;
@@ -489,6 +490,12 @@ in
 
       # settings to detect and mount samba shares from windows
       samba-wsdd.workgroup = "WORKGROUP";
+
+      # thermal daemon for CPU
+      thermald = {
+        enable = true;
+        ignoreCpuidCheck = true;
+      };
 
       # sync to those european servers
       timesyncd.servers = lib.mkIf cfg.french.enable [

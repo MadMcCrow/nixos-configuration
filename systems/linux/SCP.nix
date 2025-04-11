@@ -11,7 +11,7 @@
     ]
     ++ (addModules [
       "linux"
-      "home-manager/linux"
+      "home/linux"
       "desktop"
     ]);
 

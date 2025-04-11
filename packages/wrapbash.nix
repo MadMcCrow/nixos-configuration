@@ -5,6 +5,7 @@
   lib,
   makeWrapper,
   symlinkJoin,
+  system,
   ...
 }:
 # function inputs :
@@ -25,6 +26,7 @@
     meta = {
       mainProgram = name;
       licence = lib.licences.mit;
+      platforms = [ system ]; 
     };
   }
 )

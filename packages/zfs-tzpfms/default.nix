@@ -37,5 +37,6 @@ stdenv.mkDerivation rec {
       mit
     ];
     homepage = "https://git.sr.ht/~nabijaczleweli/tzpfms";
+    platforms = ["x86_64-linux"];
   };
 }
