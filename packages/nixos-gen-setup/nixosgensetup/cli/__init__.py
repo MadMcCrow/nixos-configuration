@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # script to install nixos on a machine 
 #
@@ -8,9 +8,9 @@
 # 
 
 import sys, argparse
-import modules
+import private
 
-if __name__ == "__main__" :
+def main(argv=sys.argv[1:]):
     try:
         parser = argparse.ArgumentParser(
                         prog='nixos install script generator',
@@ -19,10 +19,10 @@ if __name__ == "__main__" :
         parser.add_argument('hostname')
         parser.add_argument('-f', '--flake', default='.')
         parser.add_argument('-o', '--output',default='')
-        args = parser.parse_args()
+        args = parser.parse_args(argv)
         destination = f'./install-{args.hostname}.sh' if args.output == "" else args.output
         print(f'generating install script for system : \x1b[2;25;10m{args.flake}#{args.hostname}\x1b[0m')
-        modules.script(args.hostname, destination, args.flake)
+        private.script(args.hostname, destination, args.flake)
         # end the program in class !
     except Exception as E:
         print(f'Error occured: {E}') 
@@ -31,5 +31,6 @@ if __name__ == "__main__" :
         print('\x1b[7;50;93mThat\'s all Folks !\x1b[0m')
         sys.exit(0)
 
-
-    
+# allow direct call of program
+if __name__ == '__main__':
+    main()
