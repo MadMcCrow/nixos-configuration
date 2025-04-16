@@ -10,7 +10,6 @@
       common-cpu-amd
     ]
     ++ (addModules [
-      "linux"
       "home/linux"
       "games"
       "desktop"

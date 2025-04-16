@@ -16,7 +16,6 @@
       common-cpu-intel
     ]
     ++ (addModules [
-      "linux"
       "home/linux"
       "tv"
       "desktop"

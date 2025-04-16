@@ -8,7 +8,7 @@
   imports = [
     mac-app-util.darwinModules.default
     home-manager.darwinModules.home-manager
-    ./shared.nix
+    ../shared.nix
   ];
   
   config = {

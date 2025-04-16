@@ -369,9 +369,6 @@ in
 
     # nix needs a lot of settings
     nix = {
-      nixPath = [ "nixpkgs=flake:nixpkgs" ];
-      registry.nixpkgs.flake = nixpkgs;
-      package = pkgs.nix;
       settings = {
         # only sudo and root
         allowed-users = [ "@wheel" ];
@@ -380,19 +377,7 @@ in
           "nix-command"
           "flakes"
         ];
-        # binary caches
-        substituters = [
-          "https://nix-community.cachix.org"
-          "https://cache.nixos.org/"
-          "https://nixos-configuration.cachix.org"
-        ];
-        # ssh keys of binary caches
-        trusted-public-keys = [
-          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-          "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
-          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        ];
-      };
+       };
 
       # GarbageCollection
       gc = {

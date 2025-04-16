@@ -172,7 +172,7 @@ in
         ms-python.python
         ms-pyright.pyright
         golang.go
-        ziglang.vscode-zig
+        # ziglang.vscode-zig
       ]
       ++ [
         godot-tools

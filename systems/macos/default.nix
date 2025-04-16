@@ -13,7 +13,7 @@ let
       system = "aarch64-darwin";
       specialArgs = args;
       modules = 
-      (addModules [ "macos" "home-manager/macos"]) ++
+      (addModules [ "macos" "home/macos"]) ++
       (addUsers [ "perard" ]) ++
       [ module ];
     };

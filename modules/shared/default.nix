@@ -1,9 +1,9 @@
-# common
-# shared stuff between linux and darwin
+# shared/default.nix
+# shared modules between linux and macos machines
 { ... }:
 {
   imports = [
-    ./hostname.nix
+    ./nix.nix
     # ./ssh.nix
   ];
 }

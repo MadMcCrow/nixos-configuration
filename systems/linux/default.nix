@@ -28,7 +28,9 @@ let
         };
         modules = [ mod ] 
         # TODO : move user out of here and specify it in devices :
-        ++ (addUsers [ "perard" ]);
+        ++ (addUsers [ "perard" ])
+        ++ (addModules [ "linux" "shared"]); 
+        # TODO : maybe remove linux so that we can have no issues with ISO
       };
     };
 in

@@ -51,8 +51,6 @@ in
     };
   };
 
-  imports = [ ./home-manager.nix ];
-
   config = {
 
     # environment.pathsToLink = [ "/share/zsh" ];
@@ -66,36 +64,9 @@ in
     };
 
     nix = {
-      # pin for nix2
-      nixPath = [ "nixpkgs=flake:nixpkgs" ];
-      # pin for nix3
-      registry.nixpkgs.flake = nixpkgs;
-
-      package = pkgs.nix;
-
       settings = {
-        # keep flake and commands
-        experimental-features = [
-          "nix-command"
-          "flakes"
-        ];
-
-        # cache providers
-        substituters = [
-          "https://nix-community.cachix.org"
-          "https://cache.nixos.org/"
-          "https://nixos-configuration.cachix.org"
-        ];
-        trusted-public-keys = [
-          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-          "nixos-configuration.cachix.org-1:dmaMl2SX7/VRV1qAQRntZaNEkRyMcuqjb7H+B/2jlF0="
-          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        ];
-
-        # TODO MAYBE ONLY HAVE @admin
         trusted-users = [ "@admin" ];
         allowed-users = [ "@wheel" ];
-
       };
 
       optimise.automatic = true;

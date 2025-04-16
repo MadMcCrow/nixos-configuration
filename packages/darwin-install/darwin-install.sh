@@ -114,7 +114,7 @@ fi
 
 # ROOT IS NECESSARY PAST THIS POINT
 if [ "$USER" != "root" ]; then
-    >&2 printf "\033[0;33merror:\033[0m please run nixos-update as root or with sudo\n"
+    >&2 printf "\033[0;31merror:\033[0m please run \033[0;32m%s\033[0m as root or with sudo\n" $(basename $0)
     exit 2
 fi
 
@@ -141,7 +141,7 @@ else
       retapply=$?
       rm ./result || true # remove symlink for cleaner install
       if [ $retapply -eq 0 ]; then 
-        printf "Successfully installed 033[;35m%s\033[0m\n" "$host"
+        printf "\033[0;32mSuccess:\033[0m Successfully installed 033[;35m%s\033[0m\n" "$host"
         exit 0
       else
         printf "\033[;31mError:\033[;m failed to apply \033[;35m%s\033[0m\n" "$host" 1>&2
