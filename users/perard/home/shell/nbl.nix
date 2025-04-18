@@ -1,6 +1,7 @@
 # add our nbl tool to user tools 
 { self, pkgs, ... }:
 {
-  home.packages = [ self.packages."${pkgs.system}".nbl ];
+  # for some reason this tries to build way too many things !
+  # home.packages = [ self.packages."${pkgs.system}".nbl ];
   # home.shellAliases = {};
 }

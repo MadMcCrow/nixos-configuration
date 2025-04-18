@@ -1,8 +1,12 @@
-{ python311Packages, ... }:
+# ./default.nix
+# script to generate bash script
+{  python311Packages, ... }:
+# build with python 311
 with python311Packages;
 buildPythonApplication {
-  pname = "nixosgensetup";
+  pname = "nixos-gen-setup";
   version = "1.0";
-  buildInputs = [ ];
+  pyproject = true;
+  buildInputs = [ poetry-core ];
   src = ./.;
 }

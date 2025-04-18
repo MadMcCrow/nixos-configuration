@@ -2,7 +2,7 @@
 # nix settings shared between all machines
 # this avoids code redundancies and allows to
 # add all the substituters I want
-{ _ } :
+{ pkgs, nixpkgs, ... } :
 {
   config = {
     nix = {

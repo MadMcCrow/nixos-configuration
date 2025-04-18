@@ -6,7 +6,7 @@
   # flake inputs :
   inputs = {
     # nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/release-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     # HM :
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
@@ -26,16 +26,16 @@
     # inputs.nixpkgs.follows = "nixpkgs";
     # home-manager.follows = "home-manager";
     # };
-
     # macOS:
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin";
     darwin = {
       url = "github:LnL7/nix-darwin/nix-darwin-24.11";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
     mac-app-util.url = "github:hraban/mac-app-util";
     nix-rosetta-builder = {
       url = "github:cpick/nix-rosetta-builder";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
   };
 
@@ -46,16 +46,6 @@
         nixosConfigurations # linux machines
         darwinConfigurations; # macOS machines
 
-      # support packages :
-      packages =
-        nixpkgs.lib.genAttrs
-          [
-            "x86_64-linux"
-            "aarch64-darwin"
-          ]
-          (
-            system:
-            (import nixpkgs {inherit system;}).callPackages ./packages inputs
-          );
+      packages = import ./packages inputs;
     };
 }

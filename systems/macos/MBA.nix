@@ -5,7 +5,8 @@
 
   #imports = [ nix-rosetta-builder.darwinModules.default ];
 
-  config = {
+  config = {    
+    networking.hostName = "foundry";
     #nix.linux-builder.enable = true;
     # nix.linux-builder = {
     #    enable = true;

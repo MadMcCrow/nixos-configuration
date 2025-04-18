@@ -13,6 +13,7 @@
   {
     name,
     runtimeInputs ? [ ],
+    meta ? {},
   }:
   symlinkJoin {
     inherit name;
@@ -23,10 +24,16 @@
       chmod +x $out/bin/${name}
       wrapProgram $out/bin/${name} --prefix PATH : $out/bin
     '';
+    # licence is the whole project licence
+    # and platforms is the platform supported by all inputs
     meta = {
-      mainProgram = name;
-      licence = lib.licences.mit;
-      platforms = [ system ]; 
+      mainProgram = meta.mainProgram or name;
+      licence = meta.licences or lib.licences.mit;
+      platforms = meta.platforms or (
+      let 
+      metalist = map (x : x.meta.platforms) runtimeInputs;
+      in
+      lib.fold (xs: xss: lib.intersectLists xss xs) (builtins.head metalist) (builtins.tail metalist));
     };
   }
 )

@@ -1,0 +1,19 @@
+[project]
+name = "termcolors"
+version = "0.1.0"
+description = "a simple python script to test your terminal colors"
+authors = [
+    {name = "MadMcCrow"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+
+]
+
+[tool.poetry]
+scripts = ["termcolors" = "termcolors:main"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

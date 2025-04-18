@@ -14,6 +14,9 @@ let
   # helper function 
   mkX86Linux =
     mod: rec {
+      # maybe we should use a key, pair variable system
+      # for now the naming convention comes from this
+      # https://xcom.fandom.com/wiki/Category:XCOM_HQ_facilities_(XCOM:_Enemy_Unknown)
       name  = value.config.networking.hostName;
       value = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -47,4 +50,4 @@ in
   # ./TAF.nix # TODO : rename this
 ]))
  # add live iso config :
-// { iso = (mkX86Linux ./ISO.nix).value; }
+# // { iso = (mkX86Linux ./ISO.nix).value; }

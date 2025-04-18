@@ -1,0 +1,25 @@
+[project]
+name = "nixos-gen-setup"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "MadMcCrow"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+
+]
+
+[tool.poetry]
+packages = [
+    { include = "nixosgensetup", from = "src" },
+]
+scripts = [
+"nixos-gen-setup" = "src.cli:main"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

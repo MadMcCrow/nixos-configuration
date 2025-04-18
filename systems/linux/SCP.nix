@@ -16,7 +16,9 @@
 
   config = {
 
-    networking.hostName = "smyrno";
+    # update to something cool like psylab or engineering
+    # "the foundry" is cool too 
+    networking.hostName = "psylab";
 
     # our config :
     nixos = {

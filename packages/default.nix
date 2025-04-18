@@ -1,17 +1,29 @@
 # default.nix
 {
-  callPackage,
-  lib,
-  system,
+  nixpkgs,
+  nixpkgs-darwin,
   ...
 }:
 let
+  # supported systems
+  systems = [ 
+    "x86_64-darwin"
+    "aarch64-darwin"
+    "x86_64-linux"
+    "aarch64-linux"
+    ];
+
+  # shortcut
+  inherit (nixpkgs) lib;
+
   # helper function :
-  wrapbash = callPackage ./wrapbash.nix { };
-  appendPackage =
-    acc: x:
+
+  appendPackage = system : 
+    (acc: x:
     let
-      p = callPackage x { inherit wrapbash; };
+      pkgs = import (if lib.hasSuffix "darwin" system then nixpkgs-darwin else nixpkgs) {inherit system;};
+      inherit (pkgs) callPackage;
+      p = callPackage x {  wrapbash = callPackage ./wrapbash.nix { }; };
     in
     acc
     // (lib.optionalAttrs (!p.meta.unsupported) (lib.listToAttrs [
@@ -19,16 +31,19 @@ let
         name = lib.getName p;
         value = p;
       }
-    ]));
+    ])));
 in
-lib.foldl' appendPackage { } [
+# for all potentially supported platforms 
+nixpkgs.lib.genAttrs systems
+( system : 
+(lib.foldl' (appendPackage system) { } [
   ./bcrypt
   ./darwin-install
-  # ./termcolors #TODO
+  ./termcolors #TODO
   ./luks-enroll
   ./nbl
   ./nixos-gen-setup
   # ./nixos-update # TODO
   ./zfs-fzifdso
   # ./zfs-tzpfms # TODO
-]
+]))

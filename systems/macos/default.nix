@@ -4,14 +4,17 @@
   addModules,
   addUsers,
   darwin,
+  nixpkgs-darwin,
   ...
 } @args :
 let
   mkMacOS =
     module:
     darwin.lib.darwinSystem rec {
+      name  = value.config.networking.hostName;
       system = "aarch64-darwin";
-      specialArgs = args;
+      pkgs = import nixpkgs-darwin {inherit system;};
+      specialArgs = args // {nixpkgs = nixpkgs-darwin;};
       modules = 
       (addModules [ "macos" "home/macos"]) ++
       (addUsers [ "perard" ]) ++

@@ -16,6 +16,10 @@
     ]);
 
   config = {
+    # stupid name here's the full list : 
+    # https://xcom.fandom.com/wiki/Category:XCOM_HQ_facilities_(XCOM:_Enemy_Unknown)
+    networking.hostName = "workshop";
+
     boot = {
       extraModulePackages = with config.boot.kernelPackages; [
         # asus motherboard
