@@ -4,7 +4,7 @@
 
 import json
 from .flake import Flake
-from pycall import runcmd
+from pycall import asyncruncmd
 
 class Configuration() :
 
@@ -15,6 +15,7 @@ class Configuration() :
         """
             this constructor works with both flake and non flake setup
         """
+        self._values = dict()
         initerror = ValueError("Configuration needs either a config file or a flake")
         # choose what subcontructor to use
         if configfile is not None :
@@ -27,7 +28,8 @@ class Configuration() :
             if host is None :
                 raise ValueError("Flakes must provide a hostname")
             self._from_flake(flake, host)
-
+        # try to grab what we previously parsed !
+        self.parseFromJson()
 
     def _from_config(self, configfile) :
         self._configfile = configfile
@@ -41,39 +43,34 @@ class Configuration() :
         self._evalkey = self._flake.getConfig(self._hostname)
         self._features = "\'nix-command flakes\'"
 
-    def getAttr(self, option : str) -> str | dict | list :
+    async def _nix_eval_cmd(self, option : str) :
+        """
+        Warning :  this is slow
+        """
         cmd = f"nix eval -v -L '{self._evalkey}.{option}' --json --extra-experimental-features {self._features}"
-        result = runcmd(cmd, stderr_level = 10 ) # DEBUG = 10
+        result = await asyncruncmd(cmd, stderr_level = 10 ) # DEBUG = 10
         asstr = str(result)
         try :
             jsonobject = json.loads(asstr)
         except : 
             print(f"unexpected result for `{cmd}`\n got : \n {asstr}")
-            return asstr
-        try :
-            return dict(jsonobject)
-        except (TypeError, ValueError):
-            try : 
-                return list(jsonobject)
-            except (TypeError, ValueError):
-                return str(jsonobject)
+        else: 
+            self._values[option] = jsonobject
 
-    @classmethod
-    def fromstring(cls, txt : str) :
-        dictionary = dict(json.loads(txt))
-        temp = dict()
-        for x in ['flake', 'host', 'config'] :
-            try :
-                temp[x] = dictionary[x]
-            except :
-                temp[x] = None
-                pass
-        flake = None if temp['flake'] is None else Flake(temp['flake'])
-        return cls(configfile=temp['config'], flake=flake, host = temp['host'])
-
-    def tostring(self, format = 4 ) -> str :
+    async def asyncGetValue(self, option : str) :
         """
-        turn the configuration into a saveable string
+            retrieve the value for option, one way or another
+        """
+        try : 
+            self._values[option]
+        except KeyError :
+            await self._nix_eval_cmd(option)
+        finally: 
+            return self._values[option]
+    
+    def __repr__(self) -> str:
+        """
+        turn the configuration into a readable string
         """
         dictionary = dict()
         try : 
@@ -88,10 +85,16 @@ class Configuration() :
             dictionary['host'] = self._hostname
         except :
             pass
-        return json.dumps(dictionary, indent=format)
+        
+        return f"{{config at : {self._evalkey}}} : {json.dumps(dictionary, indent=format)}"
 
-    def __repr__(self) -> str:
-        return f"{{config at : {self._evalkey}}} : {self.tostring()}"
+
+
+    def __getitem__(self,key):
+        try :
+            return self._values[key]
+        except KeyError :
+            return None
 
     @property
     def host(self) -> str :
@@ -107,3 +110,32 @@ class Configuration() :
             return self._configfile
         except :
             return ""
+
+    def parseFromJson(self) :
+        try: 
+            filename = self._getFilename()
+            with open(filename, "r") as f:
+                txt = f.read()
+            d = dict(json.loads(txt))
+            for K,V in d.items() :
+                ks = K.split('.')
+                ks.reverse()
+                t = V
+                for k in ks :
+                    t = {k : t}
+                self._values.update(t)
+        except FileNotFoundError :
+            pass
+
+
+    def writeToJson(self) :
+        filename = self._getFilename()
+        jsontxt = json.dumps(self._values, indent=2)
+        with open(filename, "w") as f:
+            f.write(jsontxt)
+
+
+    def _getFilename(self) -> str :
+        return f".{basename(self.filepath)}-{self.host}.json"
+
+

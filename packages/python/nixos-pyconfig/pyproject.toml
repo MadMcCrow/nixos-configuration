@@ -6,7 +6,7 @@ authors = ["MadMcCrow <do-not-mail.me@please.com>"]
 packages = [
         { include = "pyconfig" },
         { include = "nix",  from = "pyconfig" },
-        { include = "query", from = "pyconfig" },
+        { include = "extra", from = "pyconfig" },
     ]
 license = "MIT"
 readme = "README.md"

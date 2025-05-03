@@ -15,3 +15,8 @@ def runcmd(command : str, **runner_args) -> Output :
     rn = Runner(command, **runner_args)
     rn.run()
     return rn.output
+
+async def asyncruncmd(command : str, **runner_args) -> Output :
+    rn = Runner(command, **runner_args)
+    await rn.asyncrun()
+    return rn.output

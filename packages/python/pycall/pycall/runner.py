@@ -46,7 +46,7 @@ class Runner() :
     def run(self) :
         start = datetime.now()
         self._loginfo(f"running : `{' '.join(self.args)}`")
-        rc = self._getasyncloop().run_until_complete(self._asyncrun())
+        rc = self._getasyncloop().run_until_complete(self.asyncrun())
         elapsed = datetime.now() - start
         self._loginfo(f"execution took {elapsed}")
         return rc
@@ -77,12 +77,12 @@ class Runner() :
             else:
                 break
       
-    async def _asyncrun(self):
+    async def asyncrun(self):
         p = await asyncio.create_subprocess_exec(*self.args,
                 stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         stdoutparser = asyncio.create_task(self._read_stream(p.stdout, self._onReadstdout))
-        stdoutparser = asyncio.create_task(self._read_stream(p.stderr, self._onReadstderr))
-        await asyncio.wait([stdoutparser, stdoutparser])
+        stderrparser = asyncio.create_task(self._read_stream(p.stderr, self._onReadstderr))
+        await asyncio.wait([stdoutparser, stderrparser])
         return await p.wait()
 
     @property

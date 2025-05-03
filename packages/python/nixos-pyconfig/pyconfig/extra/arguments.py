@@ -6,7 +6,7 @@ import sys
 from argparse import ArgumentParser
 from . import Query
 
-class QueryArguments(ArgumentParser) :
+class pyconfigArguments(ArgumentParser) :
 
     def __init__(self, **kargs) :
             """
@@ -17,9 +17,20 @@ class QueryArguments(ArgumentParser) :
             self.add_argument('-m', '--hostname', help="hostname/machine for configuration") 
             self.add_argument('-o', '--options', nargs='+', help="options to query")
                
-    def Query(self, argv = sys.argv[1:]) :
-            args = self.parse_args(argv)
-            return Query(
-                filename = args.filename,
-                hostname= args.hostname, 
-                options = args.options )
+    def _getArgs(self, argv = sys.argv[1:]) :
+            if self._argv != sys.argv[1:] :
+                self._args = self.parse_args(argv)
+            return self._args
+
+    @property
+    def hostname(self) :
+        return self._getArgs().hostname
+
+    @property
+    def filename(self) :
+        return self._getArgs().filename
+
+    @property
+    def options(self) :
+        return self._getArgs().options
+
