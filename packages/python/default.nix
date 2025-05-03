@@ -27,7 +27,7 @@ rec {
     pname = "nixos-pyconfig";
     version = "0.1.0";
     src = ./nixos-pyconfig;
-    pydeps = [ pycall ];
+    pydeps = [ pycall python.pkgs.tqdm ];
     # meta.mainProgram = "nixos-pyconfig";
   };
   # pyinstaller

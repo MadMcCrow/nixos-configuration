@@ -4,7 +4,6 @@
 
 import sys
 from argparse import ArgumentParser
-from . import Query
 
 class PyconfigArguments(ArgumentParser) :
 
@@ -18,19 +17,35 @@ class PyconfigArguments(ArgumentParser) :
             self.add_argument('-o', '--options', nargs='+', help="options to query")
                
     def _getArgs(self, argv = sys.argv[1:]) :
-            if self._argv != sys.argv[1:] :
-                self._args = self.parse_args(argv)
+        try :
+            if self._argv == sys.argv[1:] :
+                return self._args
+        except : 
+            self._args = self.parse_args(argv)
+            self._argv = argv
             return self._args
+            
+    @property
+    def hostname(self) -> str :
+        arg = self._getArgs().hostname
+        if isinstance(arg, str) :
+            return arg.strip()
+        return ""
 
     @property
-    def hostname(self) :
-        return self._getArgs().hostname
+    def filename(self) -> str :
+        arg = self._getArgs().filename
+        if isinstance(arg, str) :
+            return arg.strip()
+        return ""
+        
 
     @property
-    def filename(self) :
-        return self._getArgs().filename
-
-    @property
-    def options(self) :
-        return self._getArgs().options
+    def options(self) -> list :
+        arg = self._getArgs().options
+        if isinstance(arg, str) :
+            return arg.split(' ')
+        if isinstance(arg, list) :
+            return arg
+        return []
 

@@ -2,11 +2,15 @@
 #
 # Run nixos-pyconfig
 
-#python methods
+#python modules :
 import logging
 import os
-# reusable arguments
+import json
+
+# import our modules :
 from .arguments import PyconfigArguments
+from ..nix import Flake, Configuration
+from ..query import Query
 
 # program name
 _pname="nixos-pyconfig"
@@ -23,49 +27,54 @@ def select(options : list, question : str = "please choose :") :
         return options[choice]
 
 
+def select_host_name(flake : Flake) -> str : 
+    output = select(flake.listOutputs(), "select output :")
+    return select(flake.listOutputs(output), "select host :")
+
 def main() :
     try : 
-        logging.basicConfig(filename=f".{pname}.log", level=logging.INFO)
+        logging.basicConfig(filename=f".{_pname}.log", level=logging.INFO)
         parser = PyconfigArguments( 
-            prog=pname,
+            prog=_pname,
             description='a tool to query a nix config'
             )
-        filename = parser.filename
-        hostname = parser.hostname
+        # get nix file :
+        filename = parser.filename 
 
+        # make sure filename is legit :
         while filename is None or not os.path.exists(filename):
+            print("filename option requiered !")
             filename = input("nix file to use :")
 
+        # get configuration
         if Flake.isflakepath(filename) :
-            _flake = Flake(filename)
-            if hostname == None :
-                output = Query.select(self._flake.listOutputs(), "select output :")
-                hostname = Query.select(self._flake.listOutputs(output), "select host :")
-            config = Configuration(flake = self._flake, host = hostname)
+            flake = Flake(filename)
+            hostname = parser.hostname or select_host_name(flake)
+            config = Configuration(flake = flake, host = hostname)
         else :
-            config = Configuration(configfile=filename)
-        if isinstance(options, str) :
-           options = options.split(' ')
-        elif isinstance(options, list) :
-            options = options
-        else :
-            options = []
+            hostname = parser.hostname # not necessary anyway
+            config = Configuration(configfile = filename)
+    
+        # get the options : 
+        options  = parser.options
 
         # perform the query :
         query = Query(config, options)
 
+        # print results :
         printres = True
         while True :
             if printres :
-                print(f"result of query :\n {query.pretty()}")
+                print(f"result of query :\n {json.dumps(query.result, indent = 4)}")
                 printres = False
             ask = input("Add new options (space separated) to query : (or enter to quit) :")
             if len (ask) == 0 :
                 break
             try : 
-                query.append(ask.split(' '))
+                query = Query(config, ask.split(' '))
             except Exception as E:
                 print(f"failed to query : {E}")
+                raise
             else :
                 printres = True
     except Exception as E :

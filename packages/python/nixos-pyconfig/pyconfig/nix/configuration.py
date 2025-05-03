@@ -5,6 +5,7 @@
 import json
 from .flake import Flake
 from pycall import async_run_cmd
+from os.path import basename
 
 class Configuration() :
 
@@ -45,15 +46,16 @@ class Configuration() :
 
     async def _nix_eval_cmd(self, option : str) :
         """
-        Warning :  this is slow
+            Warning :  this is slow
         """
         cmd = f"nix eval -v -L '{self._evalkey}.{option}' --json --extra-experimental-features {self._features}"
         result = await async_run_cmd(cmd, stderr_level = 10 ) # DEBUG = 10
         asstr = str(result)
         try :
             jsonobject = json.loads(asstr)
-        except : 
-            print(f"unexpected result for `{cmd}`\n got : \n {asstr}")
+        except :
+            #raise ValueError(f"unexpected result for `{cmd}` got : {asstr}")
+            pass
         else: 
             self._values[option] = jsonobject
 
@@ -65,8 +67,11 @@ class Configuration() :
             self._values[option]
         except KeyError :
             await self._nix_eval_cmd(option)
-        finally: 
-            return self._values[option]
+        finally:
+            try :
+                return self._values[option]
+            except :
+                return None
     
     def __repr__(self) -> str:
         """
