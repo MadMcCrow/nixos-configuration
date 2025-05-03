@@ -5,12 +5,12 @@
 from datetime import datetime
 import shutil, shlex
 import logging
-import platform
 import asyncio
 import locale
 
 # our python submodule
 from .output import Output
+from .loop import get_default_loop
 
 
 class Runner() :
@@ -18,22 +18,7 @@ class Runner() :
     Class for managing async calls
     """
 
-    def _getasyncloop(self) :
-        try :
-            if not self._loop.is_closed() :
-                return self._loop
-        except AttributeError :
-            pass
-        if platform.system()=='Windows':
-            loop = asyncio.ProactorEventLoop()
-            asyncio.set_event_loop(loop)
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        else:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        self._loop = loop
-        return self._loop
-
+   
     def __init__(self, command, callback = None, use_log = True, stderr_level = logging.ERROR) :
         self.args = shlex.split(command)
         if shutil.which(self.args[0]) is None:
@@ -46,7 +31,7 @@ class Runner() :
     def run(self) :
         start = datetime.now()
         self._loginfo(f"running : `{' '.join(self.args)}`")
-        rc = self._getasyncloop().run_until_complete(self.asyncrun())
+        rc = get_default_loop().run_until_complete(self.asyncrun())
         elapsed = datetime.now() - start
         self._loginfo(f"execution took {elapsed}")
         return rc

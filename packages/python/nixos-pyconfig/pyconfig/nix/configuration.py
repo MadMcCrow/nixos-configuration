@@ -4,7 +4,7 @@
 
 import json
 from .flake import Flake
-from pycall import asyncruncmd
+from pycall import async_run_cmd
 
 class Configuration() :
 
@@ -48,7 +48,7 @@ class Configuration() :
         Warning :  this is slow
         """
         cmd = f"nix eval -v -L '{self._evalkey}.{option}' --json --extra-experimental-features {self._features}"
-        result = await asyncruncmd(cmd, stderr_level = 10 ) # DEBUG = 10
+        result = await async_run_cmd(cmd, stderr_level = 10 ) # DEBUG = 10
         asstr = str(result)
         try :
             jsonobject = json.loads(asstr)

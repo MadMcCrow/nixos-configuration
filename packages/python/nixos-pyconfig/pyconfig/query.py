@@ -8,6 +8,7 @@ import asyncio
 from os.path import basename
 # our methods
 from .configuration import Configuration
+from pycall import get_default_loop
 
 # optional dependency
 try : 
@@ -40,13 +41,13 @@ class Query() :
         self._progress = printProgress and _tqdm_enable
         self._keys = keys
         # execute !
-        self.runQuery()
+        get_default_loop().run_until_complete(self.runQuery())
         
     async def _nixQueryOption(self, key):
         result = await self._config.asyncGetValue(key)
         return result
  
-    def runQuery(self) :
+    async def runQuery(self) :
         tasks = [self._nixQueryOption(k) for k in self._keys]
         if self._progress :
             bar =  tqdm(unit_scale=False, total=len(tasks))

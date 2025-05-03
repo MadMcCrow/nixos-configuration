@@ -5,7 +5,6 @@ description = "python tool to parse nixos configurations"
 authors = ["MadMcCrow <do-not-mail.me@please.com>"]
 packages = [
         { include = "pyconfig" },
-        { include = "nix",  from = "pyconfig" },
         { include = "extra", from = "pyconfig" },
     ]
 license = "MIT"
@@ -17,7 +16,7 @@ python = "^3.11"
 pycall = "^0.1"
 
 [tool.poetry.scripts]
-nixos-pyconfig = 'pyconfig.__main__:main'
+nixos-pyconfig = 'pyconfig.extra:main'
 
 [build-system]
 requires = ["poetry-core>=1.9.1,<3.0"]

@@ -6,7 +6,7 @@ import sys
 from argparse import ArgumentParser
 from . import Query
 
-class pyconfigArguments(ArgumentParser) :
+class PyconfigArguments(ArgumentParser) :
 
     def __init__(self, **kargs) :
             """

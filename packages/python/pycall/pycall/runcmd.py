@@ -6,7 +6,7 @@ from .output import Output
 from .runner import Runner
 
 # The main function of this module
-def runcmd(command : str, **runner_args) -> Output :
+def run_cmd(command : str, **runner_args) -> Output :
     """
         run a shell command, does not print it's output
         but collects it in a dictionnary. 
@@ -16,7 +16,7 @@ def runcmd(command : str, **runner_args) -> Output :
     rn.run()
     return rn.output
 
-async def asyncruncmd(command : str, **runner_args) -> Output :
+async def async_run_cmd(command : str, **runner_args) -> Output :
     rn = Runner(command, **runner_args)
     await rn.asyncrun()
     return rn.output

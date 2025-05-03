@@ -47,7 +47,7 @@ class Flake() :
             raise FileNotFoundError(f"cannot find {self.flakepath}")
         flakefile = join(self.flakepath, _flakefilename)
         evalflake = f"nix flake show {self.flakepath} --all-systems --json"
-        result = pycall.runcmd(evalflake, stderr_level = 10)
+        result = pycall.run_cmd(evalflake, stderr_level = 10)
         self._data = json.loads(str(result))
 
     def findOutput(self, value : str) -> str | None :

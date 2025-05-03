@@ -6,15 +6,11 @@
 import logging
 import os
 # reusable arguments
-from .extra.arguments import pyconfigArguments
-
-
+from .arguments import PyconfigArguments
 
 # program name
 _pname="nixos-pyconfig"
 
-
- 
 def select(options : list, question : str = "please choose :") :
         " simple menu question "
         choice = -1
@@ -27,14 +23,10 @@ def select(options : list, question : str = "please choose :") :
         return options[choice]
 
 
-
-
-
-
 def main() :
     try : 
         logging.basicConfig(filename=f".{pname}.log", level=logging.INFO)
-        parser = pyconfigArguments( 
+        parser = PyconfigArguments( 
             prog=pname,
             description='a tool to query a nix config'
             )
