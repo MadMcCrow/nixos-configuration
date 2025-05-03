@@ -23,9 +23,9 @@
 
   config = {
 
-  # this device is used on a TV hence the "situation room"
-  # not perfect but could be easily renamed
-  networking.hostName = "situation-room";
+    # this device is used on a TV hence the "situation room"
+    # not perfect but could be easily renamed
+    networking.hostName = "situation-room";
 
     # Power Management : minimize consumption
     powerManagement = {

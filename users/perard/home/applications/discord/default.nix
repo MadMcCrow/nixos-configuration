@@ -2,7 +2,7 @@
 { ... }:
 {
   imports = [
-    #./discord.nix # non free, needs a lot of tweaks 
+    #./discord.nix # non free, needs a lot of tweaks
     ./vesktop.nix # free, fast and all
   ];
 }

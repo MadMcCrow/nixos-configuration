@@ -1,4 +1,4 @@
-# kodi.nix 
+# kodi.nix
 # add Kodi interface
 {
   pkgs,

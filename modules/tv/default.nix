@@ -1,5 +1,5 @@
 # tv/default.nix
-# add this modules to 
+# add this modules to
 {
   imports = [
     ./kodi.nix # kodi user interface

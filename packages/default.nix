@@ -6,44 +6,37 @@
 }:
 let
   # supported systems
-  systems = [ 
+  systems = [
     "x86_64-darwin"
     "aarch64-darwin"
     "x86_64-linux"
     "aarch64-linux"
-    ];
+  ];
 
   # shortcut
   inherit (nixpkgs) lib;
 
   # helper function :
 
-  appendPackage = system : 
-    (acc: x:
-    let
-      pkgs = import (if lib.hasSuffix "darwin" system then nixpkgs-darwin else nixpkgs) {inherit system;};
-      inherit (pkgs) callPackage;
-      p = callPackage x {  wrapbash = callPackage ./wrapbash.nix { }; };
-    in
-    acc
-    // (lib.optionalAttrs (!p.meta.unsupported) (lib.listToAttrs [
-      {
-        name = lib.getName p;
-        value = p;
-      }
-    ])));
+  appendPackage =
+    system:
+    (
+      acc: x:
+      let
+        pkgs = import (if lib.hasSuffix "darwin" system then nixpkgs-darwin else nixpkgs) {
+          inherit system;
+        };
+        ps = pkgs.callPackages x { };
+      in
+      acc // (lib.filterAttrs (n: p: !p.meta.unsupported) ps)
+    );
 in
-# for all potentially supported platforms 
-nixpkgs.lib.genAttrs systems
-( system : 
-(lib.foldl' (appendPackage system) { } [
-  ./bcrypt
-  ./darwin-install
-  ./termcolors #TODO
-  ./luks-enroll
-  ./nbl
-  ./nixos-gen-setup
-  # ./nixos-update # TODO
-  ./zfs-fzifdso
-  # ./zfs-tzpfms # TODO
-]))
+# for all potentially supported platforms
+nixpkgs.lib.genAttrs systems (
+  system:
+  (lib.foldl' (appendPackage system) { } [
+    ./python # my python scripts
+    #./bash    # my bash scripts
+    #./extern  # package not from me
+  ])
+)

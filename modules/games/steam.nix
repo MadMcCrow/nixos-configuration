@@ -44,7 +44,7 @@
         openxr-loader
         pango
       ];
-      # open-firewall 
+      # open-firewall
       remotePlay.openFirewall = true;
       # enable proton-GE
       extraCompatPackages = with pkgs; [

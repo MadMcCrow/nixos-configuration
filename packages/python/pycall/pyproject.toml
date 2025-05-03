@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "pycall"
+version = "0.1.0"
+description = "simple module to call subprocesses and log the output"
+authors = ["MadMcCrow <do-not-mail.me@please.com>"]
+packages = [{include = "pycall"}]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[build-system]
+requires = ["poetry-core>=1.9.1,<3.0"]
+build-backend = "poetry.core.masonry.api"

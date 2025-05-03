@@ -8,6 +8,6 @@
   };
 
   imports = [
-    # ./homepage.nix 
+    # ./homepage.nix
   ];
 }

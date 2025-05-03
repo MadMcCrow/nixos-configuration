@@ -68,7 +68,7 @@ in
             #    enabled = true;
             #    google = true;
             # };
-            # not sure about this : 
+            # not sure about this :
             # rewrites = {
             #    domain = "*.{srv.domainName}";
             #    answer = "0.0.0.0";

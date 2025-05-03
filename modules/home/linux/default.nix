@@ -1,8 +1,8 @@
 # Linux specific config for home-manager
-{config, home-manager, ... } :
+{ config, home-manager, ... }:
 {
-  imports = [ 
-    home-manager.nixosModules.home-manager 
+  imports = [
+    home-manager.nixosModules.home-manager
     ../shared.nix
   ];
 

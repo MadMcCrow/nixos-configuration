@@ -12,7 +12,7 @@ in
       default = web.enable;
     };
   };
-  # 
+  #
   config = lib.mkIf web.home.homepage.enable {
     nixos.web.services."homepage" = {
       services.homepage-dashboard = {

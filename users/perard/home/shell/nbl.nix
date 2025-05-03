@@ -1,4 +1,4 @@
-# add our nbl tool to user tools 
+# add our nbl tool to user tools
 { self, pkgs, ... }:
 {
   # for some reason this tries to build way too many things !

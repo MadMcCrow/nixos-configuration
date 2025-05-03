@@ -39,12 +39,14 @@
     };
   };
 
-  outputs = { nixpkgs, ... }@inputs:
+  outputs =
+    { ... }@inputs:
     {
       # all of our systems
-      inherit (import ./systems inputs) 
+      inherit (import ./systems inputs)
         nixosConfigurations # linux machines
-        darwinConfigurations; # macOS machines
+        darwinConfigurations
+        ; # macOS machines
 
       packages = import ./packages inputs;
     };

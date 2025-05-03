@@ -183,7 +183,7 @@ in
         #material-theme
         intellicode
         haxe
-        # ms-python we use the version from nix -> otherwise it is hard to synchronise with vscodium versions 
+        # ms-python we use the version from nix -> otherwise it is hard to synchronise with vscodium versions
         ms-cpp
         ms-dotnet
         ms-anycode
@@ -220,7 +220,8 @@ in
       "workbench.colorTheme" = "GitHub Dark";
       "workbench.iconTheme" = "material-icon-theme";
       "terminal.integrated.customGlyphs" = false;
-      "terminal.integrated.fontFamily" = "'Source Code Pro', 'JetBrains Mono NF Medium', 'JetBrains Mono', 'nerdfont', monospace";
+      "terminal.integrated.fontFamily" =
+        "'Source Code Pro', 'JetBrains Mono NF Medium', 'JetBrains Mono', 'nerdfont', monospace";
       # something that could be done for colors :
       # "editor.tokenColorCustomizations" ={
       # "functions"= "#179559";

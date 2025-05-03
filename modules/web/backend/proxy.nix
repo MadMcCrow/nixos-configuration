@@ -1,4 +1,4 @@
-# nginx is a webserver, used mostly as a reverse proxy 
+# nginx is a webserver, used mostly as a reverse proxy
 { config, lib, ... }:
 let
   # shortcuts
@@ -70,7 +70,7 @@ in
             };
           };
         }
-        # other redirections : 
+        # other redirections :
         // (
           with builtins;
           listToAttrs (
@@ -113,13 +113,13 @@ in
       # default cert created by "enableACME";
       certs."${web.domain}" = {
         extraDomainNames =
-          # all the subdomain from virtual hosts 
+          # all the subdomain from virtual hosts
           map (x: "${x}.${web.domain}") (builtins.attrNames cfg.virtualHosts)
           # add home domain name to cert
           ++ [ "${web.home.subDomain}.${web.domain}" ];
       };
     };
-    # end of config  
+    # end of config
   };
 
 }

@@ -6,7 +6,7 @@
 # to avoid this issue, we have a filesystem dedicated to /tmp
 # /var can also take a lot of space so we could move it to another filesystem
 # we just focus on var/log because that could be useful to keep
-# what's left is less than 1MB. 
+# what's left is less than 1MB.
 # that's not the most optimized RAM setup, but I think all my machines can support losing that space.
 # TLDR :
 #   here's the layout :
@@ -17,9 +17,9 @@
 #     - /home     -> btrfs
 #
 # # Networking
-# We use network manager, avahi service detection. 
+# We use network manager, avahi service detection.
 # Samba is set to work with Windows by default
-# 
+#
 # # locale
 # These machines are used by tasteful french users: us. Intl keyboard, but
 # French timezone and time notation.
@@ -102,12 +102,12 @@ in
           default = { };
         };
       };
-      # repo to use for this device 
+      # repo to use for this device
       update = {
         flake = mkNonEmptyStrOption "flake to use when updating, rebuilding" "github:/MadMcCrow/nixos-configuration";
       };
 
-      # flatpak is supposed to be just a simple setting, 
+      # flatpak is supposed to be just a simple setting,
       # but because of impermanence it may require extra-change
       flatpak.enable = mkEnableOption "flatpak software installation";
 
@@ -225,7 +225,7 @@ in
 
     environment = {
       # everything needed to deal with encrypted file systems
-      defaultPackages = 
+      defaultPackages =
         with pkgs;
         config.fonts.packages
         ++ (lib.lists.optionals cfg.secureboot.enable [
@@ -248,8 +248,7 @@ in
           libportal
           libportal-gtk3
           packagekit
-        ])
-      ;
+        ]);
       # helps with shells in home manager :
       pathsToLink = [
         "/share/zsh"
@@ -363,7 +362,7 @@ in
     };
 
     hardware = {
-      # disable pulseaudio if using pipewire 
+      # disable pulseaudio if using pipewire
       pulseaudio.enable = cfg.audio.enable && !cfg.audio.usePipewire;
     };
 
@@ -377,7 +376,7 @@ in
           "nix-command"
           "flakes"
         ];
-       };
+      };
 
       # GarbageCollection
       gc = {
@@ -415,7 +414,7 @@ in
     };
 
     services = {
-      
+
       # avahi for mdns :
       avahi = rec {
         enable = true;
@@ -503,12 +502,12 @@ in
       protectKernelImage = true;
       # allow users to login via ssh
       pam.sshAgentAuth.enable = true;
-      # required by pulseaudio and recommended for pipewire 
+      # required by pulseaudio and recommended for pipewire
       rtkit.enable = cfg.audio.enable;
       # disable the sudo warnings about calling sudo
       # (it will get wiped every reboot)
       sudo.extraConfig = "Defaults        lecture = never";
-      # add support for TPM2 
+      # add support for TPM2
       tpm2 = {
         enable = true;
         pkcs11.enable = true;
@@ -525,7 +524,7 @@ in
         hybrid-sleep.enable = cfg.sleep.enable;
       };
 
-      # TODO : maybe add persist folders 
+      # TODO : maybe add persist folders
       tmpfiles.rules = [ ];
 
       services = {

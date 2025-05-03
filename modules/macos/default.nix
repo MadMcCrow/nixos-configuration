@@ -37,11 +37,13 @@ in
       };
       overlays = mkOption {
         description = "list of nixpks overlays";
-        type = with types; listOf (mkOptionType {
-          name = "nixpkgs-overlay";
-          check = isFunction;
-          merge = mergeOneOption;
-        });
+        type =
+          with types;
+          listOf (mkOptionType {
+            name = "nixpkgs-overlay";
+            check = isFunction;
+            merge = mergeOneOption;
+          });
         default = [ ];
       };
       overrides = mkOption {
@@ -52,8 +54,20 @@ in
   };
 
   config = {
+    environment = {
+      # install nixpkgs apps
+      systemPackages = with pkgs; [
+        # better alt tab
+        alt-tab-macos
+        # this may solve the issue when updating
+        vscodium
+        # snap windows
+        rectangle
+      ];
 
-    # environment.pathsToLink = [ "/share/zsh" ];
+      # not necessary :
+      #pathsToLink = [ "/share/zsh" ];
+    };
 
     # Fonts
     fonts = {
@@ -61,6 +75,10 @@ in
         recursive
         (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
+    };
+
+    homebrew = {
+      enable = true;
     };
 
     nix = {
@@ -142,23 +160,23 @@ in
       activationScripts = {
         # Following line should allow us to avoid a logout/login cycle
         postUserActivation.text = ''
-        /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-      '';
-      extraActivation = lib.mkIf cfg.sudoTouchIdAuth.enable {
-        text =
-          let
-            file = "/etc/pam.d/sudo";
-          in
-          ''
-            # PAM settings
-              echo >&2 "enabling TouchId with pam..."
-              if ! grep 'pam_tid.so' ${file} > /dev/null; then
-                sed -i "" '2i\
-              auth       sufficient     pam_tid.so # added by nix configuration
-                ' ${file}
-              fi
-          '';
-      };
+          /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+        '';
+        extraActivation = lib.mkIf cfg.sudoTouchIdAuth.enable {
+          text =
+            let
+              file = "/etc/pam.d/sudo";
+            in
+            ''
+              # PAM settings
+                echo >&2 "enabling TouchId with pam..."
+                if ! grep 'pam_tid.so' ${file} > /dev/null; then
+                  sed -i "" '2i\
+                auth       sufficient     pam_tid.so # added by nix configuration
+                  ' ${file}
+                fi
+            '';
+        };
       };
       keyboard.enableKeyMapping = true;
     };

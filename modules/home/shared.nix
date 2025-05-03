@@ -1,12 +1,12 @@
 # config for home manager shared between nixos and macOS
-{ self, ...} :
+{ self, ... }:
 {
-config = {
+  config = {
     # home manager config users :
     home-manager = {
       extraSpecialArgs = {
         inherit self;
       };
     };
-};
+  };
 }

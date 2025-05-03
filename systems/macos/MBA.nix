@@ -5,7 +5,8 @@
 
   #imports = [ nix-rosetta-builder.darwinModules.default ];
 
-  config = {    
+  config = {
+    # https://xcom.fandom.com/wiki/XCOM_Headquarters#Foundry
     networking.hostName = "foundry";
     #nix.linux-builder.enable = true;
     # nix.linux-builder = {
@@ -15,5 +16,4 @@
     # };
     system.stateVersion = 5;
   };
-
 }

@@ -1,7 +1,13 @@
 # TAF
 #   previously "AF"
 #   this is my main desktop PC
-{ addModules, config, nixos-hardware, pkgs, ... }:
+{
+  addModules,
+  config,
+  nixos-hardware,
+  pkgs,
+  ...
+}:
 {
   imports =
     with nixos-hardware.nixosModules;
@@ -16,7 +22,7 @@
     ]);
 
   config = {
-    # stupid name here's the full list : 
+    # stupid name here's the full list :
     # https://xcom.fandom.com/wiki/Category:XCOM_HQ_facilities_(XCOM:_Enemy_Unknown)
     networking.hostName = "workshop";
 

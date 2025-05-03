@@ -1,5 +1,6 @@
 # systems/default.nix
 # support all different systems
+# TODO : create a master command to merge between darwinSystem and nixosSystem
 { self, ... }@args:
 let
   addModules = list: map (x: self + "/modules/${x}") list;

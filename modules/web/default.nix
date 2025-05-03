@@ -61,7 +61,7 @@ in
           default = "br0";
         };
         # TODO : allow to use a certain nixpkgs ;)
-        # nixpkgs 
+        # nixpkgs
       };
     };
 

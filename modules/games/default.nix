@@ -6,10 +6,9 @@ let
 in
 {
   # interface :
-  options.games = with lib;
-    {
-      enable = mkEnableOption "Games support";
-    };
+  options.games = with lib; {
+    enable = mkEnableOption "Games support";
+  };
 
   imports = [
     ./gog.nix
@@ -18,7 +17,7 @@ in
   ];
 
   config = lib.mkIf cfg.enable {
-    # 
+    #
     programs = {
       # gamemode improves performances
       gamemode = {

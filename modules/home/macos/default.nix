@@ -10,12 +10,12 @@
     home-manager.darwinModules.home-manager
     ../shared.nix
   ];
-  
+
   config = {
     home-manager = {
-      sharedModules = [ 
+      sharedModules = [
         mac-app-util.homeManagerModules.default
-        ];
+      ];
     };
   };
 }

@@ -17,7 +17,7 @@
   config = {
 
     # update to something cool like psylab or engineering
-    # "the foundry" is cool too 
+    # "the foundry" is cool too
     networking.hostName = "psylab";
 
     # our config :

@@ -1,4 +1,4 @@
-# all ssh related stuff for my user 
+# all ssh related stuff for my user
 { pkgs, ... }:
 {
   home.packages = with pkgs; [

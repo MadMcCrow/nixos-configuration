@@ -23,11 +23,11 @@
 
   config = {
 
-  # research-labs because it's for home labing ;)
-  networking.hostName = "research";
+    # research-labs because it's for home labing ;)
+    networking.hostName = "research";
 
     # Power Management : minimize consumption
-    # TODO : power module 
+    # TODO : power module
     powerManagement = {
       enable = true;
       cpuFreqGovernor = "powersave";

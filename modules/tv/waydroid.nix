@@ -38,7 +38,7 @@ let
       rev = version;
       hash = "sha256-4peNKC5VHkmK2GphEsgslnXI7gtnhABL6Y1cc38mpzk=";
     };
-    # copy vendor.img and system.img files to out 
+    # copy vendor.img and system.img files to out
     installPhase = ''
       sudo mkdir -p $out
       sudo cp $src/*.img $out 
@@ -68,7 +68,7 @@ in
   # implementation
   config = lib.mkIf cfg.enable {
     virtualisation.waydroid.enable = true;
-    # add our 
+    # add our
     environment.systemPackages = [
       package
       waydroid-reset
@@ -76,41 +76,41 @@ in
       waydroid-androidtv-install
     ];
 
-  # Custom services to start the whole waydroid ecosystem
-  systemd.services = lib.mkIf cfg.autostart {
-    "start-waydroid-container" = rec {
-      enable = true;
-      before = [ "waydroid-container.service" ];
-      script = "${waydroid-androidtv-install}";
-    };
-    "start-waydroid-session" = rec {
-      enable = true;
-      after = [
-        "waydroid-container.service"
-        "start-waydroid-session.service"
-      ];
-      wantedBy = [ "graphical-session.target" ];
-      script = "${lib.getExe package} session start";
-    };
-  };
-
-  # user for cage/waydroid
-  users.extraUsers."${waydroidUser}".isNormalUser = true;
-  
-  # start waydroid in full screen
-  services = {
-    xserver = lib.mkIf cfg.autostart {
-      enable = true;
-      displayManager = {
-        autoLogin.user = waydroidUser;
-        lightdm.greeter.enable = false;
+    # Custom services to start the whole waydroid ecosystem
+    systemd.services = lib.mkIf cfg.autostart {
+      "start-waydroid-container" = rec {
+        enable = true;
+        before = [ "waydroid-container.service" ];
+        script = "${waydroid-androidtv-install}";
+      };
+      "start-waydroid-session" = rec {
+        enable = true;
+        after = [
+          "waydroid-container.service"
+          "start-waydroid-session.service"
+        ];
+        wantedBy = [ "graphical-session.target" ];
+        script = "${lib.getExe package} session start";
       };
     };
-    cage = {
-      enable = true;
-      user = waydroidUser;
-      program = "${lib.getExe package} show-full-ui";
+
+    # user for cage/waydroid
+    users.extraUsers."${waydroidUser}".isNormalUser = true;
+
+    # start waydroid in full screen
+    services = {
+      xserver = lib.mkIf cfg.autostart {
+        enable = true;
+        displayManager = {
+          autoLogin.user = waydroidUser;
+          lightdm.greeter.enable = false;
+        };
+      };
+      cage = {
+        enable = true;
+        user = waydroidUser;
+        program = "${lib.getExe package} show-full-ui";
+      };
     };
-  };
   };
 }

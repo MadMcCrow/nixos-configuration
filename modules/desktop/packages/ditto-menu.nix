@@ -21,7 +21,7 @@ stdenv.mkDerivation rec {
     libsForQt5.plasma-framework
     zip
   ];
-  # TODO : fix this 
+  # TODO : fix this
   installPhase = ''
     plasmapkg2 --install org.kde.plasma.dittomenu.tar.gz
   '';
