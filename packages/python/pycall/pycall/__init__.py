@@ -1,4 +1,13 @@
 #!/usr/bin/env python
 # shortcut to avoid multiple imports
-from .runcmd import run_cmd, async_run_cmd
-from .loop import get_default_loop
+from .command import Command
+
+import asyncio
+
+def run(*args, **kwargs) : 
+    r = Command(*args, **kwargs)
+    asyncio.run(r.asyncrun())
+
+async def async_run(*args, **kwargs) : 
+    r = Command(*args, **kwargs)
+    await r.asyncrun()

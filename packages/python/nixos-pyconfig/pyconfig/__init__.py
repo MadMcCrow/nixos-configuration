@@ -1,4 +1,3 @@
-# export to top level 
-from .query import Query
-from .extra import PyconfigArguments, main
-from .nix import Configuration, Flake
+# selective import :
+from .configuration import Configuration
+from .flake import Flake

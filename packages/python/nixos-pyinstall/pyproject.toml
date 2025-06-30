@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "python tool to install nixos configurations"
 authors = ["MadMcCrow <do-not-mail.me@please.com>"]
 packages = [
-    
-        { include = "steps", from = "src", to = "pyinstall" },
-        { include = "*",     from = "src", to = "pyinstall" },
+        { include = "pyinstall" },
     ]
 readme = "README.md"
 
@@ -15,7 +13,7 @@ python = "^3.11"
 nixos-pyconfig = "^0.1"
 
 [tool.poetry.scripts]
-nixos-pyinstall = 'pyinstall.__main__:main'
+nixos-pyinstall = 'pyinstall.main:main'
 
 [build-system]
 requires = ["poetry-core>=1.9.1,<3.0"]
