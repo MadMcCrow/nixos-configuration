@@ -3,153 +3,81 @@
 # Nix expression to evaluate
 
 # python standard inputs
-from collections import UserDict
 import asyncio
 import json
-import sys
-from threading import Lock
+from typing import Any
 
 # pycall
 import pycall
 
-def __subdict(d , k : str) -> dict :
-        try: 
-            return d[k]
-        except KeyError:
-            d[k] = None
-            return d[k]
 
-
-class Nixpath(str) :
+class Nixpath() :
     """
         simple class to handle paths to flake or nix config files
     """
 
     def __init__(self, instr : str = "") :
         super().__init__()
-        self = instr
         # perform fixups :
         for p in ['github', 'gitlab'] :
-            self.replace(f'https://{p}.com/', f'{p}:')
+            instr = instr.replace(f'https://{p}.com/', f'{p}:')
+        instr = instr.replace('/flake.nix', '')
+        if not instr.endswith('.nix') :
+            # a flake can be referenced by output directly
+            if not instr.startswith('.#') :
+                instr = '.#' + instr
+        # store the evalkey
+        self._path = instr
 
-    def flakehost(self) : 
-        return self.split('#')[1]
+    def nix_eval(self) -> str:
+        if self.is_flake() :
+            Flake(self).find_output(self._path.split('#')[1])
+        else :
+            apply = "'x: x {pkgs = import <nixpkgs> {};}'"
+            return f"nix eval --file '{self._path}'  --json --apply {apply}"
 
-    def flakepath(self) :
-        return self.split('#')[0]
-
-    def isFlake(self) :
-        if '#' in self : 
+    def is_flake(self) :
+        if '#' in self._evalkey : 
             return True
-        if self.endswith('flake.nix'):
+        if self._evalkey.endswith('flake.nix'):
             return True
         return False
 
-    def config(self) :
-        raise NotImplementedError("config support is not implemented yet")
-        # TODO : improve config workflow
-        return self
+
 
 class NixValue() :
     """
         wrapper around futures and values to avoid manipulating futures
     """
 
+    _value = None
 
-    def __init__(self, future : asyncio.Future ):
-        self._value = None
-        self._future = future
+    def __init__(self, option):
+        self._option = option
+        self._future = 
         self._future.add_done_callback(self._on_result)
-        # asyncio.get_event_loop().run_in_executor
 
     def _on_result(self, future) :
-        self._value = future.result()
-        self._future = None
+        self._value = json.loads(str(future.result()))
 
-    def get(self) :
-        if self._future is not None :
-            result = asyncio.get_event_loop().run_until_complete(self._future)
-            self._value = result
-            self._future = None
-            return result
-        if self._value is not None :
-            return self._value
-        raise ValueError("Invalid NixValue")
-        
-    def __str__(self) : 
-        return str(self.get())
-        
+    def value(self) -> Any :
+        if not self._future.done() : 
+            loop = self._future.get_loop()
+            self._value = loop.run_until_complete(self._future)
+        return self._value
+           
+    def __str__(self) :
+        return str(self.value())
 
-
-class NixExpression():
-    '''
-        meta class to retrieve data out of nix evaluation
-    '''
-    __values : dict = {}    # results
-    _expression : Nixpath   # the nix expression we're representing
-    _tasks = []             # list of running tasks
-
-    def __init__(self, uri : str | Nixpath) :
-        if type(uri) is str :
-           self._expression = Nixpath(uri)
-        else :
-            self._expression = uri
-    
-    @property
-    def _values(self) :
-        if self._expression not in self.__class__.__values :
-            self.__class__.__values[self._expression] = {}
-        return self.__class__.__values[self._expression]
-
-    @_values.setter
-    def _values(self, value) -> None :
-        self.__class__.__values[self._expression].update(value)
-
-    def add_nix_eval(self, option) :
-        loop = asyncio.get_event_loop()
-        fut = loop.create_task(self.async_nix_eval(option))
-        nixvalue = NixValue(future=fut)
-        return nixvalue
-
-    def __getitem__(self,key : str) :
-            subkeys = key.split('.')
-            sub = self._values
-            for sk in subkeys[:-1] :
-                sub = __subdict(sub, sk)
-            try : 
-                return sub[subkeys[-1]]
-            except KeyError :
-                sub[subkeys[-1]] = self.add_nix_eval(key)
-                return sub[subkeys[-1]]
-
-
-    def __setitem__(self, key, item) -> None:
-        raise RuntimeError("NixExpression cannot be set")
-
-    async def async_nix_eval(self, option : str) :
-        # write nix eval command
-        cmd = self._cmd()
+    async def async_nix_eval(self) :
+        cmd = self._cmd(self.option)
         if self._nix_features() is not None :
-            cmd += f" --extra-experimental-features {self._nix_features()}"
+            cmd += f" --extra-experimental-features '{self._nix_features()}'"
         if self._nix_apply() is not None :
-            cmd += f" --apply {self._nix_apply()}"
-        # make the call
-        result = await pycall.async_run(cmd)
-        print(f'result is {str(result)}')
-        return json.loads(str(result))
+            cmd += f" --apply '{self._nix_apply()}'"
+        return await pycall.async_run(cmd)
+    
+        
 
-
-    def _cmd(self) -> str :
-        return "nix eval -v -L '{}' --json"
-
-    def _nix_apply(self) -> str|None :
-        '''
-            nix code to apply to the evaluation
-        '''
-        pass
-
-    def _nix_features(self) -> str|None : 
-        '''
-            extra features to enable for the evaluation
-        '''
-        pass
+    
+        

@@ -8,11 +8,12 @@ import shutil, shlex
 import asyncio
 import locale
 
-from packages.python.pycall.pycall.output import Output
+
 
 # ours
 from .callback import Callback
 from .throbber import Throbber
+from .output   import Output
 
 
 class Command() :
@@ -21,8 +22,6 @@ class Command() :
     """
 
     args : list
-    _out : Output
-    _err : Output
     _callback : Callback
     _errcallback : Callback
 
@@ -36,28 +35,29 @@ class Command() :
             raise RuntimeError(f"{self.args[0]} : command not found")
 
     async def asyncrun(self) :
+        th = Throbber()
         # create the process task 
         ps = asyncio.create_task(self.__async_run_process())
-        sp = asyncio.create_task(Throbber.update())
-        await asyncio.wait([ps, sp], return_when=asyncio.FIRST_COMPLETED)
-        return Output()
+        ps.add_done_callback(th.cancel)
+        return await ps
         
 
-    async def __async_run_process(self) -> None :
+    async def __async_run_process(self) -> Output :
         _pipe = asyncio.subprocess.PIPE
-        self._err = Output()
-        self._out = Output()
+        _out = Output()
+        print("async process")
         ps = await asyncio.create_subprocess_exec(*self.args, stdout=_pipe, stderr=_pipe)
         print(f'PROCESS TASK = {ps}')
         async with asyncio.TaskGroup() as tg:
-            tg.create_task(self.__read_stream(ps.stdout, [self._out , self._callback] ))
-            tg.create_task(self.__read_stream(ps.stderr, [self._err , self._errcallback ]))
+            tg.create_task(self.__read_stream(ps.stdout, [_out.stdout , self._callback] ))
+            tg.create_task(self.__read_stream(ps.stderr, [_out.stderr , self._errcallback ]))
         rc = await ps.wait()
         print(f'Process {ps} returned {rc}')
 
 
     async def __read_stream(self, stream, cb_list):
         while True:
+            print("_READ STREAM")
             line = await stream.readline()
             if line:
                 for cb in cb_list :

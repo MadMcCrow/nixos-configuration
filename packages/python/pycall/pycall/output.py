@@ -12,9 +12,16 @@ class Output(UserDict) :
 
     def __init__(self) -> None:
         self.__start = self.__time()
+        self['out'] = ""
 
-    def __call__(self, instr) :
-        self[self.__time()] = instr
+    def stdout(self, instr) :
+        self['out'] += instr
+
+    def stderr(self, instr) :
+        self['err'] += instr
+
+    def __str__(self) -> str:
+        return self['out']
 
     def close(self) :
         # TODO execution duration measure

@@ -36,7 +36,7 @@ def main() :
                 break
             options = ask.split()
     except Exception as E :
-        print(f"{E} occured while running main script")
+        print(f"{type(E)} occured while running main script : {E}")
         raise E
 
 # allow direct call of program
