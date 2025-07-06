@@ -32,6 +32,7 @@ class Nixpath() :
     def nix_eval(self) -> str:
         if self.is_flake() :
             Flake(self).find_output(self._path.split('#')[1])
+            "nix eval --file ./flake.nix  --apply 'x : (builtins.getAttr "outputs") x x'  
         else :
             apply = "'x: x {pkgs = import <nixpkgs> {};}'"
             return f"nix eval --file '{self._path}'  --json --apply {apply}"
@@ -70,7 +71,8 @@ class NixValue() :
         return str(self.value())
 
     async def async_nix_eval(self) :
-        cmd = self._cmd(self.option)
+        
+        cmd = self._cmd(self._option)
         if self._nix_features() is not None :
             cmd += f" --extra-experimental-features '{self._nix_features()}'"
         if self._nix_apply() is not None :

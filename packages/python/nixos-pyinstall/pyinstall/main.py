@@ -8,7 +8,7 @@ import logging
 import sys
 
 # our other package
-from pyconfig import PyconfigArguments, Configuration, Query
+from pyconfig import PyconfigArguments
 
 _pname = "nixos-pyinstall"
 
@@ -19,9 +19,7 @@ def main(argv = sys.argv ) :
             prog=_pname,
             description='a tool install a nixos config'
             )
-        if args.isFlake :
-        
-        run_steps(c)
+    
 
     except Exception as E :
         print(f"{E} occured while running main script")

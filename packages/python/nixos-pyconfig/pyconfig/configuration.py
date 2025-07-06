@@ -34,6 +34,7 @@ class Configuration() :
         if self._nix_apply() is not None :
             cmd += f" --apply '{self._nix_apply()}'"
         return await pycall.async_run(cmd)
+    
         
 
     def _cmd(self, option) -> str :

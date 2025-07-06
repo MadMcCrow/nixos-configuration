@@ -9,7 +9,7 @@ from os.path import dirname
 from .nix import Nixpath
 from .uniquedict import UniqueDict
 
-class Flake() :
+class Flake(UniqueDict) :
 
 
     def __init__(self) -> None:
