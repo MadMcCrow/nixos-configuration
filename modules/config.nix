@@ -123,16 +123,6 @@ in
           type = with lib.types; listOf str;
           default = [ ];
         };
-        # overlays to add to nix
-        overlays = mkOption {
-          description = "list of nixpks overlays";
-          type = types.listOf (mkOptionType {
-            name = "nixpkgs-overlay";
-            check = isFunction;
-            merge = mergeOneOption;
-          });
-          default = [ ];
-        };
       };
       # read install.md to install secureboot
       secureboot = {
@@ -378,6 +368,7 @@ in
         ];
       };
 
+
       # GarbageCollection
       gc = {
         automatic = true;
@@ -387,16 +378,28 @@ in
       # replaces nix.settings.auto-optimise-store
       optimise.automatic = true;
       optimise.dates = [ "daily" ];
+      # use lix : it's more modern than nixCpp
+      package = pkgs.lixPackageSets.stable.lix;
       # serve nix store over ssh (the whole network can help each other)
       sshServe.enable = true;
     };
 
     nixpkgs = {
       # predicate from list
-      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
+      config = {
+        allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
       # each functions gets its pkgs from here :
-      config.packageOverrides =
-        pkgs: (lib.mkMerge (builtins.mapAttrs (_: value: (value pkgs)) cfg.overrides));
+      #packageOverrides =
+      #  pkgs: (lib.mkMerge (builtins.mapAttrs (_: value: (value pkgs)) cfg.overrides));
+      };
+
+      overlays = [ (final: prev: {
+            inherit (prev.lixPackageSets.stable)
+              nixpkgs-review
+              nix-eval-jobs
+              nix-fast-build
+              colmena;
+          }) ];
     };
 
     programs = {
@@ -404,7 +407,7 @@ in
         enable = true;
         clean.enable = !config.nix.gc.automatic;
         clean.extraArgs = "--keep-since 4d --keep 3";
-        # flake = "/home/user/my-nixos-config";
+        # flake = """;
       };
 
       # zsh is the better shell
@@ -444,6 +447,18 @@ in
           "/var/log"
           "/home" # maybe remove this when we move home
         ];
+      };
+
+      kmscon = {
+        enable = true;
+        hwRender = true;
+        fonts = [
+          {
+            name = "Source Code Pro";
+            package = pkgs.source-code-pro;
+          }
+        ];
+        extraOptions = "--term xterm-256color";
       };
 
       # thin provisioning for lvm
@@ -607,5 +622,7 @@ in
 
     # disable documentation (don't download, online is always up to date)
     documentation.nixos.enable = false;
+
+
   };
 }
