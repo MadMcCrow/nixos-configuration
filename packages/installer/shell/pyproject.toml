@@ -1,0 +1,15 @@
+[project]
+name = "pycall"
+version = "0.1.0"
+description = "simple module to call subprocesses and log the output"
+authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
+requires-python = "~=3.11"
+readme = "README.md"
+dependencies = ["slog >= 0.0" ]
+
+[tool.uv.sources]
+slog = {  path="../slog", editable=true }
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"

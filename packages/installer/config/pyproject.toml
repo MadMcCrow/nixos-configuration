@@ -1,0 +1,13 @@
+[project]
+name = "config"
+version = "0.1.0"
+requires-python = ">=3.10, <4"
+dependencies = ["pycall", "slog", "cli"]
+
+[tool.uv.sources]
+cli = { workspace = true }
+pycall = { path="../../../pycall", editable=true }
+slog = { path="../../../slog", editable=true }
+
+[tool.uv]
+package = true

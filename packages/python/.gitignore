@@ -1,8 +1,0 @@
-# ignore hidden files
-.*
-
-# do not ignore git hidden files
-!.git*
-
-# ignore python cache
-**/__pycache__/

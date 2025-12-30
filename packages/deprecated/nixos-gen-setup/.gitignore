@@ -1,8 +1,0 @@
-# ignore builds
-dist
-nix
-build
-MANIFEST
-*.egg-info
-*/__pycache__
-*.pyc
