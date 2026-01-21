@@ -1,9 +1,14 @@
 { lib, ... } :
+with lib;
 {
-  # make Enable, with default = true
+  #
+  # make a boolean option, with default = true.
+  #
   mkDisableOption = d: mkEnableOption d // { default = true; };
 
+  #
   # mkStringOption that requires an input
+  #
   mkNonEmptyStrOption =
       description: default:
       mkOption {

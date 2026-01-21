@@ -9,7 +9,6 @@
   ...
 }:
 let
-  # hosts = ["trantor" "terminus" "smyrno" "anacreon"];
   hosts = lib.attrNames outputs.nixosConfigurations;
 in
 {
