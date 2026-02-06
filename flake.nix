@@ -6,35 +6,23 @@
   inputs = {
     # Linux:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:nixos/nixpkgs/refs/tags/24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/refs/tags/25.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     # HM :
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ## Secure boot
+    ## TODO : move to npin or something !
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.1";
+      url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ## Plasma
-    # TODO : nix run github:pjones/plasma-manager
-    # plasma-manager = {
-    # url = "github:pjones/plasma-manager";
-    # inputs.nixpkgs.follows = "nixpkgs";
-    # home-manager.follows = "home-manager";
-    # };
-
     # macOS:
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/release-24.05";
     darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
-    };
-    home-manager-darwin = {
-      url = "github:nix-community/home-manager/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     mac-app-util.url = "github:hraban/mac-app-util";
   };
