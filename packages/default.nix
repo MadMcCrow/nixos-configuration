@@ -1,42 +1,32 @@
-# default.nix
+# packages/default.nix
+# All packages uniquely provided by nonOS
 {
+  system,
   nixpkgs,
-  nixpkgs-darwin,
   ...
-}:
+}@args:
+with builtins;
 let
-  # supported systems
-  systems = [
-    "x86_64-darwin"
-    "aarch64-darwin"
-    "x86_64-linux"
-    "aarch64-linux"
-  ];
-
-  # shortcut
-  inherit (nixpkgs) lib;
-
-  # helper function :
-
-  appendPackage =
-    system:
-    (
-      acc: x:
-      let
-        pkgs = import (if lib.hasSuffix "darwin" system then nixpkgs-darwin else nixpkgs) {
-          inherit system;
-        };
-        ps = pkgs.callPackages x { };
-      in
-      acc // (lib.filterAttrs (n: p: !p.meta.unsupported) ps)
-    );
+    pkgs = nixpkgs.legacyPackages.${system};
+    mkPyPackage = name : import self + /lib/python/mkPythonPackage.nix (args // { inherit pkgs;}) name;
+    mkPyPackages = l: map (x: { name = x; value =  mkPyPackage x; }) l;
+    mkNixPackages = l: map (x: { name = x; value =  pkgs.callPackage x args; }) l;
 in
-# for all potentially supported platforms
-nixpkgs.lib.genAttrs systems (
-  system:
-  (lib.foldl' (appendPackage system) { } [
-    ./python # my python scripts
-    #./bash    # my bash scripts
-    #./extern  # package not from me
-  ])
-)
+# merge list into an attrset :
+listToAttrs (
+# Plasma shell packages :
+(mkNixPackages [
+  ./plasma/ditto-menu.nix
+  ./plasma/plasma-drawer.nix
+  ./plasma/vapor-theme.nix
+])
+# ZFS encryption packages :
+++ (mkNixPackages [
+  ./zfs/zfs-fzifdso
+  ./zfs/zfs-tzpfms
+])
+# Python packages :
+++ (mkPyPackages [
+        "os-update"
+      ]
+));

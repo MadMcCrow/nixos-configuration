@@ -2,9 +2,11 @@
 { _ } :
 {
   imports = [
-    ./config.nix      # base linux config
+    ./boot.nix
     ./filesystems.nix # formating the OS
     ./update.nix      # automatic updates
+    ./ssh.nix         # ssh
+    ./users.nix       # setting up users
     lanzaboote.nixosModules.lanzaboote
-  ]
+  ];
 }

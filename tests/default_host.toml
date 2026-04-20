@@ -1,0 +1,19 @@
+# default_host.toml
+# This file contains an example host configuration for testing.
+# this would be located at /etc/nixos/config.toml
+
+# not needed : we default to Self
+# flake   = "github:MadMcCrow/NonOS"
+system  = "x86_64-linux"
+
+hostname = "test-host"
+timezone = "Europe/Paris"
+
+[user]
+name   = "alice"
+shell  = "zsh"
+groups = ["wheel", "networkmanager"]
+
+[hardware]
+cpu = "amd"
+gpu = "amd"

@@ -1,0 +1,15 @@
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"] # uv is very well supported by NixOS
+build-backend = "uv_build"
+
+[project]
+name        = "os-update"
+version     = "0.1.0"
+description = "Update a NixOS system from a local TOML config file"
+authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
+readme      = "README.md"
+requires-python = ">=3.11"
+dependencies    = []   # stdlib only, no runtime deps
+
+[project.scripts]
+os-update = "os_update.cli:main"
