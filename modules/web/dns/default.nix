@@ -1,5 +1,4 @@
-{ lib, config, ... }:
-{
+{ lib, config, ... }: {
   options.nixos.web.dns = with lib; {
     enable = mkEnableOption "DNS service" // {
       default = config.nixos.web.enable;
@@ -12,16 +11,14 @@
     # using multi dns is a bad idea
     subDomain = mkOption {
       description = "subdomain to use for DNS service";
-      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      type = with types;
+        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
       default = "dns";
     };
 
     implementation = mkOption {
       description = "which DNS are we using";
-      type = types.enum [
-        "adguard"
-        "blocky"
-      ];
+      type = types.enum [ "adguard" "blocky" ];
       default = "adguard";
     };
 

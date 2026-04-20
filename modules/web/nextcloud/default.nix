@@ -3,7 +3,6 @@
 #   TODO:
 #         - Enable HTTPS
 #         - Remote access (ie from outside of my local network)
-{ ... }:
-{
+{ ... }: {
   imports = [ ./container.nix ];
 }

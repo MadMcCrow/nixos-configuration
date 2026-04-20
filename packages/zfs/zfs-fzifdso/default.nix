@@ -1,16 +1,6 @@
 # FIDO2 support for ZFS
-{
-  lib,
-  stdenv,
-  fetchgit,
-  pkg-config,
-  shellcheck,
-  zfs,
-  libfido2,
-  gnumake,
-  mandoc,
-  ...
-}:
+{ lib, stdenv, fetchgit, pkg-config, shellcheck, zfs, libfido2, gnumake, mandoc
+, ... }:
 stdenv.mkDerivation rec {
   pname = "fzifdso";
   version = "v0.4.0";
@@ -19,14 +9,7 @@ stdenv.mkDerivation rec {
     rev = version;
     hash = "sha256-UNvQCGBYH94VMLZ25z8g/iW9r1x4MdjThe+tMbg1qZk=";
   };
-  nativeBuildInputs = [
-    pkg-config
-    shellcheck
-    zfs
-    libfido2
-    gnumake
-    mandoc
-  ];
+  nativeBuildInputs = [ pkg-config shellcheck zfs libfido2 gnumake mandoc ];
   buildInputs = nativeBuildInputs;
 
   postPatch = ''
@@ -36,10 +19,7 @@ stdenv.mkDerivation rec {
 
   meta = {
     mainProgram = "zfs-fido2-load-key";
-    licences = with lib.licenses; [
-      bsd0
-      mit
-    ];
+    licences = with lib.licenses; [ bsd0 mit ];
     homepage = "https://git.sr.ht/~nabijaczleweli/fzifdso";
     platforms = [ "x86_64-linux" ];
   };

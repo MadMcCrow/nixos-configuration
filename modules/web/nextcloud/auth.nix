@@ -4,8 +4,7 @@ let
   # shortcuts
   inherit (config.nixos) web;
   inherit (web.auth) authelia;
-in
-{
+in {
   config = lib.mkIf authelia.enable {
     services.nextcloud.settings = {
       "$CONFIG" = {

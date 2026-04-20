@@ -4,7 +4,16 @@
 let
   mkSystemArgs = import ./args.nix args ;
 in
-systemArgs :
+tomlPath :
+  let
+    tomlConfig = builtins.fromTOML (builtins.readFile tomlPath);
+  in
   nixpkgs.lib.nixosSystem ({
-        system = "x86_64-linux";
-      } // mkSystemArgs systemArgs);
+        system = tomlConfig.system or "x86_64-linux";
+      } // mkSystemArgs {
+        config = {
+          nonOS = tomlConfig;
+        };
+        moduleNames = [ "core" ];
+        #extraArgs = args;
+      })

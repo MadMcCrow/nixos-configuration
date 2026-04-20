@@ -1,12 +1,7 @@
 # desktop.nix
 #
 #
-{
-  config,
-  pkgs,
-  ...
-}:
-{
+{ config, pkgs, ... }: {
   config = {
     services = {
       displayManager.sddm = {
@@ -14,7 +9,8 @@
         enableHidpi = true;
         autoNumlock = true;
         # this prevents issues with nvidia drivers
-        wayland.enable = !(builtins.any (x: x == "nvidia") config.services.xserver.videoDrivers);
+        wayland.enable = !(builtins.any (x: x == "nvidia")
+          config.services.xserver.videoDrivers);
       };
     };
 
@@ -53,8 +49,7 @@
 
     # remove useless KDE packages
     environment = {
-      plasma5.excludePackages =
-        with pkgs.libsForQt5;
+      plasma5.excludePackages = with pkgs.libsForQt5;
         [
           oxygen
           khelpcenter
@@ -66,16 +61,10 @@
           kwallet-pam
           kate
           okular
-        ]
-        ++ (with pkgs.libsForQt5; [ kemoticons ]);
+        ] ++ (with pkgs.libsForQt5; [ kemoticons ]);
 
-      systemPackages =
-        with pkgs;
-        [
-          lightly-boehs
-          papirus-icon-theme
-          libsForQt5.kcalc
-        ]
+      systemPackages = with pkgs;
+        [ lightly-boehs papirus-icon-theme libsForQt5.kcalc ]
         ++ (map (x: callPackage x { }) [
           ./packages/vapor-theme.nix
           # ./packages/plasma-drawer.nix

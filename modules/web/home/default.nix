@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, ... }: {
   options.nixos.web.home = with lib; {
     subDomain = lib.mkOption {
       description = "subdomain for home web app";

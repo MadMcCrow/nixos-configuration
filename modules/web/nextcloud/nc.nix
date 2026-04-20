@@ -1,12 +1,6 @@
 # linux/server/nextcloud/nc.nix
 # base nextcloud config.
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
-{
+{ pkgs, config, lib, ... }: {
   # interface:
   options.nc = with lib; {
     dataDir = mkOption {
@@ -23,12 +17,7 @@
 
     networking.firewall = {
       enable = true;
-      allowedTCPPorts = [
-        80
-        443
-        8080
-        8443
-      ];
+      allowedTCPPorts = [ 80 443 8080 8443 ];
     };
 
     # Actual Nextcloud Config
@@ -98,14 +87,10 @@
       dataDir = "${config.nc.dataDir}/mysql";
       package = pkgs.mariadb;
       ensureDatabases = [ "nextcloud" ];
-      ensureUsers = [
-        {
-          name = "nextcloud";
-          ensurePermissions = {
-            "nextcloud.*" = "ALL PRIVILEGES";
-          };
-        }
-      ];
+      ensureUsers = [{
+        name = "nextcloud";
+        ensurePermissions = { "nextcloud.*" = "ALL PRIVILEGES"; };
+      }];
     };
 
     # todo : modify this
@@ -141,10 +126,7 @@
       services."nextcloud-setup" = {
         wants = [ "systemd-tmpfiles-setup.service" ];
         requires = [ "mysql.service" ];
-        after = [
-          "mysql.service"
-          "systemd-tmpfiles-setup.service"
-        ];
+        after = [ "mysql.service" "systemd-tmpfiles-setup.service" ];
       };
     };
   };

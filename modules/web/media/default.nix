@@ -1,8 +1,7 @@
 # media :
 # media server and photo gallery
 # TODO : immich or PhotoPrism or photoview
-{ lib, config, ... }:
-{
+{ lib, config, ... }: {
   options.nixos.web.media = {
     enable = lib.mkEnableOption "media servers" // {
       default = config.nixos.web.enable;

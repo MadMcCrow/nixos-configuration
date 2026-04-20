@@ -1,20 +1,12 @@
 # games.nix
 # necessary module to play games on nixos
 { lib, config, ... }:
-let
-  cfg = config.games;
-in
-{
+let cfg = config.games;
+in {
   # interface :
-  options.games = with lib; {
-    enable = mkEnableOption "Games support";
-  };
+  options.games = with lib; { enable = mkEnableOption "Games support"; };
 
-  imports = [
-    ./gog.nix
-    ./hardware.nix
-    ./steam.nix
-  ];
+  imports = [ ./gog.nix ./hardware.nix ./steam.nix ];
 
   config = lib.mkIf cfg.enable {
     #
@@ -42,9 +34,7 @@ in
         };
       };
       # Reimplementation for Steam Controller on Wayland
-      steam.extest = {
-        inherit (cfg.valve) enable;
-      };
+      steam.extest = { inherit (cfg.valve) enable; };
     };
   };
 }

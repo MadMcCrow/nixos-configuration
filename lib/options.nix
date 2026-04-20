@@ -1,6 +1,5 @@
-{ lib, ... } :
-with lib;
-{
+{ lib, ... }:
+with lib; {
   #
   # make a boolean option, with default = true.
   #
@@ -9,10 +8,9 @@ with lib;
   #
   # mkStringOption that requires an input
   #
-  mkNonEmptyStrOption =
-      description: default:
-      mkOption {
-        inherit description default;
-        type = types.nonEmptyStr;
-      };
+  mkNonEmptyStrOption = description: default:
+    mkOption {
+      inherit description default;
+      type = types.nonEmptyStr;
+    };
 }

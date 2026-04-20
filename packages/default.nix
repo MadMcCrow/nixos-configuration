@@ -3,16 +3,20 @@
 {
   system,
   nixpkgs,
+  self,
   ...
 }@args:
 with builtins;
 let
     pkgs = nixpkgs.legacyPackages.${system};
-    mkPyPackage = name : import self + /lib/python/mkPythonPackage.nix (args // { inherit pkgs;}) name;
-    mkPyPackages = l: map (x: { name = x; value =  mkPyPackage x; }) l;
-    mkNixPackages = l: map (x: { name = x; value =  pkgs.callPackage x args; }) l;
+
+    mkPkgAttr = drv : { name = drv.name; value = drv; };
+    mkPyPackage = attr : import (self + /lib/python/mkPythonPackage.nix) (args // { inherit pkgs;}) attr;
+
+    mkPyPackages = map (x: mkPkgAttr (mkPyPackage x));
+    mkNixPackages = map (x: mkPkgAttr (pkgs.callPackage x args));
 in
-# merge list into an attrset :
+ # merge list into an attrset :
 listToAttrs (
 # Plasma shell packages :
 (mkNixPackages [
@@ -27,6 +31,6 @@ listToAttrs (
 ])
 # Python packages :
 ++ (mkPyPackages [
-        "os-update"
+        {name = "os-update"; rootdir = ./os-update; venv = "os-update";}
       ]
-));
+))

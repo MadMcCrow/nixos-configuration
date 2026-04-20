@@ -6,8 +6,7 @@ let
   cfg = web.proxy;
 
   # custom option for building proxies
-  virtualHostOption =
-    with lib;
+  virtualHostOption = with lib;
     with lib.types;
     submodule {
       options = {
@@ -27,8 +26,7 @@ let
         };
       };
     };
-in
-{
+in {
   options.nixos.web.proxy = with lib; {
     # list of host to redirect
     virtualHosts = mkOption {
@@ -59,40 +57,32 @@ in
       recommendedTlsSettings = true;
 
       # redirect home :
-      virtualHosts =
-        {
-          "${web.domain}" = {
-            forceSSL = true;
-            enableACME = true;
-            locations."/" = {
-              # redirect to home (this might redirect then to auth)
-              return = "301 ${web.home.subDomain}.${web.domain}";
-            };
+      virtualHosts = {
+        "${web.domain}" = {
+          forceSSL = true;
+          enableACME = true;
+          locations."/" = {
+            # redirect to home (this might redirect then to auth)
+            return = "301 ${web.home.subDomain}.${web.domain}";
           };
-        }
-        # other redirections :
-        // (
-          with builtins;
-          listToAttrs (
-            map (name: {
-              # attrName
-              name = "${name}.${web.domain}";
-              # attrValue
-              value =
-                let
-                  value = cfg.virtualHosts."${name}";
-                in
-                {
-                  useACMEHost = "${web.domain}";
-                  forceSSL = value.https;
-                  locations."/" = {
-                    proxyPass = "http://localhost:${toString value.port}";
-                    proxyWebsockets = true;
-                  };
-                };
-            }) (attrNames cfg.virtualHosts)
-          )
-        );
+        };
+      }
+      # other redirections :
+        // (with builtins;
+          listToAttrs (map (name: {
+            # attrName
+            name = "${name}.${web.domain}";
+            # attrValue
+            value = let value = cfg.virtualHosts."${name}";
+            in {
+              useACMEHost = "${web.domain}";
+              forceSSL = value.https;
+              locations."/" = {
+                proxyPass = "http://localhost:${toString value.port}";
+                proxyWebsockets = true;
+              };
+            };
+          }) (attrNames cfg.virtualHosts)));
 
       # end of nginx setup
     };

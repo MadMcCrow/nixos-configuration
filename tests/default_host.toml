@@ -9,8 +9,8 @@ system  = "x86_64-linux"
 hostname = "test-host"
 timezone = "Europe/Paris"
 
-[user]
-name   = "alice"
+[users.alice]
+fullname   = "Alice Wonderland"
 shell  = "zsh"
 groups = ["wheel", "networkmanager"]
 

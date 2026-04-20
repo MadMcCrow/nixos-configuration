@@ -1,2 +1,0 @@
-ifwifi
-networkmanager

@@ -1,12 +1,6 @@
 # steam.nix
 # All things valve related !
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-{
+{ config, lib, pkgs, ... }: {
 
   options.games.valve.enable = lib.mkEnableOption "valve nix support";
 
@@ -14,12 +8,8 @@
   config = lib.mkIf config.games.valve.enable {
 
     # depends on the "linux" package !
-    nixos.nix.unfreePackages = [
-      "steam-original"
-      "steam"
-      "steam-run"
-      "steamcmd"
-    ];
+    nixos.nix.unfreePackages =
+      [ "steam-original" "steam" "steam-run" "steamcmd" ];
 
     # just use nixOS well built module :
     programs.steam = {
@@ -47,9 +37,7 @@
       # open-firewall
       remotePlay.openFirewall = true;
       # enable proton-GE
-      extraCompatPackages = with pkgs; [
-        proton-ge-bin
-      ];
+      extraCompatPackages = with pkgs; [ proton-ge-bin ];
     };
 
     # env vars for steam and steam VR
@@ -65,12 +53,10 @@
         27036 # SRCDS Rcon port
       ];
       allowedUDPPorts = [ 27015 ]; # Gameplay traffic
-      allowedUDPPortRanges = [
-        {
-          from = 27031;
-          to = 27036;
-        }
-      ]; # remote play
+      allowedUDPPortRanges = [{
+        from = 27031;
+        to = 27036;
+      }]; # remote play
     };
   };
 }
