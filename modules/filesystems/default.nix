@@ -1,9 +1,8 @@
-# filesystems/default.nix
-# default module imports
-{ _ }:
+{ disko, ... }:
 {
   imports = [
-    ./filesystems.nix
+    disko.nixosModules.disko
+    ./disko.nix
     ./options.nix
   ];
 }

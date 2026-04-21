@@ -1,4 +1,4 @@
-{config, lib, ...} :
+{config, lib, pkgs, lanzaboote, ...} :
 {
 
 imports = [
@@ -7,7 +7,7 @@ imports = [
 
 options.nonOS.secureboot = with lib; {
   enable = mkDisableOption "secureboot";
-}
+};
 
 # implementation
 config = let cfg = config.nonOS.secureboot; in {
@@ -35,4 +35,5 @@ boot = {
         tpm2-tss
         libfido2
   ];
+};
 }

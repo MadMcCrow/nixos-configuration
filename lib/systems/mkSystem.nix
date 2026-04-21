@@ -1,19 +1,8 @@
 # mkSystem.nix
 # base function to build an host
-{ nixpkgs, ...} @args :
+{ nixpkgs, ... } @args:
 let
-  mkSystemArgs = import ./args.nix args ;
+  mkConfig = import ./mkConfig.nix args;
 in
-tomlPath :
-  let
-    tomlConfig = builtins.fromTOML (builtins.readFile tomlPath);
-  in
-  nixpkgs.lib.nixosSystem ({
-        system = tomlConfig.system or "x86_64-linux";
-      } // mkSystemArgs {
-        config = {
-          nonOS = tomlConfig;
-        };
-        moduleNames = [ "games" ];
-        #extraArgs = args;
-      })
+tomlPath:
+  nixpkgs.lib.nixosSystem (mkConfig tomlPath)

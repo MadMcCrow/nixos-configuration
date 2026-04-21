@@ -1,5 +1,5 @@
 # users.nix
-{ pkgs, nixpkgs, lib ... }:
+{ config, pkgs, nixpkgs, lib, ... }:
 {
   options.nonOS.users = with lib; mkOption {
     description = "List of users to create";
@@ -34,7 +34,7 @@
     users = {
       defaultUserShell = pkgs.zsh;
       mutableUsers = false;
-      users = mapAttrs (name: user: {
+      users = builtins.mapAttrs (name: user: {
         name = name;
         fullname = user.fullname;
         shell = user.shell;

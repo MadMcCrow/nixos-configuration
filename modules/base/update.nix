@@ -42,5 +42,5 @@ config = {
   environment.systemPackages = [
     self.packages.updateOS # our updater
   ];
-
+};
 }

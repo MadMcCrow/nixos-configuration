@@ -17,3 +17,6 @@ groups = ["wheel", "networkmanager"]
 [hardware]
 cpu = "amd"
 gpu = "amd"
+
+[hardware.storage]
+main = "/dev/nvme0n1"
