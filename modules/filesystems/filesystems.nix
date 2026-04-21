@@ -2,16 +2,26 @@
 {config, ... } :
 {
 
-options.nonOS.fileSystems = {
-  devices ={
-  encrypted = mkOption {
-    description = "encrypted ";
-    type = lib.types.attrs;
-    default = {};
-  };
-  other = {
-  };
+options.nonOS.fileSystems = with lib; mkOption {
+  description = "attrset of file systems to mount";
+  type = types.submodule {
+       options = {
+         # TODO : add type check
+        device = mkOption {
+           description = "Full name of the user as displayed in UI";
+           type = types.emptyOr types.str;
+           default = "";
+         };
+        encrypted = mkEnableOption "enable encryption";
+        mountpoint = mkOption {
+          description = "mount point for the file system";
+          type = types.emptyOr types.str;
+          default = "";
+        };
+       };
+    };
 };
+
 # implementation.
 config = let cfg = config.nonOS.filesystem; in {
   boot = {

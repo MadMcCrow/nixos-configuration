@@ -1,10 +1,19 @@
 # desktop.nix
+# add a desktop environment to our Config
 #
-#
-{ config, pkgs, ... }: {
+{ config, pkgs, self, ... }: {
+
+  # interface
+  options.nonOS.desktop.enable = mkDisableOption "desktop";
+
+  # implementation
   config = {
-    services = {
-      displayManager.sddm = {
+
+    # set tag for version
+    system.nixos.tags = [ "Desktop" ];
+
+    # enable sddm display manager
+    services.displayManager.sddm = {
         enable = true;
         enableHidpi = true;
         autoNumlock = true;
@@ -12,12 +21,7 @@
         wayland.enable = !(builtins.any (x: x == "nvidia")
           config.services.xserver.videoDrivers);
       };
-    };
-
-    # set tag for version
-    system.nixos.tags = [ "Desktop" ];
-
-    #
+    # enable KDE :
     services.xserver = {
       enable = true;
 
@@ -31,10 +35,7 @@
       # remove xterm
       desktopManager.xterm.enable = false;
       excludePackages = [ pkgs.xterm ];
-
     };
-
-    # enable plasma
     qt = {
       enable = true;
       platformTheme = "kde";
@@ -65,8 +66,8 @@
 
       systemPackages = with pkgs;
         [ lightly-boehs papirus-icon-theme libsForQt5.kcalc ]
-        ++ (map (x: callPackage x { }) [
-          ./packages/vapor-theme.nix
+        ++ (map (x: callPackage (self + "/packages/plasma/${x}") {}) [
+          "vapor-theme.nix"
           # ./packages/plasma-drawer.nix
           # ./packages/ditto-menu.nix
         ]);

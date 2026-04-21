@@ -14,6 +14,6 @@ tomlPath :
         config = {
           nonOS = tomlConfig;
         };
-        moduleNames = [ "core" ];
+        moduleNames = [ "games" ];
         #extraArgs = args;
       })

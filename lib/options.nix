@@ -13,4 +13,11 @@ with lib; {
       inherit description default;
       type = types.nonEmptyStr;
     };
+
+   # mkOption that takes a path
+   mkPathOption = description: default:
+     mkOption {
+       inherit description default;
+       type = types.nullOr types.path;
+     };
 }

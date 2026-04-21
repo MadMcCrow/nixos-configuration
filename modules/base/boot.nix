@@ -1,10 +1,14 @@
 {config, lib, ...} :
 {
 
-options.nonOS.secureboot = {
-  enable = lib.mkEnableOption "secureboot" // {defaults = true;};
+imports = [
+  lanzaboote.nixosModules.lanzaboote
+];
 
+options.nonOS.secureboot = with lib; {
+  enable = mkDisableOption "secureboot";
 }
+
 # implementation
 config = let cfg = config.nonOS.secureboot; in {
 
