@@ -1,53 +1,40 @@
 { lib, config, options, ... }:
 with lib;
 let
+  # Helper: Identifies if a value is a NixOS option definition
   isOption = v: v ? _type && v._type == "option";
+
+  # Helper: Identifies if an option was created using mkMandatoryOption
   isMandatory = v: v ? type && v.type ? _mandatory && v.type._mandatory;
 
-  # Recursively crawls the options tree starting from 'prefix' to find mandatory paths.
-  # Returns a list of attribute paths, e.g., [ ["hostname"] ["hardware" "storage" "main"] ]
+  # Recursively crawls the options tree to find mandatory paths.
+  # We strictly avoid metadata attributes to prevent stack overflows and evaluation loops.
   findMandatory = prefix: opts:
     let
-      # processAttr is called for every attribute at the current level of the tree
-      processAttr = name: value:
-        let
-          currentPath = prefix ++ [ name ];
-        in
-        if isOption value then
-          # Base case: we found an option, return its path if it's mandatory
-          if isMandatory value then [ currentPath ] else [ ]
-        else if isAttrs value then
-          # Recursive case: this is a category (attrset), keep digging
-          findMandatory currentPath value
-        else
-          # Fallback for unexpected types
-          [ ];
+      # Base case: this node is an option, check if it's mandatory
+      current = if isOption opts && isMandatory opts then [ prefix ] else [ ];
 
-      # We filter out "_type" to avoid processing the metadata of the parent attrset
-      cleanOpts = filterAttrs (n: v: n != "_type") opts;
+      # Recursive case: if this node is an attribute set, look at its children.
+      # We skip internal NixOS metadata like _type, type, default, loc, etc.
+      names = if isAttrs opts then builtins.attrNames opts else [];
+      validNames = filter (n:
+        ! (hasPrefix "_" n) &&
+        ! (elem n ["type" "default" "description" "example" "readOnly" "apply" "declarations" "files" "visible" "internal" "loc"])
+      ) names;
+
+      childrenPaths = concatLists (map (name: findMandatory (prefix ++ [ name ]) opts.${name}) validNames);
     in
-    concatLists (mapAttrsToList processAttr cleanOpts);
+    current ++ childrenPaths;
 
   mandatoryOptions = findMandatory [ ] options.nonOS;
 
   # Check if a path exists and is not null in the configuration
   isSet = path: (attrByPath path null config.nonOS) != null;
 
-  missingMandatory = filter (path: ! (isSet path)) mandatoryOptions;
-
-  # Top-level unknown keys logic (simplified for prototype)
-  definedOptions = attrNames options.nonOS;
-  providedConfig = attrNames config.nonOS;
-  unknownKeys = filter (key: ! (elem key definedOptions)) providedConfig;
+  # Optimization: Use ? to check for keys to avoid full evaluation of the options attrset.
+  unknownKeys = filter (key: ! (options.nonOS ? ${key})) (attrNames config.nonOS);
 in
 {
-  options.nonOS = mkOption {
-    type = types.submodule {
-      freeformType = types.attrsOf types.anything;
-    };
-    description = "NonOS configuration root";
-  };
-
   config = {
     assertions = map (path: {
       assertion = isSet path;

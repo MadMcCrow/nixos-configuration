@@ -3,16 +3,16 @@
 {
   options.nonOS.users = with lib; mkOption {
     description = "List of users to create";
-    type = types.submodule { # maybe add types.addCheck
+    type = types.attrsOf (types.submodule {
          options = {
            fullname = mkOption {
              description = "Full name of the user as displayed in UI";
-             type = types.emptyOr types.str;
+             type = types.str;
              default = "";
            };
            shell = mkOption {
              description = "Shell to use for the user";
-             type = addCheck types.str (shell: nixpkgs ? shell);
+             type = with types; nullOr (addCheck str (sh: nixpkgs ? sh));
              default = "zsh";
            };
            groups = mkOption {
@@ -22,11 +22,11 @@
            };
            hashedPassword = mkOption {
              description = "Hashed password for the user";
-             type = types.passwdEntry;
+             type = with types; passwdEntry str;
              default = "";
            };
          };
-       };
+       });
        default = { };
   };
 
