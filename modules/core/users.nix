@@ -12,7 +12,7 @@
            };
            shell = mkOption {
              description = "Shell to use for the user";
-             type = with types; nullOr (addCheck str (sh: nixpkgs ? sh));
+             type = with types; nullOr (addCheck str (s: pkgs ? "${s}"));
              default = "zsh";
            };
            groups = mkOption {
@@ -22,7 +22,7 @@
            };
            hashedPassword = mkOption {
              description = "Hashed password for the user";
-             type = with types; passwdEntry str;
+             type = types.str;
              default = "";
            };
          };
@@ -35,10 +35,11 @@
       defaultUserShell = pkgs.zsh;
       mutableUsers = false;
       users = builtins.mapAttrs (name: user: {
-        name = name;
-        fullname = user.fullname;
-        shell = user.shell;
-        groups = user.groups;
+        inherit name;
+        description = user.fullname;
+        shell = pkgs."${user.shell}";
+        extraGroups = user.groups;
+        isNormalUser = true;
       }) config.nonOS.users;
     };
 
@@ -49,9 +50,10 @@
           PasswordAuthentication = false;
           KbdInteractiveAuthentication = false;
           PermitRootLogin = "no";
-          AllowUsers = lib. config.users.users;
+          AllowUsers = builtins.attrNames config.users.users;
         };
     };
+     programs.zsh.enable = true;
     environment.defaultPackages =  with pkgs;
     [
 

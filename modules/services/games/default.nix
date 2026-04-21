@@ -1,7 +1,7 @@
 # games.nix
 # necessary module to play games on nixos
 { lib, config, ... }:
-let cfg = config.games;
+let cfg = config.nonOS.games;
 in {
   # interface :
   options.nonOS.games = with lib; { enable = mkEnableOption "Games support"; };

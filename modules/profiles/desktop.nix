@@ -7,35 +7,34 @@
   options.nonOS.desktop.enable = lib.mkDisableOption "desktop";
 
   # implementation
-  config = {
+  config = lib.mkIf config.nonOS.desktop.enable {
 
     # set tag for version
     system.nixos.tags = [ "Desktop" ];
 
-    # enable sddm display manager
+    # enable KDE :
+    services.desktopManager.plasma6.enable = true;
     services.displayManager.sddm = {
         enable = true;
-        enableHidpi = true;
         autoNumlock = true;
         # this prevents issues with nvidia drivers
         wayland.enable = !(builtins.any (x: x == "nvidia")
           config.services.xserver.videoDrivers);
       };
-    # enable KDE :
+
     services.xserver = {
       enable = true;
-
-      # Enable Plasma 5 or 6
-      desktopManager.plasma5 = {
-        enable = true;
-        useQtScaling = true;
-        # default font with extra
-        notoPackage = pkgs.noto-fonts-lgc-plus;
-      };
       # remove xterm
       desktopManager.xterm.enable = false;
       excludePackages = [ pkgs.xterm ];
     };
+
+    fonts.packages = with pkgs; [
+      noto-fonts
+      noto-fonts-lgc-plus
+      jetbrains-mono
+    ];
+
     qt = {
       enable = true;
       platformTheme = "kde";
@@ -52,7 +51,6 @@
     environment = {
       plasma6.excludePackages =
       # pkgs can be inside :
-      with pkgs.libsForQt5;
       with pkgs.kdePackages;
         [
           oxygen
@@ -60,15 +58,14 @@
           plasma-browser-integration
           print-manager
           kio-extras
-          khelpcenter
           kwallet
           kwallet-pam
           kate
           okular
-        ] ++ (with pkgs.libsForQt5; [ kemoticons ]);
+        ];
 
       systemPackages = with pkgs;
-        [ lightly-boehs papirus-icon-theme libsForQt5.kcalc ]
+        [ papirus-icon-theme kdePackages.kcalc ]
         ++ (map (x: callPackage (self + "/packages/plasma/${x}") {}) [
           "vapor-theme.nix"
           # ./packages/plasma-drawer.nix
