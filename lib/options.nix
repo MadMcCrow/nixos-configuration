@@ -21,9 +21,9 @@ with lib; {
       type = types.nullOr types.path;
     };
 
-  # mkMandatoryOption that tags the option for validation
+  # mkMandatoryOption that tags the type for validation
   mkMandatoryOption = description: type: mkOption {
-    inherit description type;
-    _mandatory = true;
+    inherit description;
+    type = type // { _mandatory = true; };
   };
 }

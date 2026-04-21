@@ -44,6 +44,7 @@
         func:
         genAttrs systems.flakeExposed (system:
           func (inputs // {
+            inherit inputs;
             inherit system;
             pkgs = inputs.nixpkgs.legacyPackages.${system};
             inherit (nixpkgs) lib;

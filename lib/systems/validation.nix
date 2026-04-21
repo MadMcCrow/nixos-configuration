@@ -1,11 +1,8 @@
 { lib, config, options, ... }:
 with lib;
 let
-  # Helper: Identifies if a value is a NixOS option definition
   isOption = v: v ? _type && v._type == "option";
-
-  # Helper: Identifies if an option was created using mkMandatoryOption
-  isMandatory = v: v ? _mandatory && v._mandatory;
+  isMandatory = v: v ? type && v.type ? _mandatory && v.type._mandatory;
 
   # Recursively crawls the options tree starting from 'prefix' to find mandatory paths.
   # Returns a list of attribute paths, e.g., [ ["hostname"] ["hardware" "storage" "main"] ]
@@ -45,8 +42,10 @@ let
 in
 {
   options.nonOS = mkOption {
-    freeformType = types.attrsOf types.anything;
-    description = "NonOS configuration root (populated from TOML)";
+    type = types.submodule {
+      freeformType = types.attrsOf types.anything;
+    };
+    description = "NonOS configuration root";
   };
 
   config = {
