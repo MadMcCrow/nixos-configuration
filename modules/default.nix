@@ -1,9 +1,8 @@
-{ ... }:
-{
+{ ... }: {
   imports = [
-    ./base
-    ./filesystems
-    ./games
-    ./extra
+    ./core
+    ./hardware
+    ./profiles
+    ./services
   ];
 }
