@@ -18,6 +18,8 @@ in
    inherit specialArgs;
    modules = [
      (self + "/modules")
+     # validate the TOML options
+     ./validation.nix
      {
        # do all the custom parsing there :
        nonOS = tomlConfig;

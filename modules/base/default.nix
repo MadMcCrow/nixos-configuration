@@ -3,6 +3,8 @@ _ : {
   imports = [
     ./boot.nix
     ./desktop.nix
+    ./hardware.nix
+    ./network.nix
     ./update.nix # automatic updates
     ./users.nix # setting up users
   ];

@@ -14,10 +14,16 @@ with lib; {
       type = types.nonEmptyStr;
     };
 
-   # mkOption that takes a path
-   mkPathOption = description: default:
-     mkOption {
-       inherit description default;
-       type = types.nullOr types.path;
-     };
+  # mkOption that takes a path
+  mkPathOption = description: default:
+    mkOption {
+      inherit description default;
+      type = types.nullOr types.path;
+    };
+
+  # mkMandatoryOption that tags the option for validation
+  mkMandatoryOption = description: type: mkOption {
+    inherit description type;
+    _mandatory = true;
+  };
 }
