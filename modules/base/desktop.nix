@@ -50,7 +50,10 @@
 
     # remove useless KDE packages
     environment = {
-      plasma5.excludePackages = with pkgs.libsForQt5;
+      plasma6.excludePackages =
+      # pkgs can be inside :
+      with pkgs.libsForQt5;
+      with pkgs.kdePackages;
         [
           oxygen
           khelpcenter

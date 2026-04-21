@@ -4,9 +4,13 @@
 let cfg = config.games;
 in {
   # interface :
-  options.games = with lib; { enable = mkEnableOption "Games support"; };
+  options.nonOS.games = with lib; { enable = mkEnableOption "Games support"; };
 
-  imports = [ ./gog.nix ./hardware.nix ./steam.nix ];
+  imports = [
+  #  ./gog.nix
+  #  ./hardware.nix
+  #  ./steam.nix
+  ];
 
   config = lib.mkIf cfg.enable {
     #
