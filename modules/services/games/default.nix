@@ -7,9 +7,9 @@ in {
   options.nonOS.games = with lib; { enable = mkEnableOption "Games support"; };
 
   imports = [
-  #  ./gog.nix
-  #  ./hardware.nix
-  #  ./steam.nix
+    #  ./gog.nix
+    #  ./hardware.nix
+    #  ./steam.nix
   ];
 
   config = lib.mkIf cfg.enable {

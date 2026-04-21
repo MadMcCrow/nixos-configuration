@@ -40,9 +40,11 @@
 
   outputs = { nixpkgs, ... }@inputs:
     let
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+
       mapOutputs = with nixpkgs.lib;
         func:
-        genAttrs systems.flakeExposed (system:
+        genAttrs systems (system:
           func (inputs // {
             inherit inputs;
             inherit system;
@@ -59,6 +61,11 @@
       });
 
       packages = mapOutputs (x: (import ./packages x));
-      #apps = mapOutputs({ system, ... }: { inherit (packages.${system}) os-update; });
+      apps = mapOutputs ({ system, ... }: {
+        os-update = {
+          type = "app";
+          program = "${packages.${system}.os-update}/bin/os-update";
+        };
+      });
     };
 }

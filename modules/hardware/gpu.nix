@@ -7,6 +7,7 @@ with lib; {
   };
 
   config = {
-    services.xserver.videoDrivers = mkIf (config.nonOS.hardware.gpu != "other") [ config.nonOS.hardware.gpu ];
+    services.xserver.videoDrivers =
+      mkIf (config.nonOS.hardware.gpu != "other") [ config.nonOS.hardware.gpu ];
   };
 }

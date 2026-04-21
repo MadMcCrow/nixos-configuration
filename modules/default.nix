@@ -1,8 +1,1 @@
-{ ... }: {
-  imports = [
-    ./core
-    ./hardware
-    ./profiles
-    ./services
-  ];
-}
+{ ... }: { imports = [ ./core ./hardware ./profiles ./services ]; }

@@ -1,9 +1,9 @@
 # all my linux modules:
-_ : {
+_: {
   # disabled because not implemented in nonOS
   imports = [
-  #  ./autowake.nix
-  #  ./waydroid.nix
-  #  ./kodi.nix
+    #  ./autowake.nix
+    #  ./waydroid.nix
+    #  ./kodi.nix
   ];
 }

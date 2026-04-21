@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, ... }: {
   options.nonOS = lib.mkOption {
     type = lib.types.submodule {
       freeformType = lib.types.attrsOf lib.types.anything;

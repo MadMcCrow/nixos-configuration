@@ -1,8 +1,1 @@
-{ ... }: {
-  imports = [
-    ./games
-    ./virtualisation
-    ./web
-    ./extra
-  ];
-}
+{ ... }: { imports = [ ./games ./virtualisation ./web ./extra ]; }

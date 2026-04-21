@@ -1,5 +1,5 @@
 # default.nix
 # import all our python libs into an attribute set
-args: {
+_ : {
   mkPythonPackage = ./mkPythonPackage.nix;
 }

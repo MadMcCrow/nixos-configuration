@@ -9,10 +9,14 @@ system  = "x86_64-linux"
 hostname = "test-host"
 timezone = "Europe/Paris"
 
+[security.onlykey]
+enable = true
+
 [users.alice]
 fullname   = "Alice Wonderland"
 shell  = "zsh"
 groups = ["wheel", "networkmanager"]
+hashedPassword = "$6$dummyhash$."
 
 [hardware]
 cpu = "amd"

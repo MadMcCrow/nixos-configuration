@@ -1,12 +1,10 @@
-{ config, lib, ... }:
-{
+# disko.nix
+# Define the disk layout using disko
+{ config, ... }: {
   disko.devices = {
     nodev."/" = {
       fsType = "tmpfs";
-      mountOptions = [
-        "size=4G"
-        "mode=755"
-      ];
+      mountOptions = [ "size=4G" "mode=755" ];
     };
     disk.main = {
       device = config.nonOS.hardware.storage.main;
@@ -31,10 +29,7 @@
               settings = {
                 allowDiscards = true;
                 # Enable FIDO2 and TPM2 auto-unlocking
-                crypttabExtraOpts = [
-                  "fido2-device=auto"
-                  "tpm2-device=auto"
-                ];
+                crypttabExtraOpts = [ "fido2-device=auto" "tpm2-device=auto" ];
               };
               content = {
                 type = "btrfs";

@@ -1,14 +1,6 @@
 # vinyl-theme.nix
 # https://github.com/ekaaty/vinyl-theme
-{ pkgs, ... }:
-{
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  cmake,
-  kdePackages,
-  unstableGitUpdater,
-}:
+{ lib, stdenv, fetchFromGitHub, cmake, kdePackages, unstableGitUpdater, }:
 stdenv.mkDerivation rec {
   pname = "vinyl-theme";
   version = "v6.5.3";
@@ -41,14 +33,14 @@ stdenv.mkDerivation rec {
     kdePackages.wrapQtAppsHook
   ];
 
-  passthru.updateScript = unstableGitUpdater {};
+  passthru.updateScript = unstableGitUpdater { };
 
   meta = with lib; {
     description = "Theme for KDE Plasma";
     mainProgram = "vinyl-settings6";
     homepage = "https://github.com/ekaaty/vinyl-theme";
-    license = with licenses; [gpl2Plus gpl3Plus];
+    license = with licenses; [ gpl2Plus gpl3Plus ];
     platforms = platforms.linux;
-    maintainers = [];
+    maintainers = [ ];
   };
 }

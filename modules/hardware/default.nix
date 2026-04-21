@@ -1,7 +1,1 @@
-{ ... }: {
-  imports = [
-    ./cpu.nix
-    ./gpu.nix
-    ./storage
-  ];
-}
+{ ... }: { imports = [ ./cpu.nix ./gpu.nix ./storage ]; }

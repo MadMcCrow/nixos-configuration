@@ -1,7 +1,7 @@
 # mkPythonPackage.nix
 # helper function to make python packages with uv2nix
-{ lib, pkgs, pyproject-nix, uv2nix, pyproject-build-systems, self, ... }:
-{name, rootdir, venv ? name }:
+{ lib, pkgs, pyproject-nix, uv2nix, pyproject-build-systems, ... }:
+{ name, rootdir, venv ? name }:
 let
   python = pkgs.python312;
   workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = rootdir; };

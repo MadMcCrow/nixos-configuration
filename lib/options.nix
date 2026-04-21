@@ -22,8 +22,9 @@ with lib; {
     };
 
   # mkMandatoryOption that tags the type for validation
-  mkMandatoryOption = description: type: mkOption {
-    inherit description;
-    type = type // { _mandatory = true; };
-  };
+  mkMandatoryOption = description: type:
+    mkOption {
+      inherit description;
+      type = type // { _mandatory = true; };
+    };
 }

@@ -38,7 +38,7 @@ let
     # copy vendor.img and system.img files to out
     installPhase = ''
       sudo mkdir -p $out
-      sudo cp $src/*.img $out 
+      sudo cp $src/*.img $out
     '';
   };
 
@@ -101,6 +101,7 @@ in {
         user = waydroidUser;
         program = "${lib.getExe package} show-full-ui";
       };
+      environment.systemPackages = [  waydroid-gapps  ];
     };
   };
 }

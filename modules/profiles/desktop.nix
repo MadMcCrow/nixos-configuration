@@ -13,8 +13,9 @@
     system.nixos.tags = [ "Desktop" ];
 
     # enable KDE :
-    services.desktopManager.plasma6.enable = true;
-    services.displayManager.sddm = {
+    services = {
+      desktopManager.plasma6.enable = true;
+      displayManager.sddm = {
         enable = true;
         autoNumlock = true;
         # this prevents issues with nvidia drivers
@@ -22,11 +23,12 @@
           config.services.xserver.videoDrivers);
       };
 
-    services.xserver = {
-      enable = true;
-      # remove xterm
-      desktopManager.xterm.enable = false;
-      excludePackages = [ pkgs.xterm ];
+      xserver = {
+        enable = true;
+        # remove xterm
+        desktopManager.xterm.enable = false;
+        excludePackages = [ pkgs.xterm ];
+      };
     };
 
     fonts.packages = with pkgs; [
@@ -50,9 +52,8 @@
     # remove useless KDE packages
     environment = {
       plasma6.excludePackages =
-      # pkgs can be inside :
-      with pkgs.kdePackages;
-        [
+        # pkgs can be inside :
+        with pkgs.kdePackages; [
           oxygen
           khelpcenter
           plasma-browser-integration
@@ -66,7 +67,7 @@
 
       systemPackages = with pkgs;
         [ papirus-icon-theme kdePackages.kcalc ]
-        ++ (map (x: callPackage (self + "/packages/plasma/${x}") {}) [
+        ++ (map (x: callPackage (self + "/packages/plasma/${x}") { }) [
           "vapor-theme.nix"
           # ./packages/plasma-drawer.nix
           # ./packages/ditto-menu.nix

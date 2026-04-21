@@ -1,12 +1,9 @@
 # mkAppliance.nix
 # make a custom appliance system (ie. no nix store)
-{ nixpkgs, ...}:
+args :
 let
-  mkSystemArgs = import ./args.nix args ;
-in
-# TODO :
-# A/B config, without store
-  systemArgs :
-    nixpkgs.lib.nixosSystem ({
-          system = "x86_64-linux";
-        } // mkSystemArgs args);
+  mkSystemArgs = import ./args.nix args;
+  # TODO :
+  # A/B config, without store
+in systemArgs:
+nixpkgs.lib.nixosSystem ({ system = "x86_64-linux"; } // mkSystemArgs systemArgs)
