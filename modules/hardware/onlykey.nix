@@ -1,8 +1,8 @@
 { lib, pkgs, config, ... }:
 with lib;
-let cfg = config.nonOS.security.onlykey;
+let cfg = config.nonOS.hardware.onlykey;
 in {
-  options.nonOS.security.onlykey = {
+  options.nonOS.hardware.onlykey = {
     enable = mkEnableOption "OnlyKey support for login and disk unlocking";
   };
 

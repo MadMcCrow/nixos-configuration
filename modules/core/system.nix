@@ -36,5 +36,7 @@
     environment.systemPackages = [
       self.packages.${pkgs.system}.os-update # our updater
     ];
+
+    system.stateVersion = "25.11";
   };
 }

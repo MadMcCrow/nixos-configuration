@@ -6,7 +6,7 @@
 # flake   = "github:MadMcCrow/NonOS"
 system  = "x86_64-linux"
 
-hostname = "test-host"
+# hostname = "test-host"
 timezone = "Europe/Paris"
 
 [security.onlykey]

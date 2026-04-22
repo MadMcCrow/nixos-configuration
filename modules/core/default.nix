@@ -1,3 +1,8 @@
 { ... }: {
-  imports = [ ./boot.nix ./network.nix ./nix.nix ./onlykey.nix ./users.nix ];
+  imports = [
+    ./boot.nix
+    ./network.nix
+    ./system.nix
+    ./users.nix # user management
+  ];
 }
