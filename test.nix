@@ -27,23 +27,27 @@ let
 in
   go "" attrs;
 
-    options.nonOS = {
-      x.a = lib.mkOption { type = lib.types.str // {_mandatory = true;};
-          description = "sort";
-      };
-      a = lib.mkOption { type = lib.types.str;
-          description = "bobo";
-      };
-      b = let base = lib.mkEnableOption "mandatorytest"; in
-      base // { type = base.type // {_mandatory = true;}; };
-    };
+
+  args = {
+    inherit pkgs;
+    inherit lib;
+    config = {};
+    self = ./.;
+  };
+  modules = lib.foldl' (a: b: lib.recursiveUpdate a b) {} (map (x: import x args)[
+    modules/core/system.nix
+    modules/core/users.nix
+    modules/hardware/cpu.nix
+  ]);
 
 
     filterOptions = attrs :
     filter (k: (optAttr attrs "${k}.type._mandatory") == true ) (collectOptions attrs);
+
+      options =  modules.options;
 in
 {
-  options = options.nonOS;
+  inherit options;
   optAttr = optAttr ;
   opt = k : optAttr options.nonOS k;
   l = collectOptions options.nonOS;

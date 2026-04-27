@@ -21,10 +21,10 @@ with lib; {
       type = types.nullOr types.path;
     };
 
-  # mkMandatoryOption that tags the type for validation
-  mkMandatoryOption = description: type:
-    mkOption {
-      inherit description;
-      type = type // { _mandatory = true; };
-    };
+  # mkMandatoryOption that tags the type and provides a null default to prevent early crashes
+  mkMandatoryOption = description: type: mkOption {
+    inherit description;
+    type = (types.nullOr type) // { _mandatory = true; };
+    default = null;
+  };
 }

@@ -7,12 +7,26 @@ let
 
   optAttr = a: k: lib.attrByPath (lib.splitString "." k) null a;
 
+
+  # Safety: Skip internal metadata that can point back to the root evaluation,
+  # which is the primary cause of stack overflows in the module system.
+  ignoredKeys = [
+     "type" "default" "description" "example"
+    "readOnly" "apply" "declarations" "files" "visible"
+    "internal" "loc" "value" "valueMeta" "configuration"
+    "options" "highestPrio" "definitions" "definitionsWithPrio"
+    "displayDefault" "relatedPackages"
+  ];
+
+
   collectOptions = attrs:
   let
     # check option
     go = path: a:
       builtins.concatMap
         (key:
+
+          if elem key ignoredKeys then [] else
           let
             v = a.${key};
             currentPath = if path == "" then key else "${path}.${key}";
