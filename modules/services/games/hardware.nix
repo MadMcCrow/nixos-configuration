@@ -6,7 +6,7 @@ let
   mkDisableOption = d: lib.mkEnableOption d // { enable = true; };
 in {
 
-  options.games.hardware = {
+  options.nonOS.games.hardware = {
     steam-controller = mkDisableOption "steam controller support";
     xbox-one-controller = mkDisableOption "steam controller support";
   };
@@ -21,7 +21,7 @@ in {
     programs.steam.extest.enable = cfg.steam-controller;
 
     # depends on the "linux" module !
-    nixos.nix.unfreePackages = with lib.lists;
+    _nonOS.unfreePackages = with lib.lists;
       (optional cfg.steam-controller "steam-original")
       ++ (optional cfg.xbox-one-controller "xow_dongle-firmware");
   };

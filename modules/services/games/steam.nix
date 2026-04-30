@@ -2,14 +2,13 @@
 # All things valve related !
 { config, lib, pkgs, ... }: {
 
-  options.games.valve.enable = lib.mkEnableOption "valve nix support";
+  options.nonOS.games.valve.enable = lib.mkEnableOption "valve nix support";
 
   # config
-  config = lib.mkIf config.games.valve.enable {
+  config = lib.mkIf config.nonOS.games.valve.enable {
 
     # depends on the "linux" package !
-    nixos.nix.unfreePackages =
-      [ "steam-original" "steam" "steam-run" "steamcmd" ];
+    _nonOS.unfreePackages = [ "steam-original" "steam" "steam-run" "steamcmd" ];
 
     # just use nixOS well built module :
     programs.steam = {

@@ -1,7 +1,18 @@
 # update.nix
 # define the update process in NonOS
-{ pkgs, self, ... }: {
+{ config, pkgs, lib, self, ... }: {
+
+  # this is a private option : you cannot access it from the TOML config
+  options._nonOS.unfreePackages = with lib; mkOption {
+    type = with types; listOf str;
+    default = [];
+    description = "List of unfree packages to allow in NonOS";
+  };
+
   config = {
+
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._nonOS.unfreePackages;
+
     nix = {
       nixPath = [
         "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
