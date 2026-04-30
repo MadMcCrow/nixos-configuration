@@ -1,7 +1,7 @@
 # mkConfig.nix
 # Arguments for mkSystem.nix and mkAppliance.nix
 # This allows to pass common arguments to both functions.
-{ self, lib, inputs, ... }:
+{ self, lib, inputs, import-tree, ... }:
 # create the attribute set for "nixpkgs.lib.nixosSystem"
 tomlPath:
 let
@@ -16,7 +16,7 @@ in {
   system = tomlConfig.system or "x86_64-linux";
   inherit specialArgs;
   modules = [
-    (self + "/modules")
+    (import-tree (self + "/modules"))
     ./schema.nix
     ./validation.nix
     {

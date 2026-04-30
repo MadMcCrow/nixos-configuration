@@ -1,36 +1,31 @@
-# disko.nix
+# storage.nix
 # Define the disk layout using disko
-{ config, ... }: {
-  disko.devices = {
-    nodev."/" = {
-      fsType = "tmpfs";
-      mountOptions = [ "size=4G" "mode=755" ];
-    };
-    disk.main = {
-      device = config.nonOS.hardware.storage.main;
-      type = "disk";
-      content = {
-        type = "gpt";
-        partitions = {
-          ESP = {
-            size = "512M";
-            type = "EF00";
-            content = {
-              type = "filesystem";
-              format = "vfat";
-              mountpoint = "/boot";
-            };
-          };
-          luks = {
-            size = "100%";
-            content = {
-              type = "luks";
-              name = "cryptroot";
-              settings = {
-                allowDiscards = true;
-                # Enable FIDO2 and TPM2 auto-unlocking
-                crypttabExtraOpts = [ "fido2-device=auto" "tpm2-device=auto" ];
-              };
+{ config, lib, disko, ... }:
+{
+  # options :`
+  options.nonOS.hardware.storage = with lib; {
+    main = mkMandatoryOption "The main disk device to use (e.g., /dev/nvme0n1)." types.str;
+  };
+
+  # this requires disko
+  imports = [ disko.nixosModules.disko ];
+
+  # implementation
+  config = {
+    disko.devices = {
+      nodev."/" = {
+        fsType = "tmpfs";
+        mountOptions = [ "size=4G" "mode=755" ];
+      };
+      disk.main = {
+        device = config.nonOS.hardware.storage.main;
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            ESP = {
+              size = "512M";
+              type = "EF00";
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" ];
@@ -58,8 +53,7 @@
         };
       };
     };
-  };
-
   # Required for systemd-cryptsetup to work in initrd
   boot.initrd.systemd.enable = true;
+};
 }

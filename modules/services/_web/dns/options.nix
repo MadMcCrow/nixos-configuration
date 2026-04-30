@@ -39,9 +39,4 @@
     };
 
   };
-  # choose only one !
-  imports = [
-    ./adguard.nix
-    #  ./blocky.nix
-  ];
 }

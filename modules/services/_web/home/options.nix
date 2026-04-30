@@ -5,8 +5,4 @@
       default = "home";
     };
   };
-
-  imports = [
-    # ./homepage.nix
-  ];
 }

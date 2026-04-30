@@ -8,7 +8,7 @@ in {
   # interface
   options.nixos.web.jellyfin = with lib; {
     enable = mkEnableOption "jellyfin server" // {
-      default = web.media.enable;
+      default = false;
     };
     subDomain = mkOption {
       description = "subdomain for jellyfin service";
