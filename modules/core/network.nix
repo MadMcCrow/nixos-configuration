@@ -1,7 +1,11 @@
 { lib, config, ... }:
 with lib; {
   options.nonOS = {
-    hostname = mkMandatoryOption "The system hostname." types.str;
+    hostname = mkMandatoryOption {
+      name = "hostname";
+      description = "The system hostname.";
+      type = types.str;
+    };
     timezone = mkOption {
       type = types.str;
       default = "UTC";

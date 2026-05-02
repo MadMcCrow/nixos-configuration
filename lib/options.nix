@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, tomlPath ? "", ... }:
 with lib; {
   #
   # make a boolean option, with default = true.
@@ -22,9 +22,14 @@ with lib; {
     };
 
   # mkMandatoryOption that tags the type and provides a null default to prevent early crashes
-  mkMandatoryOption = description: type: mkOption {
-    inherit description;
-    type = (types.nullOr type) // { _mandatory = true; };
-    default = null;
-  };
+  mkMandatoryOption = { name, type, description } :
+    with lib;
+    let
+      check = x: lib.asserts.assertMsg (x != null) "Mandatory option `${name}` not defined in TOML configuration `${tomlPath}`";
+    in
+    mkOption {
+      inherit description;
+      type = with types; addCheck ((nullOr type) // { _mandatory = true; }) check;
+      default = null;
+    };
 }

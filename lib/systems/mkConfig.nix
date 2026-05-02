@@ -1,15 +1,15 @@
 # mkConfig.nix
 # Arguments for mkSystem.nix and mkAppliance.nix
 # This allows to pass common arguments to both functions.
-{ self, lib, inputs, import-tree, ... }:
+{ self, lib, import-tree, ... } @ args:
 # create the attribute set for "nixpkgs.lib.nixosSystem"
 tomlPath:
 let
   # read the TOML config file
   tomlConfig = builtins.fromTOML (builtins.readFile tomlPath);
   # append options to the specialArgs set
-  specialArgs = inputs // {
-    lib = lib // (import ../options.nix { inherit lib; });
+  specialArgs = args // {
+    lib = lib // (import ../options.nix { inherit lib tomlPath;});
   };
 in {
   # we default to "x86_64-linux" if not specified in the TOML config
@@ -17,7 +17,6 @@ in {
   inherit specialArgs;
   modules = [
     (import-tree (self + "/modules"))
-    ./schema.nix
     ./validation.nix
     {
       # do all the custom parsing there :

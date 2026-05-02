@@ -4,7 +4,11 @@
 {
   # options :`
   options.nonOS.hardware.storage = with lib; {
-    main = mkMandatoryOption "The main disk device to use (e.g., /dev/nvme0n1)." types.str;
+    main = mkMandatoryOption {
+      name = "hardware.storage.main";
+      description = "The main disk device to use (e.g., /dev/nvme0n1).";
+      type = types.str;
+    };
   };
 
   # this requires disko

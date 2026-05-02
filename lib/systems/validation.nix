@@ -3,10 +3,7 @@
 with lib;
 with builtins;
 let
-  OSKey = "nonOS";
-
   optAttr = a: k: lib.attrByPath (lib.splitString "." k) null a;
-
 
   # Safety: Skip internal metadata that can point back to the root evaluation,
   # which is the primary cause of stack overflows in the module system.
@@ -17,7 +14,6 @@ let
     "options" "highestPrio" "definitions" "definitionsWithPrio"
     "displayDefault" "relatedPackages"
   ];
-
 
   collectOptions = attrs:
   let
@@ -42,24 +38,24 @@ let
   in
     go "" attrs;
 
-  optsKeys = collectOptions options.${OSKey};
+  optsKeys = collectOptions options.nonOS;
 
   # collect all mandatory options paths :
-  mandatoryPaths = filter (k: (optAttr options.${OSKey} "${k}.type._mandatory") == true ) optsKeys;
+  mandatoryPaths = filter (k: (optAttr options.nonOS "${k}.type._mandatory") == true ) optsKeys;
 
   # collect all unknown keys :
-  # unknownKeys = filter (k: !(elem k optsKeys)) (builtins.attrNames config.${OSKey});
+  unknownKeys = filter (k: !(elem k optsKeys)) (builtins.attrNames config.nonOS);
 
 in
 {
-    # ASSERTIONS: Fail the build if mandatory fields are missing.
-    assertions = map (path: {
-      assertion = (optAttr config.${OSKey} path) != null;
-      message = "NonOS Error: The mandatory configuration field '${path}' is missing in your TOML file.";
-    }) mandatoryPaths;
+  options.nonOS = lib.mkOption {
+    type = lib.types.submodule {
+      freeformType = lib.types.attrsOf lib.types.anything;
+    };
+    description = "NonOS configuration root (populated from TOML)";
+  };
 
-    #WARNINGS: unrecognized keys
-    #warnings = map (key:
-    #  "NonOS Warning: Unknown key '${key}' found in your TOML configuration. It will be ignored."
-    #) unknownKeys;
+  config.warnings = map (key:
+      "NonOS Warning: Unknown key '${key}' found in your TOML configuration. It will be ignored."
+    ) unknownKeys;
 }

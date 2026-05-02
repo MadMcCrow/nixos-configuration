@@ -10,7 +10,7 @@ let
     value = drv;
   };
   mkPyPackage = attr:
-    import (self + /lib/python/mkPythonPackage.nix) (args // { inherit pkgs; })
+    import (self + /lib/python/mkPythonPackage.nix) (args // inputs // { inherit pkgs; })
     attr;
 
   mkPyPackages = map (attr: {
