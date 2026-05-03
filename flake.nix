@@ -39,18 +39,17 @@
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
       flake = {
-        lib = import ./lib (inputs // { inherit (nixpkgs) lib; });
+        lib = nixpkgs.lib // import ./lib (inputs // { inherit (nixpkgs) lib; });
       };
 
       perSystem = { config, system, pkgs, ... }: {
-        packages = pkgs.callPackages ./packages {
-          inherit (inputs) self;
+
+        packages = pkgs.callPackages ./packages (inputs // {
           inherit (inputs.self) lib;
           inherit system;
-        };
+        });
 
         apps = {
-          # TODO : add installer !
           os-update = {
             type = "app";
             program = "${config.packages.os-update}/bin/os-update";
