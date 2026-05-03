@@ -1,21 +1,19 @@
 # packages/default.nix
 # All packages uniquely provided by nonOS
-{ system, nixpkgs, self, ... }@args:
+{ pkgs, system, self, ... }@args:
 with builtins;
 let
-  pkgs = nixpkgs.legacyPackages.${system};
 
   mkPkgAttr = drv: {
     inherit (drv) name;
     value = drv;
   };
-  mkPyPackage = attr:
-    import (self + /lib/python/mkPythonPackage.nix) (args // inputs // { inherit pkgs; })
-    attr;
+  pylib =  import (self + /lib/python.nix) (args // { inherit pkgs; });
+
 
   mkPyPackages = map (attr: {
     inherit (attr) name;
-    value = mkPyPackage attr;
+    value = pylib.mkPythonPackage attr;
   });
   mkNixPackages = map (x: mkPkgAttr (pkgs.callPackage x args));
   # merge list into an attrset :
