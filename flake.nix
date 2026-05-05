@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
     import-tree.url = "github:denful/import-tree";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     lanzaboote = {
@@ -28,10 +32,6 @@
       inputs.uv2nix.follows = "uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs@{ flake-parts, nixpkgs, self, ... }:
@@ -43,6 +43,8 @@
       };
 
       perSystem = { config, system, pkgs, ... }: {
+        # For standardised reproducible formatting with `nix fmt`
+        formatter = pkgs.nixfmt-rfc-style;
 
         packages = pkgs.callPackages ./packages (inputs // {
           inherit (inputs.self) lib;
@@ -50,11 +52,15 @@
         });
 
         apps = {
-          os-update = {
-            type = "app";
-            program = "${config.packages.os-update}/bin/os-update";
-          };
-        };
+               os-update = {
+                 type = "app";
+                 program = "${config.packages.os-update}/bin/os-update";
+               };
+               os-install = {
+                 type = "app";
+                 program = "${config.packages.os-install}/bin/os-install";
+               };
+             };
 
         checks = let
           topLevelHost = path: (inputs.self.lib.${system}.mkSystem path).config.system.build.toplevel;

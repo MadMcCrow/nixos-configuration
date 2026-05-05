@@ -31,4 +31,9 @@ in listToAttrs (
     name = "os-update";
     rootdir = ./os-update;
     venv = "os-update";
-  }]))
+  }
+  {
+    name = "os-install";
+    rootdir = ./os-install;
+    venv = "os-install";
+  }])
