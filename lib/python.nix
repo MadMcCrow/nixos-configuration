@@ -17,9 +17,7 @@
         stdenv = override {
           targetPlatform = targetPlatform // { darwinSdkVersion = "15.1"; };
         };
-      }))
-
-    ).overrideScope (lib.composeManyExtensions [
+      }))).overrideScope (lib.composeManyExtensions [
       pyproject-build-systems.overlays.wheel
       overlay
     ]);

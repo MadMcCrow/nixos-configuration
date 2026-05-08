@@ -1,0 +1,9 @@
+[project]
+name = "os-install"
+version = "0.1.0"
+description = "OS installation tool"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = true

@@ -36,4 +36,4 @@ in listToAttrs (
     name = "os-install";
     rootdir = ./os-install;
     venv = "os-install";
-  }])
+  }]))

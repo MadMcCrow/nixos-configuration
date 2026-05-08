@@ -1,0 +1,31 @@
+[project]
+name        = "os-tools"
+version     = "0.1.0"
+description = "Tools for installing and updating nonOS systems"
+authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
+# TODO : add a readme in docs !
+# readme      = "README.md"
+requires-python = ">=3.11"
+dependencies    = []
+
+[project.scripts]
+os-install = "os.install.cli:main"
+os-update = "os.update.cli:main"
+
+#[ project.optional-dependencies ]
+#gui = ["gui"]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+compile-bytecode = true
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+config = { workspace = true}
+install  = { workspace = true}
+update  = { workspace = true}

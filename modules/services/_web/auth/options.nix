@@ -9,7 +9,4 @@
       default = "auth";
     };
   };
-
-  # implementation
-  imports = [ ./authelia.nix ];
 }
