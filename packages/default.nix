@@ -1,39 +1,18 @@
 # packages/default.nix
 # All packages uniquely provided by nonOS
-{ pkgs, system, self, ... }@args:
+{ callPackage, ... }@args:
 with builtins;
-let
-
-  mkPkgAttr = drv: {
+listToAttrs(map (x: let drv = callPackage x args; in {
     inherit (drv) name;
     value = drv;
-  };
-  pylib =  import (self + /lib/python.nix) (args // { inherit pkgs; });
-
-
-  mkPyPackages = map (attr: {
-    inherit (attr) name;
-    value = pylib.mkPythonPackage attr;
-  });
-  mkNixPackages = map (x: mkPkgAttr (pkgs.callPackage x args));
-  # merge list into an attrset :
-in listToAttrs (
-  # Plasma shell packages :
-  (mkNixPackages [
+  })[
+    # Plasma shell packages :
     ./plasma/ditto-menu.nix
     ./plasma/plasma-drawer.nix
     ./plasma/vapor-theme.nix
+    # zfs encryption
+    ./zfs/zfs-fzifdso
+    ./zfs/zfs-tzpfms
+    # nonOS updater/installer
+    ./os
   ])
-  # ZFS encryption packages :
-  ++ (mkNixPackages [ ./zfs/zfs-fzifdso ./zfs/zfs-tzpfms ])
-  # Python packages :
-  ++ (mkPyPackages [{
-    name = "os-update";
-    rootdir = ./os-update;
-    venv = "os-update";
-  }
-  {
-    name = "os-install";
-    rootdir = ./os-install;
-    venv = "os-install";
-  }]))
