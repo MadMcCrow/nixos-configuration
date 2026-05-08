@@ -38,8 +38,13 @@
     flake-parts.lib.mkFlake { inherit inputs; } ({ lib, ... }: {
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      flake = {
-        lib = nixpkgs.lib // import ./lib (inputs // { inherit (nixpkgs) lib; });
+      flake = let
+        nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
+      in {
+        lib = nonlib;
+        checks = {
+          default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
+        };
       };
 
       perSystem = { config, system, pkgs, ... }: {
@@ -62,12 +67,7 @@
                };
              };
 
-        checks = let
-          topLevelHost = path: (inputs.self.lib.${system}.mkSystem path).config.system.build.toplevel;
-        in {
-          default_host = topLevelHost ./tests/default_host.toml;
 
-        };
       };
     });
 }
