@@ -2,15 +2,9 @@
 # This file contains an example host configuration for testing.
 # this would be located at /etc/nixos/config.toml
 
-# not needed : we default to Self
-# flake   = "github:MadMcCrow/NonOS"
-system  = "x86_64-linux"
-
 hostname = "test-host"
-timezone = "Europe/Paris"
-
-[security.onlykey]
-enable = true
+# timezone = "Europe/Paris" # already the default
+# system  = "x86_64-linux"  # not necessary !
 
 [users.alice]
 fullname   = "Alice Wonderland"
@@ -22,5 +16,10 @@ hashedPassword = "$6$dummyhash$."
 cpu = "amd"
 gpu = "amd"
 
+# if you remove this you should get an error
 [hardware.storage]
 main = "/dev/nvme0n1"
+
+# this should trigger a warning
+[unknownkey]
+notakey = "wrong"

@@ -3,14 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+
     import-tree.url = "github:denful/import-tree";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.1";
+      url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
@@ -42,9 +45,6 @@
         nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
       in {
         lib = lib // nonlib;
-        checks = {
-          default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
-        };
       };
 
       perSystem = { config, system, pkgs, ... }: {
@@ -67,6 +67,11 @@
                };
              };
 
+        checks = let
+          nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
+          in {
+               default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
+             };
 
       };
     });

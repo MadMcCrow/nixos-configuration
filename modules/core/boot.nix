@@ -17,11 +17,11 @@ with nonlib; {
       };
       tmp.cleanOnBoot = true;
       loader = {
-        systemd-boot = {
+        lanzaboote = {
           enable = mkForce true;
-          editor = false;
           configurationLimit = 5;
         };
+        systemd-boot.enable = mkForce false;
         grub.enable = mkForce false;
       };
     lanzaboote = {

@@ -19,7 +19,7 @@ let
   let
     # check option
     go = path: a:
-      builtins.concatMap
+      concatMap
         (key:
 
           if elem key ignoredKeys then [] else
@@ -27,14 +27,14 @@ let
             v = a.${key};
             currentPath = if path == "" then key else "${path}.${key}";
           in
-            if builtins.isAttrs v
+            if isAttrs v
             then
               if (optAttr v "_type") == "option"
               then [ currentPath ]
               else go currentPath v
             else []
         )
-        (builtins.attrNames a);
+        (attrNames a);
   in
     go "" attrs;
 
@@ -44,7 +44,7 @@ let
   mandatoryPaths = filter (k: (optAttr options.nonOS "${k}.type._mandatory") == true ) optsKeys;
 
   # collect all unknown keys :
-  unknownKeys = filter (k: !(elem k optsKeys)) (builtins.attrNames config.nonOS);
+  unknownKeys = filter (k: !(elem k optsKeys)) (attrNames config.nonOS);
 
 in
 {

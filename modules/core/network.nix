@@ -8,7 +8,7 @@ with lib; with nonlib; {
     };
     timezone = mkOption {
       type = types.str;
-      default = "UTC";
+      default = "Europe/Paris";
       description = "The system timezone.";
     };
     system = mkOption {
