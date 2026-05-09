@@ -3,13 +3,9 @@
 { config, nonlib, disko, ... }:
 with nonlib; {
   imports = [ disko.nixosModules.disko ];
-  options.nonOS = {
-    _persist = mkOption {
-      type = types.storage;
-      default = "/etc/nonOS";
-    };
-  };
-} // nonOS __curPos config {
+}
+// nonOS __curPos config {
+  globals.persist = mkNonEmptyStrOption "persisting state for nonOS" "/etc/nonOS";
   nonOptions = {
     main = mkMandatoryOption {
       name = "hardware.storage.main";
@@ -17,16 +13,15 @@ with nonlib; {
       type = deviceType;
     };
   };
-  nonConfig = cfg : {
-
+  nonConfig = {cfg, globals,...} : {
     fileSystems = {
       "/" = {
         fsType = "tmpfs";
-        mountOptions = [ "size=4G" "mode=755" ];
+        options = [ "size=4G" "mode=755" ];
       };
-      "${config.nonOS._persist.mountPoint}" = {
+      "${globals.persist}" = {
         fsType = "btrfs";
-        mountOptions = [ "compress=zstd" ];
+        options = [ "compress=zstd" ];
       };
     };
     # implementation
@@ -52,8 +47,8 @@ with nonlib; {
                       mountpoint = "/nix";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
-                    "nonOS" = {
-                      mountpoint =  "${config.nonOS._persist}";
+                    "${globals.persist}" = {
+                      mountpoint =  "${globals.persist}";
                       mountOptions = [ "compress=zstd" ];
                     };
                     "/home" = {

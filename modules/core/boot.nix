@@ -1,4 +1,5 @@
-{ config, nonlib, pkgs, lanzaboote, ... }:
+{ config, lib, nonlib, pkgs, lanzaboote, ... }:
+with lib;
 with nonlib; {
   imports = [ lanzaboote.nixosModules.lanzaboote ];
 } // nonOS __curPos config
@@ -8,7 +9,7 @@ with nonlib; {
   };
 
   # implementation
-  nonConfig = cfg: {
+  nonConfig = {cfg, globals, ...}: {
     boot = {
       initrd.systemd = {
         enable = true;
@@ -17,15 +18,15 @@ with nonlib; {
       tmp.cleanOnBoot = true;
       loader = {
         systemd-boot = {
-          enable = true;
+          enable = mkForce true;
           editor = false;
           configurationLimit = 5;
         };
-        grub.enable = false;
+        grub.enable = mkForce false;
       };
     lanzaboote = {
         inherit (cfg.secureboot) enable;
-        pkiBundle = "${config.nonOS._persist}/secureboot";
+        pkiBundle = "${globals.persist}/secureboot";
         configurationLimit = 5;
       };
       plymouth.enable = true;

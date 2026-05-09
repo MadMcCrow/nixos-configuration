@@ -41,7 +41,7 @@
       flake = let
         nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
       in {
-        lib = nonlib;
+        lib = lib // nonlib;
         checks = {
           default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
         };
@@ -52,7 +52,7 @@
         formatter = pkgs.nixfmt-rfc-style;
 
         packages = pkgs.callPackages ./packages (inputs // {
-          inherit (inputs.self) lib;
+          inherit (pkgs) lib;
           inherit system;
         });
 
