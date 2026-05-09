@@ -8,8 +8,11 @@ let
   # read the TOML config file
   tomlConfig = builtins.fromTOML (builtins.readFile tomlPath);
   # append options to the specialArgs set
-  specialArgs = args // {
-    lib = lib // (import ../options.nix { inherit lib tomlPath;});
+  specialArgs = let
+    nonlib = import ./options.nix (args // { inherit tomlPath; });
+  in args // {
+    inherit nonlib;
+    inherit (nonlib) nonOS;
   };
 in {
   # we default to "x86_64-linux" if not specified in the TOML config

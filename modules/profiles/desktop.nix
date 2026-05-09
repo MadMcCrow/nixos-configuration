@@ -1,10 +1,10 @@
 # desktop.nix
 # add a desktop environment to our Config
 #
-{ config, pkgs, self, lib, ... }: {
+{ config, pkgs, self, lib, nonlib, ... }: {
 
   # interface
-  options.nonOS.desktop.enable = lib.mkDisableOption "desktop";
+  options.nonOS.desktop.enable = nonlib.mkDisableOption "desktop";
 
   # implementation
   config = lib.mkIf config.nonOS.desktop.enable {

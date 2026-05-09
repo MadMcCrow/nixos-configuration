@@ -1,17 +1,14 @@
-# hardware.nix
+# hardwaregaming.nix
 # module to support gaming hardware
-{ config, lib, ... }:
-let
-  cfg = config.games.hardware;
-  mkDisableOption = d: lib.mkEnableOption d // { enable = true; };
-in {
-
-  options.nonOS.games.hardware = {
+{ config, nonlib, nonOS, ... }:
+nonOS __curPos config
+{
+  nonOptions = with nonlib; {
     steam-controller = mkDisableOption "steam controller support";
-    xbox-one-controller = mkDisableOption "steam controller support";
+    xbox-one-controller = mkDisableOption "xbox controller support";
   };
 
-  config = {
+  nonConfig = cfg: {
     # enable the nixos hardware modules
     hardware = {
       xone.enable = cfg.xbox-one-controller;

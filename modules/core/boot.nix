@@ -1,29 +1,31 @@
-{ config, lib, pkgs, lanzaboote, ... }: {
-
+{ config, nonlib, pkgs, lanzaboote, ... }:
+with nonlib; {
   imports = [ lanzaboote.nixosModules.lanzaboote ];
-
-  options.nonOS.secureboot = with lib; {
-    enable = mkDisableOption "secureboot";
+} // nonOS __curPos config
+{
+  nonOptions = with nonlib; {
+    secureboot.enable = mkDisableOption "secureboot";
   };
 
   # implementation
-  config = let cfg = config.nonOS.secureboot;
-  in {
-
+  nonConfig = cfg: {
     boot = {
       initrd.systemd = {
         enable = true;
         fido2.enable = true;
       };
       tmp.cleanOnBoot = true;
-      loader.systemd-boot = {
-        enable = lib.mkForce (!cfg.enable);
-        editor = false;
-        configurationLimit = 5;
+      loader = {
+        systemd-boot = {
+          enable = true;
+          editor = false;
+          configurationLimit = 5;
+        };
+        grub.enable = false;
       };
-      lanzaboote = {
-        inherit (cfg) enable;
-        pkiBundle = "/etc/secureboot";
+    lanzaboote = {
+        inherit (cfg.secureboot) enable;
+        pkiBundle = "${config.nonOS._persist}/secureboot";
         configurationLimit = 5;
       };
       plymouth.enable = true;
