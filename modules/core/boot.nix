@@ -1,6 +1,5 @@
 { config, lib, nonlib, pkgs, lanzaboote, ... }:
-with lib;
-with nonlib; {
+with lib; {
   imports = [ lanzaboote.nixosModules.lanzaboote ];
 } // nonOS __curPos config
 {
@@ -17,11 +16,7 @@ with nonlib; {
       };
       tmp.cleanOnBoot = true;
       loader = {
-        lanzaboote = {
-          enable = mkForce true;
-          configurationLimit = 5;
-        };
-        systemd-boot.enable = mkForce false;
+        systemd-boot.enable = mkForce (!cfg.secureboot.enable);
         grub.enable = mkForce false;
       };
     lanzaboote = {

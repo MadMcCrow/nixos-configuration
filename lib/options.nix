@@ -1,4 +1,4 @@
-{ lib, tomlPath ? "", self, ... }:
+{ lib, tomlPath ? "", self, import-tree, ... }@ args :
 with lib;
 with builtins; {
   #
@@ -85,33 +85,4 @@ with builtins; {
         globals = config.${globalOption};
       };
   };
-
-  collectOptions = { system ? "x86_64-linux" }:
-     let
-      evaluated = lib.evalModules {
-         modules = (import-tree (self + "/modules")) ++ [
-           # Stub out 'pkgs' so modules that reference it don't fail during
-           # option collection (we never evaluate config values, only options).
-           { _module.args = { pkgs = import <nixpkgs> { inherit system; }; }; }
-         ];
-       };
-
-      # Recursively walk the evaluated option tree.
-      # Each leaf where `_type == "option"` is a declared option;
-      # everything else is a sub-tree (attribute set of more options).
-      flattenOptions = prefix: tree:
-         lib.foldlAttrs (acc: name: value:
-           let
-             path = if prefix == "" then name else "${prefix}.${name}";
-           in
-           # A real option node produced by lib.evalModules
-           if value ? _type && value._type == "option" then
-             acc // { ${path} = value; }
-           # A sub-tree — recurse
-           else if lib.isAttrs value then
-             acc // flattenOptions path value
-           else
-             acc
-         ) {} tree;
-     in flattenOptions "" evaluated.options;
 }

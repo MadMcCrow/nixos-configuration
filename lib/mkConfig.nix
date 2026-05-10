@@ -13,7 +13,7 @@ let
   specialArgs = let
     nonlib = import ./options.nix (args // { inherit tomlPath; });
     pkgs = import nixpkgs {inherit system;};
-  in args // {
+  in nonlib // args // {
     inherit nonlib;
     inherit (nonlib) nonOS;
     nonPkgs = import (self + "/packages") (pkgs // args // {
