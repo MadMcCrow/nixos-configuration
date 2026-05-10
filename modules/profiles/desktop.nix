@@ -1,7 +1,15 @@
 # desktop.nix
 # add a desktop environment to our Config
 #
-{ config, pkgs, self, lib, nonlib, ... }: {
+{
+  config,
+  pkgs,
+  self,
+  lib,
+  nonlib,
+  ...
+}:
+{
 
   # interface
   options.nonOS.desktop.enable = nonlib.mkDisableOption "desktop";
@@ -19,8 +27,7 @@
         enable = true;
         autoNumlock = true;
         # this prevents issues with nvidia drivers
-        wayland.enable = !(builtins.any (x: x == "nvidia")
-          config.services.xserver.videoDrivers);
+        wayland.enable = !(builtins.any (x: x == "nvidia") config.services.xserver.videoDrivers);
       };
 
       xserver = {
@@ -65,8 +72,12 @@
           okular
         ];
 
-      systemPackages = with pkgs;
-        [ papirus-icon-theme kdePackages.kcalc ]
+      systemPackages =
+        with pkgs;
+        [
+          papirus-icon-theme
+          kdePackages.kcalc
+        ]
         ++ (map (x: callPackage (self + "/packages/plasma/${x}") { }) [
           "vapor-theme.nix"
           # ./packages/plasma-drawer.nix

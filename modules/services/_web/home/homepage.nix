@@ -4,10 +4,13 @@
 let
   inherit (config.nixos) web;
   port = 8082;
-in {
+in
+{
   # interface
   options.nixos.web.home.homepage = with lib; {
-    enable = mkEnableOption "" // { default = web.enable; };
+    enable = mkEnableOption "" // {
+      default = web.enable;
+    };
   };
   #
   config = lib.mkIf web.home.homepage.enable {

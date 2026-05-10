@@ -1,6 +1,11 @@
 # waydroid.nix
 # Support for android tv through waydroid with near native performance
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   # defined once
   package = pkgs.waydroid;
@@ -19,9 +24,7 @@ let
   # we don't need gapps for now, but this command would enable it
   waydroid-gapps = pkgs.writeShellApplication {
     text = ''
-      sudo ${
-        lib.getExe package
-      } shell 'ANDROID_RUNTIME_ROOT=/apex/com.android.runtime ANDROID_DATA=/data ANDROID_TZDATA_ROOT=/apex/com.android.tzdata ANDROID_I18N_ROOT=/apex/com.android.i18n sqlite3 /data/data/com.google.android.gsf/databases/gservices.db "select * from main where name = \"android_id\";"'
+      sudo ${lib.getExe package} shell 'ANDROID_RUNTIME_ROOT=/apex/com.android.runtime ANDROID_DATA=/data ANDROID_TZDATA_ROOT=/apex/com.android.tzdata ANDROID_I18N_ROOT=/apex/com.android.i18n sqlite3 /data/data/com.google.android.gsf/databases/gservices.db "select * from main where name = \"android_id\";"'
     '';
   };
 
@@ -54,7 +57,8 @@ let
 
   # shortcut
   cfg = config.tv.waydroid;
-in {
+in
+{
   # interface
   options.tv.waydroid = with lib; {
     enable = mkEnableOption "waydroid-tv";
@@ -65,8 +69,12 @@ in {
   config = lib.mkIf cfg.enable {
     virtualisation.waydroid.enable = true;
     # add our
-    environment.systemPackages =
-      [ package waydroid-reset androidtv-image waydroid-androidtv-install ];
+    environment.systemPackages = [
+      package
+      waydroid-reset
+      androidtv-image
+      waydroid-androidtv-install
+    ];
 
     # Custom services to start the whole waydroid ecosystem
     systemd.services = lib.mkIf cfg.autostart {
@@ -77,8 +85,10 @@ in {
       };
       "start-waydroid-session" = rec {
         enable = true;
-        after =
-          [ "waydroid-container.service" "start-waydroid-session.service" ];
+        after = [
+          "waydroid-container.service"
+          "start-waydroid-session.service"
+        ];
         wantedBy = [ "graphical-session.target" ];
         script = "${lib.getExe package} session start";
       };
@@ -101,7 +111,7 @@ in {
         user = waydroidUser;
         program = "${lib.getExe package} show-full-ui";
       };
-      environment.systemPackages = [  waydroid-gapps  ];
+      environment.systemPackages = [ waydroid-gapps ];
     };
   };
 }

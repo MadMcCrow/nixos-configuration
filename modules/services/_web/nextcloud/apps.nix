@@ -9,7 +9,8 @@
 #           - https://apps.nextcloud.com/apps/side_menu
 #           - https://apps.nextcloud.com/apps/unroundedcorners
 #           - https://apps.nextcloud.com/apps/integration_homeassistant
-{ config, ... }: {
+{ config, ... }:
+{
   config.services.nextcloud.extraApps = {
 
     # nixpkgs :
@@ -27,8 +28,14 @@
     #   - registration
     #   - ...
     inherit (config.services.nextcloud.package.packages.apps)
-      contacts calendar tasks cospend onlyoffice unroundedcorners
-      end_to_end_encryption;
+      contacts
+      calendar
+      tasks
+      cospend
+      onlyoffice
+      unroundedcorners
+      end_to_end_encryption
+      ;
 
     # for the rest use :
     # myApp = fetchNextcloudApp {

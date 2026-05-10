@@ -1,6 +1,7 @@
 # autowake.nix
 # automatically wake-up computer on timer
-{ lib, config, ... }: {
+{ lib, config, ... }:
+{
   options.linux.autowake = with lib; {
     enable = mkEnableOption "auto sleep/wake up timer";
     time = {
@@ -10,7 +11,9 @@
   };
   # change systemd config to have a wake on date service
   config.systemd = lib.mkIf config.linux.autowake.enable {
-    targets = { sleep.enable = lib.mkDefaults config.linux.autowake.enable; };
+    targets = {
+      sleep.enable = lib.mkDefaults config.linux.autowake.enable;
+    };
     services."autowake" = {
       restartIfChanged = false;
       stopIfChanged = false;

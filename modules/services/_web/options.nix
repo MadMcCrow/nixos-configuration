@@ -1,19 +1,30 @@
 # server/default.nix
 # 	each server service is enabled in a separate sub-module
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # shortcuts
   inherit (config) web;
-in {
+in
+{
   # interface
-  options.web = with lib;
+  options.web =
+    with lib;
     let
-      mkStrMatchOption = { regex, ... }@args:
-        mkOption ((builtins.removeAttrs args [ "regex" ]) // {
-          type = with types;
-            addCheck nonEmptyStr (s: (builtins.match regex s) != null);
-        });
-    in {
+      mkStrMatchOption =
+        { regex, ... }@args:
+        mkOption (
+          (builtins.removeAttrs args [ "regex" ])
+          // {
+            type = with types; addCheck nonEmptyStr (s: (builtins.match regex s) != null);
+          }
+        );
+    in
+    {
       enable = mkEnableOption "server services and packages";
       dataDir = mkStrMatchOption {
         description = "path to the web server data";
@@ -34,21 +45,18 @@ in {
       };
       container = {
         name = mkStrMatchOption {
-          description =
-            "internal name for the nixos container hosting the services";
+          description = "internal name for the nixos container hosting the services";
           regex = "([a-z0-9]+)";
           default = "web";
         };
         useNat = mkEnableOption "NAT and bridge interface for web container";
         interface = mkStrMatchOption {
-          description =
-            "host interface for the nixos container hosting the services";
+          description = "host interface for the nixos container hosting the services";
           regex = "([a-z0-9]+)";
           example = "eth0";
         };
         bridge = mkStrMatchOption {
-          description =
-            "host interface for the nixos container hosting the services";
+          description = "host interface for the nixos container hosting the services";
           regex = "([a-z0-9]+)";
           default = "br0";
         };
@@ -113,7 +121,10 @@ in {
         };
         # WARNING : this might break container mount !
         # make container's root not root on host:
-        extraFlags = [ "-U" "--bind=${web.dataDir}" ];
+        extraFlags = [
+          "-U"
+          "--bind=${web.dataDir}"
+        ];
       };
 
       # tools :
@@ -131,8 +142,7 @@ in {
         };
 
         # Get bridge-ip with DHCP
-        bridges."${web.container.bridge}".interfaces =
-          [ web.container.interface ];
+        bridges."${web.container.bridge}".interfaces = [ web.container.interface ];
         interfaces."${web.container.bridge}".useDHCP = true;
       };
 
@@ -141,7 +151,10 @@ in {
         tmpfiles.rules = [ "d ${web.dataDir} 0755 root root -" ];
         # delay container to happen after tmpfiles and network online
         services."container@${web.container.name}" = rec {
-          wants = [ "systemd-tmpfiles-setup.service" "network-online.target" ];
+          wants = [
+            "systemd-tmpfiles-setup.service"
+            "network-online.target"
+          ];
           after = wants;
         };
       };

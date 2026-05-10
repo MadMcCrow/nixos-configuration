@@ -5,7 +5,8 @@ let
   # shortcut
   inherit (config.nixos) web;
   cfg = web.nextcloud;
-in {
+in
+{
 
   # interface
   options.nixos.web.nextcloud = with lib; {
@@ -17,8 +18,7 @@ in {
     };
     subDomain = mkOption {
       description = "subdomain to use for nextcloud service";
-      type = with types;
-        nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
+      type = with types; nullOr (addCheck str (s: (builtins.match "([a-z0-9-]+)" s) != null));
       default = "nextcloud";
     };
   };
@@ -31,7 +31,10 @@ in {
 
       config = {
         # import the nextcloud service configuration
-        imports = [ ./nc.nix ./apps.nix ];
+        imports = [
+          ./nc.nix
+          ./apps.nix
+        ];
 
         config = {
           # set nextcloud settings
@@ -50,7 +53,12 @@ in {
 
     networking.firewall = {
       enable = true;
-      allowedTCPPorts = [ 80 443 8080 8443 ];
+      allowedTCPPorts = [
+        80
+        443
+        8080
+        8443
+      ];
     };
 
   };

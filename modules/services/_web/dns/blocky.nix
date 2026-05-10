@@ -5,7 +5,8 @@ let
   inherit (config.nixos) web;
   inherit (web) dns;
   cfg = dns.blocky;
-in {
+in
+{
   options.nixos.web.dns.blocky = with lib; {
 
     # maybe get rid of this option

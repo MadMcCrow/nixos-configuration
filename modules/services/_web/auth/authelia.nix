@@ -3,7 +3,8 @@
 let
   inherit (config.nixos) web;
   port = 9091;
-in {
+in
+{
   options.nixos.web.auth.authelia = with lib; {
     dataPath = mkOption {
       description = "path to the authelia storage folder";

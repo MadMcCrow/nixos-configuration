@@ -1,6 +1,7 @@
 # vm.nix
 # config for building VMs, used for testing configs
-{ pkgs, nixpkgs, ... }: {
+{ pkgs, nixpkgs, ... }:
+{
   # following configuration is added only when building VM with build-vm
   virtualisation.vmVariant = {
     virtualisation = {
@@ -20,8 +21,14 @@
   # boot.extraModulePackages = with config.boot.kernelPackages; [ virtio_vmmci ];
 
   # virtualisation.qemu.options = [ "-vga std" ];
-  environment.variables = { QEMU_OPTS = "-m 4096 -smp 4 -enable-kvm"; };
+  environment.variables = {
+    QEMU_OPTS = "-m 4096 -smp 4 -enable-kvm";
+  };
 
   # gpu passthrough to the VM
-  boot.initrd.kernelModules = [ "vfio_pci" "vfio" "vfio_iommu_type1" ];
+  boot.initrd.kernelModules = [
+    "vfio_pci"
+    "vfio"
+    "vfio_iommu_type1"
+  ];
 }

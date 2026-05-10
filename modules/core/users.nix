@@ -1,32 +1,41 @@
 # users.nix
-{ config, pkgs, lib, ... }: {
-  options.nonOS.users = with lib;
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  options.nonOS.users =
+    with lib;
     mkOption {
       description = "List of users to create";
-      type = types.attrsOf (types.submodule {
-        options = {
-          fullname = mkOption {
-            description = "Full name of the user as displayed in UI";
-            type = types.str;
-            default = "";
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            fullname = mkOption {
+              description = "Full name of the user as displayed in UI";
+              type = types.str;
+              default = "";
+            };
+            shell = mkOption {
+              description = "Shell to use for the user";
+              type = with types; nullOr (addCheck str (s: pkgs ? "${s}"));
+              default = "zsh";
+            };
+            groups = mkOption {
+              description = "Groups the user belongs to";
+              type = types.listOf types.str;
+              default = [ ];
+            };
+            hashedPassword = mkOption {
+              description = "Hashed password for the user";
+              type = types.str;
+              default = "";
+            };
           };
-          shell = mkOption {
-            description = "Shell to use for the user";
-            type = with types; nullOr (addCheck str (s: pkgs ? "${s}"));
-            default = "zsh";
-          };
-          groups = mkOption {
-            description = "Groups the user belongs to";
-            type = types.listOf types.str;
-            default = [ ];
-          };
-          hashedPassword = mkOption {
-            description = "Hashed password for the user";
-            type = types.str;
-            default = "";
-          };
-        };
-      });
+        }
+      );
       default = { };
     };
 
@@ -55,6 +64,11 @@
       };
     };
     programs.zsh.enable = true;
-    environment.defaultPackages = with pkgs; [ openssl dnsutils nmap libfido2 ];
+    environment.defaultPackages = with pkgs; [
+      openssl
+      dnsutils
+      nmap
+      libfido2
+    ];
   };
 }

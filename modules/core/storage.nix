@@ -1,7 +1,13 @@
 # storage.nix
 # Define the disk layout using disko
-{ config, nonlib, disko, ... }:
-with nonlib; {
+{
+  config,
+  nonlib,
+  disko,
+  ...
+}:
+with nonlib;
+{
   imports = [ disko.nixosModules.disko ];
 }
 // nonOS __curPos config {
@@ -13,22 +19,30 @@ with nonlib; {
       type = deviceType;
     };
   };
-  nonConfig = {cfg, globals,...} : {
-    fileSystems = {
-      "/" = {
-        fsType = "tmpfs";
-        options = [ "size=4G" "mode=755" ];
+  nonConfig =
+    { cfg, globals, ... }:
+    {
+      fileSystems = {
+        "/" = {
+          fsType = "tmpfs";
+          options = [
+            "size=4G"
+            "mode=755"
+          ];
+        };
+        "${globals.persist}" = {
+          fsType = "btrfs";
+          options = [ "compress=zstd" ];
+        };
       };
-      "${globals.persist}" = {
-        fsType = "btrfs";
-        options = [ "compress=zstd" ];
-      };
-    };
-    # implementation
-    disko.devices = {
+      # implementation
+      disko.devices = {
         nodev."/" = {
           fsType = "tmpfs";
-          mountOptions = [ "size=4G" "mode=755" ];
+          mountOptions = [
+            "size=4G"
+            "mode=755"
+          ];
         };
         disk.main = {
           device = cfg.main;
@@ -45,10 +59,13 @@ with nonlib; {
                   subvolumes = {
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [ "compress=zstd" "noatime" ];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                     "${globals.persist}" = {
-                      mountpoint =  "${globals.persist}";
+                      mountpoint = "${globals.persist}";
                       mountOptions = [ "compress=zstd" ];
                     };
                     "/home" = {
@@ -62,7 +79,7 @@ with nonlib; {
           };
         };
       };
-    # Required for systemd-cryptsetup to work in initrd
-    boot.initrd.systemd.enable = true;
-  };
+      # Required for systemd-cryptsetup to work in initrd
+      boot.initrd.systemd.enable = true;
+    };
 }

@@ -1,10 +1,16 @@
 # cockpit.nix
 #   configuration for the cockpit service container
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   port = 9090;
   cfg = config.nixos.server.services.cockpit;
-in {
+in
+{
   options.nixos.web.home.cockpit = with lib; {
     enable = mkEnableOption "cockpit, the simplest dashboard";
     subDomain = mkOption {
@@ -29,16 +35,17 @@ in {
           openFirewall = true;
           inherit port;
         };
-        users.users =
-          lib.attrsets.filterAttrs (_: v: v.isNormalUser) config.users.users;
+        users.users = lib.attrsets.filterAttrs (_: v: v.isNormalUser) config.users.users;
         programs.zsh = config.programs.zsh; # some users might need it
         system.stateVersion = config.system.stateVersion;
       };
     };
 
-    nixos.server.proxy.nginx.virtualHosts = [{
-      inherit (cfg) subDomain;
-      inherit port;
-    }];
+    nixos.server.proxy.nginx.virtualHosts = [
+      {
+        inherit (cfg) subDomain;
+        inherit port;
+      }
+    ];
   };
 }

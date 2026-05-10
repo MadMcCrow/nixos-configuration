@@ -18,7 +18,8 @@ let
     http = 3002;
     https = 445;
   };
-in {
+in
+{
   # interface
   options.nixos.web.dns.adguard = with lib; {
     enable = mkEnableOption "adguard DNS" // {
@@ -53,12 +54,13 @@ in {
             # all adresses with port
             http.address = "0.0.0.0:${builtins.toString ports.http}";
             # set admin user :
-            users = [{
-              name = "admin";
-              # nix-shell -p apacheHttpd --command "htpasswd -B -C 10 -n admin"
-              password =
-                "$2y$10$ZsBnFvFVBBYHPUEm4zkd7O.jkJZF4EDWcACxkxG4EZIb6RbtUowfO";
-            }];
+            users = [
+              {
+                name = "admin";
+                # nix-shell -p apacheHttpd --command "htpasswd -B -C 10 -n admin"
+                password = "$2y$10$ZsBnFvFVBBYHPUEm4zkd7O.jkJZF4EDWcACxkxG4EZIb6RbtUowfO";
+              }
+            ];
             dns.upstream_dns = dns.upstreams;
             #filtering = {
             #  filtering_enabled = true;

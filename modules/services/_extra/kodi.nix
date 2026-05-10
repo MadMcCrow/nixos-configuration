@@ -1,14 +1,22 @@
 # kodi.nix
 # add Kodi interface
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   # username for kodi
   kodiUser = "kodi";
   # shortcut
   cfg = config.tv.kodi;
-in {
+in
+{
   # interface
-  options.tv.kodi = with lib; { enable = mkEnableOption "Kodi TV interface"; };
+  options.tv.kodi = with lib; {
+    enable = mkEnableOption "Kodi TV interface";
+  };
 
   # implementation
   config = lib.mkIf cfg.enable {

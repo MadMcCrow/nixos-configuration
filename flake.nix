@@ -37,42 +37,68 @@
     };
   };
 
-  outputs = inputs@{ flake-parts, nixpkgs, self, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } ({ lib, ... }: {
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+  outputs =
+    inputs@{
+      flake-parts,
+      nixpkgs,
+      self,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { lib, ... }:
+      {
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
 
-      flake = let
-        nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
-      in {
-        lib = lib // nonlib;
-      };
+        flake =
+          let
+            nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
+          in
+          {
+            lib = lib // nonlib;
+          };
 
-      perSystem = { config, system, pkgs, ... }: {
-        # For standardised reproducible formatting with `nix fmt`
-        formatter = pkgs.nixfmt-rfc-style;
+        perSystem =
+          {
+            config,
+            system,
+            pkgs,
+            ...
+          }:
+          {
+            # For standardised reproducible formatting with `nix fmt`
+            formatter = pkgs.nixfmt-tree;
 
-        packages = pkgs.callPackages ./packages (inputs // {
-          inherit (pkgs) lib;
-          inherit system;
-        });
+            packages = pkgs.callPackages ./packages (
+              inputs
+              // {
+                inherit (pkgs) lib;
+                inherit system;
+              }
+            );
 
-        apps = {
-               os-update = {
-                 type = "app";
-                 program = "${config.packages.os-update}/bin/os-update";
-               };
-               os-install = {
-                 type = "app";
-                 program = "${config.packages.os-install}/bin/os-install";
-               };
-             };
+            apps = {
+              os-update = {
+                type = "app";
+                program = "${config.packages.os-update}/bin/os-update";
+              };
+              os-install = {
+                type = "app";
+                program = "${config.packages.os-install}/bin/os-install";
+              };
+            };
 
-        checks = let
-          nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
-          in {
-               default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
-             };
+            checks =
+              let
+                nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
+              in
+              {
+                default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
+              };
 
-      };
-    });
+          };
+      }
+    );
 }

@@ -1,6 +1,12 @@
 # steam.nix
 # All things valve related !
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
 
   options.nonOS.games.valve.enable = lib.mkEnableOption "valve nix support";
 
@@ -8,7 +14,12 @@
   config = lib.mkIf config.nonOS.games.valve.enable {
 
     # depends on the "linux" package !
-    _nonOS.unfreePackages = [ "steam-original" "steam" "steam-run" "steamcmd" ];
+    _nonOS.unfreePackages = [
+      "steam-original"
+      "steam"
+      "steam-run"
+      "steamcmd"
+    ];
 
     # just use nixOS well built module :
     programs.steam = {
@@ -52,10 +63,12 @@
         27036 # SRCDS Rcon port
       ];
       allowedUDPPorts = [ 27015 ]; # Gameplay traffic
-      allowedUDPPortRanges = [{
-        from = 27031;
-        to = 27036;
-      }]; # remote play
+      allowedUDPPortRanges = [
+        {
+          from = 27031;
+          to = 27036;
+        }
+      ]; # remote play
     };
   };
 }

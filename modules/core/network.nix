@@ -1,5 +1,12 @@
-{ lib, config, nonlib, ... }:
-with lib; with nonlib; {
+{
+  lib,
+  config,
+  nonlib,
+  ...
+}:
+with lib;
+with nonlib;
+{
   options.nonOS = {
     hostname = mkMandatoryOption {
       name = "hostname";
