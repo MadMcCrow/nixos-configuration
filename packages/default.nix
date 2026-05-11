@@ -1,6 +1,6 @@
 # packages/default.nix
 # All packages uniquely provided by nonOS
-{ callPackage, ... }@args:
+{ callPackage, lib, ... }@args:
 with builtins;
 listToAttrs (
   map
@@ -10,7 +10,7 @@ listToAttrs (
         drv = callPackage x args;
       in
       {
-        inherit (drv) name;
+        name = lib.getName drv;
         value = drv;
       }
     )

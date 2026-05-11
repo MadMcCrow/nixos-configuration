@@ -1,100 +1,53 @@
 # Validation of the TOML configuration
 {
+  pkgs,
+  nonPkgs,
   lib,
   config,
   options,
   system,
   import-tree,
   self,
+  tomlPath,
   ...
-}@args:
-with lib;
+}:
 with builtins;
 let
-  optAttr = a: k: lib.attrByPath (lib.splitString "." k) null a;
+  # import and build our derivation for valid keys.
+  # this should be cached
+  validKeys = nonPkgs.config-keys;
 
-  optsKeys =
-    let
-      evaluated = lib.evalModules {
-        modules = [
-          (import-tree (self + "/modules"))
-          { _module.args = args; }
-        ];
-      };
+  # Load both files at eval time
+  userConfig  = fromTOML (readFile tomlPath);
+  knownSchema = fromTOML (readFile validKeys);
 
-      # Safety: Skip internal metadata that can point back to the root evaluation,
-      # which is the primary cause of stack overflows in the module system.
-      ignoredKeys = [
-        "type"
-        "default"
-        "description"
-        "example"
-        "readOnly"
-        "apply"
-        "declarations"
-        "files"
-        "visible"
-        "internal"
-        "loc"
-        "value"
-        "valueMeta"
-        "configuration"
-        "options"
-        "highestPrio"
-        "definitions"
-        "definitionsWithPrio"
-        "displayDefault"
-        "relatedPackages"
-      ];
+  known = lib.genAttrs knownSchema.known_options (k: true);
 
-      # Recursively walk the evaluated option tree.
-      # Each leaf where `_type == "option"` is a declared option;
-      # everything else is a sub-tree (attribute set of more options).
-      flattenOptions =
-        prefix: tree:
-        lib.foldlAttrs (
-          acc: name: value:
-          let
-            path = if prefix == "" then name else "${prefix}.${name}";
-            # Track visited paths to prevent infinite recursion
-            visited = acc.visited or { };
-            newVisited = visited // {
-              ${path} = true;
-            };
-          in
-          # Skip ignored keys to protect against infinite recursion
-          if elem name ignoredKeys then
-            acc
-          # Prevent circular references by checking if we've already processed this path
-          else if visited ? ${path} then
-            acc
-          # A real option node produced by lib.evalModules
-          else if value ? _type && value._type == "option" then
-            (acc // { ${path} = value; }) // { visited = newVisited; }
-          # A sub-tree — recurse
-          else if lib.isAttrs value then
-            (acc // flattenOptions path (value // { visited = newVisited; })) // { visited = newVisited; }
-          else
-            (acc // { ${path} = value; }) // { visited = newVisited; }
-        ) { visited = { }; } tree;
-    in
-    flattenOptions "" evaluated.options;
+  # Flatten nested attrset to dotted paths
+  flattenKeys = prefix: attrs:
+    lib.concatLists (
+      lib.mapAttrsToList (name: val:
+        let path = if prefix == "" then name else "${prefix}.${name}"; in
+        if lib.isAttrs val then flattenKeys path val
+        else [ path ]
+      ) attrs
+    );
 
-  # collect all mandatory options paths :
-  mandatoryPaths = filter (k: (optAttr options.nonOS "${k}.type._mandatory") == true) optsKeys;
+  userKeys = flattenKeys "" userConfig;
 
-  # collect all known top-level keys from options
-  tempTopLevelKeys = map (k: builtins.head (lib.splitString "." k)) optsKeys;
-  knownTopLevelKeys = remove (x: x == null) tempTopLevelKeys;
+  # Split into known and unknown
+  unknown = lib.filter (k: !(lib.hasAttr k known || isKnownPrefix k)) userKeys;
 
-  # collect all unknown keys - only check top-level keys
-  unknownKeys = filter (k: !(elem k knownTopLevelKeys)) (attrNames config.nonOS);
+  # Accept keys whose prefix matches a known option (for freeform attrs)
+  isKnownPrefix = key:
+    let parts = lib.splitString "." key; in
+    lib.any
+      (i: lib.hasAttr (lib.concatStringsSep "." (lib.take i parts)) known)
+      (lib.range 1 (lib.length parts));
 
-in
-{
-
+in {
   # add a warning for evey unknown key
   config.warnings = map (
     key: "NonOS Warning: Unknown key '${key}' found in your TOML configuration. It will be ignored."
-  ) unknownKeys;
+  ) unknown;
 }

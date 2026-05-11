@@ -1,6 +1,6 @@
 # create the validation schema once
 {
-  writeText,
+  writeTextFile,
   lib,
   self,
   import-tree,
@@ -8,6 +8,13 @@
 }@args:
 with lib;
 let
+  # array name
+  topName = "nonOSKeys";
+  # how to prefix keys
+  prefix = "";
+  # name = with builtins; baseNameOf (dirOf __curPos.file);
+  name = "config-keys";
+
   evaluated = lib.evalModules {
     modules = [
       (import-tree (self + "/modules"))
@@ -55,11 +62,17 @@ let
     );
 
   # Only walk options under the `os` key — avoids all NixOS internals
-  optionPaths = collectPaths "nonOS" evaluated.options.nonOS;
+  optionPaths = collectPaths prefix evaluated.options.nonOS;
 
 in
-writeText "config-keys.toml" ''
-  # Auto-generated from NixOS modules — do not edit manually
-  known_options = [
-  ${concatMapStrings (p: "  \"${p}\",\n") optionPaths}]
-''
+writeTextFile {
+  inherit name;
+  destination = "/${name}.toml";  # path inside the derivation
+  text = ''
+    # Auto-generated from NixOS modules — do not edit manually
+    # instead, call `nix build .#${name}`
+    ${topName} = [
+    ${lib.concatStringsSep ",\n" (map (p: "  \"${p}\"") optionPaths)}
+    ]
+  '';
+}
