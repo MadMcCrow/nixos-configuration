@@ -20,11 +20,12 @@ let
     let
       nonlib = import ./options.nix (args // { inherit tomlPath; });
       pkgs = import nixpkgs { inherit system; };
+
     in
     args
     // {
       inherit nonlib;
-      nonPkgs = import (self + "/packages") (
+      nonpkgs = import (self + "/packages") (
         pkgs
         // args
         // {

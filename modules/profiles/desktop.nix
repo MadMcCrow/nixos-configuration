@@ -7,6 +7,7 @@
   self,
   lib,
   nonlib,
+  nonpkgs,
   ...
 }:
 {
@@ -78,10 +79,11 @@
           papirus-icon-theme
           kdePackages.kcalc
         ]
-        ++ (map (x: callPackage (self + "/packages/plasma/${x}") { }) [
-          "vapor-theme.nix"
-          # ./packages/plasma-drawer.nix
-          # ./packages/ditto-menu.nix
+        # TODO : enable custom themes and widgets
+        ++ lib.optionals false
+        (with nonpkgs; [
+          plasma-vapor-theme
+          plasma-drawer
         ]);
     };
   };

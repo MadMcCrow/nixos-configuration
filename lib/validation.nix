@@ -1,7 +1,7 @@
 # Validation of the TOML configuration
 {
   pkgs,
-  nonPkgs,
+  nonpkgs,
   lib,
   config,
   options,
@@ -15,7 +15,7 @@ with builtins;
 let
   # import and build our derivation for valid keys.
   # this should be cached
-  validKeys = nonPkgs.config-keys;
+  validKeys = nonpkgs.config-keys;
 
   # Load both files at eval time
   userConfig  = fromTOML (readFile tomlPath);

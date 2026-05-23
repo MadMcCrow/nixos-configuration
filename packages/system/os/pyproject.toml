@@ -5,7 +5,7 @@ description = "Tools for installing and updating nonOS systems"
 authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
 # TODO : add a readme in docs !
 # readme      = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies    = []
 
 [project.scripts]

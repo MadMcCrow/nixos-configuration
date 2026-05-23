@@ -5,7 +5,7 @@
   nonlib,
   lib,
   pkgs,
-  nonPkgs,
+  nonpkgs,
   ...
 }:
 with nonlib;
@@ -50,7 +50,7 @@ nonOS __curPos config {
 
         };
       };
-      # environment.systemPackages = [nonPkgs.os  ];
+      # environment.systemPackages = [nonpkgs.os  ];
 
       system.stateVersion = "25.11";
     };

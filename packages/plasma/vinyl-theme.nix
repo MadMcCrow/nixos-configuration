@@ -7,6 +7,7 @@
   cmake,
   kdePackages,
   unstableGitUpdater,
+  ...
 }:
 stdenv.mkDerivation rec {
   pname = "vinyl-theme";

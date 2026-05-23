@@ -6,7 +6,7 @@
   ...
 }:
 stdenvNoCC.mkDerivation {
-  name = "kde-vapor-theme";
+  pname = "plasma-vapor-theme";
   version = "0.16-1";
   nativeBuildInputs = [ zstd ];
   src = fetchurl {

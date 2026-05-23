@@ -9,7 +9,7 @@
 with lib;
 let
   # array name
-  topName = "nonOSKeys";
+  topName = "validKeys";
   # how to prefix keys
   prefix = "";
   # name = with builtins; baseNameOf (dirOf __curPos.file);

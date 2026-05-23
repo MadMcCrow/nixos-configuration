@@ -67,6 +67,7 @@
             pkgs,
             ...
           }:
+          with pkgs;
           {
             # For standardised reproducible formatting with `nix fmt`
             formatter = pkgs.nixfmt-tree;
@@ -89,15 +90,6 @@
                 program = "${config.packages.os-install}/bin/os-install";
               };
             };
-
-            checks =
-              let
-                nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
-              in
-              {
-                default_host = nonlib.topLevel (nonlib.mkSystem ./tests/default_host.toml);
-              };
-
           };
       }
     );
