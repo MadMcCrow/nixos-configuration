@@ -11,7 +11,8 @@ def cli():
     cli.add_command(
         "validate",
         [(
-            description = "validate a config"
+            description = "validate a config",
+
         )]
     )
 

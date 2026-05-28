@@ -70,9 +70,9 @@
           with pkgs;
           {
             # For standardised reproducible formatting with `nix fmt`
-            formatter = pkgs.nixfmt-tree;
+            formatter = nixfmt-tree;
 
-            packages = pkgs.callPackages ./packages (
+            packages = callPackages ./packages (
               inputs
               // {
                 inherit (pkgs) lib;
