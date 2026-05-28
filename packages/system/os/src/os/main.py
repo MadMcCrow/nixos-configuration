@@ -1,21 +1,24 @@
+#!/usr/bin/env python3
+"""
+OS tool entry point
+"""
+
 from .cli import Commands
+from .validation import ValidateAction
 
 
 def cli():
-    cli = Commands("os", "NonOS utility program")
-    cli.add_argument( "--verbose",
-        "-v",
-        action="store_true",
-        help="add extra debug informations"
+    cli = Commands(
+        "os",
+        "NonOS utility program",
+        # list of actions goes here :
+        [
+            ValidateAction("validate"),
+        ],
     )
-    cli.add_command(
-        "validate",
-        [(
-            description = "validate a config",
-
-        )]
-    )
+    cli.execute()
 
 
 def main() -> None:
     # for now, just run the CLI
+    cli()
