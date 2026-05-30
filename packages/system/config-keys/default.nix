@@ -4,16 +4,14 @@
   lib,
   self,
   import-tree,
+  prefix ? "",
+  name ? "config-keys",
   ...
 }@args:
 with lib;
 let
-  # array name
-  topName = "validKeys";
-  # how to prefix keys
-  prefix = "";
-  # name = with builtins; baseNameOf (dirOf __curPos.file);
-  name = "config-keys";
+
+  destination = "/${name}.json";
 
   evaluated = lib.evalModules {
     modules = [
@@ -62,17 +60,17 @@ let
     );
 
   # Only walk options under the `os` key — avoids all NixOS internals
-  optionPaths = collectPaths prefix evaluated.options.nonOS;
+  # you can replace the '""' by a 'NonOS' for parser to have the full name
+  optionPaths = collectPaths "" evaluated.options.nonOS;
+  # filter for mandatory options
+  mandatoryPaths = filter (p: lib.attrByPath ((splitString "." p) ++ ["type" "_mandatory"]) false evaluated.options.nonOS) optionPaths;
 
 in
-writeTextFile {
+(writeTextFile {
   inherit name;
-  destination = "/${name}.toml";  # path inside the derivation
-  text = ''
-    # Auto-generated from NixOS modules — do not edit manually
-    # instead, call `nix build .#${name}`
-    ${topName} = [
-    ${lib.concatStringsSep ",\n" (map (p: "  \"${p}\"") optionPaths)}
-    ]
-  '';
-}
+  inherit destination;  # path inside the derivation
+  text = builtins.toJSON {
+    "validKeys"     = optionPaths;
+    "mandatoryKeys" = mandatoryPaths;
+  };
+}) // {inherit destination;}

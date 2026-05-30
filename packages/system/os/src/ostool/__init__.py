@@ -7,18 +7,18 @@ from .cli import Commands
 from .validation import ValidateAction
 
 
-def cli():
+def main() -> None:
+    # for now, just run the CLI
     cli = Commands(
         "os",
         "NonOS utility program",
         # list of actions goes here :
         [
-            ValidateAction("validate"),
+            ValidateAction(),
         ],
     )
     cli.execute()
 
 
-def main() -> None:
-    # for now, just run the CLI
-    cli()
+if __name__ == "__main__":
+    main()

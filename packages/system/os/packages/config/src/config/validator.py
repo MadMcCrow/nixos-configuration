@@ -3,10 +3,9 @@
 validate a nonOS config or throw errors.
 """
 
+import json
 import logging
 from typing import Any, Dict, List
-
-import toml
 
 from .config import Config
 
@@ -18,16 +17,15 @@ class Validator:
         Args:
             validationPath (str): Path to the TOML file containing validation rules.
             The TOML file should contain:
-            - nonOS_keys: List of all valid nonOS keys
+            - valid_keys: List of all valid nonOS keys
             - mandatory_keys: List of keys that are mandatory
         """
         with open(validationPath, "r") as file:
-            validation_data = toml.load(file)
+            validation_data = json.load(file)
+        self.valid_keys = validation_data.get("validKeys", [])
+        self.mandatory_keys = validation_data.get("mandatoryKeys", [])
 
-        self.nonOS_keys = validation_data.get("nonOS_keys", [])
-        self.mandatory_keys = validation_data.get("mandatory_keys", [])
-
-    def validate_config(self, config: Config) -> None:
+    def validate_config(self, config: Config | str) -> None:
         """Validate a nonOS config and raise exceptions for missing mandatory keys.
 
         Args:
@@ -39,6 +37,9 @@ class Validator:
         Logs:
             WARNING: If invalid keys are present in the config.
         """
+        # convert to an actual config if was given as a string
+        if isinstance(config, str):
+            config = Config(config)
         # Check for missing mandatory keys
         missing_mandatory_keys = []
         for key in self.mandatory_keys:
@@ -58,7 +59,7 @@ class Validator:
         config_keys = self._get_all_config_keys(config.config_data)
 
         for key in config_keys:
-            if key not in self.nonOS_keys:
+            if key not in self.valid_keys:
                 invalid_keys.append(key)
 
         if invalid_keys:

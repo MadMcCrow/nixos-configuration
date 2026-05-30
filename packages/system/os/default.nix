@@ -4,21 +4,21 @@
   lib,
   callPackage,
   callPackages,
+  symlinkJoin,
   python314,
   pyproject-nix,
   uv2nix,
   pyproject-build-systems,
+  makeWrapper,
   ...
 }@ args:
 let
   # variables
-  name = "os";
-  workspaceRoot = ./.;
-  nixdeps = [(callPackage ../config-keys args)];
   python = python314;
+  config-keys = callPackage ../config-keys args;
 
   # uv2nix glue code :
-  workspace = uv2nix.lib.workspace.loadWorkspace { inherit workspaceRoot; };
+  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
   overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
   pythonSets = (callPackage pyproject-nix.build.packages { inherit python; }).overrideScope (
     lib.composeManyExtensions [
@@ -27,9 +27,18 @@ let
     ]
   );
 
+
+  os-unwrapped = (callPackages pyproject-nix.build.util { }).mkApplication {
+    venv = pythonSets.mkVirtualEnv "ostool-env" (workspace.deps.default);
+    package = pythonSets.ostool;
+  };
   # Todo : add the aliases "os-install" == "os install" (and same for update)
-in
-(callPackages pyproject-nix.build.util { }).mkApplication {
-  venv = pythonSets.mkVirtualEnv "${name}-env" (workspace.deps.default ++ nixdeps);
-  package = pythonSets.${name};
+in symlinkJoin {
+  name = "os";
+  paths = [ os-unwrapped config-keys];
+  buildInputs = [ makeWrapper ];
+  postBuild = ''
+    wrapProgram $out/bin/os \
+      --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination}
+  '';
 }
