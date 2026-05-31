@@ -26,5 +26,4 @@ members = ["packages/*"]
 
 [tool.uv.sources]
 config = { workspace = true}
-install  = { workspace = true}
-update  = { workspace = true}
+log = { workspace = true }

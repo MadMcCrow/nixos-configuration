@@ -1,0 +1,9 @@
+[project]
+name = "log"
+version = "0.0.0"
+description = "logging for other modules"
+requires-python = ">=3.10"
+dependencies = ["rich"]
+
+[tool.uv]
+package = true

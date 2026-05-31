@@ -4,8 +4,10 @@ validate a nonOS config or throw errors.
 """
 
 import json
-import logging
-from typing import Any, Dict, List
+
+# our logging module
+from log import error as ERROR  # pyright: ignore
+from log import warning as WARNING  # pyright: ignore
 
 from .config import Config
 
@@ -25,14 +27,20 @@ class Validator:
         self.valid_keys = validation_data.get("validKeys", [])
         self.mandatory_keys = validation_data.get("mandatoryKeys", [])
 
-    def validate_config(self, config: Config | str) -> None:
+    def validate_config(
+        self, config: Config | str, raise_on_error: bool = True
+    ) -> bool:
         """Validate a nonOS config and raise exceptions for missing mandatory keys.
 
         Args:
             config (Config): The Config object to validate.
+            raise_on_error (bool) : if true error raise exceptions, otherwise just logs.
 
         Raises:
             Exception: If mandatory keys are missing from the config.
+
+        Returns:
+            True if Config is valid for installation (warnings may exist)
 
         Logs:
             WARNING: If invalid keys are present in the config.
@@ -40,51 +48,33 @@ class Validator:
         # convert to an actual config if was given as a string
         if isinstance(config, str):
             config = Config(config)
+
         # Check for missing mandatory keys
         missing_mandatory_keys = []
         for key in self.mandatory_keys:
-            if not hasattr(config, key):
-                missing_mandatory_keys.append(key)
-            elif getattr(config, key) is None:
+            if config[key] is None:
                 # Check if the key exists but has None value
                 missing_mandatory_keys.append(key)
 
-        if missing_mandatory_keys:
-            raise Exception(
-                f"Missing mandatory configuration keys: {', '.join(missing_mandatory_keys)}"
-            )
-
         # Check for invalid keys
         invalid_keys = []
-        config_keys = self._get_all_config_keys(config.config_data)
+        for path in config.get_key_paths():
+            is_valid = False
+            for key in self.valid_keys:
+                if path.startswith(key):
+                    is_valid = True
+                    break
+            if not is_valid:
+                invalid_keys.append(path)
 
-        for key in config_keys:
-            if key not in self.valid_keys:
-                invalid_keys.append(key)
-
+        # separated fromn the loop to give you all errors :
+        if missing_mandatory_keys:
+            error_message = f"Missing mandatory configuration keys: {', '.join(missing_mandatory_keys)}"
+            if raise_on_error:
+                raise Exception(error_message)
+            else:
+                ERROR(error_message)
         if invalid_keys:
-            logging.warning(
-                f"Invalid configuration keys found: {', '.join(invalid_keys)}"
-            )
-
-    def _get_all_config_keys(self, data: Dict[str, Any], prefix: str = "") -> List[str]:
-        """Recursively extract all keys from a nested dictionary structure.
-
-        Args:
-            data (Dict[str, Any]): The dictionary data to extract keys from.
-            prefix (str): The prefix for nested keys.
-
-        Returns:
-            List[str]: List of all keys found in the data structure.
-        """
-        keys = []
-        if isinstance(data, dict):
-            for key, value in data.items():
-                full_key = f"{prefix}{key}" if prefix else key
-                keys.append(full_key)
-                keys.extend(self._get_all_config_keys(value, f"{full_key}."))
-        elif isinstance(data, list):
-            for i, item in enumerate(data):
-                keys.extend(self._get_all_config_keys(item, f"{prefix}{i}."))
-
-        return keys
+            WARNING(f"Invalid configuration keys found: {', '.join(invalid_keys)}")
+        # return if no blocking errors
+        return len(missing_mandatory_keys) <= 0
