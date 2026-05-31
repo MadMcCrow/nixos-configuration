@@ -1,6 +1,7 @@
 # os/default.nix
 # build the os tool
 {
+  self,
   lib,
   callPackage,
   callPackages,
@@ -18,7 +19,7 @@ let
   config-keys = callPackage ../config-keys args;
 
   # uv2nix glue code :
-  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = ./.; };
+  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = self + "tools/os"; };
   overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
   pythonSets = (callPackage pyproject-nix.build.packages { inherit python; }).overrideScope (
     lib.composeManyExtensions [
@@ -34,11 +35,15 @@ let
   };
   # Todo : add the aliases "os-install" == "os install" (and same for update)
 in symlinkJoin {
-  name = "os";
+  name = "ostool";
   paths = [ os-unwrapped config-keys];
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
       --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination}
   '';
+  meta = {
+    mainProgram = "$out/bin/os";
+    licence = lib.licenses.mit;
+  };
 }

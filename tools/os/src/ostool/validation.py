@@ -6,11 +6,10 @@ add the config validation action to our tool
 from argparse import ArgumentParser, Namespace
 from os import getenv
 
-from config import Validator
+# config is provided by uv
+from config import Validator  # pyright: ignore [reportMissingImports]
 
 from .cli import Action
-
-# from config.validator import Validator
 
 
 class ValidateAction(Action):

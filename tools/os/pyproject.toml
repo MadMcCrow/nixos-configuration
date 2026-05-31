@@ -6,7 +6,7 @@ authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
 # TODO : add a readme in docs !
 # readme      = "README.md"
 requires-python = ">=3.14"
-dependencies    = ["config", "install", "update"]
+dependencies    = ["config", "log"]
 
 [project.scripts]
 os = "ostool:main"

@@ -6,7 +6,7 @@ validate a nonOS config or throw errors.
 import json
 
 # our logging module
-from log import error as ERROR  # pyright: ignore
+from log import error as ERROR  # pyright: ignore [reportAttributeAccessIssue]
 from log import warning as WARNING  # pyright: ignore
 
 from .config import Config
