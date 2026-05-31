@@ -4,7 +4,7 @@
 mkDrvAttrs
     [
       # nonOS updater/installer
-      ./os
+      ./os.nix
       # config validation
-      ./config-keys
+      ./config-keys.nix
     ]

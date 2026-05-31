@@ -16,10 +16,10 @@
 let
   # variables
   python = python314;
-  config-keys = callPackage ../config-keys args;
+  config-keys = callPackage ./config-keys.nix args;
 
   # uv2nix glue code :
-  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = self + "tools/os"; };
+  workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = self + "/tools/os"; };
   overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
   pythonSets = (callPackage pyproject-nix.build.packages { inherit python; }).overrideScope (
     lib.composeManyExtensions [
@@ -43,7 +43,7 @@ in symlinkJoin {
       --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination}
   '';
   meta = {
-    mainProgram = "$out/bin/os";
+    mainProgram = "os";
     licence = lib.licenses.mit;
   };
 }

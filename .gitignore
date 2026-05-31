@@ -21,3 +21,6 @@ build
 # ignore hidden files (beside git)
 .*
 !.git*
+
+# log files
+*.log

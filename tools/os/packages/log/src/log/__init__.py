@@ -1,5 +1,7 @@
-#! /usr/bin/env python3
-# slog module acting as a singleton
+#!/usr/bin/env python3
+"""
+stdout and file log handlers
+"""
 
 # import our initialization method
 from inspect import getmodulename, stack
@@ -12,7 +14,9 @@ from logging import (
     getLogger,
 )
 
-from .handler import consoleHandler, logfileHandler
+from .appname import name as appname
+from .file import LogfileHandler
+from .stdout import StdoutHandler
 
 __all__ = ["initialize", "info", "debug", "warning", "error"]
 
@@ -29,14 +33,14 @@ def initialize(logpath: str | None = None):
     getLogger().handlers = []
     getLogger().setLevel(0)
     # set stderr log :
-    chandler = consoleHandler()
+    chandler = StdoutHandler()
     chandler.setLevel(INFO)
     # log to file :
-    fhandler = logfileHandler(logpath)
+    fhandler = LogfileHandler(logpath)
     fhandler.setLevel(DEBUG)
     # set log config :
     basicConfig(handlers=[fhandler, chandler], force=True)
-    slogger = getLogger("slog")
+    slogger = getLogger(appname)
     slogger.debug("initialized log")
     __initialized = True
 
