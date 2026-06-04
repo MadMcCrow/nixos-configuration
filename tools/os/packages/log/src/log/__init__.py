@@ -59,7 +59,7 @@ def error(msg: str):
         initialize()
     mod, name = caller_id()
     logger = getLogger(mod)
-    logger.error(f"{msg.strip()} ({mod}::{name})")
+    logger.error(f"{msg.strip()}")
 
 
 def info(msg: str):
@@ -68,7 +68,7 @@ def info(msg: str):
         initialize()
     mod, name = caller_id()
     logger = getLogger(mod)
-    logger.info(f"{msg.strip()} ({mod}::{name})")
+    logger.info(f"{msg.strip()}")
 
 
 def debug(msg: str):
@@ -77,7 +77,7 @@ def debug(msg: str):
         initialize()
     mod, name = caller_id()
     logger = getLogger(mod)
-    logger.debug(f"{msg.strip()} ({mod}::{name})")
+    logger.debug(f"{msg.strip()}")
 
 
 def warning(msg: str):
@@ -86,4 +86,4 @@ def warning(msg: str):
         initialize()
     mod, name = caller_id()
     logger = getLogger(mod)
-    logger.warning(f"{msg.strip()} ({mod}::{name})")
+    logger.warning(f"{msg.strip()}")

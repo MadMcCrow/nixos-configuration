@@ -68,13 +68,16 @@ class Validator:
                 invalid_keys.append(path)
 
         # separated fromn the loop to give you all errors :
+        sep = " "  # replace by "\n\t" for multi line log
         if missing_mandatory_keys:
-            error_message = f"Missing mandatory configuration keys: {', '.join(missing_mandatory_keys)}"
+            error_message = f"Missing mandatory configuration keys in {config.path}:{sep}{f',{sep}'.join(map(lambda x: f"'{x}'", missing_mandatory_keys))}"
             if raise_on_error:
                 raise Exception(error_message)
             else:
                 ERROR(error_message)
         if invalid_keys:
-            WARNING(f"Invalid configuration keys found: {', '.join(invalid_keys)}")
+            WARNING(
+                f"Invalid configuration keys found in {config.path}:{sep}{f',{sep}'.join(map(lambda x: f"'{x}'", invalid_keys))}"
+            )
         # return if no blocking errors
         return len(missing_mandatory_keys) <= 0

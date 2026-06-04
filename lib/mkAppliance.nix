@@ -1,6 +1,6 @@
 # mkAppliance.nix
 # make a custom appliance system (ie. no nix store)
-args:
+{nixpkgs, ...}@args:
 let
   mkConfig = import ./mkConfig.nix args;
   # TODO :

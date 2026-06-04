@@ -54,10 +54,10 @@
 
         flake =
           let
-            nonlib = import ./lib (inputs // { inherit (nixpkgs) lib; });
+            nonlib = import ./lib (inputs // { inherit lib; });
           in
           {
-            lib = lib // nonlib;
+              lib = { inherit (nonlib) mkAppliance mkSystem; };
           };
 
         perSystem =
