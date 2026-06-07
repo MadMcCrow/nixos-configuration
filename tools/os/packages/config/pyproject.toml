@@ -5,5 +5,6 @@ version = "0.0.0"
 requires-python = ">=3.11"
 dependencies = [
     "toml>=0.10.2",
-    "log"
+    "log",
+    "shelltastic>=0.4.7",
 ]

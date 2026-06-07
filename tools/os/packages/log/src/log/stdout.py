@@ -28,7 +28,7 @@ class StdoutHandler(RichHandler):
     def __init__(self):
         theme = Theme(
             {
-                "log.quote": "bold white",
+                "log.quoted": "bold white",
                 "log.base": "magenta",
             },
             inherit=True,

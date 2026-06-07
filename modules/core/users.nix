@@ -3,11 +3,14 @@
   config,
   pkgs,
   lib,
+  nonlib,
   ...
 }:
-{
-  options.nonOS.users =
-    with lib;
+with lib;
+with nonlib;
+with builtins;
+nonOS __curPos config {
+  nonOptions.users =
     mkOption {
       description = "List of users to create";
       type = types.attrsOf (
@@ -33,24 +36,26 @@
               type = types.str;
               default = "";
             };
+            admin = mkDisableOption "admin user is added to wheel";
           };
         }
       );
       default = { };
     };
 
-  config = {
+  nonConfig =  { cfg, ... }  : {
     users = {
       defaultUserShell = pkgs.zsh;
-      mutableUsers = false;
-      users = builtins.mapAttrs (name: user: {
+      # enable mutable users if no user is set to admin
+      mutableUsers = !(any (x: x.admin == true) (attrValues cfg.users));
+      users = mapAttrs (name: user: {
         inherit name;
         description = user.fullname;
         shell = pkgs."${user.shell}";
         extraGroups = user.groups;
         isNormalUser = true;
         inherit (user) hashedPassword;
-      }) config.nonOS.users;
+      }) cfg.users;
     };
 
     services.openssh = {
@@ -60,7 +65,7 @@
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
         PermitRootLogin = "no";
-        AllowUsers = builtins.attrNames config.users.users;
+        AllowUsers = attrNames config.users.users;
       };
     };
     programs.zsh.enable = true;

@@ -90,6 +90,7 @@
                 program = "${config.packages.os-install}/bin/os-install";
               };
             };
+            devShells.default = import ./shell.nix { inherit pkgs; };
           };
       }
     );

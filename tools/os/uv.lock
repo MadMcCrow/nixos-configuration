@@ -63,12 +63,14 @@ source = { editable = "." }
 dependencies = [
     { name = "config" },
     { name = "log" },
+    { name = "shelltastic" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "config", virtual = "packages/config" },
     { name = "log", editable = "packages/log" },
+    { name = "shelltastic", specifier = ">=0.4.7" },
 ]
 
 [[package]]
@@ -91,6 +93,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c0/8f/0722ca900cc807c13a6a0c696dacf35430f72e0ec571c4275d2371fca3e9/rich-15.0.0.tar.gz", hash = "sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36", size = 230680 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl", hash = "sha256:33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb", size = 310654 },
+]
+
+[[package]]
+name = "shelltastic"
+version = "0.4.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/b5/9dc50bb7d379e24ee9979814ea7fb745242e8c65c481ee225b1612b8fd99/shelltastic-0.4.7.tar.gz", hash = "sha256:cbc4d92e71e50917a376d9c8f171bb724a73a923214ce53e71d7d7523bc2d034", size = 13076 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/89/f80039b600426b064f00e978bdf2f67a738330e92c13c68277e42241cd22/shelltastic-0.4.7-py3-none-any.whl", hash = "sha256:51cd6d8ec02a41ae5311a6fa736b25717575b6648f9510cf79a8f0b53d44a485", size = 19266 },
 ]
 
 [[package]]
