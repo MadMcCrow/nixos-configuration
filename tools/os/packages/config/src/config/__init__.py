@@ -3,8 +3,11 @@
 expose selectively to the other modules
 """
 
+# you can/should use a single builder object for multiple configs
+from .build import Builder as Builder
+
 # other modules might want to use Config objects
 from .config import Config as Config
 
 # you can/should use a single validator object for multiple configs
-from .validator import Validator as Validator
+from .validate import Validator as Validator

@@ -3,29 +3,20 @@
 add the config validation action to our tool
 """
 
-from argparse import ArgumentParser, Namespace
-from os import getenv
+from typing import List
 
-# config is provided by uv
 from config import Validator  # pyright: ignore [reportMissingImports]
 
-from .cli import Action
+from .action import add_action
+from .envars import EnvironmentVariable
+
+CONFIG_KEYS = EnvironmentVariable("config_keys", "OS_CONFIG_KEYS")
 
 
-class ValidateAction(Action):
-    def __init__(self) -> None:
-        super().__init__("validate", self.cli_validate, "validate a configuration")
+def validate(config_paths: List[str]):
+    validator = Validator(CONFIG_KEYS.value)
+    for configPath in config_paths:
+        validator.validate_config(configPath)
 
-    def configure(self, parser: ArgumentParser):
-        parser.add_argument("config_path", type=str, nargs="+")
-        parser.add_argument(
-            "--config-keys",
-            help="path to the config-keys file",
-            nargs="?",
-            default=getenv("OS_CONFIG_KEYS"),
-        )
 
-    def cli_validate(self, args: Namespace):
-        validator = Validator(args.config_keys)
-        for configPath in args.config_path:
-            validator.validate_config(configPath)
+add_action(validate, "validate config(s)")

@@ -5,7 +5,7 @@ build a nonOS config or throw errors.
 
 # our logging module
 from log import error as ERROR  # pyright: ignore [reportAttributeAccessIssue]
-from log import warning as WARNING  # pyright: ignore
+from log import info as INFO  # pyright: ignore
 from shelltastic import shell
 
 from .config import Config
@@ -26,4 +26,10 @@ class Builder:
         config_path = config.path if isinstance(config, Config) else config
         drv = f'(builtins.getFlake "{self._nix_flake_path}").{self._nix_derivation_func} {config_path}'
         # build
-        shell.run(f'nix build --impure --expr "{drv}"')
+        res = shell.run(["nix", "build", "--impure", f'--expr "{drv}"'])
+        # TODO : check for encoding
+        encoding = "ascii"
+        if res.stderr is not None:
+            ERROR(res.stderr.decode(encoding))
+        if res.stdout is not None:
+            INFO(res.stdout.decode(encoding))
