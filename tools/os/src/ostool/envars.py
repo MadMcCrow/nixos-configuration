@@ -3,25 +3,26 @@
 environment variables necessary for os-tool
 """
 
-from argparse import ArgumentParser, Namespace
+from argparse import SUPPRESS, ArgumentParser, Namespace
 from os import getenv
+from sys import argv
 from typing import Dict
 
 from log import warning
 
 # keep track of all environment variables defined
-__envars: Dict[str, EnvironmentVariable] = {}
+_envars: Dict[str, EnvironmentVariable] = {}
 
 
 class EnvironmentVariable:
     def __init__(self, flag: str, KEY: str):
-        if flag not in __envars.keys():
+        if flag not in _envars.keys():
             self.flag = flag
             self.key = KEY
             self.value = getenv(self.key)
-            __envars[flag] = self  # add to the unique list
+            _envars[flag] = self  # add to the unique list
         else:
-            self = __envars[flag]
+            self = _envars[flag]
 
     def parse(self, parser_namespace: Namespace):
         try:
@@ -35,17 +36,26 @@ class EnvironmentVariable:
         return str(self.value)
 
 
-def add_parser_envars(parser: ArgumentParser):
-    group = parser.add_argument_group("ENVARS")
-    for key, var in __envars.items():
-        group.add_argument(
+def get_parser_envars() -> ArgumentParser:
+    add_help = "--help" in argv
+    p = ArgumentParser(add_help=False)
+    if add_help:
+        g = p.add_argument_group("ENVARS", "override environment variables")
+    else:
+        g = p  # ignore groups
+    for key, var in _envars.items():
+        # custom help message
+        help = f"override {var.key} (current : {var.value})"
+        # add argument
+        g.add_argument(
             f"--{var.flag}",
-            help=f"override {var.key} (current : {var.value})",
+            help=help if add_help else SUPPRESS,
             default=var.value,
         )
+    return p
 
 
 def parse_envars(namespace: Namespace):
     """update values based on namespace"""
-    for key, var in __envars.items():
+    for key, var in _envars.items():
         var.parse(namespace)

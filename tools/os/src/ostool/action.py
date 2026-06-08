@@ -24,7 +24,7 @@ class _Parameter:
             }
         origin = get_origin(self.type)
         if origin is list:
-            return dashname, {
+            return self.name, {
                 "nargs": "*",
             }
         if origin in (Union, UnionType):
@@ -51,7 +51,7 @@ class _Action(object):
     @property
     def parameters(self):
         params = []
-        for k, v in self.function.__annotations__:
+        for k, v in self.function.__annotations__.items():
             params.append(_Parameter(k, v))
         return params
 
@@ -62,10 +62,13 @@ __actions: List[_Action] = []
 def add_parser_actions(parser: ArgumentParser):
     sub = parser.add_subparsers(required=True, prog=parser.prog)
     for action in __actions:
-        sub.add_parser(action.name)
+        p = sub.add_parser(
+            action.name, help=action.description, description=action.description
+        )
         for param in action.parameters:
-            parser.add_argument(param.argument_spec)
-        parser.set_defaults(func=action.function)
+            spec = param.argument_spec
+            p.add_argument(spec[0], **(spec[1]))
+        p.set_defaults(func=action.function)
 
 
 def add_action(function: Callable, description: str):

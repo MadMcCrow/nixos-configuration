@@ -9,7 +9,7 @@ from log import appname
 from log import initialize as init_log  # pyright: ignore
 
 from .action import add_parser_actions
-from .envars import add_parser_envars, parse_envars
+from .envars import get_parser_envars, parse_envars
 
 # constants
 _PNAME = appname
@@ -21,10 +21,14 @@ class App:
         init_log()
 
     def cli(self):
+        envars = get_parser_envars()
         parser = ArgumentParser(
-            prog=_PNAME, description=_DESC, suggest_on_error=True, color=True
+            prog=_PNAME,
+            description=_DESC,
+            suggest_on_error=True,
+            color=True,
+            parents=[envars],
         )
-        add_parser_envars(parser)
         add_parser_actions(parser)
         args = parser.parse_args()
         parse_envars(args)
