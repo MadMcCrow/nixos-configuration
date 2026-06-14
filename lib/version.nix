@@ -1,4 +1,4 @@
-{ _ } :
+_ :
 {
   # wip version for the OS and the tools
   # In the future, I'll figure a release

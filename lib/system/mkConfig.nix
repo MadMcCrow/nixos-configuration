@@ -18,7 +18,7 @@ let
   # append options, packages and custom lib to the specialArgs set
   specialArgs =
     let
-      nonlib = import ./options.nix (args // { inherit tomlPath; });
+      nonlib = import ../options.nix (args // { inherit tomlPath; });
       pkgs = import nixpkgs { inherit system; };
 
     in

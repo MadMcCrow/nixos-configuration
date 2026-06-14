@@ -7,12 +7,13 @@
   makeWrapper,
   nonlib,
   lix,
+  stdenvNoCC,
   ...
-}@:
+} :
 let
   deps = [ lix ];
 in
-pkgs.stdenvNoCC.mkDerivation {
+stdenvNoCC.mkDerivation {
   pname = "build-os";
   version = nonlib.version;
   src =  self + "/tools/build-os";
@@ -23,7 +24,7 @@ pkgs.stdenvNoCC.mkDerivation {
     install -Dm755 build.sh $out/bin/build.sh
     wrapProgram $out/bin/os-build \
       --prefix PATH : ${
-        pkgs.lib.makeBinPath deps
+        lib.makeBinPath deps
       }
   '';
 
