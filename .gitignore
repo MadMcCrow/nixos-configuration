@@ -7,16 +7,13 @@ result
 # ignore any python cache
 **/__pycache__/
 
-# ignore built virtual machines :
+# ignore built virtual machines
 *.qcow2
 
 # ignore hidden files (except git files)
 .*
 !.git*
 !.pre-commit*
-
-# ignore WIP stuff :
-build
 
 # ignore hidden files (beside git)
 .*

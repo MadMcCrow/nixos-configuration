@@ -42,6 +42,7 @@ let
   # Todo : add the aliases "os-install" == "os install" (and same for update)
 in symlinkJoin {
   name = "ostool";
+  version = nonlib.version;
   paths = [ os-unwrapped config-keys];
   buildInputs = [ makeWrapper ];
   postBuild = ''

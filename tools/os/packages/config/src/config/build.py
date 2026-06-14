@@ -26,7 +26,10 @@ class Builder:
         config_path = config.path if isinstance(config, Config) else config
         drv = f'(builtins.getFlake "{self._nix_flake_path}").{self._nix_derivation_func} {config_path}'
         # build
-        res = shell.run(["nix", "build", "--impure", f'--expr "{drv}"'])
+
+        arglist = ["nix", "build", "--impure", f'--expr "{drv}"']
+        INFO(f"building {drv} with \n`{' '.join(arglist)}`")
+        res = shell.run(arglist)
         # TODO : check for encoding
         encoding = "ascii"
         if res.stderr is not None:

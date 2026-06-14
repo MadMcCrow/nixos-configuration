@@ -4,7 +4,6 @@ validate a nonOS config or throw errors.
 """
 
 import json
-from curses import ERR
 
 # our logging module
 from log import error as ERROR  # pyright: ignore [reportAttributeAccessIssue]
