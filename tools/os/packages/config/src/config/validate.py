@@ -4,6 +4,7 @@ validate a nonOS config or throw errors.
 """
 
 import json
+from curses import ERR
 
 # our logging module
 from log import error as ERROR  # pyright: ignore [reportAttributeAccessIssue]
@@ -13,7 +14,7 @@ from .config import Config
 
 
 class Validator:
-    def __init__(self, validationPath: str):
+    def __init__(self, validation_path: str):
         """Initialize the Validator by loading validation rules from a TOML file.
 
         Args:
@@ -22,7 +23,7 @@ class Validator:
             - valid_keys: List of all valid nonOS keys
             - mandatory_keys: List of keys that are mandatory
         """
-        with open(validationPath, "r") as file:
+        with open(validation_path, "r") as file:
             validation_data = json.load(file)
         self.valid_keys = validation_data.get("validKeys", [])
         self.mandatory_keys = validation_data.get("mandatoryKeys", [])

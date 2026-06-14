@@ -3,6 +3,7 @@
 {
   self,
   lib,
+  nonlib,
   callPackage,
   callPackages,
   symlinkJoin,
@@ -13,6 +14,7 @@
   makeWrapper,
   ...
 }@ args:
+with builtins;
 let
   # variables
   python = python314;
@@ -28,11 +30,15 @@ let
     ]
   );
 
-
   os-unwrapped = (callPackages pyproject-nix.build.util { }).mkApplication {
     venv = pythonSets.mkVirtualEnv "ostool-env" (workspace.deps.default);
     package = pythonSets.ostool;
   };
+
+  # nonOS mkSystem name, as detected on outputs of flakes
+  # this convoluted approach means building the tool fail if the method is renamed or not present
+  nonFunc = elemAt (attrNames (lib.filterAttrs (n: v: n == "mkSystem") nonlib)) 0;
+
   # Todo : add the aliases "os-install" == "os install" (and same for update)
 in symlinkJoin {
   name = "ostool";
@@ -40,7 +46,9 @@ in symlinkJoin {
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
-      --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination}
+      --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination} \
+      --set-default OS_FLAKE_PATH ${self} \
+      --set-default OS_MAKE_SYSTEM "lib.${nonFunc}" \
   '';
   meta = {
     mainProgram = "os";

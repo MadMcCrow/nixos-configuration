@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from log import appname
 from log import initialize as init_log  # pyright: ignore
 
-from .action import add_parser_actions
+from .action import add_parser_actions, trigger_action
 from .envars import get_parser_envars, parse_envars
 
 # constants
@@ -32,4 +32,4 @@ class App:
         add_parser_actions(parser)
         args = parser.parse_args()
         parse_envars(args)
-        args.func(args)
+        trigger_action(**vars(args))

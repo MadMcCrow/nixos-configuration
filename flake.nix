@@ -46,6 +46,9 @@
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }:
+      let
+        nonlib = import ./lib (inputs // { inherit lib; });
+      in
       {
         systems = [
           "x86_64-linux"
@@ -53,9 +56,6 @@
         ];
 
         flake =
-          let
-            nonlib = import ./lib (inputs // { inherit lib; });
-          in
           {
               lib = { inherit (nonlib) mkAppliance mkSystem; };
           };
@@ -76,6 +76,7 @@
               inputs
               // {
                 inherit (pkgs) lib;
+                inherit nonlib;
                 inherit system;
               }
             );
