@@ -4,16 +4,21 @@ validate a nonOS config or throw errors.
 """
 
 import json
+from asyncio import Lock, gather
 
 # our logging module
 from log import error as ERROR  # pyright: ignore [reportAttributeAccessIssue]
-from log import warning as WARNING  # pyright: ignore
+from log import warning as WARNING
 
 from .config import Config
+from .envars import EnvironmentVariable  # pyright: ignore
+from .singleton import SingletonMeta
+
+CONFIG_KEYS = EnvironmentVariable("OS_CONFIG_KEYS")
 
 
-class Validator:
-    def __init__(self, validation_path: str):
+class Validator(metaclass=SingletonMeta):
+    def __init__(self):
         """Initialize the Validator by loading validation rules from a TOML file.
 
         Args:
@@ -22,14 +27,12 @@ class Validator:
             - valid_keys: List of all valid nonOS keys
             - mandatory_keys: List of keys that are mandatory
         """
-        with open(validation_path, "r") as file:
+        with open(str(CONFIG_KEYS), "r") as file:
             validation_data = json.load(file)
-        self.valid_keys = validation_data.get("validKeys", [])
-        self.mandatory_keys = validation_data.get("mandatoryKeys", [])
+        self.__valid_keys = validation_data.get("validKeys", [])
+        self.__mandatory_keys = validation_data.get("mandatoryKeys", [])
 
-    def validate_config(
-        self, config: Config | str, raise_on_error: bool = True
-    ) -> bool:
+    async def validate(self, config: Config | str, raise_on_error: bool = True) -> bool:
         """Validate a nonOS config and raise exceptions for missing mandatory keys.
 
         Args:
@@ -51,21 +54,29 @@ class Validator:
 
         # Check for missing mandatory keys
         missing_mandatory_keys = []
-        for key in self.mandatory_keys:
-            if config[key] is None:
-                # Check if the key exists but has None value
-                missing_mandatory_keys.append(key)
-
-        # Check for invalid keys
         invalid_keys = []
-        for path in config.get_key_paths():
+        mandatory_lock = Lock()
+        invalid_lock = Lock()
+
+        async def valid(path):
             is_valid = False
-            for key in self.valid_keys:
+            for key in self.__valid_keys:
                 if path.startswith(key):
                     is_valid = True
                     break
             if not is_valid:
-                invalid_keys.append(path)
+                async with invalid_lock:
+                    invalid_keys.append(path)
+
+        async def mandatory(key):
+            if config[key] is None:
+                async with mandatory_lock:
+                    missing_mandatory_keys.append(key)
+
+        coros = [mandatory(k) for k in self.__mandatory_keys] + [
+            valid(k) for k in config.get_key_paths()
+        ]
+        await gather(*coros)
 
         # separated fromn the loop to give you all errors :
         sep = " "  # replace by "\n\t" for multi line log

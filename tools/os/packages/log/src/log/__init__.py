@@ -18,13 +18,13 @@ from .appname import name as appname
 from .file import LogfileHandler
 from .stdout import StdoutHandler
 
-__all__ = ["initialize", "info", "debug", "warning", "error"]
+__all__ = ["init_log", "info", "debug", "warning", "error"]
 
 if "__initialized" not in dir():
     __initialized = False
 
 
-def initialize(logpath: str | None = None):
+def init_log(log_file: str | None = None, enable_console: bool = True):
     """
     Initialize slog system
     """
@@ -32,14 +32,19 @@ def initialize(logpath: str | None = None):
     # reset default logger :
     getLogger().handlers = []
     getLogger().setLevel(0)
+    handlers = []
     # set stderr log :
-    chandler = StdoutHandler()
-    chandler.setLevel(INFO)
+    if enable_console:
+        chandler = StdoutHandler()
+        chandler.setLevel(INFO)
+        handlers.append(chandler)
     # log to file :
-    fhandler = LogfileHandler(logpath)
-    fhandler.setLevel(DEBUG)
+    if log_file is not None:
+        fhandler = LogfileHandler(log_file)
+        fhandler.setLevel(DEBUG)
+        handlers.append(log_file)
     # set log config :
-    basicConfig(handlers=[fhandler, chandler], force=True)
+    basicConfig(handlers=handlers, force=True)
     slogger = getLogger(appname)
     slogger.debug("initialized log")
     __initialized = True
@@ -56,7 +61,7 @@ def caller_id() -> tuple[str, str]:
 def error(msg: str):
     """log error with automatically the correct log category"""
     if not __initialized:
-        initialize()
+        init_log()
     mod, name = caller_id()
     logger = getLogger(mod)
     logger.error(f"{msg.strip()}")
@@ -65,7 +70,7 @@ def error(msg: str):
 def info(msg: str):
     """log information message with automatically the correct log category"""
     if not __initialized:
-        initialize()
+        init_log()
     mod, name = caller_id()
     logger = getLogger(mod)
     logger.info(f"{msg.strip()}")
@@ -74,7 +79,7 @@ def info(msg: str):
 def debug(msg: str):
     """log debug message with automatically the correct log category"""
     if not __initialized:
-        initialize()
+        init_log()
     mod, name = caller_id()
     logger = getLogger(mod)
     logger.debug(f"{msg.strip()}")
@@ -83,7 +88,7 @@ def debug(msg: str):
 def warning(msg: str):
     """log warning with automatically the correct log category"""
     if not __initialized:
-        initialize()
+        init_log()
     mod, name = caller_id()
     logger = getLogger(mod)
     logger.warning(f"{msg.strip()}")

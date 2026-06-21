@@ -65,20 +65,6 @@ class _Action(object):
 __actions: List[_Action] = []
 
 
-def add_parser_actions(parser: ArgumentParser):
-    sub = parser.add_subparsers(required=True, prog=parser.prog)
-    for action in __actions:
-        p = sub.add_parser(
-            action.name, help=action.description, description=action.description
-        )
-        print(action.name)
-        for param in action.parameters:
-            argstr = ", ".join([f'{k}:"{v}"' for k, v in param.argument_kwargs.items()])
-            print(f"{param.flag} ({argstr})")
-            p.add_argument(param.flag, **(param.argument_kwargs))  # pyright: ignore
-        p.set_defaults(func=action.function)
-
-
 def add_action(
     function: Callable,
     description: str,
@@ -97,7 +83,20 @@ def add_action(
     __actions.append(_Action(function, description, parameters))
 
 
-def trigger_action(**kwargs):
+def add_parser_actions(parser: ArgumentParser):
+    """add all statically defined actions to a parser"""
+    sub = parser.add_subparsers(required=True, prog=parser.prog)
+    for action in __actions:
+        p = sub.add_parser(
+            action.name, help=action.description, description=action.description
+        )
+        for param in action.parameters:
+            p.add_argument(param.flag, **(param.argument_kwargs))  # pyright: ignore
+        p.set_defaults(func=action.function)
+
+
+def trigger_actions(**kwargs):
+    """trigger the function of an action"""
     func = kwargs["func"]
     args = {k: kwargs[k] for k in func.__annotations__.keys()}
     func(**args)

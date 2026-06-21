@@ -1,0 +1,9 @@
+[project]
+name = "gui"
+description = "GUI interface for os-tool"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = [
+    "log",
+    "config"
+]

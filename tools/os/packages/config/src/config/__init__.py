@@ -3,11 +3,16 @@
 expose selectively to the other modules
 """
 
-# you can/should use a single builder object for multiple configs
+__all__ = ["Config", "EnvironmentVariable"]
+
+# a singleton to help you build configs
 from .build import Builder as Builder
 
 # other modules might want to use Config objects
 from .config import Config as Config
 
-# you can/should use a single validator object for multiple configs
+# support for environment variable exposed for other modules
+from .envars import EnvironmentVariable as EnvironmentVariable
+
+# a singleton that will async check the validity of a config
 from .validate import Validator as Validator

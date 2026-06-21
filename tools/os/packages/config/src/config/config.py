@@ -5,10 +5,10 @@ nonOS TOML config file interactable object
 
 import json
 import logging
+from pathlib import Path
 from typing import Any, List
 
-# provided by uv
-import toml as TOML  # pyright: ignore [reportMissingModuleSource]
+import toml as TOML  # pyright: ignore; provided by uv
 
 
 class Config:
@@ -21,13 +21,14 @@ class Config:
             path (str): Path to the TOML file to load.
         """
         self.__config_data: dict = {}
-        self.path = path
+        self.path = Path(path)
         try:
             with open(path, "r") as file:
                 self.__config_data = TOML.load(file)
         except FileNotFoundError:
             logging.error(f"Invalid configuration path: {self.path}")
             raise
+        self.name = self.__config_data.get("hostname", str(self.path.stem))
 
     def __getattr__(self, key: str) -> Any:
         """Get the value associated with the given key as an attribute.
@@ -68,12 +69,9 @@ class Config:
         """get a simple string to identify this config"""
         return f"{self.__class__} at {self.path}"
 
-    def __repr__(self) -> str:
-        """get this config object as a string"""
+    def as_json(self) -> str:
         json_dict = json.dumps(self.__config_data)
         return f"<{self.__str__()}> :\n{json_dict}"
-
-    # NOTE : maybe add a method to build object from repr or from str ?
 
 
 def _get_leaf_paths(d, path=None):

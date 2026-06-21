@@ -50,6 +50,7 @@ in symlinkJoin {
       --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination} \
       --set-default OS_FLAKE_PATH ${self} \
       --set-default OS_MAKE_SYSTEM "lib.${nonFunc}" \
+      --set-default OS_BUILD_TEMP \$\{TMPDIR-/tmp\}/os-tool \
   '';
   meta = {
     mainProgram = "os";
