@@ -67,7 +67,7 @@ class Config:
 
     def __str__(self) -> str:
         """get a simple string to identify this config"""
-        return f"{self.__class__} at {self.path}"
+        return f"<host {self.name}@{self.path}>"
 
     def as_json(self) -> str:
         json_dict = json.dumps(self.__config_data)

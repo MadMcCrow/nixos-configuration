@@ -12,12 +12,21 @@ from log import warning as WARNING
 
 from .config import Config
 from .envars import EnvironmentVariable  # pyright: ignore
-from .singleton import SingletonMeta
 
 CONFIG_KEYS = EnvironmentVariable("OS_CONFIG_KEYS")
 
 
-class Validator(metaclass=SingletonMeta):
+class _SingletonMeta(type):
+    __instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls.__instances:
+            instance = super().__call__(*args, **kwargs)
+            cls.__instances[cls] = instance
+        return cls.__instances[cls]
+
+
+class Validator(metaclass=_SingletonMeta):
     def __init__(self):
         """Initialize the Validator by loading validation rules from a TOML file.
 
@@ -81,14 +90,14 @@ class Validator(metaclass=SingletonMeta):
         # separated fromn the loop to give you all errors :
         sep = " "  # replace by "\n\t" for multi line log
         if missing_mandatory_keys:
-            error_message = f"Missing mandatory configuration keys in {config.path}:{sep}{f',{sep}'.join(map(lambda x: f"'{x}'", missing_mandatory_keys))}"
+            error_message = f"Missing mandatory configuration keys in {config}:{sep}{f',{sep}'.join(map(lambda x: f"'{x}'", missing_mandatory_keys))}"
             if raise_on_error:
                 raise Exception(error_message)
             else:
                 ERROR(error_message)
         if invalid_keys:
             WARNING(
-                f"Invalid configuration keys found in {config.path}:{sep}{f',{sep}'.join(map(lambda x: f"'{x}'", invalid_keys))}"
+                f"Invalid configuration keys found in {config}:{sep}{f',{sep}'.join(map(lambda x: f"'{x}'", invalid_keys))}"
             )
         # return if no blocking errors
         return len(missing_mandatory_keys) <= 0

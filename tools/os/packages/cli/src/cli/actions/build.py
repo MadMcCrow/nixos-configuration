@@ -24,7 +24,7 @@ def build(config_paths: List[str]):
     builder = Builder()
 
     async def async_build_task(cfg: Config):
-        info(f"validating {cfg}")
+        info(f"building {cfg}")
         if await validator.validate(cfg):
             await builder.build(cfg)
         else:

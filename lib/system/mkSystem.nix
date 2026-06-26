@@ -1,9 +1,19 @@
 # mkSystem.nix
 #   base function to build an host
 # returns :
-#   the top level of the config
+#   all the meaningful outputs
 { nixpkgs, ... }@args:
 let
   mkConfig = import ./mkConfig.nix args;
+  nixosSystem = tomlPath: (nixpkgs.lib.nixosSystem (mkConfig tomlPath));
 in
-tomlPath: (nixpkgs.lib.nixosSystem (mkConfig tomlPath)).config.system.build.toplevel
+{
+  inherit (nixosSystem)
+    toplevel
+    installBootLoader
+    vm
+    vmWithBootLoader
+    netbootRamdisk
+    isoImage
+    sdImage;
+}
