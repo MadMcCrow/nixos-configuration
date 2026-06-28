@@ -7,13 +7,4 @@ let
   mkConfig = import ./mkConfig.nix args;
   nixosSystem = tomlPath: (nixpkgs.lib.nixosSystem (mkConfig tomlPath));
 in
-{
-  inherit (nixosSystem)
-    toplevel
-    installBootLoader
-    vm
-    vmWithBootLoader
-    netbootRamdisk
-    isoImage
-    sdImage;
-}
+nixosSystem;
