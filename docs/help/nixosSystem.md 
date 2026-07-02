@@ -1,0 +1,63 @@
+# nixpkgs.lib.nixosSystem
+
+the attribute names of the resulting attribute set are :
+- `_module`
+- `_type`
+- `class`
+- `config`
+- `extendModules`
+- `extraArgs`
+- `graph`
+- `lib`
+- `options`
+- `pkgs`
+- `type`
+
+
+in `config.system`, you'll find :
+- `activatable`
+- `activatableSystemBuilderCommands`
+- `activationScripts`
+- `autoUpgrade`
+- `boot`
+- `build`
+- `checks`
+- `configurationRevision`
+- `copySystemConfiguration`
+- `defaultChannel`
+- `disableInstallerTools`
+- `dryActivationScript`
+- `etc`
+- `extraDependencies`
+- `extraSystemBuilderCmds`
+- `forbiddenDependenciesRegex`
+- `forbiddenDependenciesRegexes`
+- `fsPackages`
+- `image`
+- `includeBuildDependencies`
+- `modulesTree`
+- `name`
+- `nixos`
+- `nixosgenerate`-config"
+- `nixosinit`"
+- `nixosLabel`
+- `nixosRevision`
+- `nixosVersion`
+- `nixosVersionSuffix`
+- `nssDatabases`
+- `nssHosts`
+- `nssModules`
+- `path`
+- `preSwitchChecks`
+- `preSwitchChecksScript`
+- `rebuild`
+- `replaceDependencies`
+- `replaceRuntimeDependencies`
+- `requiredKernelConfig`
+- `services`
+- `stateVersion`
+- `switch`
+- `systemBuilderArgs`
+- `systemBuilderCommands`
+- `tools`
+- `userActivationScripts`

@@ -1,5 +1,6 @@
 # minimal.toml
 # This is a config that contains all the mandatory options
 hostname = "minimal"
-[hardware.storage]
+
+[storage]
 main = "/dev/nvme0n1"

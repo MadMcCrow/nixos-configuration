@@ -2,8 +2,6 @@
 # make a custom appliance system (ie. no nix store)
 {nixpkgs, ...}@args:
 let
-  mkConfig = import ./mkConfig.nix args;
-  # TODO :
-  # A/B config, without store
+  err = throw "not implemented yet !"
 in
 systemArgs: nixpkgs.lib.nixosSystem (mkConfig systemArgs)

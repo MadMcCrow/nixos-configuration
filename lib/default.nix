@@ -1,9 +1,7 @@
-# import all our libs
-args:
-with builtins;
-foldl' (x : y: x // (import y args)) {}
-[
-  ./system
-  ./options.nix
-  ./version.nix
-]
+# lib/default.nix
+# expose our API
+# see flake.nix
+{nixpkgs, ...}  @inputs :
+{
+  buildsystem = import ./buildsystem.nix inputs;
+}

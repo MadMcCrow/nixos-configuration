@@ -39,26 +39,6 @@ with builtins;
       type = types.nullOr types.path;
     };
 
-  # mkMandatoryOption that tags the type and provides a null default to prevent early crashes
-  mkMandatoryOption =
-    {
-      name,
-      type,
-      description,
-    }:
-    with lib;
-    let
-      check =
-        x:
-        lib.asserts.assertMsg (
-          x != null
-        ) "Mandatory option `${name}` not defined in TOML configuration `${tomlPath}`";
-    in
-    mkOption {
-      inherit description;
-      type = with types; addCheck ((nullOr type) // { _mandatory = true; }) check;
-      default = null;
-    };
 
   # devices can be specified with :
   # - a path (e.g. /dev/sda1)
@@ -102,27 +82,3 @@ with builtins;
         };
       };
     };
-
-  # use it with __curPos to get an option path that matches the folder hierarchy
-  # example usage: nonOS __curPos config { nonConfig = ; nonOptions = ; }
-  nonOS =
-    cur: config:
-    {
-      nonConfig,
-      nonOptions ? { },
-      globals ? { },
-    }:
-    let
-      p = splitString "/" (dirOf cur.file);
-      globalOption = "_nonOS";
-    in
-    {
-      options = setAttrByPath p nonOptions // {
-        ${globalOption} = globals;
-      };
-      config = nonConfig {
-        cfg = attrByPath p (throw "nonOS option not found: ${join "." p}") config;
-        globals = config.${globalOption};
-      };
-    };
-}

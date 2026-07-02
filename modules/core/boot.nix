@@ -6,16 +6,9 @@
   lanzaboote,
   ...
 }:
-with lib;
-with nonlib;
 {
-  imports = [ lanzaboote.nixosModules.lanzaboote ];
-}
-// nonOS __curPos config {
   # options
-  nonOptions = {
-    secureboot.enable = mkDisableOption "secureboot";
-  };
+  options.secureboot.enable = mkDisableOption "secureboot";
 
   # implementation
   nonConfig =

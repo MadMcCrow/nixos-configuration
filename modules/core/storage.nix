@@ -14,7 +14,7 @@ with nonlib;
   globals.persist = mkNonEmptyStrOption "persisting state for nonOS" "/etc/nonOS";
   nonOptions = {
     main = mkMandatoryOption {
-      name = "hardware.storage.main";
+      name = "storage.main";
       description = "The main disk device to use (e.g., /dev/nvme0n1).";
       type = deviceType;
     };
