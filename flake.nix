@@ -2,7 +2,7 @@
   description = "NonOS is an opinionated OS based on NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -42,6 +42,7 @@
       flake-parts,
       nixpkgs,
       self,
+      import-tree,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -65,6 +66,7 @@
             config,
             system,
             pkgs,
+            lib,
             ...
           }:
           with pkgs;
@@ -72,14 +74,12 @@
             # For standardised reproducible formatting with `nix fmt`
             formatter = nixfmt-tree;
 
-            packages = callPackages ./packages (
-              inputs
-              // {
-                inherit (pkgs) lib;
-                inherit nonlib;
-                inherit system;
-              }
-            );
+            # import everything in the `packages` folder, based on its path
+            packages = builtins.listToAttrs
+              (map (p: let pkg = pkgs.callPackage p (inputs // {inherit nonlib;}) ;
+                in { name = lib.getName pkg; value = pkg;})
+              ((import-tree.withLib lib).leafs ./packages));
+
 
             apps = {
               os-update = {
@@ -91,6 +91,7 @@
                 program = "${config.packages.os-install}/bin/os-install";
               };
             };
+
             devShells.default = import ./shell.nix { inherit pkgs; };
           };
       }

@@ -10,7 +10,7 @@
 tomlPath:
 let
 tomlConfig = builtins.readfile (builtins.fromToml tomlPath);
-mkModules = import ./modules.nix;
+modules = import ./modules.nix args;
 in
 nixpkgs.lib.nixosSystem {
 system = tomlConfig.system or "x86_64-linux";

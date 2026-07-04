@@ -1,7 +1,8 @@
 # lib/default.nix
 # expose our API
 # see flake.nix
-{nixpkgs, ...}  @inputs :
+inputs@{nixpkgs, ...} :
 {
   buildsystem = import ./buildsystem.nix inputs;
-}
+
+} // (import ./version.nix inputs)

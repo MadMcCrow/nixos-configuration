@@ -1,29 +1,16 @@
 # modules.nix
-# use import-tree magic to make our custom TOML parser
+# expose boilerplate function to add to your system
 {
-  self,
   lib,
-  import-tree,
-  nixpkgs,
   ...
 } :
-let
-  # convert a nonOS module path to a nixos module
-  toNixosModule = path:
-    { config, lib, pkgs, ... }@args:
-    let
-      relative = lib.removeSuffix ".nix" (
-        lib.removePrefix (toString ./modules + "/") (toString path)
-      );
-      optPath = lib.splitString "/" relative;
-      cfg     = lib.attrByPath optPath { } config;
-      leaf    = import path;
-      result  = if builtins.isFunction leaf then leaf (args // { inherit cfg; }) else leaf;
-    in {
-      _file   = path;
-      imports = result.imports or [ ];
-      options = lib.setAttrByPath optPath result.options;
-      config  = result.config;
-    };
+{
+  # get the attribute path from __curpos
+  modpathl = curpos : throw curpos;
 
-in paths : (import-tree paths).map toNixosModule
+  # gets the config prefixed by the path
+  noncfg = config : pathl : lib.attrByPath pathl;
+
+
+  #nonopt = options : pathl : lib.se
+}

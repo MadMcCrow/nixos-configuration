@@ -4,6 +4,6 @@ _ :
   # In the future, I'll figure a release
   # and versionning schema
   version = "0.0";
-  name = "NonOS"
-  status = "dev"
+  name = "NonOS";
+  status = "dev";
 }
