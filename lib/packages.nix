@@ -1,8 +1,12 @@
-packages = map
-( p :
-let
-  pkg = pkgs.callPackage p inputs;
-  dirname = lib.path.removePrefix path (builtins.dirOf p);
-in
-lib.setAttrByPath ((lib.path.subpath.components dirname) ++ [(lib.getName pkg)]) pkg )
-((import-tree.withLib lib).leafs ./packages);
+# packages.nix
+# helper to get the list of packages in flake
+{
+  lib,
+  import-tree,
+  self,
+  ...
+} :
+builtins.listToAttrs
+  (map (p: let pkg = pkgs.callPackage p (inputs // {inherit nonlib;}) ;
+    in { name = lib.getName pkg; value = pkg;})
+  ((import-tree.withLib lib).leafs (self + ./packages)));

@@ -75,10 +75,7 @@
             formatter = nixfmt-tree;
 
             # import everything in the `packages` folder, based on its path
-            packages = builtins.listToAttrs
-              (map (p: let pkg = pkgs.callPackage p (inputs // {inherit nonlib;}) ;
-                in { name = lib.getName pkg; value = pkg;})
-              ((import-tree.withLib lib).leafs ./packages));
+            packages = import ./lib/packages.nix inputs;
 
 
             apps = {

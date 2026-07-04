@@ -6,14 +6,17 @@
   lanzaboote,
   ...
 }:
+let
+  os = nonOS {__curpos, config, options};
+in
 {
   # options
-  options.secureboot.enable = mkDisableOption "secureboot";
+  options = os.options {
+    secureboot.enable = mkDisableOption "secureboot";
+  };
 
   # implementation
-  nonConfig =
-    { cfg, globals, ... }:
-    {
+  config = {
       boot = {
         initrd.systemd = {
           enable = true;

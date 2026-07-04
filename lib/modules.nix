@@ -4,13 +4,16 @@
   lib,
   ...
 } :
+let
+in
 {
-  # get the attribute path from __curpos
-  modpathl = curpos : throw curpos;
-
-  # gets the config prefixed by the path
-  noncfg = config : pathl : lib.attrByPath pathl;
-
-
-  #nonopt = options : pathl : lib.se
+  nonOS = {curpos, config , options ? {} } :
+  let
+  pathlist = throw curpos;
+  in {
+    # cfg getter
+    cfg = lib.attrByPath pathlist config;
+    # set options
+    options = optAttr : lib.sedAttrByPath pathlist optAttr;
+  };
 }

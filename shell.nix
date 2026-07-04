@@ -2,7 +2,7 @@
 with builtins;
 let
   # local llm with llama-cpp
-  autocomplete = pkgs.callPackage ./packages/ai/llama-cpp.nix {};
+  autocomplete = pkgs.callPackage ./packages/ai/ollama.nix {};
 in
 pkgs.mkShellNoCC {
   packages = (with pkgs; [
