@@ -2,7 +2,7 @@
 {
   stdenv,
   fetchFromGitHub,
-  libsForQt5,
+  kdePackages,
   zip,
   ...
 }:
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
     hash = "";
   };
   nativeBuildInputs = [
-    libsForQt5.plasma-framework
+    kdePackages.plasma-desktop
     zip
   ];
   # TODO : fix this

@@ -1,9 +1,10 @@
-_ :
+# wip version for the OS and the tools
+# In the future, I'll figure a release
+# and versionning schema
+{lib, ...} :
 {
-  # wip version for the OS and the tools
-  # In the future, I'll figure a release
-  # and versionning schema
   version = "0.0";
-  name = "NonOS";
+  name = "nonOS";
   status = "dev";
+  licence = lib.licenses.mit;
 }

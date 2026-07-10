@@ -1,13 +1,18 @@
+# hardware.nix
+# CPU and GPU support
+# TODO : Replace by an autodetect
 {
   lib,
   config,
-  nonlib,
+  nonOS,
   ...
 }:
 with lib;
-with nonlib;
-nonOS __curPos config {
-  nonOptions = {
+let
+os = nonOS __curPos {inherit config;};
+in
+{
+  options = os.options {
     cpu = mkOption {
       type = types.enum [
         "amd"
@@ -29,14 +34,12 @@ nonOS __curPos config {
     };
   };
 
-  nonConfig =
-    { cfg, ... }:
-    {
+  config = {
       hardware.cpu = {
-        amd.updateMicrocode = cfg.cpu == "amd";
-        intel.updateMicrocode = cfg.cpu == "intel";
+        amd.updateMicrocode = os.cfg.cpu == "amd";
+        intel.updateMicrocode = os.cfg.cpu == "intel";
       };
-      services.xserver.videoDrivers = mkIf (cfg.gpu != "other") [
+      services.xserver.videoDrivers = mkIf (os.cfg.gpu != "other") [
         cfg.gpu
       ];
     };

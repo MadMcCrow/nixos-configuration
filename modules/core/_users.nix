@@ -4,13 +4,16 @@
   pkgs,
   lib,
   nonlib,
+  nonOS,
   ...
 }:
 with lib;
 with nonlib;
-with builtins;
-nonOS __curPos config {
-  nonOptions.users =
+let
+  os = nonOS __curPos {inherit config;};
+in
+{
+  options = os.options (
     mkOption {
       description = "List of users to create";
       type = types.attrsOf (
@@ -41,13 +44,13 @@ nonOS __curPos config {
         }
       );
       default = { };
-    };
+    });
 
-  nonConfig =  { cfg, ... }  : {
+  config = {
     users = {
       defaultUserShell = pkgs.zsh;
       # enable mutable users if no user is set to admin
-      mutableUsers = !(any (x: x.admin == true) (attrValues cfg.users));
+      mutableUsers = !(any (x: x.admin == true) (attrValues os.cfg.users));
       users = mapAttrs (name: user: {
         inherit name;
         description = user.fullname;
@@ -55,7 +58,7 @@ nonOS __curPos config {
         extraGroups = user.groups;
         isNormalUser = true;
         inherit (user) hashedPassword;
-      }) cfg.users;
+      })  os.cfg.users;
     };
 
     services.openssh = {

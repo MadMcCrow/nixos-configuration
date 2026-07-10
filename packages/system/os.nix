@@ -3,7 +3,6 @@
 {
   self,
   lib,
-  nonlib,
   callPackage,
   callPackages,
   symlinkJoin,
@@ -35,14 +34,13 @@ let
     package = pythonSets.ostool;
   };
 
-  # nonOS mkSystem name, as detected on outputs of flakes
-  # this convoluted approach means building the tool fail if the method is renamed or not present
-  nonFunc = elemAt (attrNames (lib.filterAttrs (n: v: n == "mkSystem") nonlib)) 0;
+  # adding some "checks" to verify this function exist would be greate
+  nonFunc = "mkSystem";
 
   # Todo : add the aliases "os-install" == "os install" (and same for update)
 in symlinkJoin {
   name = "ostool";
-  version = nonlib.version;
+  version = "0.0"; #nonlib.version;
   paths = [ os-unwrapped config-keys];
   buildInputs = [ makeWrapper ];
   postBuild = ''

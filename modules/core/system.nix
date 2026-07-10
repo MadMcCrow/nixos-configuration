@@ -1,27 +1,26 @@
 # system.nix
 # define the update process in NonOS
-{
+inputs @ {
   config,
-  nonlib,
+  nonOS,
   lib,
   pkgs,
+  nonlib,
   nonpkgs,
   ...
 }:
 let
-  os = nonOS {__curpos, config, options};
-
+  os = nonOS __curPos inputs;
   flake_url = "https://github.com/MadMcCrow/nonOS";
 in
 {
-  options =
+  options = with nonlib; with lib;
   # global option to allow unfree packages
   { _unfreePackages = mkStrListOption "accepted unfree packages" [ ];}
   //
   # our nonOS exposed options
-  os.options {
-    hostname = mkMandatoryOption {
-      name = "hostname";
+  (os.options {
+    hostname = mkOption {
       description = "The system hostname.";
       type = types.str;
     };
@@ -35,7 +34,7 @@ in
       default = "x86_64-linux";
       description = "The target system architecture.";
     };
-  };
+  });
 
   config = {
 
@@ -79,8 +78,10 @@ in
 
     environment = {
       etc."os-release".text = ''
-      NAME="nonOS"
-      PRETTY_NAME="nonOS"
+      NAME="${os.name}"
+      PRETTY_NAME="${os.name}"
+      VERSION_ID="${os.version}"
+      VERSION="${os.version}-${os.status}"
       ID=nixos
       BUILD_ID="rolling"
       ANSI_COLOR="1;32"
@@ -95,7 +96,7 @@ in
 
     system = {
       stateVersion = "26.05";
-      nixos.label = "nonOS";
+      nixos.label = "${os.name}";
     };
   };
 }

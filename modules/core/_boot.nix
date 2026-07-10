@@ -1,13 +1,15 @@
 {
   config,
   lib,
-  nonlib,
+  nonOS,
   pkgs,
   lanzaboote,
   ...
 }:
+with lib;
+with nonlib;
 let
-  os = nonOS {__curpos, config, options};
+os = nonOS __curPos {inherit config;};
 in
 {
   # options
@@ -28,8 +30,8 @@ in
           grub.enable = mkForce false;
         };
         lanzaboote = {
-          inherit (cfg.secureboot) enable;
-          pkiBundle = "${globals.persist}/secureboot";
+          inherit (os.cfg.secureboot) enable;
+          pkiBundle = "${config._persist}/secureboot";
           configurationLimit = 5;
         };
         plymouth.enable = true;

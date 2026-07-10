@@ -47,19 +47,15 @@
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }:
-      let
-        nonlib = import ./lib (inputs // { inherit lib; });
-      in
       {
         systems = [
           "x86_64-linux"
           "aarch64-linux"
         ];
 
-        flake =
-          {
-              lib = { inherit (nonlib) mkAppliance mkSystem; };
-          };
+        flake.lib = {
+          mkSystem = toml : with (import ./lib/system.nix (inputs // {inherit lib;})); (mkNixosSystem toml);
+        };
 
         perSystem =
           {
@@ -75,21 +71,27 @@
             formatter = nixfmt-tree;
 
             # import everything in the `packages` folder, based on its path
-            packages = import ./lib/packages.nix inputs;
-
+            packages = import ./lib/packages.nix (inputs // { inherit pkgs lib;});
 
             apps = {
-              os-update = {
-                type = "app";
-                program = "${config.packages.os-update}/bin/os-update";
-              };
-              os-install = {
-                type = "app";
-                program = "${config.packages.os-install}/bin/os-install";
-              };
+              # TODO !
+              #os-update = {
+              #  type = "app";
+              #  program = "${config.packages.os-update}/bin/os-update";
+              #};
+              #os-install = {
+              #  type = "app";
+              #  program = "${config.packages.os-install}/bin/os-install";
+              #};
             };
 
+            nixosConfigurations = {  };
+
+
             devShells.default = import ./shell.nix { inherit pkgs; };
+
+            checks = import ./tests (inputs //{ inherit pkgs lib;});
+
           };
       }
     );

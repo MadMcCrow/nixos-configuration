@@ -2,26 +2,32 @@
 # Define the disk layout using disko
 {
   config,
-  nonlib,
   disko,
+  nonOS,
+  nonlib,
   ...
 }:
 with nonlib;
+let
+os = nonOS __curPos {inherit config;};
+in
 {
+  # import disko
   imports = [ disko.nixosModules.disko ];
-}
-// nonOS __curPos config {
-  globals.persist = mkNonEmptyStrOption "persisting state for nonOS" "/etc/nonOS";
-  nonOptions = {
+
+  options = {
+    # global options to avoid hardcoded text
+     _persist = mkNonEmptyStrOption "persisting state for ${os.name}" "/etc/${os.name}";
+  } //
+  os.options {
     main = mkMandatoryOption {
-      name = "storage.main";
-      description = "The main disk device to use (e.g., /dev/nvme0n1).";
-      type = deviceType;
-    };
+        name = "${os.path}.main";
+        description = "The main disk device to use (e.g., /dev/nvme0n1).";
+        type = deviceType;
+      };
   };
-  nonConfig =
-    { cfg, globals, ... }:
-    {
+
+  config = {
       fileSystems = {
         "/" = {
           fsType = "tmpfs";
@@ -30,7 +36,7 @@ with nonlib;
             "mode=755"
           ];
         };
-        "${globals.persist}" = {
+        "${config._persist}" = {
           fsType = "btrfs";
           options = [ "compress=zstd" ];
         };
@@ -45,7 +51,7 @@ with nonlib;
           ];
         };
         disk.main = {
-          device = cfg.main;
+          device = os.cfg.main;
           type = "disk";
           content = {
             type = "gpt";
@@ -64,8 +70,8 @@ with nonlib;
                         "noatime"
                       ];
                     };
-                    "${globals.persist}" = {
-                      mountpoint = "${globals.persist}";
+                    "${config._persist}" = {
+                      mountpoint = "${config._persist}";
                       mountOptions = [ "compress=zstd" ];
                     };
                     "/home" = {

@@ -1,21 +1,21 @@
 # os-build.nix
 # simple build script application
 # use "OS" instead
-{
+inputs@{
   self,
   lib,
   makeWrapper,
-  nonlib,
   lix,
   stdenvNoCC,
   ...
 } :
 let
   deps = [ lix ];
+  nonlib = import (self + "/lib/version.nix") inputs;
 in
 stdenvNoCC.mkDerivation {
-  pname = "build-os";
-  version = nonlib.version;
+  pname = "os-build";
+  inherit (nonlib) version;
   src =  self + "/tools/build-os";
 
   nativeBuildInputs = [ makeWrapper ];
@@ -30,6 +30,6 @@ stdenvNoCC.mkDerivation {
 
   meta = {
     mainProgram = "os-build";
-    licence = lib.licenses.mit;
+    inherit (nonlib) licence;
   };
 }

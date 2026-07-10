@@ -13,16 +13,8 @@ let
 
   destination = "/${name}.json";
 
-  evaluated = lib.evalModules {
-    modules = [
-      (import-tree (self + "/modules"))
-      { _module.check = false; }
-    ];
-    specialArgs = args // {
-      inherit pkgs lib;
-      nonlib = import (self + "/lib") args;
-    };
-  };
+  # eval empty config
+  evaluated = lib.evalModules ((import (self + "/lib/system.nix") args).sysArgs { _module.check = false; });
 
   # Keys that indicate we've hit a mkOption leaf — stop recursing
   invalidKeys = [

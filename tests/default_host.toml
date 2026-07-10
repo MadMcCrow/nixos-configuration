@@ -17,7 +17,7 @@ cpu = "amd"
 gpu = "amd"
 
 # if you remove this you should get an error
-[hardware.storage]
+[storage]
 main = "/dev/nvme0n1"
 
 # this should trigger a warning

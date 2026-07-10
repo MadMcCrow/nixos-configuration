@@ -7,34 +7,65 @@ inputs@ {
   nixpkgs,
   ...
 } :
-{
-  # create a nixos system
-  mkNixosSystem = tomlPath :
-  let
-    tomlConfig = builtins.readfile (builtins.fromToml tomlPath);
-    modules = import ./modules.nix inputs;
-  in
-    nixpkgs.lib.nixosSystem {
-    # pass our helpers,
-    specialArgs = rec {
-        nonlib = lib.foldl' (acc: new: acc // import new inputs) {} [
-        ./options.nix
-        ./modules.nix
-        ./version.nix
-      ];
-      nonpkgs = import ./packages.nix inputs;
-      # shortcut
-      inherit (nonlib) nonOS;
-    };
-    system = tomlConfig.system or "x86_64-linux";
-    modules = [
-      (import-tree (self + "/modules"))
-      {
-        config.nonOS = tomlConfig;
-      }
-    ];
-    });
+let
+  # selective imports
+  nonlib  = import ./options.nix inputs;
+  version = import ./version.nix inputs;
+  nonpkgs = import ./packages.nix inputs;
 
+  # os name
+  inherit (version) name;
+
+  # helper function for modules;
+  nonOS = curpos : args@{config, ...} :
+  with lib;
+  let
+    dir = traceVal (builtins.toString self);
+    relpath = traceVal (removePrefix dir curpos.file);
+    pathlist = splitString "/" (removeSuffix ".nix" relpath );
+  in {
+    # cfg getter
+    cfg = lib.attrByPath pathlist config config.${name};
+    # set options
+    options = optAttr : lib.setAttrByPath ([name] ++ pathlist) optAttr;
+    # the dotted path
+    path = lib.string.join "." pathlist;
+    # get the os status
+    inherit (version) version name status;
+  };
+
+  importModule = modpath : (import-tree (self + "/modules"));
+
+in
+rec {
+  # parameters for a nixpkgs.lib.nixosSystem call;
+  # This allows making sure that we can call
+  # lib.evalModules with the same attributes
+  sysArgs = config : {
+      system = config.system or "x86_64-linux";
+       specialArgs = {
+       inherit nonlib nonOS nonpkgs;
+     };
+    modules = [
+
+      {
+        # allow everything to handle errors and warnings ourselves.
+        options.${name} = lib.mkOption {
+          type = lib.types.submodule {
+            freeformType = lib.types.attrsOf lib.types.anything;
+          };
+          description = "${name} configuration root (populated from TOML)";
+        };
+      }
+      config
+    ];
+    };
+
+# make a traditional nixOS
+mkNixosSystem = tomlPath :
+nixpkgs.lib.nixosSystem (sysArgs {
+    ${name} = builtins.fromTOML (builtins.readFile tomlPath);
+  });
 
 # make a custom appliance system (ie. no nix store)
 mkAppliance =  {nixpkgs, ...} :
@@ -53,6 +84,6 @@ joinSystemOutputs = system :
       mkdir -p $out
       ${builtins.concatStringsSep "\n"
         (map (drv: "ln -s ${drv} $out/${builtins.getName drv}") outputs)}
-    ''
+    '';
 
 }
