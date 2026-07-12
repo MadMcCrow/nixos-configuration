@@ -9,6 +9,7 @@ inputs@ {
 } :
 let
   # selective imports
+
   version = import ./version.nix inputs;
   # os name
   inherit (version) name;

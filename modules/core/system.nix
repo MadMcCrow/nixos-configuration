@@ -9,39 +9,84 @@ inputs @ {
   nonpkgs,
   ...
 }:
+with lib;
 let
   os = nonOS __curPos inputs;
   flake_url = "https://github.com/MadMcCrow/nonOS";
 in
 {
-  options = with nonlib; with lib;
-  # global option to allow unfree packages
-  { _unfreePackages = mkStrListOption "accepted unfree packages" [ ];}
-  //
-  # our nonOS exposed options
-  (os.options {
-    hostname = mkOption {
-      description = "The system hostname.";
-      type = types.str;
-    };
-    timezone = mkOption {
-      type = types.str;
-      default = "Europe/Paris";
-      description = "The system timezone.";
-    };
-    system = mkOption {
-      type = types.str;
-      default = "x86_64-linux";
-      description = "The target system architecture.";
-    };
-  });
+  options = os.options {
+    # global option to allow unfree packages
+    _unfreePackages = mkStrListOption "accepted unfree packages" [ ];}
+    # enable secureboot
+    secureboot.enable = mkDisableOption "secureboot";
 
-  config = {
+    gpu = mkOptioion
+  };
 
-    networking.hostName = os.cfg.hostname;
-    time.timeZone = os.cfg.timezone;
+  config = mkIf os.enabled {
 
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
+
+    boot = {
+      initrd.systemd = {
+        enable = true;
+        fido2.enable = true;
+      };
+      tmp.cleanOnBoot = true;
+      loader = {
+        systemd-boot.enable = mkForce (!os.cfg.secureboot.enable);
+        grub.enable = mkForce false;
+      };
+      lanzaboote = {
+        inherit (os.cfg.secureboot) enable;
+        pkiBundle = "${config._persist}/secureboot";
+        configurationLimit = 5;
+      };
+      plymouth.enable = true;
+      consoleLogLevel = 3;
+    };
+
+    environment = {
+      etc."os-release".text = ''
+      NAME="${os.name}"
+      PRETTY_NAME="${os.name}"
+      VERSION_ID="${os.version}"
+      VERSION="${os.version}-${os.status}"
+      ID=nixos
+      BUILD_ID="rolling"
+      ANSI_COLOR="1;32"
+      HOME_URL="${flake_url}"
+      SUPPORT_URL="${flake_url}"
+      BUG_REPORT_URL="${flake_url}/issues"
+    '';
+
+      systemPackages = [nonpkgs.os];
+      defaultPackages = with pkgs; [
+        openssl
+        dnsutils
+        sbctl
+        tpm-luks
+        tpm2-tss
+        libfido2
+        nmap
+      ];
+    };
+
+    hardware = {
+      cpu = {
+        amd.updateMicrocode = true;
+        intel.updateMicrocode = true;
+      };
+      graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
+    };
+
+    # TODO !
+    networking = {
+      # hostname is a mandatory key.
+    };
 
     nix = {
       nixPath = [
@@ -76,27 +121,42 @@ in
       };
     };
 
-    environment = {
-      etc."os-release".text = ''
-      NAME="${os.name}"
-      PRETTY_NAME="${os.name}"
-      VERSION_ID="${os.version}"
-      VERSION="${os.version}-${os.status}"
-      ID=nixos
-      BUILD_ID="rolling"
-      ANSI_COLOR="1;32"
-      HOME_URL="${flake_url}"
-      SUPPORT_URL="${flake_url}"
-      BUG_REPORT_URL="${flake_url}/issues"
-    '';
 
-      systemPackages = [nonpkgs.os];
+    nixpkgs = {
+      # help other modules
+      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
     };
 
+    programs = {
+      zsh.enable = true;
+    };
+
+    services = {
+      openssh = mkDefault {
+      enable = true;
+      ports = [ 8323 ];
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "no";
+        AllowUsers = attrNames config.users.users;
+      };
+    };
 
     system = {
-      stateVersion = "26.05";
+      stateVersion = mkDefault "26.05";
       nixos.label = "${os.name}";
+    };
+
+    time = mkDefault {
+       # we default to Paris
+      timeZone = "Europe/Paris";
+    };
+
+    users = {
+      defaultUserShell =  mkdefault pkgs.zsh;
+      # enable mutable users if no user is set to admin
+      mutableUsers = !(any (x: x.admin == true) (attrValues config.users.users));
     };
   };
 }

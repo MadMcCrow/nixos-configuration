@@ -8,6 +8,7 @@
   ...
 }:
 with nonlib;
+with lib;
 let
 os = nonOS __curPos {inherit config;};
 in
@@ -15,19 +16,17 @@ in
   # import disko
   imports = [ disko.nixosModules.disko ];
 
-  options = {
-    # global options to avoid hardcoded text
-     _persist = mkNonEmptyStrOption "persisting state for ${os.name}" "/etc/${os.name}";
-  } //
-  os.options {
-    main = mkMandatoryOption {
+  options = os.options {
+    main = mkOption {
         name = "${os.path}.main";
         description = "The main disk device to use (e.g., /dev/nvme0n1).";
         type = deviceType;
       };
+    # global options to avoid hardcoded text
+     _persist = mkNonEmptyStrOption "persisting state for ${os.name}" "/etc/${os.name}";
   };
 
-  config = {
+  config = mkIf os.cfg.enable {
       fileSystems = {
         "/" = {
           fsType = "tmpfs";
@@ -36,7 +35,7 @@ in
             "mode=755"
           ];
         };
-        "${config._persist}" = {
+        "${os.cfg._persist}" = {
           fsType = "btrfs";
           options = [ "compress=zstd" ];
         };
@@ -70,8 +69,8 @@ in
                         "noatime"
                       ];
                     };
-                    "${config._persist}" = {
-                      mountpoint = "${config._persist}";
+                    "${os.cfg._persist}" = {
+                      mountpoint = "${os.cfg._persist}";
                       mountOptions = [ "compress=zstd" ];
                     };
                     "/home" = {
