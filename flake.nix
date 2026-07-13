@@ -54,7 +54,7 @@
         ];
 
         flake.lib = {
-          mkSystem = toml : with (import ./lib/system.nix (inputs // {inherit lib;})); (mkNixosSystem toml);
+          mkSystem =  : with (import ./lib/systems.nix (inputs // {inherit lib;})); (mkNixosSystem toml);
         };
 
         perSystem =
