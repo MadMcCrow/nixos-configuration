@@ -87,6 +87,10 @@
 
             nixosConfigurations = {  };
 
+            nixosModules = {
+              default = (import ./lib/modules.nix inputs).default;
+            };
+
 
             devShells.default = import ./shell.nix { inherit pkgs; };
 

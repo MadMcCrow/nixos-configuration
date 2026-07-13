@@ -5,7 +5,6 @@ inputs@ {
   lib,
   import-tree,
   nixpkgs,
-  config,
   ...
 } :
 with lib;
@@ -67,7 +66,8 @@ ${name} = curpos : args@{config, ...} :
    in config.${name}.enable && isEnabledAncestor pathlist
  };
 in
-{
-  modules =  (import-tree moduleRoot);
-  specialArgs = {inherit ${name};}
+rec {
+  modules = (import-tree moduleRoot);
+  default = _ : { imports = modules; };
+  specialArgs = {inherit ${name};};
 }
