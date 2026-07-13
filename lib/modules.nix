@@ -7,36 +7,40 @@ inputs@ {
   nixpkgs,
   ...
 } :
+with lib;
 let
   # selective imports
-
   version = import ./version.nix inputs;
   # os name
   inherit (version) name;
 
+  # where the module are stored
+  moduleRoot = (self + "/modules");
+
   # helper function/attrset for modules;
-  ${name} = curpos : args@{enabled ? true, config, ...} :
-   with lib;
+  ${name} = curpos : args@{config, ...} :
    let
      # get list out of curpos
-     dir = traceVal (builtins.toString self);
-     pathlist = splitString "/" (removeSuffix ".nix" (removePrefix dir curpos.file) );
+     nixfile = removeSuffix "/default.nix" (removePrefix moduleRoot curpos.file);
+     pathlist = splitString "/" (removeSuffix ".nix" nixfile);
      path = lib.string.join "." pathlist;
+
      # filter globals out of attrs
-     filterGlobals = enabled: attrs: filterAttrs (n: v: if enabled then hasPrefix "_" n else !hasPrefix "_" n) attrs;
+     filterGlobals = attrs: neg: filterAttrs (n: _: (hasPrefix "_" n) != neg) attrs;
+
    in {
      # cfg getter gets globals and specific
      cfg = (filterGlobals true config.${name})
-     // (lib.attrByPath pathlist {} config.${name};
+     // (attrByPath pathlist {} config.${name});
      # set options
      options = optAttr: {
        ${name} =
          # add globals
         (filterGlobals true optAttr)
         # and then we add all the other attribute by their path prefixed
-        // (lib.setAttrByPath pathlist
+        // (setAttrByPath pathlist
           (filterGlobals false optAttr // {
-          enable = mkEnableOption "enable ${path}" // {default = enabled; }
+          enable = mkEnableOption "${name}.${path}" // {default = enabled; }
         }));
      };
      # get the os status
@@ -47,18 +51,31 @@ let
      lib  = import ./options.nix inputs;
      # added packages
      pkgs = import ./packages.nix inputs;
+     # quick getter
+     enabled = attrByPath pathlist false ;
+
+     # test if this module is enabled
+     enabled = let
+      isEnabledAncestor = p:
+      let
+       node = lib.attrByPath (p ++ ["enable"]) null config.${name};
+      in
+        if node == false then false
+        else if p == [] then true
+        else isEnabledAncestor (lib.init p);
+     in config.${name}.enable && isEnabledAncestor pathlist
    };
 
 in
 {
   # the final nixos system.
   mkNixosSystem = config : nixpkgs.lib.nixosSystem {
-      system = config.system or "x86_64-linux";
+      system = config.system;
        specialArgs = {
        inherit ${name};
      };
     modules = [
-      (import-tree (self + "/modules"))
+      (import-tree moduleRoot)
       config
     ];
     };

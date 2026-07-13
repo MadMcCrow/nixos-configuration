@@ -13,9 +13,18 @@ let
 in
 {
   options = os.options {
-    # global option to allow unfree packages
-    _unfreePackages = mkStrListOption "accepted unfree packages" [ ];
-    dir = mkPathOption "configuration directory" "/etc/nonOS";
+    # global option to allow unfree packages in other modules
+    _unfreePackages = mkOption {
+      description = "accepted unfree packages";
+      default = [];
+      type = with types; listOf nonEmptyStr;
+    };
+    # allow moving the configuration folder
+    _dir = mkOption {
+      description = "configuration directory";
+      default = "/etc/${os.name}";
+      type = types.path;
+    };
   };
 
   config = mkIf os.enabled {
@@ -57,5 +66,11 @@ in
       # help other modules define allowed unfree packages
       config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
       pkgs = import (import ${os.cfg.dir}/npins).nixpkgs {};
+    };
+
+    system = {
+      # we provide nonOS-rebuild, but still need the activation script
+      activatable = true;
+      autoUpgrade.enable = false; # we do it ourselves
     };
 }

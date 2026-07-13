@@ -5,34 +5,29 @@ inputs @ {
   nonOS,
   lib,
   pkgs,
-  nonlib,
-  nonpkgs,
   ...
 }:
 with lib;
 let
   os = nonOS __curPos inputs;
-  flake_url = "https://github.com/MadMcCrow/nonOS";
 in
 {
   options = os.options {
-    # global option to allow unfree packages
-    _unfreePackages = mkStrListOption "accepted unfree packages" [ ];}
-    # enable secureboot
-    secureboot.enable = mkDisableOption "secureboot";
-
-    gpu = mkOptioion
+    # secureboot
+    secureboot.enable = mkEnableOption "secureboot" // {default = true;};
+    # yubikey,onlykey, etc..
+    fido.enable = mkEnableOption """
+      FIDO2 : https://nixos.org/manual/nixos/stable/#sec-luks-file-systems-fido2
+    """;
   };
 
   config = mkIf os.enabled {
-
-
     boot = {
       initrd.systemd = {
-        enable = true;
-        fido2.enable = true;
+        enable = mkDefault true;
+        fido2.enable = mkDefault os.cfg.fido;
       };
-      tmp.cleanOnBoot = true;
+      tmp.cleanOnBoot = mkDefault true;
       loader = {
         systemd-boot.enable = mkForce (!os.cfg.secureboot.enable);
         grub.enable = mkForce false;
@@ -42,8 +37,8 @@ in
         pkiBundle = "${config._persist}/secureboot";
         configurationLimit = 5;
       };
-      plymouth.enable = true;
-      consoleLogLevel = 3;
+      plymouth.enable = mkDefault true;
+      consoleLogLevel = mkDefault 3;
     };
 
     environment = {
@@ -67,68 +62,22 @@ in
         sbctl
         tpm-luks
         tpm2-tss
-        libfido2
         nmap
-      ];
+      ] ++ (optionals [libfido2]);
     };
 
-    hardware = {
-      cpu = {
+    hardware.cpu = mkDefault {
+      # include both microcode.
+      # it makes for a bigger initrd
+      # but it does not really matter much
         amd.updateMicrocode = true;
         intel.updateMicrocode = true;
-      };
-      graphics = {
-        enable = true;
-        enable32Bit = true;
-      };
-    };
-
-    # TODO !
-    networking = {
-      # hostname is a mandatory key.
-    };
-
-    nix = {
-      nixPath = [
-        "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-        "/nix/var/nix/profiles/per-user/root/channels"
-        "nixpkgs=flake:nixpkgs"
-      ];
-
-      package = pkgs.lix;
-
-      settings = {
-        # keep flake and commands
-        experimental-features = [
-          "nix-command"
-          "flakes"
-        ];
-
-        # cache providers
-        substituters = [
-          "https://nix-community.cachix.org"
-          "https://cache.nixos.org/"
-          "https://cachix.cachix.org"
-          "https://nixpkgs.cachix.org"
-        ];
-        trusted-public-keys = [
-          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-          "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-          "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
-          "nixpkgs.cachix.org-1:q91R6hxbwFvDqTSDKwDAV4T5PxqXGxswD8vhONFMeOE="
-        ];
-
-      };
-    };
-
-
-    nixpkgs = {
-      # help other modules
-      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
     };
 
     programs = {
-      zsh.enable = true;
+      # zsh is the far superior shell in my opinion
+      zsh.enable = mkDefault true;
+      bash.enable = mkDefault false;
     };
 
     services = {
@@ -146,6 +95,7 @@ in
     system = {
       stateVersion = mkDefault "26.05";
       nixos.label = "${os.name}";
+      nixos.variantName = "${os.name}";
     };
 
     time = mkDefault {
