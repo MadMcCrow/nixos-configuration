@@ -1,17 +1,22 @@
 # llama-cpp
 # a wrapper around llama-cpp for simpler deployment
 {
-  lib,
-  pkgs,
   name ? "llm-openai",
+  useROCM ? true,
+  lib,
+  callPackage,
+  writeShellApplication,
+  llama-cpp-rocm,
+  llama-cpp,
   ...
 }:
 with builtins;
 let
-  model = import ./model.nix;
-  pkg = if model.useROCM then pkgs.llama-cpp-rocm else pkgs.llama-cpp;
+  config = import ./config.nix;
+  pkg = if useROCM then llama-cpp-rocm else llama-cpp;
+  model = callPackage ./_models/zeta.nix {};
 in
-pkgs.writeShellApplication {
+writeShellApplication {
   # llm, open-ai compatible interface
   inherit name;
   runtimeInputs = [ pkg ];
@@ -24,9 +29,9 @@ pkgs.writeShellApplication {
     # call llama-cpp
     ${pkg}/bin/llama-server  \
     --jinja \
-    ${if model.useROCM then "--device ROCm0" else ""} \
-    --port ${toString model.port} \
-    --ctx-size  ${toString (model.cacheGB * 1024)} \
-    -hf ${model}
+    ${if config.useROCM then "--device ROCm0" else ""} \
+    --port ${toString config.port} \
+    --ctx-size  ${toString (config.cacheGB * 1024)} \
+    -m ${model}
   '';
 }
