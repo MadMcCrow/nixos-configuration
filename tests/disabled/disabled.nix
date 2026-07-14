@@ -1,5 +1,5 @@
 # a nonOS host is just a nixOS host ;)
-{nonOS, config, ... } :
+{ nonOS, config, ... }:
 {
   imports = [ nonOS.nixosModules.default ];
   config = {
@@ -7,5 +7,6 @@
     nonOS = {
       enable = false;
       storage.main = "/dev/nvme0n1";
+    };
   };
 }

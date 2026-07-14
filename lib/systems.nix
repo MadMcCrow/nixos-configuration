@@ -25,9 +25,7 @@ in
       modules = [ config ];
     };
   # make a custom appliance system (ie. no nix store)
-  mkAppliance =
-    { nixpkgs, ... }:
-    throw "not implemented yet !";
+  mkAppliance = { nixpkgs, ... }: throw "not implemented yet !";
 
   # create a symlinked output of a nixosSystem
   joinSystemOutputs =
@@ -44,5 +42,4 @@ in
       mkdir -p $out
       ${builtins.concatStringsSep "\n" (map (drv: "ln -s ${drv} $out/${builtins.getName drv}") outputs)}
     '';
-
 }

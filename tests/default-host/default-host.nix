@@ -1,5 +1,5 @@
 # a nonOS host is just a nixOS host ;)
-{nonOS, config, ... } :
+{ nonOS, config, ... }:
 {
   # nonOS exposes the flake output in its object
   imports = [ nonOS.nixosModules.default ];
@@ -13,5 +13,6 @@
     # by setting it to false
     nonOS = {
       storage.main = "/dev/nvme0n1";
+    };
   };
 }

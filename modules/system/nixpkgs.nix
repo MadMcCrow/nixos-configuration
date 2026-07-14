@@ -1,6 +1,6 @@
 # nixpkgs.nix
 # define how nonOS gets its nixpkgs
-inputs @ {
+inputs@{
   config,
   nonOS,
   lib,
@@ -16,7 +16,7 @@ in
     # global option to allow unfree packages in other modules
     _unfreePackages = mkOption {
       description = "accepted unfree packages";
-      default = [];
+      default = [ ];
       type = with types; listOf nonEmptyStr;
     };
     # allow moving the configuration folder
@@ -61,11 +61,10 @@ in
       };
     };
 
-
     nixpkgs = {
       # help other modules define allowed unfree packages
       config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
-      pkgs = import (import ${os.cfg.dir}/npins).nixpkgs {};
+      pkgs = import (import "${os.cfg.dir}/npins").nixpkgs { };
     };
 
     system = {
@@ -73,4 +72,5 @@ in
       activatable = true;
       autoUpgrade.enable = false; # we do it ourselves
     };
+  };
 }

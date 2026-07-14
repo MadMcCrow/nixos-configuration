@@ -1,4 +1,5 @@
 # default options for ai model
+# TODO : use a fetcher and package those models in nix
 {
   useROCM = true;
   # unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF also works
