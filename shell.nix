@@ -7,7 +7,7 @@ with pkgs;
 let
   # local llm
   autocomplete = callPackage ./packages/_ai/ollama.nix { };
-  npin-update = callPackage ./packages/_npins/update.nix { };
+  npinupdate = callPackage ./packages/_npins/update.nix { rootDir = "./"; };
 in
 mkShellNoCC {
   packages = [
@@ -21,12 +21,12 @@ mkShellNoCC {
     nixfmt-rfc-style
     # our dev package helpers
     autocomplete
-    npins-update
+    npinupdate
   ];
 
   # start llm :
   shellHook = ''
-    ${lib.getExe npins-update}
+    ${lib.getExe npinupdate}
     # ${lib.getExe autocomplete} &
   '';
 }

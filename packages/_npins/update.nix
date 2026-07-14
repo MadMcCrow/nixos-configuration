@@ -2,16 +2,13 @@
 {
   writeShellApplication,
   npins,
-  self,
+  rootDir ? "./",
   ...
 }:
-let
-  dir = "packages/._npins";
-in
 writeShellApplication {
   name = "update-sources";
   runtimeInputs = [ npins ];
   text = ''
-    npins -d ${dir} update
+    npins -d${rootDir}packages/_npins update
   '';
 }
