@@ -12,7 +12,8 @@ let
 in
 stdenv.mkDerivation {
   inherit pname;
-  version = pin.version;
+  inherit (pin) version;
+
   src = pin;
 
   nativeBuildInputs = [

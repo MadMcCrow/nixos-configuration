@@ -16,6 +16,21 @@
       "url": "https://api.github.com/repos/elegos/Linux-Arctis-Manager/tarball/v2.4.1",
       "hash": "0r9hdd9rl73969ikj3pdv3jxmld8sdffbly202ikw7xz3lf6xf62"
     },
+    "fzifdso": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "Git",
+        "url": "https://git.sr.ht/~nabijaczleweli/fzifdso"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "v0.4.1",
+      "revision": "7def98792ae5bb9ea049264f63ab9d5f26553b27",
+      "url": null,
+      "hash": "0hqz7w4ms31hqf65cd2x8zwkpv8dqkyhqswq5dmvqv1k4ys02xgk"
+    },
     "plasma-drawer": {
       "type": "GitRelease",
       "repository": {
@@ -31,6 +46,21 @@
       "revision": "a1eec560875e9715ea3cf6e861b7a052abfd70f2",
       "url": "https://api.github.com/repos/p-connor/plasma-drawer/tarball/v2.0.2",
       "hash": "0fjknpxjzyrbyy4q5pkyn5r2c7fdx1a04wn4yyc2vhgqiqka256m"
+    },
+    "tzpfms": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "Git",
+        "url": "https://git.sr.ht/~nabijaczleweli/tzpfms"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "v0.4.1",
+      "revision": "eced40ae2752daded053bbece284f5336a5b47da",
+      "url": null,
+      "hash": "0n6x1im66q1dpkg4lq43czcjgzg14zy92j3c77g57j0iynjqjy8c"
     }
   },
   "version": 5

@@ -11,14 +11,17 @@
   mandoc,
   ...
 }:
+let
+pname = "fzifdso";
+sources = import ../_npins;
+pin = sources.${pname};
+in
 stdenv.mkDerivation rec {
-  pname = "fzifdso";
-  version = "v0.4.0";
-  src = fetchgit {
-    url = "https://git.sr.ht/~nabijaczleweli/fzifdso";
-    rev = version;
-    hash = "sha256-UNvQCGBYH94VMLZ25z8g/iW9r1x4MdjThe+tMbg1qZk=";
-  };
+  inherit pname;
+  inherit (pin) version;
+
+  src = pin;
+
   nativeBuildInputs = [
     pkg-config
     shellcheck
@@ -27,6 +30,7 @@ stdenv.mkDerivation rec {
     gnumake
     mandoc
   ];
+
   buildInputs = nativeBuildInputs;
 
   postPatch = ''
