@@ -1,11 +1,13 @@
 { pkgs ? import <nixpkgs> {}, ... }:
 with builtins;
+with pkgs;
 let
-  # local llm with llama-cpp
-  autocomplete = pkgs.callPackage ./packages/ai/ollama.nix {};
+  # local llm
+  autocomplete = callPackage ./packages/_ai/ollama.nix {};
+  npin-update = callPackage ./packages/_npins/update.nix {};
 in
-pkgs.mkShellNoCC {
-  packages = (with pkgs; [
+mkShellNoCC {
+  packages = [
     # python dev
     uv
     python314
@@ -14,19 +16,14 @@ pkgs.mkShellNoCC {
     deadnix
     statix
     nixfmt-rfc-style
-
-    # Vulkan-SDK
-      vulkan-headers
-      vulkan-loader
-      vulkan-tools
-
-  ]) ++ [
+    # our dev package helpers
     autocomplete
+    npins-update
   ];
 
   # start llm :
   shellHook = ''
-      ${pkgs.lib.getExe autocomplete}
-      exit
+      #
+      # ${pkgs.lib.getExe autocomplete} &
   '';
 }

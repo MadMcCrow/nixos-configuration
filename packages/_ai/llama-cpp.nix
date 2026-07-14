@@ -4,16 +4,12 @@
   lib,
   pkgs,
   name ? "llm-openai",
-  useROCM ? true,
-  # unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF also works
-  model ? "adilkairolla/zeta-2.1-GGUF:Q5_K_M",
-  cacheGB ? 16,
-  port ? 1234,
   ...
 } :
 with builtins;
 let
-  pkg = if useROCM then pkgs.llama-cpp-rocm else pkgs.llama-cpp;
+  model = import ./model.nix;
+  pkg = if model.useROCM then pkgs.llama-cpp-rocm else pkgs.llama-cpp;
 in
 pkgs.writeShellApplication {
   # llm, open-ai compatible interface
@@ -28,9 +24,9 @@ pkgs.writeShellApplication {
       # call llama-cpp
       ${pkg}/bin/llama-server  \
       --jinja \
-      ${if useROCM then "--device ROCm0" else ""} \
-      --port ${toString port} \
-      --ctx-size  ${toString (cacheGB * 1024)} \
+      ${if model.useROCM then "--device ROCm0" else ""} \
+      --port ${toString model.port} \
+      --ctx-size  ${toString (model.cacheGB * 1024)} \
       -hf ${model}
   '';
 }

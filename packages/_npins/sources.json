@@ -1,0 +1,37 @@
+{
+  "pins": {
+    "Linux-Arctis-Manager": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "elegos",
+        "repo": "Linux-Arctis-Manager"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "v2.4.1",
+      "revision": "1fe1f4bc313d4bb212e28d705eeb13a10e09105d",
+      "url": "https://api.github.com/repos/elegos/Linux-Arctis-Manager/tarball/v2.4.1",
+      "hash": "0r9hdd9rl73969ikj3pdv3jxmld8sdffbly202ikw7xz3lf6xf62"
+    },
+    "plasma-drawer": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "p-connor",
+        "repo": "plasma-drawer"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "v2.0.2",
+      "revision": "a1eec560875e9715ea3cf6e861b7a052abfd70f2",
+      "url": "https://api.github.com/repos/p-connor/plasma-drawer/tarball/v2.0.2",
+      "hash": "0fjknpxjzyrbyy4q5pkyn5r2c7fdx1a04wn4yyc2vhgqiqka256m"
+    }
+  },
+  "version": 5
+}

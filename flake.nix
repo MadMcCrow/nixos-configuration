@@ -53,12 +53,17 @@
           "aarch64-linux"
         ];
 
-        flake.lib = {
-          mkSystem =  : with (import ./lib/systems.nix (inputs // {inherit lib;})); (mkNixosSystem toml);
+        flake = let
+          args = inputs // {inherit lib;};
+        in{
+          lib = {
+          #   mkSystem =  : with (import ./lib/systems.nix args); (mkNixosSystem toml);
+          };
+          nixosModules.default = (import ./lib/modules.nix  args).default;
         };
 
         perSystem =
-          {
+          args @{
             config,
             system,
             pkgs,
@@ -71,31 +76,11 @@
             formatter = nixfmt-tree;
 
             # import everything in the `packages` folder, based on its path
-            packages = import ./lib/packages.nix (inputs // { inherit pkgs lib;});
-
-            apps = {
-              # TODO !
-              #os-update = {
-              #  type = "app";
-              #  program = "${config.packages.os-update}/bin/os-update";
-              #};
-              #os-install = {
-              #  type = "app";
-              #  program = "${config.packages.os-install}/bin/os-install";
-              #};
-            };
-
-            nixosConfigurations = {  };
-
-            nixosModules = {
-              default = (import ./lib/modules.nix inputs).default;
-            };
-
+            packages = import ./lib/packages.nix (inputs // args);
 
             devShells.default = import ./shell.nix { inherit pkgs; };
 
-            checks = import ./tests (inputs //{ inherit pkgs lib;});
-
+            # checks = import ./tests (inputs //{ inherit pkgs lib;});
           };
       }
     );

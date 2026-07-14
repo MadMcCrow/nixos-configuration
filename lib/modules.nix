@@ -16,9 +16,10 @@ inherit (version) name;
 
 # where the module are stored
 moduleRoot = (self + "/modules");
+modules = (import-tree moduleRoot);
 
 # helper function/attrset for modules;
-${name} = curpos : args@{config, ...} :
+os = curpos : args@{config, ...} :
  let
    # get list out of curpos
    nixfile = removeSuffix "/default.nix" (removePrefix moduleRoot curpos.file);
@@ -40,7 +41,7 @@ ${name} = curpos : args@{config, ...} :
       # and then we add all the other attribute by their path prefixed
       // (setAttrByPath pathlist
         (filterGlobals false optAttr // {
-        enable = mkEnableOption "${name}.${path}" // {default = enabled; }
+        enable = mkEnableOption "${name}.${path}" // { default = enabled; };
       }));
    };
    # get the os status
@@ -51,10 +52,7 @@ ${name} = curpos : args@{config, ...} :
    lib  = import ./options.nix inputs;
    # added packages
    pkgs = import ./packages.nix inputs;
-   # quick getter
-   enabled = attrByPath pathlist false ;
-
-   # test if this module is enabled
+   # quick helper for conditioning config
    enabled = let
     isEnabledAncestor = p:
     let
@@ -63,11 +61,12 @@ ${name} = curpos : args@{config, ...} :
       if node == false then false
       else if p == [] then true
       else isEnabledAncestor (lib.init p);
-   in config.${name}.enable && isEnabledAncestor pathlist
+   in config.${name}.enable && isEnabledAncestor pathlist;
  };
-in
-rec {
-  modules = (import-tree moduleRoot);
+in {
+  inherit modules;
   default = _ : { imports = modules; };
-  specialArgs = {inherit ${name};};
+  specialArgs = {
+    ${name} = os;
+  };
 }
