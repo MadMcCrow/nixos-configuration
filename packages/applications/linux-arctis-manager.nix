@@ -5,7 +5,7 @@
   pkgs,
   fetchFromGitHub,
   ...
-}@ args:
+}@args:
 let
   pname = "Linux-Arctis-Manager";
   sources = import ../_npins;
@@ -19,7 +19,11 @@ pythonPkgs.buildPythonPackage {
 
   pyproject = true;
   build-system = [ pythonPkgs.uv-build ];
-  propagatedBuildInputs = with pythonPkgs; [ uv uv-build autoflake ];
+  propagatedBuildInputs = with pythonPkgs; [
+    uv
+    uv-build
+    autoflake
+  ];
 
   meta = {
     homepage = "https://api.github.com/${pin.repository.owner}/${pin.repository.repo}";

@@ -80,11 +80,13 @@
           kdePackages.kcalc
         ]
         # TODO : enable custom themes and widgets
-        ++ lib.optionals false
-        (with nonpkgs; [
-          plasma-vapor-theme
-          plasma-drawer
-        ]);
+        ++ lib.optionals false (
+          with nonpkgs;
+          [
+            plasma-vapor-theme
+            plasma-drawer
+          ]
+        );
     };
   };
 }

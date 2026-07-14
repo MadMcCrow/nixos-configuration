@@ -12,9 +12,9 @@
   ...
 }:
 let
-pname = "tzpfms";
-sources = import ../_npins;
-pin = sources.${pname};
+  pname = "tzpfms";
+  sources = import ../_npins;
+  pin = sources.${pname};
 in
 stdenv.mkDerivation rec {
   inherit pname;

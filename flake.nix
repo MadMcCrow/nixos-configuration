@@ -12,6 +12,9 @@
     import-tree.url = "github:denful/import-tree";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    # formatter :
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,17 +56,23 @@
           "aarch64-linux"
         ];
 
-        flake = let
-          args = inputs // {inherit lib;};
-        in{
-          lib = {
-          #   mkSystem =  : with (import ./lib/systems.nix args); (mkNixosSystem toml);
+        imports = [ inputs.treefmt-nix.flakeModule ];
+
+        flake =
+          let
+            args = inputs // {
+              inherit lib;
+            };
+          in
+          {
+            lib = {
+              #   mkSystem =  : with (import ./lib/systems.nix args); (mkNixosSystem toml);
+            };
+            nixosModules.default = (import ./lib/modules.nix args).default;
           };
-          nixosModules.default = (import ./lib/modules.nix  args).default;
-        };
 
         perSystem =
-          args @{
+          args@{
             config,
             system,
             pkgs,
@@ -74,6 +83,8 @@
           {
             # For standardised reproducible formatting with `nix fmt`
             formatter = nixfmt-tree;
+
+            treefmt = import ./treefmt.nix args;
 
             # import everything in the `packages` folder, based on its path
             packages = import ./lib/packages.nix (inputs // args);

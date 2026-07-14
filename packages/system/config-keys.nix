@@ -14,7 +14,9 @@ let
   destination = "/${name}.json";
 
   # eval empty config
-  evaluated = lib.evalModules ((import (self + "/lib/system.nix") args).sysArgs { _module.check = false; });
+  evaluated = lib.evalModules (
+    (import (self + "/lib/system.nix") args).sysArgs { _module.check = false; }
+  );
 
   # Keys that indicate we've hit a mkOption leaf — stop recursing
   invalidKeys = [
@@ -55,14 +57,26 @@ let
   # you can replace the '""' by a 'NonOS' for parser to have the full name
   optionPaths = collectPaths "" evaluated.options.nonOS;
   # filter for mandatory options
-  mandatoryPaths = filter (p: lib.attrByPath ((splitString "." p) ++ ["type" "_mandatory"]) false evaluated.options.nonOS) optionPaths;
+  mandatoryPaths = filter (
+    p:
+    lib.attrByPath (
+      (splitString "." p)
+      ++ [
+        "type"
+        "_mandatory"
+      ]
+    ) false evaluated.options.nonOS
+  ) optionPaths;
 
 in
 (writeTextFile {
   inherit name;
-  inherit destination;  # path inside the derivation
+  inherit destination; # path inside the derivation
   text = builtins.toJSON {
-    "validKeys"     = optionPaths;
+    "validKeys" = optionPaths;
     "mandatoryKeys" = mandatoryPaths;
   };
-}) // {inherit destination;}
+})
+// {
+  inherit destination;
+}

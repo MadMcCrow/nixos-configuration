@@ -8,7 +8,7 @@ inputs@{
   lix,
   stdenvNoCC,
   ...
-} :
+}:
 let
   deps = [ lix ];
   nonlib = import (self + "/lib/version.nix") inputs;
@@ -16,16 +16,14 @@ in
 stdenvNoCC.mkDerivation {
   pname = "os-build";
   inherit (nonlib) version;
-  src =  self + "/tools/build-os";
+  src = self + "/tools/build-os";
 
   nativeBuildInputs = [ makeWrapper ];
 
   installPhase = ''
     install -Dm755 build.sh $out/bin/build.sh
     wrapProgram $out/bin/os-build \
-      --prefix PATH : ${
-        lib.makeBinPath deps
-      }
+      --prefix PATH : ${lib.makeBinPath deps}
   '';
 
   meta = {

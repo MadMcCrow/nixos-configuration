@@ -1,9 +1,14 @@
 # package/app helper to update all package sources
-{ writeShellApplication, npins, self, ... } :
+{
+  writeShellApplication,
+  npins,
+  self,
+  ...
+}:
 let
   dir = "packages/._npins";
-in writeShellApplication
-{
+in
+writeShellApplication {
   name = "update-sources";
   runtimeInputs = [ npins ];
   text = ''

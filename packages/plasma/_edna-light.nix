@@ -6,7 +6,7 @@
   ...
 }:
 let
-url = "https://gitlab.com/jomada/Edna-Light";
+  url = "https://gitlab.com/jomada/Edna-Light";
 in
 stdenvNoCC.mkDerivation {
   pname = "plasma-vapor-theme";

@@ -12,7 +12,7 @@
   pyproject-build-systems,
   makeWrapper,
   ...
-}@ args:
+}@args:
 with builtins;
 let
   # variables
@@ -38,10 +38,14 @@ let
   nonFunc = "mkSystem";
 
   # Todo : add the aliases "os-install" == "os install" (and same for update)
-in symlinkJoin {
+in
+symlinkJoin {
   name = "ostool";
-  version = "0.0"; #nonlib.version;
-  paths = [ os-unwrapped config-keys];
+  version = "0.0"; # nonlib.version;
+  paths = [
+    os-unwrapped
+    config-keys
+  ];
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
