@@ -81,13 +81,12 @@
             formatter = nixfmt-tree;
 
             treefmt = import ./treefmt.nix args;
-          }
-          // (lib.optionalAttrs pkgs.stdenv.isLinux {
+
             # import everything in the `packages` folder, based on its path
             packages = import ./lib/packages.nix (inputs // args);
             devShells.default = import ./shell.nix { inherit pkgs; };
             # checks = import ./tests (inputs //{ inherit pkgs lib;});
-          });
+          };
       }
     );
 }

@@ -13,19 +13,15 @@ let
   mkPrio = mkOverride 990; # mkDefault but higher priority
 in
 {
-<<<<<<< HEAD
-  options = os.options {
-    # secureboot
+  options = os.mkOptions {
+    # rename the OS
+    customise = mkEnableOption "customise nixOS to ${os.name}" // {
+      default = true;
+    };
+    # enable secureboot
     secureboot.enable = mkEnableOption "secureboot" // {
       default = true;
     };
-=======
-  options = os.mkOptions {
-    # rename the OS
-    customise = mkEnableOption "customise nixOS to ${os.name}" // {default = true;};
-    # enable secureboot
-    secureboot.enable = mkEnableOption "secureboot" // {default = true;};
->>>>>>> 9c8eb88 (reworked nonOS installer structure)
     # yubikey,onlykey, etc..
     fido.enable =
       mkEnableOption ""
@@ -83,23 +79,13 @@ in
         ++ (optionals [ libfido2 ]);
     };
 
-<<<<<<< HEAD
-    hardware.cpu = mkDefault {
-      # include both microcode.
-      # it makes for a bigger initrd
-      # but it does not really matter much
-      amd.updateMicrocode = true;
-      intel.updateMicrocode = true;
-=======
     hardware = {
-        # we could include both microcodes
-        # but the hardware detection can give you the correct param
-        # cpu.amd.updateMicrocode = true;
-        # cpu.intel.updateMicrocode = true;
-        firmware = [ pkgs.linux-firmware ];
->>>>>>> 9c8eb88 (reworked nonOS installer structure)
+      # we could include both microcodes
+      # but the hardware detection can give you the correct param
+      # cpu.amd.updateMicrocode = true;
+      # cpu.intel.updateMicrocode = true;
+      firmware = [ pkgs.linux-firmware ];
     };
-
 
     programs = {
       # zsh is the far superior shell in my opinion
@@ -108,8 +94,7 @@ in
     };
 
     services = {
-<<<<<<< HEAD
-      openssh = mkDefault {
+      openssh = mkPrio {
         enable = true;
         ports = [ 8323 ];
         settings = {
@@ -118,36 +103,9 @@ in
           PermitRootLogin = "no";
           AllowUsers = attrNames config.users.users;
         };
-=======
-      openssh = mkPrio {
-      enable = true;
-      ports = [ 8323 ];
-      settings = {
-        PasswordAuthentication = false;
-        KbdInteractiveAuthentication = false;
-        PermitRootLogin = "no";
-        AllowUsers = attrNames config.users.users;
->>>>>>> 9c8eb88 (reworked nonOS installer structure)
       };
+    };
 
-<<<<<<< HEAD
-      system = {
-        stateVersion = mkDefault "26.05";
-        nixos.label = "${os.name}";
-        nixos.variantName = "${os.name}";
-      };
-
-      time = mkDefault {
-        # we default to Paris
-        timeZone = "Europe/Paris";
-      };
-
-      users = {
-        defaultUserShell = mkdefault pkgs.zsh;
-        # enable mutable users if no user is set to admin
-        mutableUsers = !(any (x: x.admin == true) (attrValues config.users.users));
-      };
-=======
     system = {
       # let the user specify the state version themselves
       # but forgetting defining it shouldn't matter
@@ -163,10 +121,9 @@ in
     };
 
     users = {
-      defaultUserShell =  mkPrio pkgs.zsh;
+      defaultUserShell = mkPrio pkgs.zsh;
       # enable mutable users if no user is set to admin
       mutableUsers = !(any (x: x.admin == true) (attrValues config.users.users));
->>>>>>> 9c8eb88 (reworked nonOS installer structure)
     };
   };
 }

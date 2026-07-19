@@ -2,7 +2,7 @@
 args@{
   callPackage,
   ...
-} :
+}:
 callPackage ./hf.nix {
   owner = "adilkairolla";
   name = "zeta-2.1-GGUF";

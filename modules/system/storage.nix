@@ -48,8 +48,9 @@ in
     };
   };
 
-<<<<<<< HEAD
-  config = mkIf os.enabled {
+  config = os.mkConfig {
+
+    # filesystems
     fileSystems = {
       "/" = {
         fsType = "tmpfs";
@@ -57,28 +58,14 @@ in
           "size=4G"
           "mode=755"
         ];
-=======
-  config = os.mkConfig {
-      fileSystems = {
-        "/" = {
-          fsType = "tmpfs";
-          options = [
-            "size=4G"
-            "mode=755"
-          ];
-        };
-        "${persist}" = {
-          fsType = "btrfs";
-          options = [ "compress=zstd" ];
-        };
->>>>>>> 9c8eb88 (reworked nonOS installer structure)
       };
       "${persist}" = {
         fsType = "btrfs";
         options = [ "compress=zstd" ];
       };
     };
-    # implementation
+
+    # use disko :
     disko.devices = {
       nodev."/" = {
         fsType = "tmpfs";
@@ -122,7 +109,5 @@ in
         };
       };
     };
-    # Required for systemd-cryptsetup to work in initrd
-    boot.initrd.systemd.enable = true;
   };
 }

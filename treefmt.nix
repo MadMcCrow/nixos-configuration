@@ -6,10 +6,10 @@
 
   programs = {
     # all the nix formatter
-    nixfmt.enable = false;
-    statix.enable = true;
+    nixfmt.enable = true;
+    # statix.enable = true;
     deadnix = {
-      enable = true;
+      enable = false;
       no-lambda-arg = false;
       no-lambda-pattern-names = true;
       no-underscore = true;

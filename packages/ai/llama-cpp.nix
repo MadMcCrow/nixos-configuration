@@ -14,7 +14,7 @@ with builtins;
 let
   config = import ./config.nix;
   pkg = if useROCM then llama-cpp-rocm else llama-cpp;
-  model = callPackage ./_models/zeta.nix {};
+  model = callPackage ./_models/zeta.nix { };
 in
 writeShellApplication {
   # llm, open-ai compatible interface
