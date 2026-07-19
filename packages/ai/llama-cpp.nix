@@ -2,19 +2,18 @@
 # a wrapper around llama-cpp for simpler deployment
 {
   name ? "llm-openai",
-  useROCM ? true,
+  useGPU ? true,
   lib,
   callPackage,
   writeShellApplication,
-  llama-cpp-rocm,
-  llama-cpp,
+  pkgs,
   ...
 }:
 with builtins;
 let
   config = import ./config.nix;
-  pkg = if useROCM then llama-cpp-rocm else llama-cpp;
-  model = callPackage ./_models/zeta.nix { };
+  pkg = with pkgs; if useGPU then llama-cpp-rocm else llama-cpp;
+  model = callPackage ./_models/gemma.nix { };
 in
 writeShellApplication {
   # llm, open-ai compatible interface

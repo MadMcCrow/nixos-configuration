@@ -13,7 +13,7 @@ let
   hf = python3Packages.huggingface-hub;
 in
 stdenvNoCC.mkDerivation {
-  pname = "${owner}-${name}";
+  pname = "${name}";
   version = "${rev}";
 
   nativeBuildInputs = [ hf ];
@@ -47,6 +47,8 @@ stdenvNoCC.mkDerivation {
   installPhase = ''
     mkdir -p "$out"
     cp -r model/. "$out/"
+    cd $out
+    ln -s "$(find -iname "*.gguf" | head -1)" ./default.gguf
   '';
 
   preferLocalBuild = true;

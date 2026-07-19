@@ -6,7 +6,7 @@ with builtins;
 with pkgs;
 let
   # local llm
-  autocomplete = callPackage ./packages/_ai/ollama.nix { };
+  servai = callPackage ./packages/ai/llama-cpp.nix { };
 in
 mkShellNoCC {
   packages = [
@@ -19,15 +19,14 @@ mkShellNoCC {
     statix
     nixfmt-tree
     npins
-    # our dev package helpers
-    autocomplete
+    # ai server
+    servai
   ];
 
   # start llm :
   shellHook = ''
-     export SOME_API_TOKEN="$(cat ~/.config/some-app/api-token)"
-     export NPINS_DIRECTORY="./packages/_npins"
-    # ${lib.getExe autocomplete} &
-    ${lib.getExe nixfmt-tree}
+    export SOME_API_TOKEN="$(cat ~/.config/some-app/api-token)"
+    export NPINS_DIRECTORY="./packages/_npins"
+    ${lib.getExe servai} &
   '';
 }
