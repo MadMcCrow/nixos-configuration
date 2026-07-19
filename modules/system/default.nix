@@ -10,13 +10,22 @@ inputs@{
 with lib;
 let
   os = nonOS __curPos inputs;
+  mkPrio = mkOverride 990; # mkDefault but higher priority
 in
 {
+<<<<<<< HEAD
   options = os.options {
     # secureboot
     secureboot.enable = mkEnableOption "secureboot" // {
       default = true;
     };
+=======
+  options = os.mkOptions {
+    # rename the OS
+    customise = mkEnableOption "customise nixOS to ${os.name}" // {default = true;};
+    # enable secureboot
+    secureboot.enable = mkEnableOption "secureboot" // {default = true;};
+>>>>>>> 9c8eb88 (reworked nonOS installer structure)
     # yubikey,onlykey, etc..
     fido.enable =
       mkEnableOption ""
@@ -26,27 +35,27 @@ in
         "";
   };
 
-  config = mkIf os.enabled {
+  config = os.mkConfig {
     boot = {
       initrd.systemd = {
-        enable = mkDefault true;
-        fido2.enable = mkDefault os.cfg.fido;
+        enable = true;
+        fido2.enable = os.cfg.fido;
       };
-      tmp.cleanOnBoot = mkDefault true;
+      tmp.cleanOnBoot = mkPrio true;
       loader = {
         systemd-boot.enable = mkForce (!os.cfg.secureboot.enable);
         grub.enable = mkForce false;
       };
-      lanzaboote = {
+      lanzaboote = mkPrio {
         inherit (os.cfg.secureboot) enable;
         pkiBundle = "${config._persist}/secureboot";
         configurationLimit = 5;
       };
-      plymouth.enable = mkDefault true;
-      consoleLogLevel = mkDefault 3;
+      plymouth.enable = mkPrio true;
+      consoleLogLevel = mkPrio 3;
     };
 
-    environment = {
+    environment = mkPrio {
       etc."os-release".text = ''
         NAME="${os.name}"
         PRETTY_NAME="${os.name}"
@@ -74,21 +83,32 @@ in
         ++ (optionals [ libfido2 ]);
     };
 
+<<<<<<< HEAD
     hardware.cpu = mkDefault {
       # include both microcode.
       # it makes for a bigger initrd
       # but it does not really matter much
       amd.updateMicrocode = true;
       intel.updateMicrocode = true;
+=======
+    hardware = {
+        # we could include both microcodes
+        # but the hardware detection can give you the correct param
+        # cpu.amd.updateMicrocode = true;
+        # cpu.intel.updateMicrocode = true;
+        firmware = [ pkgs.linux-firmware ];
+>>>>>>> 9c8eb88 (reworked nonOS installer structure)
     };
+
 
     programs = {
       # zsh is the far superior shell in my opinion
-      zsh.enable = mkDefault true;
-      bash.enable = mkDefault false;
+      zsh.enable = mkPrio true;
+      bash.enable = mkPrio false;
     };
 
     services = {
+<<<<<<< HEAD
       openssh = mkDefault {
         enable = true;
         ports = [ 8323 ];
@@ -98,8 +118,19 @@ in
           PermitRootLogin = "no";
           AllowUsers = attrNames config.users.users;
         };
+=======
+      openssh = mkPrio {
+      enable = true;
+      ports = [ 8323 ];
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "no";
+        AllowUsers = attrNames config.users.users;
+>>>>>>> 9c8eb88 (reworked nonOS installer structure)
       };
 
+<<<<<<< HEAD
       system = {
         stateVersion = mkDefault "26.05";
         nixos.label = "${os.name}";
@@ -116,6 +147,26 @@ in
         # enable mutable users if no user is set to admin
         mutableUsers = !(any (x: x.admin == true) (attrValues config.users.users));
       };
+=======
+    system = {
+      # let the user specify the state version themselves
+      # but forgetting defining it shouldn't matter
+      stateVersion = mkDefault "26.05";
+      # We customise the
+      nixos.label = "${os.name}";
+      nixos.variantName = "${os.name}";
+    };
+
+    time = {
+      # we default to Paris
+      timeZone = mkPrio "Europe/Paris";
+    };
+
+    users = {
+      defaultUserShell =  mkPrio pkgs.zsh;
+      # enable mutable users if no user is set to admin
+      mutableUsers = !(any (x: x.admin == true) (attrValues config.users.users));
+>>>>>>> 9c8eb88 (reworked nonOS installer structure)
     };
   };
 }

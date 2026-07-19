@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -51,10 +50,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }:
       {
-        systems = [
-          "x86_64-linux"
-          "aarch64-linux"
-        ];
+        systems = lib.systems.flakeExposed;
 
         imports = [ inputs.treefmt-nix.flakeModule ];
 
@@ -85,14 +81,13 @@
             formatter = nixfmt-tree;
 
             treefmt = import ./treefmt.nix args;
-
+          }
+          // (lib.optionalAttrs pkgs.stdenv.isLinux {
             # import everything in the `packages` folder, based on its path
             packages = import ./lib/packages.nix (inputs // args);
-
             devShells.default = import ./shell.nix { inherit pkgs; };
-
             # checks = import ./tests (inputs //{ inherit pkgs lib;});
-          };
+          });
       }
     );
 }

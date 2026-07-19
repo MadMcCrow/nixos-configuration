@@ -16,7 +16,7 @@ in
     amd.enable = mkEnableOption "AMD Specific optimisations";
   };
 
-  config = mkIf os.enabled {
+  config = os.mkConfig {
 
     hardware = {
       # amd specific :

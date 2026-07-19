@@ -10,9 +10,9 @@
     };
   };
   # change systemd config to have a wake on date service
-  config.systemd = lib.mkIf config.linux.autowake.enable {
+  config.systemd = mkIf config.linux.autowake.enable {
     targets = {
-      sleep.enable = lib.mkDefaults config.linux.autowake.enable;
+      sleep.enable = mkDefault config.linux.autowake.enable;
     };
     services."autowake" = {
       restartIfChanged = false;

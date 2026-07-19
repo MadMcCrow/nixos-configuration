@@ -12,7 +12,7 @@ let
   os = nonOS __curPos inputs;
 in
 {
-  options = os.options {
+  options = os.mkOptions {
     # global option to allow unfree packages in other modules
     _unfreePackages = mkOption {
       description = "accepted unfree packages";
@@ -27,7 +27,7 @@ in
     };
   };
 
-  config = mkIf os.enabled {
+  config = mkConfig {
     nix = {
       nixPath = [
         "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"

@@ -36,7 +36,7 @@ in
   # import disko
   imports = [ disko.nixosModules.disko ];
 
-  options = os.options {
+  options = os.mkOptions {
     main = mkOption {
       description = "The main disk device to use (e.g., /dev/nvme0n1).";
       type =
@@ -48,6 +48,7 @@ in
     };
   };
 
+<<<<<<< HEAD
   config = mkIf os.enabled {
     fileSystems = {
       "/" = {
@@ -56,6 +57,21 @@ in
           "size=4G"
           "mode=755"
         ];
+=======
+  config = os.mkConfig {
+      fileSystems = {
+        "/" = {
+          fsType = "tmpfs";
+          options = [
+            "size=4G"
+            "mode=755"
+          ];
+        };
+        "${persist}" = {
+          fsType = "btrfs";
+          options = [ "compress=zstd" ];
+        };
+>>>>>>> 9c8eb88 (reworked nonOS installer structure)
       };
       "${persist}" = {
         fsType = "btrfs";
