@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 from argparse import ArgumentParser
+
+from asyncio import run
 from sys import argv
 from os import uname
-
 import ostool
 
 APPNAME = argv[0]
-
-
 
 def main() :
     parser = ArgumentParser(APPNAME, description="Install and update your OS")
@@ -19,4 +18,7 @@ def main() :
     updater = subparsers.add_parser("update")
     updater.set_defaults(func = ostool.update)
     args = parser.parse_args()
-    args.func(args)
+    if hasattr(args, "func") :
+        run(args.func(args))
+    else :
+        parser.print_help()

@@ -61,9 +61,8 @@
             };
           in
           {
-            lib = {
-              #   mkSystem =  : with (import ./lib/systems.nix args); (mkNixosSystem toml);
-            };
+
+            lib.mkSystem = cfg : with (import ./lib/systems.nix args); (mkNixosSystem cfg);
             nixosModules.default = (import ./lib/modules.nix args).default;
           };
 
@@ -83,7 +82,7 @@
             treefmt = import ./treefmt.nix args;
 
             # import everything in the `packages` folder, based on its path
-            packages = import ./lib/packages.nix (inputs // args);
+            packages = lib.optionalAttrs pkgs.stdenv.isLinux (import ./lib/packages.nix (inputs // args));
             devShells.default = import ./shell.nix { inherit pkgs; };
             # checks = import ./tests (inputs //{ inherit pkgs lib;});
           };

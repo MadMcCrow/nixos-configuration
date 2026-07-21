@@ -8,7 +8,7 @@
   ...
 }:
 let
-  config = import ./config.nix;
+  config = import ./_config.nix;
   pkg = if config.useROCM then pkgs.ollama-rocm else pkgs.ollama;
 in
 pkgs.writeShellApplication {

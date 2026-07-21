@@ -82,7 +82,7 @@ let
 in
 {
   inherit modules;
-  default = _: { imports = modules; };
+  # default = _: { imports = modules; };
   specialArgs = {
     ${name} = os;
   };

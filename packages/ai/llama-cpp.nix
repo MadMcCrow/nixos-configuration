@@ -11,7 +11,7 @@
 }:
 with builtins;
 let
-  config = import ./config.nix;
+  config = import ./_config.nix;
   pkg = with pkgs; if useGPU then llama-cpp-rocm else llama-cpp;
   model = callPackage ./_models/gemma.nix { };
 in

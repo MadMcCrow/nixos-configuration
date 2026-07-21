@@ -84,6 +84,8 @@ in
       # but the hardware detection can give you the correct param
       # cpu.amd.updateMicrocode = true;
       # cpu.intel.updateMicrocode = true;
+      # we just need this to be enabled :
+      enableRedistributableFirmware = true;
       firmware = [ pkgs.linux-firmware ];
     };
 

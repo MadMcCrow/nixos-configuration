@@ -15,7 +15,7 @@ let
 
   # eval empty config
   evaluated = lib.evalModules (
-    (import (self + "/lib/system.nix") args).sysArgs { _module.check = false; }
+    (import (self + "/lib/modules.nix") args) { _module.check = false; }
   );
 
   # Keys that indicate we've hit a mkOption leaf — stop recursing

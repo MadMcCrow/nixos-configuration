@@ -11,4 +11,8 @@ if [ -z "$2" ]
 else
     FLAKEPATH="$2"
 fi
-nix build --impure --expr "(builtins.getFlake \"$FLAKEPATH\").lib.mkSystem $1"
+# make sure flakes and commands are enabled
+FEATURES="--extra-experimental-features 'nix-command flakes'"
+LOG="--log-format internal-json"
+# run the build
+nix "$FEATURES" "$LOG" build --impure --expr "(builtins.getFlake \"$FLAKEPATH\").lib.mkSystem $1"

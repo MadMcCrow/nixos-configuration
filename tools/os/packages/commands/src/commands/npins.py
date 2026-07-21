@@ -1,0 +1,56 @@
+#! /usr/bin/env python3
+# need nix package "npins"
+
+from pathlib import Path
+
+# provided by uv
+from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
+
+# ours
+from commands.progress import Progress
+from commands.exceptions import ShellException, assert_cmd
+
+
+
+# pin to a nixpkgs commit : npins add github NixOS nixpkgs --branch nixos-unstable --at <commit-sha-or-tag> --name nixpkgs
+
+class npins() :
+
+    def __init__(self, dir: Path | str = "") -> None :
+        """ initialize our npins accessor """
+        assert_cmd("npins")
+        # ensure directory exists
+        self.dir = Path(dir).resolve()
+        self.dir.parent.mkdir(parents=True, exist_ok=True)
+        self.cmd = sh([
+        "npins",
+        "-d",
+        self.dir
+        ])
+
+
+    async def update(self):
+        """Wrap `npins -d <directory> update`."""
+        return await self._run("update", f"Updating npins sources in {self.dir}")
+
+    async def init(self):
+         """Wrap `npins -d <directory> init`."""
+         return await self._run("init", f"Initializing npins sources in {self.dir}")
+
+    async def _run(self, args, desc : str = "") :
+        """Run a subcommand while showing a spinner."""
+        cmd = self.cmd(args)
+        async with Progress(desc) as progress:
+            try:
+                async for line in cmd.stderr(sh.STDOUT) :
+                    if line.startswith('Err') :
+                        # TODO : add option to Progress
+                        print(line)
+                    elif line.startswith('[INFO') :
+                        progress.info(line.split("]", 1)[-1].strip())
+                    elif line.startswith('[WARN') :
+                        progress.info(f"Warning :{line.split("]", 1)[-1].strip()}")
+
+
+            except ResultError as exc:
+                raise ShellException(cmd, exc)

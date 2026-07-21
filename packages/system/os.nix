@@ -11,13 +11,30 @@
   uv2nix,
   pyproject-build-systems,
   makeWrapper,
+  deadnix,
+  nixfmt,
+  alejandra,
+  nixos-install,
+  nixos-install-tools,
+  npins,
   ...
 }@args:
 with builtins;
 let
+  nixdeps = [
+    # update machine pins
+    npins
+    # gen the config and install
+    nixos-install
+    nixos-install-tools
+    # format the config
+    deadnix
+    alejandra
+    nixfmt
+  ];
+
   # variables
   python = python314;
-  config-keys = callPackage ./config-keys.nix args;
 
   # uv2nix glue code :
   workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = self + "/tools/os"; };
@@ -44,15 +61,14 @@ symlinkJoin {
   version = "0.0"; # nonlib.version;
   paths = [
     os-unwrapped
-    config-keys
-  ];
+  ] ++ nixdeps;
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
-      --set-default OS_CONFIG_KEYS ${config-keys}${config-keys.destination} \
       --set-default OS_FLAKE_PATH ${self} \
       --set-default OS_MAKE_SYSTEM "lib.${nonFunc}" \
       --set-default OS_BUILD_TEMP \$\{TMPDIR-/tmp\}/os-tool \
+      --prefix PATH : ${lib.makeBinPath nixdeps}
   '';
   meta = {
     mainProgram = "os";

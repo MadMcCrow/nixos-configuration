@@ -6,7 +6,7 @@ authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
 # TODO : add a readme in docs !
 # readme      = "README.md"
 requires-python = ">=3.14"
-dependencies    = [ "npins"]
+dependencies    = [ "commands"]
 
 
 [project.scripts]
@@ -23,4 +23,4 @@ compile-bytecode = true
 members = ["packages/*"]
 
 [tool.uv.sources]
-npins = { workspace = true}
+commands = { workspace = true}

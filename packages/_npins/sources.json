@@ -14,7 +14,7 @@
       "version": "v2.4.1",
       "revision": "1fe1f4bc313d4bb212e28d705eeb13a10e09105d",
       "url": "https://api.github.com/repos/elegos/Linux-Arctis-Manager/tarball/v2.4.1",
-      "hash": "0r9hdd9rl73969ikj3pdv3jxmld8sdffbly202ikw7xz3lf6xf62"
+      "hash": "sha256-wrhuHB2/Hz6jAMLT5VzTqNHa5djtDjljMmkcmlNrMGU="
     },
     "fzifdso": {
       "type": "GitRelease",
@@ -29,7 +29,7 @@
       "version": "v0.4.1",
       "revision": "7def98792ae5bb9ea049264f63ab9d5f26553b27",
       "url": null,
-      "hash": "0hqz7w4ms31hqf65cd2x8zwkpv8dqkyhqswq5dmvqv1k4ys02xgk"
+      "hash": "sha256-83UBtCczbLxrK5hrDP3EDe07+UddNFaMwzAMXQk/H0M="
     },
     "plasma-drawer": {
       "type": "GitRelease",
@@ -45,7 +45,7 @@
       "version": "v2.0.2",
       "revision": "a1eec560875e9715ea3cf6e861b7a052abfd70f2",
       "url": "https://api.github.com/repos/p-connor/plasma-drawer/tarball/v2.0.2",
-      "hash": "0fjknpxjzyrbyy4q5pkyn5r2c7fdx1a04wn4yyc2vhgqiqka256m"
+      "hash": "sha256-1RShJo74wS2Y98RyAlTozR0mcrF+3oKJ9yv7L/u1Uzo="
     },
     "tzpfms": {
       "type": "GitRelease",
@@ -60,8 +60,8 @@
       "version": "v0.4.1",
       "revision": "eced40ae2752daded053bbece284f5336a5b47da",
       "url": null,
-      "hash": "0n6x1im66q1dpkg4lq43czcjgzg14zy92j3c77g57j0iynjqjy8c"
+      "hash": "sha256-DHmJpfURyFPeOWxIkfwn4f0n2WeDYErevC1gY2oM3Vg="
     }
   },
-  "version": 5
+  "version": 8
 }
