@@ -43,13 +43,13 @@ class npins() :
         async with Progress(desc) as progress:
             try:
                 async for line in cmd.stderr(sh.STDOUT) :
-                    if line.startswith('Err') :
-                        # TODO : add option to Progress
-                        print(line)
-                    elif line.startswith('[INFO') :
-                        progress.info(line.split("]", 1)[-1].strip())
-                    elif line.startswith('[WARN') :
-                        progress.info(f"Warning :{line.split("]", 1)[-1].strip()}")
+                    with progress.info("") as info :
+                        if line.startswith('Err') :
+                            pass
+                        elif line.startswith('[INFO') :
+                            info.update(line.split("]", 1)[-1].strip())
+                        elif line.startswith('[WARN') :
+                             info.update(f"Warning :{line.split("]", 1)[-1].strip()}")
 
 
             except ResultError as exc:

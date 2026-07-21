@@ -10,6 +10,8 @@ from rich.live import Live
 from rich.spinner import Spinner
 from rich.text import Text
 
+# shared console between invocations
+_console = Console()
 
 class _Info:
     """
@@ -31,6 +33,8 @@ class _Info:
         if self._parent :
             self._parent.clear_info(self)
 
+    def update(self, message) :
+        self._message = message
 
     def __str__(self) -> str:
         return self._message
@@ -77,12 +81,10 @@ class Progress:
     def __init__(
         self,
         description: str,
-        console: Console|None = None,
         spinner: str = "dots",
         subline_prefix: str = "   \u21b3 ",  # "   ↳ "
     ):
         self.description = description
-        self.console = console or Console()
         self.subline_prefix = subline_prefix
         self._spinner = Spinner(spinner, text="")
         self._sublines: List[_Info] = []
@@ -119,7 +121,7 @@ class Progress:
         """Start the live display. Returns self for chaining."""
         self._live = Live(
             self._render(),
-            console=self.console,
+            console=_console,
             refresh_per_second=12,
             transient=False,
         )
