@@ -21,6 +21,10 @@
 }@args:
 with builtins;
 let
+
+  # template config for installation
+  config = self + "hosts/template.nix";
+
   nixdeps = [
     # update machine pins
     npins
@@ -65,9 +69,7 @@ symlinkJoin {
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
-      --set-default OS_FLAKE_PATH ${self} \
-      --set-default OS_MAKE_SYSTEM "lib.${nonFunc}" \
-      --set-default OS_BUILD_TEMP \$\{TMPDIR-/tmp\}/os-tool \
+      --set_default TEMPLATE_CONFIG ${config} \
       --prefix PATH : ${lib.makeBinPath nixdeps}
   '';
   meta = {

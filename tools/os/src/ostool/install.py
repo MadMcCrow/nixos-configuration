@@ -2,7 +2,10 @@
 #
 from asyncio import TaskGroup
 from pathlib import Path
-from commands import npins, nixos_generate_config
+# commands
+from commands.npins import npins_init, npins_update
+from commands.nixos_generate_config import nixos_generate_config
+from commands.os_edit_config import os_edit_config
 
 
 async def install(args) :
@@ -14,7 +17,7 @@ async def install(args) :
 
     # prepare our async objects for making the config
     hc = nixos_generate_config(config_dir.joinpath("hardware-configuration.nix"))
-    np = npins(config_dir.joinpath("npins"))
+    np = npins_init(config_dir.joinpath("npins"))
 
     # private wrapper to have it in the form of a coro
     async def _wrap_coro(awaitable) :
@@ -23,5 +26,10 @@ async def install(args) :
     # run concurrenlty :
     async with TaskGroup() as tg :
         tg.create_task(_wrap_coro(hc))
-        tg.create_task(_wrap_coro(np.init()))
+        tg.create_task(_wrap_coro(np))
+        tg.create_task(_wrap_coro(os_edit_config))
+
+    # now build
+
+
 

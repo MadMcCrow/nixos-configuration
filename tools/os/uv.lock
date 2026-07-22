@@ -23,6 +23,7 @@ version = "0.1.0"
 source = { editable = "packages/commands" }
 dependencies = [
     { name = "aiofiles" },
+    { name = "prompt-toolkit" },
     { name = "rich" },
     { name = "shellous" },
 ]
@@ -30,6 +31,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=25.1.0" },
+    { name = "prompt-toolkit" },
     { name = "rich", specifier = ">=15.0.0" },
     { name = "shellous", specifier = ">=0.41.0" },
 ]
@@ -67,6 +69,18 @@ dependencies = [
 requires-dist = [{ name = "commands", editable = "packages/commands" }]
 
 [[package]]
+name = "prompt-toolkit"
+version = "3.0.52"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wcwidth" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a1/96/06e01a7b38dce6fe1db213e061a4602dd6032a8a97ef6c1a862537732421/prompt_toolkit-3.0.52.tar.gz", hash = "sha256:28cde192929c8e7321de85de1ddbe736f1375148b02f2e17edd840042b1be855", size = 434198, upload-time = "2025-08-27T15:24:02.057Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl", hash = "sha256:9aac639a3bbd33284347de5ad8d68ecc044b91a762dc39b7c21095fcd6a19955", size = 391431, upload-time = "2025-08-27T15:23:59.498Z" },
+]
+
+[[package]]
 name = "pygments"
 version = "2.20.0"
 source = { registry = "https://pypi.org/simple" }
@@ -95,4 +109,13 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/b9/ed170ac278346e4d9cd29392d4da8d8eea3ecc7f7daff6365ea961b2677a/shellous-0.41.0.tar.gz", hash = "sha256:c99c4c023b56a1cfd262d8c882f9e0f2bd57372cb97845758b4d7b6c5f066545", size = 47223, upload-time = "2026-07-19T01:26:46.755Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/22/01/24d2f4ede868a76e77e696cefe9f0afa102e41d06bbf116fd8e835fa9126/shellous-0.41.0-py3-none-any.whl", hash = "sha256:dc8cfe6d06d41ecfc6d670d456ffcdc53dcfe615fb84e72324f8950525d3f803", size = 52260, upload-time = "2026-07-19T01:26:45.405Z" },
+]
+
+[[package]]
+name = "wcwidth"
+version = "0.8.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/74/c6428f875774288bec1396f5bfcbc2d925700a4dad61727fd5f2b12f249d/wcwidth-0.8.2.tar.gz", hash = "sha256:91fbef97204b96a3d4d421609b80340b760cf33e26da123ff243d76b1fda8dda", size = 1466253, upload-time = "2026-06-29T18:11:11.601Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/96/42/3e5985a0a7e57de470b320c6d6a1a67c844f6737a587f3d44dd13d1819e7/wcwidth-0.8.2-py3-none-any.whl", hash = "sha256:d63947694a0539a1d51e01eda7caf800c291020e6cdd7e28ad7b14dd33ad4f85", size = 323166, upload-time = "2026-06-29T18:11:09.888Z" },
 ]

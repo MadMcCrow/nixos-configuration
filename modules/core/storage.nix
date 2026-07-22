@@ -8,7 +8,7 @@ inputs@{
 }:
 with lib;
 let
-  os = nonOS __curPos inputs;
+  os = nonOS "storage" inputs;
   persist = os.cfg._dir;
 
   # devices can be specified with :

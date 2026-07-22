@@ -19,17 +19,15 @@ let
 
   # helper function/attrset for modules;
   os =
-    curpos:
+    prefix :
     args@{ config, ... }:
     let
-      # get list out of curpos
-      nixfile = removeSuffix "/default.nix" (removePrefix moduleRoot curpos.file);
-      pathlist = splitString "/" (removeSuffix ".nix" nixfile);
+      # option/config name
+      prefixpath = optionals (prefix == "") (splitString "." prefix);
+      pathlist = [ name ] ++ prefixpath;
       path = lib.string.join "." pathlist;
-
       # filter globals out of attrs
       filterGlobals = attrs: neg: filterAttrs (n: _: (hasPrefix "_" n) != neg) attrs;
-
       # test if this module is enabled
       enabled =
         let

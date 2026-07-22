@@ -9,7 +9,7 @@ inputs@{
 }:
 with lib;
 let
-  os = nonOS __curPos inputs;
+  os = nonOS "" inputs;
   mkPrio = mkOverride 990; # mkDefault but higher priority
 in
 {

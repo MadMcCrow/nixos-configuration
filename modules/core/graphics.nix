@@ -9,7 +9,7 @@ inputs@{
 }:
 with lib;
 let
-  os = nonOS __curPos inputs;
+  os = nonOS "graphics" inputs;
 in
 {
   options = os.options {

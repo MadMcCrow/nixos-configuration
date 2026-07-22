@@ -1,8 +1,14 @@
-# a nonOS host is just a nixOS host ;)
+# system configuration
+# Edit this file to customize your machine
 { nonOS, config, ... }:
 {
-  # nonOS exposes the flake output in its object
-  imports = [ nonOS.nixosModules.default ];
+  imports = [
+    # default is the core of nonOS
+    # other modules include :
+    # desktop, server, games
+    nonOS.nixosModules.default
+    ./hardware-configuration.nix
+  ];
 
   # config is a regular nixOS config
   config = {

@@ -9,7 +9,7 @@ inputs@{
 }:
 with lib;
 let
-  os = nonOS __curPos inputs;
+  os = nonOS "nixpkgs" inputs;
 in
 {
   options = os.mkOptions {
