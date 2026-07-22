@@ -2,16 +2,58 @@
 
 # python deps
 from asyncio import create_task, run, sleep
-from typing import List
+from threading import Lock
+from typing import Any, ClassVar, Dict, List, Set
 
 # rich deps
-from rich.console import Console, Group
+from rich.console import Console, Group, RenderableType
 from rich.live import Live
 from rich.spinner import Spinner
 from rich.text import Text
 
-# shared console between invocations
-_console = Console()
+
+class _SingletonMeta(type):
+    _lock : ClassVar[Lock] = Lock()
+    _instances = {}
+    def __call__(cls, *args: Any, **kwds: Any):
+        with cls._lock :
+            if cls not in cls._instances:
+                instance = super().__call__(*args, **kwds)
+                cls._instances[cls] = instance
+        return cls._instances[cls]
+
+
+
+class _Context(metaclass=_SingletonMeta) :
+
+    def __init__(self) :
+        self._console : Console = Console()
+        self._renderable : Dict[object, RenderableType] = {}
+        self._active : Set[object] = set()
+        self._live = Live(
+            None,
+            console=self._console,
+            refresh_per_second=12,
+            transient=False,
+        )
+
+    def update(self, owner : object, renderable : RenderableType):
+        """ activate owner, group our renderables, and update display """
+        if len(self._active) == 0 :
+            self._live.start()
+        self._active.add(owner)
+        self._renderable[owner] = renderable
+        group = Group(*self._renderable.values())
+        self._live.update(group)
+
+    def stop(self, owner) :
+        "deactivate owner and stop display if necessary"
+        if owner in self._active :
+            self._active.remove(owner)
+        if len(self._active) == 0  and  self._live.is_started :
+            self._live.stop()
+
+
 
 class _Info:
     """
@@ -78,6 +120,8 @@ class Progress:
         # or: task.fail("could not connect")   # -> cross
     """
 
+
+
     def __init__(
         self,
         description: str,
@@ -90,21 +134,16 @@ class Progress:
         self._sublines: List[_Info] = []
         self._done = False
         self._success = True
-        self._live: Live|None = None
-
-
-    def _render_main_text(self) -> Text:
-        if self._done:
-            if self._success:
-                return Text.from_markup(f"{self.description}  [bold green]\u2714 DONE[/]")
-            return Text.from_markup(f"{self.description}  [bold red]\u2718 FAILED[/]")
-        return Text(f"{self.description}…")
+        self._context = _Context()
 
     def _render(self) -> Group:
         if self._done:
-            main = self._render_main_text()
+            if self._success:
+                 main = Text.from_markup(f"{self.description}  [bold green]\u2714 DONE[/]")
+            else :
+                main = Text.from_markup(f"{self.description}  [bold red]\u2718 FAILED[/]")
         else:
-            self._spinner.text = self._render_main_text()
+            self._spinner.text = Text(f"{self.description}…")
             main = self._spinner
 
         sublines = [
@@ -114,18 +153,12 @@ class Progress:
         return Group(main, *sublines)
 
     def _refresh(self) -> None:
-        if self._live is not None:
-            self._live.update(self._render())
+        if self._context is not None:
+            self._context.update(self, self._render())
 
     def start(self) -> "Progress":
         """Start the live display. Returns self for chaining."""
-        self._live = Live(
-            self._render(),
-            console=_console,
-            refresh_per_second=12,
-            transient=False,
-        )
-        self._live.start()
+        self._context.update(self, self._render())
         return self
 
     def update(self, description: str) -> None:
@@ -162,8 +195,7 @@ class Progress:
         if final_message:
             self.description = final_message
         self._refresh()
-        if self._live is not None:
-            self._live.stop()
+        self._context.stop(self)
 
     def fail(self, final_message: str|None = None) -> None:
         """Shortcut for complete(success=False, ...)."""

@@ -1,7 +1,7 @@
 # need nix package "nixos-install-tools" and "nixos-install"
 
 # provided by python
-from asyncio import Task
+from asyncio import Task, sleep
 from pathlib import Path
 from re import DOTALL, MULTILINE, sub
 from sys import argv
@@ -38,12 +38,16 @@ class nixos_generate_config(Task) :
             async with Progress("auto-detecting hardware config") as progress:
                 with progress.info("generating config") :
                     hardwareconfig = await self._generate_config()
+                    await sleep(0.1)
                 with progress.info("removing imports") :
                     hardwareconfig = self._pre_write_fixup(hardwareconfig)
+                    await sleep(0.1)
                 with progress.info("writing hardware-config to file") :
                     await self._write_config(hardwareconfig)
+                    await sleep(0.1)
                 with progress.info("cleaning file in place") :
                     await nixformat(self.file)
+                    await sleep(0.1)
         else :
             hardwareconfig = await self._generate_config()
             hardwareconfig = self._pre_write_fixup(hardwareconfig)
