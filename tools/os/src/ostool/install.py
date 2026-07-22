@@ -18,16 +18,17 @@ async def install(args) :
     # prepare our async objects for making the config
     hc = nixos_generate_config(config_dir.joinpath("hardware-configuration.nix"))
     np = npins_init(config_dir.joinpath("npins"))
+    ed = os_edit_config(config_dir.joinpath("configuration.nix"))
 
     # private wrapper to have it in the form of a coro
-    async def _wrap_coro(awaitable) :
-        return await awaitable
+    async def _wrap_coro(aw) :
+        return await aw
 
     # run concurrenlty :
     async with TaskGroup() as tg :
         tg.create_task(_wrap_coro(hc))
         tg.create_task(_wrap_coro(np))
-        tg.create_task(_wrap_coro(os_edit_config))
+        tg.create_task(_wrap_coro(ed))
 
     # now build
 

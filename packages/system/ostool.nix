@@ -23,7 +23,7 @@ with builtins;
 let
 
   # template config for installation
-  config = self + "hosts/template.nix";
+  config = self + "/hosts/template/template.nix";
 
   nixdeps = [
     # update machine pins
@@ -69,7 +69,7 @@ symlinkJoin {
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
-      --set_default TEMPLATE_CONFIG ${config} \
+      --set-default TEMPLATE_CONFIG ${config} \
       --prefix PATH : ${lib.makeBinPath nixdeps}
   '';
   meta = {

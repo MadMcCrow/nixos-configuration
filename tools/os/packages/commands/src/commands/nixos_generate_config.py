@@ -55,12 +55,12 @@ class nixos_generate_config(Awaitable) :
             await sleep(0)
             return nix
 
-        async def _write_config(self, nix: str) :
+        async def _write_config(nix: str) :
             async with open(self.file, "w") as f:
                 await f.write(nix)
                 return nix
 
-        async def _pos_write_fixup(self, *args) :
+        async def _pos_write_fixup(*args) :
              await nixformat(self.file)
              async with open(self.file, "r") as f :
                  return await f.read()

@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 # need nix package "npins"
 
-from ast import Await
 from asyncio import sleep
 from pathlib import Path
 
@@ -49,12 +48,12 @@ class _npins() :
                 raise ShellException(cmd, exc)
 
 class npins_init(_npins, Awaitable) :
-    async def exec(self):
+    async def _exec(self):
          """Wrap `npins -d <directory> init`."""
          return await self._run("init", f"Initializing npins sources in {self.dir}")
 
 
 class npins_update(_npins, Awaitable) :
-    async def exec(self):
+    async def _exec(self):
         """Wrap `npins -d <directory> update`."""
         return await self._run("update", f"Updating npins sources in {self.dir}")

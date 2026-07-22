@@ -5,7 +5,6 @@ from asyncio import sleep
 from os import getenv
 from pathlib import Path
 from sys import argv
-from typing import Awaitable
 
 # provided by uv
 from shellous import sh  # pyright: ignore [reportMissingImports]
@@ -16,6 +15,7 @@ from prompt_toolkit.widgets import TextArea # pyright: ignore [reportMissingImpo
 
 # provided by us
 from commands.progress import Progress
+from commands.awaitable import Awaitable
 
 APPNAME = argv[0]
 
