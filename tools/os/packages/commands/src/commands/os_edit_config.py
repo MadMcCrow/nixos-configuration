@@ -1,20 +1,18 @@
 # need nix package "nixos-install-tools" and "nixos-install"
 
-# provided by python
+# python
 from asyncio import sleep
 from os import getenv
 from pathlib import Path
 from sys import argv
 
-# provided by uv
-from shellous import sh  # pyright: ignore [reportMissingImports]
-from aiofiles import open # pyright: ignore [reportMissingImports]
-from prompt_toolkit.application import Application # pyright: ignore [reportMissingImports]
-from prompt_toolkit.layout import Layout # pyright: ignore [reportMissingImports]
-from prompt_toolkit.widgets import TextArea # pyright: ignore [reportMissingImports]
+# uv
+from shellous import sh
+from aiofiles import open
 
-# provided by us
-from commands.progress import Progress
+# ours
+from commands.text_edit import Editor
+from commands.progress import Context, Progress
 from commands.awaitable import Awaitable
 
 APPNAME = argv[0]
@@ -31,8 +29,13 @@ class os_edit_config(Awaitable) :
         self._display = display
 
     async def _exec(self) :
+        """copy the template and open an editor for the user """
+
         async def _copy() :
              """ copy the config from the template """
+             # skip if file already exists
+             if self.file.exists() :
+                return
              async with open(TEMPLATE_CONFIG, "r") as source :
                  async with open(self.file, "w") as target :
                      await target.write(await source.read())
@@ -40,15 +43,12 @@ class os_edit_config(Awaitable) :
         async def _edit() :
             """ copy the config from the template """
             EDITOR = getenv("EDITOR", getenv("VISUAL"))
-            if EDITOR is not None :
+            if EDITOR :
+                Context().pause()
                 await sh([EDITOR, self.file]).pty()
+                Context().unpause()
             else :
-                text = ""
-                async with open(self.file, "r") as config :
-                    text = await config.read()
-                editor = TextArea(text=text, scrollbar = True, line_numbers = True)
-                app = Application(layout = Layout(editor), full_screen = True)
-                await app.run_async()
+                await Editor(self.file, top_comment = "edit machine configuration :")
 
         steps = [
             ("copy template", _copy),

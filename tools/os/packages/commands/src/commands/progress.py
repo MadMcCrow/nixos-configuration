@@ -24,7 +24,7 @@ class _SingletonMeta(type):
 
 
 
-class _Context(metaclass=_SingletonMeta) :
+class Context(metaclass=_SingletonMeta) :
 
     def __init__(self) :
         self._console : Console = Console()
@@ -33,18 +33,24 @@ class _Context(metaclass=_SingletonMeta) :
         self._live = Live(
             None,
             console=self._console,
-            refresh_per_second=12,
+            refresh_per_second=25,
             transient=False,
         )
+        self._paused = False
+
+    def refresh(self):
+        """ build the display """
+        group = Group(*self._renderable.values())
+        if not self._paused :
+            if not self._live._started :
+                self._live.start()
+            self._live.update(group)
 
     def update(self, owner : object, renderable : RenderableType):
         """ activate owner, group our renderables, and update display """
-        if len(self._active) == 0 :
-            self._live.start()
         self._active.add(owner)
         self._renderable[owner] = renderable
-        group = Group(*self._renderable.values())
-        self._live.update(group)
+        self.refresh()
 
     def stop(self, owner) :
         "deactivate owner and stop display if necessary"
@@ -53,6 +59,14 @@ class _Context(metaclass=_SingletonMeta) :
         if len(self._active) == 0  and  self._live.is_started :
             self._live.stop()
 
+    def pause(self) :
+        self._paused = True
+        self._live.stop()
+
+    def unpause(self) :
+        self._paused = False
+        self._live.start()
+        self.refresh()
 
 
 class _Info:
@@ -95,32 +109,8 @@ class Progress:
     """
     A Rich-based task display: shows a spinner + description while running,
     swaps to a ✔ DONE / ✘ FAILED tick when finished, and lets you push
-    temporary "sublines" underneath to show progress info. Works as a
-    context manager.
-
-    Usage:
-        from task_display import Progress
-        import time
-        with TaskDisplay("Downloading dataset") as task:
-            task.info("Connecting to server...")
-            time.sleep(1)
-            task.info("Fetching file 1/3")
-            time.sleep(1)
-            task.info("Fetching file 2/3")
-            time.sleep(1)
-        # exiting the `with` block cleanly marks it DONE
-        # an exception inside the block marks it FAILED instead
-
-    Or without `with`:
-
-        task = TaskDisplay("Doing something").start()
-        task.info("working...")
-        time.sleep(1)
-        task.complete()          # -> tick
-        # or: task.fail("could not connect")   # -> cross
+    temporary "sublines" underneath to show progress info.
     """
-
-
 
     def __init__(
         self,
@@ -134,7 +124,6 @@ class Progress:
         self._sublines: List[_Info] = []
         self._done = False
         self._success = True
-        self._context = _Context()
 
     def _render(self) -> Group:
         if self._done:
@@ -153,12 +142,11 @@ class Progress:
         return Group(main, *sublines)
 
     def _refresh(self) -> None:
-        if self._context is not None:
-            self._context.update(self, self._render())
+        Context().update(self, self._render())
 
     def start(self) -> "Progress":
-        """Start the live display. Returns self for chaining."""
-        self._context.update(self, self._render())
+        """ Returns self for chaining."""
+        Context().update(self, self._render())
         return self
 
     def update(self, description: str) -> None:
@@ -195,7 +183,7 @@ class Progress:
         if final_message:
             self.description = final_message
         self._refresh()
-        self._context.stop(self)
+        Context().stop(self)
 
     def fail(self, final_message: str|None = None) -> None:
         """Shortcut for complete(success=False, ...)."""

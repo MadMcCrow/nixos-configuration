@@ -8,7 +8,7 @@ from commands.nixos_generate_config import nixos_generate_config
 from commands.os_edit_config import os_edit_config
 
 
-async def install(args) :
+async def generate(args) :
     """
     perform the installation process
     """
