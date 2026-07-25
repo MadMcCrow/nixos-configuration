@@ -1,8 +1,5 @@
 # yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF
-args@{
-  callPackage,
-  ...
-}:
+args@{ callPackage, ... }:
 callPackage ./hf.nix {
   owner = "yuxinlu1";
   name = "gemma-4-12B-coder-fable5-composer2.5-v1-GGUF";

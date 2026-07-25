@@ -17,7 +17,6 @@ in
   };
 
   config = os.mkConfig {
-
     hardware = {
       # amd specific :
       amdgpu = mkIf os.cfg.amd.enable {

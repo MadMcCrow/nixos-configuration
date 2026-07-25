@@ -3,7 +3,11 @@
 # TODO :
 #   - private network for container
 #   - Only store relevant files on disk
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
   # shortcut
   inherit (config.nixos) web;
@@ -35,7 +39,6 @@ in
 
   # implementation
   config = lib.mkIf (cfg.enable && dns.enable) {
-
     # our actual container :
     nixos.web.services."adguard" = {
       dataDir = "${cfg.dataDir}";

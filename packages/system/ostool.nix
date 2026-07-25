@@ -21,7 +21,6 @@
 }@args:
 with builtins;
 let
-
   # template config for installation
   config = self + "/hosts/template/template.nix";
 
@@ -51,13 +50,12 @@ let
   );
 
   os-unwrapped = (callPackages pyproject-nix.build.util { }).mkApplication {
-    venv = pythonSets.mkVirtualEnv "ostool-env" (workspace.deps.default);
+    venv = pythonSets.mkVirtualEnv "ostool-env" workspace.deps.default;
     package = pythonSets.ostool;
   };
 
   # adding some "checks" to verify this function exist would be greate
   nonFunc = "mkSystem";
-
   # Todo : add the aliases "os-install" == "os install" (and same for update)
 in
 symlinkJoin {
@@ -65,7 +63,8 @@ symlinkJoin {
   version = "0.0"; # nonlib.version;
   paths = [
     os-unwrapped
-  ] ++ nixdeps;
+  ]
+  ++ nixdeps;
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \

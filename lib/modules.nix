@@ -15,11 +15,11 @@ let
   inherit (version) name;
 
   # where the module are stored
-  moduleRoot = (self + "/modules");
+  moduleRoot = self + "/modules";
 
   # helper function/attrset for modules;
   os =
-    prefix :
+    prefix:
     args@{ config, ... }:
     let
       # option/config name
@@ -44,7 +44,6 @@ let
               isEnabledAncestor (lib.init p);
         in
         config.${name}.enable && isEnabledAncestor pathlist;
-
     in
     {
       # provide values
@@ -76,7 +75,7 @@ let
       mkConfig = cfg: mkIf enabled (mkOverride 990 cfg);
     };
 
-  modules = (import-tree moduleRoot);
+  modules = import-tree moduleRoot;
 in
 {
   inherit modules;

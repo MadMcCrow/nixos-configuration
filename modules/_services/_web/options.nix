@@ -98,7 +98,6 @@ in
       config = _: {
         imports = [ ];
         config = {
-
           security = {
             acme = {
               acceptTerms = true;

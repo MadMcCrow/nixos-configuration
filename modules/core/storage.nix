@@ -30,7 +30,6 @@ let
       true
     else
       false;
-
 in
 {
   # import disko
@@ -49,7 +48,6 @@ in
   };
 
   config = os.mkConfig {
-
     # filesystems
     fileSystems = {
       "/" = {

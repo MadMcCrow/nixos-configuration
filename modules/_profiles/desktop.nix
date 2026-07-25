@@ -11,13 +11,11 @@
   ...
 }:
 {
-
   # interface
   options.nonOS.desktop.enable = nonlib.mkDisableOption "desktop";
 
   # implementation
   config = lib.mkIf config.nonOS.desktop.enable {
-
     # set tag for version
     system.nixos.tags = [ "Desktop" ];
 

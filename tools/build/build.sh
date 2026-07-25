@@ -1,3 +1,4 @@
+#!/bin/env sh
 # raw build a system.
 # this is only intended for debugging purposes
 if [ -z "$1" ]

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 #
 
-def update(args) :
+
+def update(args):
     pass

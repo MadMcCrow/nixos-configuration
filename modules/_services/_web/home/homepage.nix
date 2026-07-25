@@ -1,6 +1,10 @@
 # Homepage is a nice dashboard to see everything
 # https://github.com/gethomepage/homepage/
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
   inherit (config.nixos) web;
   port = 8082;

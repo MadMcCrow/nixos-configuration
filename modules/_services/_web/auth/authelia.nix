@@ -1,5 +1,9 @@
 # Authelia is a services for authentifying
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
   inherit (config.nixos) web;
   port = 9091;

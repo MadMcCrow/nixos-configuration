@@ -13,7 +13,6 @@ let
   modules = import ./modules.nix inputs;
 in
 {
-
   # the final nixos system.
   mkNixosSystem =
     config:

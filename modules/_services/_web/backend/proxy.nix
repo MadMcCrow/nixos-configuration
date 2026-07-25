@@ -1,5 +1,9 @@
 # nginx is a webserver, used mostly as a reverse proxy
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
   # shortcuts
   inherit (config.nixos) web;
@@ -45,7 +49,6 @@ in
         default = true;
       };
     };
-
   };
 
   config = lib.mkIf web.enable {
@@ -120,5 +123,4 @@ in
     };
     # end of config
   };
-
 }

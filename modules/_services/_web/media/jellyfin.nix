@@ -1,6 +1,10 @@
 # Jellyfin
 # TODO : configure everything !!!
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 let
   # shortcut
   inherit (config.nixos) web;

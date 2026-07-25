@@ -1,6 +1,5 @@
 # use authelia in nixos
-{ lib, ... }:
-{
+{ lib, ... }: {
   # interface
   options.nixos.web.auth = with lib; {
     subDomain = mkOption {

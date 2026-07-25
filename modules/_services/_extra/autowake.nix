@@ -1,6 +1,10 @@
 # autowake.nix
 # automatically wake-up computer on timer
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 {
   options.linux.autowake = with lib; {
     enable = mkEnableOption "auto sleep/wake up timer";

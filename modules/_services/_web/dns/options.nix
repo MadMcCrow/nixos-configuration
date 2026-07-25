@@ -1,4 +1,8 @@
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 {
   options.nixos.web.dns = with lib; {
     enable = mkEnableOption "DNS service" // {
@@ -40,6 +44,5 @@
         "4.2.2.2"
       ];
     };
-
   };
 }

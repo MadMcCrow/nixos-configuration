@@ -1,13 +1,16 @@
 # container.nix
 # Changes to the host system to have a nextcloud container
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
   # shortcut
   inherit (config.nixos) web;
   cfg = web.nextcloud;
 in
 {
-
   # interface
   options.nixos.web.nextcloud = with lib; {
     enable = mkEnableOption "nextcloud instance";
@@ -25,7 +28,6 @@ in
 
   # implementation
   config = lib.mkIf cfg.enable {
-
     nixos.web.services."nextcloud" = {
       dataPath = "/www/nextcloud";
 
@@ -60,6 +62,5 @@ in
         8443
       ];
     };
-
   };
 }

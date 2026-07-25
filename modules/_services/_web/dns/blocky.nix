@@ -1,6 +1,10 @@
 # TODO:
 # https://nixos.wiki/wiki/Blocky
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 let
   inherit (config.nixos) web;
   inherit (web) dns;
@@ -8,7 +12,6 @@ let
 in
 {
   options.nixos.web.dns.blocky = with lib; {
-
     # maybe get rid of this option
     enable = mkEnableOption "blocky DNS" // {
       default = dns.implementation == "blocky";

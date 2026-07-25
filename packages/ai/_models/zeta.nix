@@ -1,8 +1,5 @@
 # adilkairolla/zeta-2.1-GGUF:Q5_K_M;
-args@{
-  callPackage,
-  ...
-}:
+args@{ callPackage, ... }:
 callPackage ./hf.nix {
   owner = "adilkairolla";
   name = "zeta-2.1-GGUF";

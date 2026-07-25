@@ -45,14 +45,14 @@
       nixpkgs,
       self,
       import-tree,
+      treefmt-nix,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      { lib, ... }:
-      {
+      { lib, ... }: {
         systems = lib.systems.flakeExposed;
 
-        imports = [ inputs.treefmt-nix.flakeModule ];
+        imports = [ treefmt-nix.flakeModule ];
 
         flake =
           let
@@ -61,8 +61,7 @@
             };
           in
           {
-
-            lib.mkSystem = cfg : with (import ./lib/systems.nix args); (mkNixosSystem cfg);
+            lib.mkSystem = cfg: with (import ./lib/systems.nix args); (mkNixosSystem cfg);
             nixosModules.default = (import ./lib/modules.nix args).default;
           };
 
@@ -75,16 +74,23 @@
             ...
           }:
           with pkgs;
+          let
+            fmtEval = (treefmt-nix.lib.evalModule pkgs ./treefmt.nix).config.build;
+          in
           {
             # For standardised reproducible formatting with `nix fmt`
-            formatter = nixfmt-tree;
+            formatter = fmtEval.wrapper;
 
             treefmt = import ./treefmt.nix args;
 
             # import everything in the `packages` folder, based on its path
             packages = lib.optionalAttrs pkgs.stdenv.isLinux (import ./lib/packages.nix (inputs // args));
             devShells.default = import ./shell.nix { inherit pkgs; };
-            # checks = import ./tests (inputs //{ inherit pkgs lib;});
+
+            checks = {
+              formatting = fmtEval.check self;
+              # tests = import ./tests (inputs //{ inherit pkgs lib;});
+            };
           };
       }
     );

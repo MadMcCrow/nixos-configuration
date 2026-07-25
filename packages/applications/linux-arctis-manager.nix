@@ -14,7 +14,7 @@ let
 in
 pythonPkgs.buildPythonPackage {
   pname = lib.toLower pname;
-  version = pin.version;
+  inherit (pin) version;
   src = pin;
 
   pyproject = true;

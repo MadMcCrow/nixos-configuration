@@ -9,10 +9,9 @@ inputs@{
 }:
 let
   # collect all packages
-  packages = import-tree (i: i.map (x: pkgs.callPackage x (inputs))) (i: i.withLib lib) (
+  packages = import-tree (i: i.map (x: pkgs.callPackage x inputs)) (i: i.withLib lib) (
     i: i.leafs (self + "/packages")
   );
-
   # mapping function to import and wrap packages
 in
 builtins.listToAttrs (

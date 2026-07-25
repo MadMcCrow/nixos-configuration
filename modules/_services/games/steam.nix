@@ -7,12 +7,10 @@
   ...
 }:
 {
-
   options.nonOS.games.valve.enable = lib.mkEnableOption "valve nix support";
 
   # config
   config = lib.mkIf config.nonOS.games.valve.enable {
-
     # depends on the "linux" package !
     _nonOS.unfreePackages = [
       "steam-original"

@@ -1,5 +1,9 @@
 # support logging-in with authelia
-{ lib, config, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 let
   # shortcuts
   inherit (config.nixos) web;

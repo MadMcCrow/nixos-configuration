@@ -10,13 +10,10 @@
 }@args:
 with lib;
 let
-
   destination = "/${name}.json";
 
   # eval empty config
-  evaluated = lib.evalModules (
-    (import (self + "/lib/modules.nix") args) { _module.check = false; }
-  );
+  evaluated = lib.evalModules ((import (self + "/lib/modules.nix") args) { _module.check = false; });
 
   # Keys that indicate we've hit a mkOption leaf — stop recursing
   invalidKeys = [
@@ -67,7 +64,6 @@ let
       ]
     ) false evaluated.options.nonOS
   ) optionPaths;
-
 in
 (writeTextFile {
   inherit name;

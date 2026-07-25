@@ -1,6 +1,10 @@
 # system configuration
 # Edit this file to customize your machine
-{ nonOS, config, ... }:
+{
+  nonOS,
+  config,
+  ...
+}:
 {
   imports = [
     # default is the core of nonOS

@@ -1,6 +1,10 @@
 # vm.nix
 # config for building VMs, used for testing configs
-{ pkgs, nixpkgs, ... }:
+{
+  pkgs,
+  nixpkgs,
+  ...
+}:
 {
   # following configuration is added only when building VM with build-vm
   virtualisation.vmVariant = {

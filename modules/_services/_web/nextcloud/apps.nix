@@ -9,10 +9,8 @@
 #           - https://apps.nextcloud.com/apps/side_menu
 #           - https://apps.nextcloud.com/apps/unroundedcorners
 #           - https://apps.nextcloud.com/apps/integration_homeassistant
-{ config, ... }:
-{
+{ config, ... }: {
   config.services.nextcloud.extraApps = {
-
     # nixpkgs :
     # also already packaged in nixos :
     #   - bookmarks
@@ -43,6 +41,5 @@
     #  url = "https://github.com/nextcloud/aaa/releases/download/vxxxx/aaa.tar.gz";
     #  license = "agpl3"; # or asl20
     # };
-
   };
 }
