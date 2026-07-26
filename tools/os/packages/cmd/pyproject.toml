@@ -1,0 +1,10 @@
+[project]
+name        = "cmd"
+version     = "0.0.0"
+description = "cmd"
+requires-python = ">=3.14"
+dependencies    = [
+    "shellous >= 0.41.0",
+    "aiofiles >= 25.1.0",
+    "tui"
+]

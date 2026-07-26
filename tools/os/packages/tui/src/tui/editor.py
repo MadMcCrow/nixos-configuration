@@ -1,6 +1,6 @@
-from aiofiles import open
-from commands.awaitable import Awaitable
-from commands.progress import Context
+
+from collections.abc import Callable
+from tui.progress import Context
 from prompt_toolkit.application import Application
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout import HSplit, Layout, Window
@@ -8,28 +8,24 @@ from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import TextArea
 
-type OptStr = str | None
+type Coro = Callable|None
 
-
-class Editor(Awaitable):
+class Editor:
     """nice looking text editor that runs async"""
 
-    def __init__(self, file, *, content: OptStr = None, top_comment: OptStr = None):
+    def __init__(self, content: str = "", on_save : Coro = None, on_quit : Coro = None, top_comment: str|None = None):
         """store info for async creation"""
-        self._file = file
         self._content = content
         self._top_comment = top_comment
-        self._editor: TextArea | None = None
+        self._on_quit = on_quit
+        self._on_save = on_save
 
     async def _make_app(self):
         """
         spawns a nice-enough editor to edit the configuration
         """
-        if not self._content:
-            async with open(self._file, "r") as f:
-                self._content = await f.read()
 
-        self._editor = TextArea(text=self._content, scrollbar=True, line_numbers=True)
+        editor = TextArea(text=self._content, scrollbar=True, line_numbers=True)
         kb = KeyBindings()
 
         bottom_bar = Window(
@@ -39,24 +35,25 @@ class Editor(Awaitable):
         )
 
         @kb.add("c-s")
-        async def save(event):
-            await self._save()
+        async def save(event): # pyright: ignore [reportUnusedFunction]
+            if self._on_save is not None :
+                await self._on_save(editor.text)
 
         @kb.add("c-x")
         async def quit(event):  # pyright: ignore [reportUnusedFunction]
-            await self._save()
+            if self._on_quit is not None :
+                await self._on_quit(editor.text)
             event.app.exit()
 
         if self._top_comment:
             top_bar = Window(
-                height=1,
-                content=FormattedTextControl(self._top_comment, style="class:top"),
+                height=1, content=FormattedTextControl(self._top_comment, style="class:top")
             )
             layout = Layout(
                 HSplit(
                     [
                         top_bar,
-                        self._editor,
+                        editor,
                         bottom_bar,
                     ]
                 )
@@ -65,7 +62,7 @@ class Editor(Awaitable):
             layout = Layout(
                 HSplit(
                     [
-                        self._editor,
+                        editor,
                         bottom_bar,
                     ]
                 )
@@ -79,16 +76,13 @@ class Editor(Awaitable):
         )
         return Application(layout=layout, key_bindings=kb, full_screen=True, style=editor_style)
 
-    async def _exec(self):
-        """
-        open an editor for the user
-        """
+    async def edit(self) :
+        """ open an editor for the user"""
         Context().pause()
-        await (await self._make_app()).run_async()
+        app = await self._make_app()
+        await app.run_async()
         Context().unpause()
 
-    async def _save(self):
-        """saves the content of the text editor"""
-        if self._editor:
-            async with open(self._file, "w") as f:
-                await f.write(self._editor.text)
+    async def __await__(self):
+        return self.edit().__await__()
+

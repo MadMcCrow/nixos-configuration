@@ -1,8 +1,8 @@
 # need nix package "nixos-install-tools" and "nixos-install"
 
 # ours
-from commands.awaitable import Awaitable
-from commands.progress import Progress
+from cmd.awaitable import Awaitable
+from tui.progress import Progress
 
 
 class nixos_install(Awaitable):

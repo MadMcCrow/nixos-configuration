@@ -57,6 +57,8 @@ let
   # adding some "checks" to verify this function exist would be greate
   nonFunc = "mkSystem";
   # Todo : add the aliases "os-install" == "os install" (and same for update)
+  #
+  nixrev = (fromJSON (readFile self + "./flake.lock")).nodes.nixpkgs.locked.rev;
 in
 symlinkJoin {
   name = "ostool";
@@ -69,6 +71,7 @@ symlinkJoin {
   postBuild = ''
     wrapProgram $out/bin/os \
       --set-default TEMPLATE_CONFIG ${config} \
+      --set-default NIXPKGS_TAG  ${nixrev} \
       --prefix PATH : ${lib.makeBinPath nixdeps}
   '';
   meta = {
