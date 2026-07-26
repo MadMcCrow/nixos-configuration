@@ -34,9 +34,7 @@ class Editor(Awaitable):
 
         bottom_bar = Window(
             height=1,
-            content=FormattedTextControl(
-                "Press Ctrl-S to save and Ctrl-X to save and exit."
-            ),
+            content=FormattedTextControl("Press Ctrl-S to save and Ctrl-X to save and exit."),
             style="class:bottom",
         )
 
@@ -79,9 +77,7 @@ class Editor(Awaitable):
                 ("bottom", "fg:lightgrey"),
             ]
         )
-        return Application(
-            layout=layout, key_bindings=kb, full_screen=True, style=editor_style
-        )
+        return Application(layout=layout, key_bindings=kb, full_screen=True, style=editor_style)
 
     async def _exec(self):
         """

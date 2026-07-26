@@ -22,6 +22,7 @@ def main():
     installer = subparsers.add_parser("install")
     installer.add_argument("config_path", help="path to the configuration to install")
     installer.set_defaults(func=ostool.install)
+    # update a config
     updater = subparsers.add_parser("update")
     updater.set_defaults(func=ostool.update)
 

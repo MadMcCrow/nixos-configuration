@@ -21,7 +21,7 @@ class CommandNotFoundException(ShellException):
 
     def __init__(self, cmd, message="", *args):
         message = f"{cmd} : command not found." + message
-        super(CommandNotFoundException, self).__init__(cmd, message, *args)
+        super().__init__(cmd, message, *args)
 
 
 def assert_cmd(cmd: str):

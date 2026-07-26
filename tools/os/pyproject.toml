@@ -24,3 +24,13 @@ members = ["packages/*"]
 
 [tool.uv.sources]
 commands = { workspace = true}
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+ignore = [
+    "EXE001", # file has shebang but not executable
+    "I001",   # imports are unsorted
+    "UP037"   # quoted annotations (instead of from __future__ import annotations)
+]

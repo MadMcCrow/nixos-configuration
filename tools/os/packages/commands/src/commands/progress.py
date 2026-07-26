@@ -3,7 +3,7 @@
 # python deps
 from asyncio import create_task, run, sleep
 from threading import Lock
-from typing import Any, ClassVar, Dict, List, Set
+from typing import Any, ClassVar, Self
 
 # rich deps
 from rich.console import Console, Group, RenderableType
@@ -14,7 +14,7 @@ from rich.text import Text
 
 class _SingletonMeta(type):
     _lock: ClassVar[Lock] = Lock()
-    _instances = {}
+    _instances: ClassVar[dict] = {}
 
     def __call__(cls, *args: Any, **kwds: Any):
         with cls._lock:
@@ -27,8 +27,8 @@ class _SingletonMeta(type):
 class Context(metaclass=_SingletonMeta):
     def __init__(self):
         self._console: Console = Console()
-        self._renderable: Dict[object, RenderableType] = {}
-        self._active: Set[object] = set()
+        self._renderable: dict[object, RenderableType] = {}
+        self._active: set[object] = set()
         self._live = Live(
             None,
             console=self._console,
@@ -96,7 +96,7 @@ class _Info:
     def __str__(self) -> str:
         return self._message
 
-    def __enter__(self) -> "_Info":
+    def __enter__(self) -> Self:
         return self  # no need to do anything, just exist !
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
@@ -120,34 +120,29 @@ class Progress:
         self.description = description
         self.subline_prefix = subline_prefix
         self._spinner = Spinner(spinner, text="")
-        self._sublines: List[_Info] = []
+        self._sublines: list[_Info] = []
         self._done = False
         self._success = True
 
     def _render(self) -> Group:
         if self._done:
             if self._success:
-                main = Text.from_markup(
-                    f"{self.description}  [bold green]\u2714 DONE[/]"
-                )
+                main = Text.from_markup(f"{self.description}  [bold green]\u2714 DONE[/]")
             else:
-                main = Text.from_markup(
-                    f"{self.description}  [bold red]\u2718 FAILED[/]"
-                )
+                main = Text.from_markup(f"{self.description}  [bold red]\u2718 FAILED[/]")
         else:
             self._spinner.text = Text(f"{self.description}…")
             main = self._spinner
 
         sublines = [
-            Text(f"{self.subline_prefix}{line}", style="dim italic")
-            for line in self._sublines
+            Text(f"{self.subline_prefix}{line}", style="dim italic") for line in self._sublines
         ]
         return Group(main, *sublines)
 
     def _refresh(self) -> None:
         Context().update(self, self._render())
 
-    def start(self) -> "Progress":
+    def start(self) -> Self:
         """Returns self for chaining."""
         Context().update(self, self._render())
         return self
@@ -190,7 +185,7 @@ class Progress:
         """Shortcut for complete(success=False, ...)."""
         self.complete(success=False, final_message=final_message)
 
-    async def __aenter__(self) -> "Progress":
+    async def __aenter__(self) -> Self:
         return self.start()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> bool:

@@ -5,7 +5,7 @@ from asyncio import sleep
 from pathlib import Path
 from re import DOTALL, MULTILINE, sub
 from sys import argv
-from typing import Any, List, Tuple
+from typing import Any
 
 from aiofiles import open  # pyright: ignore [reportMissingImports]
 
@@ -38,9 +38,7 @@ class nixos_generate_config(Awaitable):
         hardwareconfig = ""
 
         async def _generate_config(*args) -> str:
-            cmd = sh(
-                ["nixos-generate-config", "--show-hardware-config", "--no-filesystems"]
-            )
+            cmd = sh(["nixos-generate-config", "--show-hardware-config", "--no-filesystems"])
             try:
                 return await cmd()
             except ResultError as exc:
@@ -66,7 +64,7 @@ class nixos_generate_config(Awaitable):
             async with open(self.file, "r") as f:
                 return await f.read()
 
-        steps: List[Tuple[str, Any]] = [
+        steps: list[tuple[str, Any]] = [
             ("generating config", _generate_config),
             ("removing imports", _pre_write_fixup),
             ("writing to file", _write_config),

@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Dict
 
 CONFIG_FILES = ["configuration.nixhardware-configuration.nixnpins"]
 
@@ -18,6 +17,6 @@ class Config:
             raise FileNotFoundError(file)
         return file.resolve()
 
-    def config_files(self, check_exists=False) -> Dict[str, Path]:
+    def config_files(self, check_exists=False) -> dict[str, Path]:
         """make a dict pointing to all the config files in the config"""
         return {x: self.file(x) for x in CONFIG_FILES}
