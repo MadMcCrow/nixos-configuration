@@ -2,15 +2,15 @@
 
 # python
 from asyncio import TaskGroup
-from fileinput import input
-from os import getenv
-from re import sub
 
 # commands
 from cmd.copy import cp
+from cmd.edit import textedit
 from cmd.nixos_generate_config import nixos_generate_config
 from cmd.npins import npins_init
-from cmd.edit import textedit
+from fileinput import input
+from os import getenv
+from re import sub
 
 # ours
 from ostool.config import Config

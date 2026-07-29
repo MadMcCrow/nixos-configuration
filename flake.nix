@@ -61,8 +61,12 @@
             };
           in
           {
-            lib.mkSystem = cfg: with (import ./lib/systems.nix args); (mkNixosSystem cfg);
-            nixosModules.default = (import ./lib/modules.nix args).default;
+            # expose functions
+            lib = import ./lib/systems.nix args;
+            # expose modules
+            nixosModules = import ./lib/modules.nix args;
+            # check hosts
+            #nixosConfigurations = import ./lib/configurations.nix args;
           };
 
         perSystem =

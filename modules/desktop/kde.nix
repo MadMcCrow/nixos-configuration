@@ -1,21 +1,22 @@
-# desktop.nix
-# add a desktop environment to our Config
-#
-{
+# kde.nix
+# enable the kde desktop
+inputs@{
   config,
-  pkgs,
-  self,
+  mod,
   lib,
-  nonlib,
-  nonpkgs,
+  pkgs,
   ...
 }:
+with lib;
+let
+  os = mod "desktop.kde" inputs;
+in
 {
   # interface
-  options.nonOS.desktop.enable = nonlib.mkDisableOption "desktop";
+  options.enable = os.mkOptions "desktop";
 
   # implementation
-  config = lib.mkIf config.nonOS.desktop.enable {
+  config = os.mkConfig {
     # set tag for version
     system.nixos.tags = [ "Desktop" ];
 

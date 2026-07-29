@@ -2,14 +2,14 @@
 # define how nonOS gets its nixpkgs
 inputs@{
   config,
-  nonOS,
+  mod,
   lib,
   pkgs,
   ...
 }:
 with lib;
 let
-  os = nonOS "nixpkgs" inputs;
+  os = mod "nixpkgs" inputs;
 in
 {
   options = os.mkOptions {

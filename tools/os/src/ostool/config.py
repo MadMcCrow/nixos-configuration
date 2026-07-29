@@ -23,7 +23,7 @@ class Config:
                         break
                 except PermissionError:
                     pass
-        self._root = Path(dir or "")
+        self._root = Path(dir or "").resolve()
 
     def file(self, filename, check_exists=False) -> Path:
         """build a path to a file in the config"""
@@ -40,6 +40,10 @@ class Config:
         """make a dict pointing to all the config files in the config"""
         return {x: self.file(x) for x in CONFIG_FILES}
 
-    def is_valid(self) :
-        """ check whether the config has all its components """
+    def is_valid(self):
+        """check whether the config has all its components"""
         return all(self.file(x).exists() for x in CONFIG_FILES)
+
+    @property
+    def dir(self) -> Path:
+        return self._root.resolve()

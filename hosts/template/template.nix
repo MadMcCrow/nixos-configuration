@@ -1,16 +1,14 @@
 # system configuration
 # Edit this file to customize your machine
 {
-  nonOS,
   config,
+  nonOS,
   ...
 }:
 {
   imports = [
-    # default is the core of nonOS
-    # other modules include :
-    # desktop, server, games
     nonOS.nixosModules.default
+    nonOS.nixosModules.desktop
     ./hardware-configuration.nix
   ];
 

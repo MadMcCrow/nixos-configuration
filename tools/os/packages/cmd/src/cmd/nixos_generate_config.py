@@ -2,6 +2,11 @@
 
 # python
 from asyncio import sleep
+
+# ours
+from cmd.awaitable import Awaitable
+from cmd.exceptions import ShellException, assert_cmd
+from cmd.nixformat import nixformat
 from pathlib import Path
 from re import DOTALL, MULTILINE, sub
 from sys import argv
@@ -9,14 +14,9 @@ from typing import Any
 
 from aiofiles import open  # pyright: ignore [reportMissingImports]
 
-# ours
-from cmd.awaitable import Awaitable
-from cmd.exceptions import ShellException, assert_cmd
-from cmd.nixformat import nixformat
-from tui import Progress
-
 # uv
 from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
+from tui import Progress
 
 APPNAME = argv[0]
 

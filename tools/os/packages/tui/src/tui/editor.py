@@ -1,19 +1,26 @@
-
 from collections.abc import Callable
-from tui.progress import Context
+
 from prompt_toolkit.application import Application
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout import HSplit, Layout, Window
 from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import TextArea
+from tui.progress import Context
 
-type Coro = Callable|None
+type Coro = Callable | None
+
 
 class Editor:
     """nice looking text editor that runs async"""
 
-    def __init__(self, content: str = "", on_save : Coro = None, on_quit : Coro = None, top_comment: str|None = None):
+    def __init__(
+        self,
+        content: str = "",
+        on_save: Coro = None,
+        on_quit: Coro = None,
+        top_comment: str | None = None,
+    ):
         """store info for async creation"""
         self._content = content
         self._top_comment = top_comment
@@ -35,13 +42,13 @@ class Editor:
         )
 
         @kb.add("c-s")
-        async def save(event): # pyright: ignore [reportUnusedFunction]
-            if self._on_save is not None :
+        async def save(event):  # pyright: ignore [reportUnusedFunction]
+            if self._on_save is not None:
                 await self._on_save(editor.text)
 
         @kb.add("c-x")
         async def quit(event):  # pyright: ignore [reportUnusedFunction]
-            if self._on_quit is not None :
+            if self._on_quit is not None:
                 await self._on_quit(editor.text)
             event.app.exit()
 
@@ -76,8 +83,8 @@ class Editor:
         )
         return Application(layout=layout, key_bindings=kb, full_screen=True, style=editor_style)
 
-    async def edit(self) :
-        """ open an editor for the user"""
+    async def edit(self):
+        """open an editor for the user"""
         Context().pause()
         app = await self._make_app()
         await app.run_async()
@@ -85,4 +92,3 @@ class Editor:
 
     async def __await__(self):
         return self.edit().__await__()
-

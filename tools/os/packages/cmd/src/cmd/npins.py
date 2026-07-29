@@ -2,6 +2,8 @@
 # need nix package "npins"
 
 from asyncio import sleep
+from cmd.awaitable import Awaitable
+from cmd.exceptions import ShellException, assert_cmd
 from os import getenv
 from pathlib import Path
 from shlex import split
@@ -11,8 +13,6 @@ from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
 
 # provided by us
 from tui import Progress
-from cmd.awaitable import Awaitable
-from cmd.exceptions import ShellException, assert_cmd
 
 NIXPKGS_TAG = getenv("NIXPKGS_TAG")
 

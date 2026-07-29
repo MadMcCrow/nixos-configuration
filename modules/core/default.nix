@@ -2,14 +2,14 @@
 # define the update process in NonOS
 inputs@{
   config,
-  nonOS,
+  mod,
   lib,
   pkgs,
   ...
 }:
 with lib;
 let
-  os = nonOS "" inputs;
+  os = mod "" inputs;
   mkPrio = mkOverride 990; # mkDefault but higher priority
 in
 {

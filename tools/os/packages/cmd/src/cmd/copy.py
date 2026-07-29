@@ -1,7 +1,7 @@
 from asyncio import TaskGroup
+from cmd.awaitable import Awaitable
 from pathlib import Path
 
-from cmd.awaitable import Awaitable
 from aiofiles import open
 from tui import Progress
 

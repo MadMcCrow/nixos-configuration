@@ -2,17 +2,17 @@
 # define how nonOS gets its nixpkgs
 inputs@{
   config,
-  nonOS,
+  mod,
   lib,
   pkgs,
   ...
 }:
 with lib;
 let
-  os = nonOS "graphics" inputs;
+  os = mod "graphics" inputs;
 in
 {
-  options = os.options {
+  options = os.mkOptions {
     amd.enable = mkEnableOption "AMD Specific optimisations";
   };
 

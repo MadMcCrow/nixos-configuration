@@ -3,12 +3,12 @@
 inputs@{
   config,
   disko,
-  nonOS,
+  mod,
   ...
 }:
 with lib;
 let
-  os = nonOS "storage" inputs;
+  os = mod "storage" inputs;
   persist = os.cfg._dir;
 
   # devices can be specified with :

@@ -13,16 +13,21 @@ let
   modules = import ./modules.nix inputs;
 in
 {
-  # the final nixos system.
-  mkNixosSystem =
-    config:
-    nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        ${version.name} = modules.${version.name};
-      };
-      modules = [ config ];
-    };
+  # shorter invocation
+  mkSystem =
+    args@{ config, ... }:
+    # nixos system wrapped
+    nixpkgs.lib.nixosSystem (
+      (removeAttrs args [ "config" ])
+      // {
+        system = args.system or "x86_64-linux";
+        specialArgs = {
+          nonOS = self.outputs;
+        };
+        modules = [ config ];
+      }
+    );
+
   # make a custom appliance system (ie. no nix store)
   mkAppliance = { nixpkgs, ... }: throw "not implemented yet !";
 

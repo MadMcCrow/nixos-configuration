@@ -1,8 +1,10 @@
-from aiofiles import open
 from cmd.awaitable import Awaitable
+
+from aiofiles import open
 from tui import Editor
 
 type OptStr = str | None
+
 
 class textedit(Awaitable):
     """nice looking text editor that runs async"""
@@ -19,8 +21,10 @@ class textedit(Awaitable):
         init_text = ""
         async with open(self._file, "r") as f:
             init_text = await f.read()
-        async def on_save(text : str) :
+
+        async def on_save(text: str):
             async with open(self._file, "w") as f:
-               await f.write(text)
+                await f.write(text)
+
         editor = Editor(init_text, on_save=on_save, on_quit=on_save, top_comment=self._top_comment)
         await editor.edit()
