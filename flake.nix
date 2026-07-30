@@ -51,7 +51,10 @@
     flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }: {
         # this is done to avoid spamming until things are stabilized
-        systems = [ "x86_64-linux" "aarch64-darwin"] ; # lib.systems.flakeExposed;
+        systems = [
+          "x86_64-linux"
+          "aarch64-darwin"
+        ]; # lib.systems.flakeExposed;
 
         imports = [ treefmt-nix.flakeModule ];
 

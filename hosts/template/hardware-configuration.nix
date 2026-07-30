@@ -1,4 +1,3 @@
 # empty hardware configuration for correct evaluation
-{ _ } :
-{
+{ _ }: {
 }

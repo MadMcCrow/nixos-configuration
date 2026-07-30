@@ -10,7 +10,6 @@ with lib;
 with builtins;
 let
   version = import ./version.nix inputs;
-  specialArgs = import ./specialArgs inputs;
 
   modulesNames = [
     "core"
@@ -23,10 +22,12 @@ let
       {
         all = self: self;
       }
-      // (listToAttrs (x: {
-        name = x;
-        value = self: self.filter (lib.hasInfix "/${name}/");
-      }) modulesNames)
+      // (listToAttrs (
+        map (x: {
+          name = x;
+          value = i: i.filter (lib.hasInfix "/${x}/");
+        }) modulesNames
+      ))
     )
   );
 
@@ -35,7 +36,12 @@ let
       name = x;
       value = _: {
         imports = [ modules-tree.${x} ];
-        config._module.args = specialArgs;
+        config._module.args = {
+          # expose our tool
+          mod = import ./mkmod.nix inputs;
+          # expose our inputs
+          inherit (inputs) disko lanzaboote nixos-hardware;
+        };
       };
     }) (modulesNames ++ [ "all" ])
   );

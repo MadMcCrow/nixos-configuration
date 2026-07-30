@@ -1,6 +1,7 @@
 # storage.nix
 # Define the disk layout using disko
 inputs@{
+  lib,
   config,
   disko,
   mod,

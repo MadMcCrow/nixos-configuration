@@ -7,24 +7,23 @@ inputs@{
   ...
 }:
 with lib;
-let
-  # selective imports
-  version = import ./version.nix inputs;
-  modules = import ./modules.nix inputs;
-in
 {
-  # shorter invocation
+  # nixosSystem wrapped
   mkSystem =
-    args@{ config, ... }:
-    # nixos system wrapped
+    args@{
+      modules,
+      system ? "x86_64-linux",
+      ...
+    }:
     nixpkgs.lib.nixosSystem (
-      (removeAttrs args [ "config" ])
+      args
       // {
-        system = args.system or "x86_64-linux";
+        inherit system;
         specialArgs = {
+          # expose our own flake outputs
           nonOS = self.outputs;
-        };
-        modules = [ config ];
+        }
+        // (args.specialArgs or { });
       }
     );
 
