@@ -7,14 +7,26 @@ inputs@{
   ...
 }:
 with builtins;
+with lib;
 let
-  rootDir = self + "/hosts";
-  inherit (import ./systems.nix inputs) mkSystem;
-  mksysPair = path: {
-    name = baseNameOf (dirOf path);
-    value = lib.traceVal (mkSystem {
-      config = path;
-    });
+  # build a standard nixOS hosts from a configuration
+  mksysPair = mod: rec{
+    name = unsafeDiscardStringContext (baseNameOf (dirOf (mod)));
+    value = nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = {
+        nonOS = self.outputs;
+      };
+      modules = [ mod ];
+    };
   };
+
+  # find all configurations
+  configurations = import-tree
+  (i: i.leafs)
+  (i: i.filter (match "configuration.nix"))
+  (i: i (self + "/hosts";));
+
 in
-lib.traceVal (map mksysPair (import-tree.leafs rootDir))
+# build attrset
+listToAttrs (map mksysPair configurations)

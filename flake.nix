@@ -50,7 +50,8 @@
     }:
     flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }: {
-        systems = lib.systems.flakeExposed;
+        # this is done to avoid spamming until things are stabilized
+        systems = [ "x86_64-linux" "aarch64-darwin"] ; # lib.systems.flakeExposed;
 
         imports = [ treefmt-nix.flakeModule ];
 
@@ -66,7 +67,7 @@
             # expose modules
             nixosModules = import ./lib/modules.nix args;
             # check hosts
-            #nixosConfigurations = import ./lib/configurations.nix args;
+            nixosConfigurations = import ./lib/configurations.nix args;
           };
 
         perSystem =

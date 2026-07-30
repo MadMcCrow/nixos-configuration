@@ -22,7 +22,7 @@
 with builtins;
 let
   # template config for installation
-  config = self + "/hosts/template/template.nix";
+  config = self + "/hosts/template/configuration.nix";
 
   nixdeps = [
     # update machine pins
