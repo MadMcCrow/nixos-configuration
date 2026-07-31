@@ -1,18 +1,20 @@
 # nixpkgs.nix
 # define how nonOS gets its nixpkgs
+nonOS :
 inputs@{
   config,
-  mod,
   lib,
   pkgs,
   ...
 }:
-with lib;
+with nonOS;
 let
-  os = mod "nixpkgs" inputs;
+  os = mod "nixpkgs" config;
 in
+with lib;
+with os;
 {
-  options = os.mkOptions {
+  options = mkOptions {
     # global option to allow unfree packages in other modules
     _unfreePackages = mkOption {
       description = "accepted unfree packages";

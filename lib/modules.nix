@@ -3,50 +3,72 @@
 inputs@{
   self,
   lib,
-  import-tree,
   ...
 }:
-with lib;
 with builtins;
 let
-  version = import ./version.nix inputs;
+  inherit (import ./version.nix inputs) name;
 
-  modulesNames = [
-    "core"
-    "desktop"
-  ];
+  # filter globals out of attrs
+  filterGlobals = neg: attrs: lib.filterAttrs (n: _: (lib.hasPrefix "_" n) == neg) attrs;
 
-  modules-tree = import-tree (i: i.addPath (self + "/modules")) (
-    i:
-    i.addAPI (
-      {
-        all = self: self;
-      }
-      // (listToAttrs (
-        map (x: {
-          name = x;
-          value = i: i.filter (lib.hasInfix "/${x}/");
-        }) modulesNames
-      ))
-    )
-  );
+  mkPrio = lib.mkOverride 990; # mkDefault but higher priority
 
-  modules = listToAttrs (
-    map (x: {
-      name = x;
-      value = _: {
-        imports = [ modules-tree.${x} ];
-        config._module.args = {
-          # expose our tool
-          mod = import ./mkmod.nix inputs;
-          # expose our inputs
-          inherit (inputs) disko lanzaboote nixos-hardware;
-        };
+  # helper attrset for modules;
+  nonOS = {
+
+    # provide values
+    inherit (version) version name status;
+
+    inherit mkPrio;
+
+    # added packages
+    pkgs = import ./packages.nix inputs;
+
+    mod = prefix: config:
+    let
+      pl = (lib.optionals (prefix != "") (lib.splitString "." prefix));
+    in
+    rec {
+      # cfg getter gets globals and specific
+      cfg = (filterGlobals true config.${name}) // (lib.attrByPath pl { } config.${name});
+
+      # set options :
+      mkOptions = optAttr: {
+        ${name} =
+          # add globals
+          (filterGlobals true optAttr)
+          # and then we add all the other attribute by their path prefixed
+          // (lib.setAttrByPath (lib.traceVal pl) (
+            filterGlobals false optAttr
+            // {
+              enable = lib.mkEnableOption "${name}.${path}" // {
+                default = true;
+              };
+            }
+          ));
       };
-    }) (modulesNames ++ [ "all" ])
-  );
-in
-modules
-// {
-  default = modules.core;
-}
+      # is this module enabled, recursive
+      enabled = pl:
+            let
+              isEnabledAncestor =
+                p:
+                let
+                  node = lib.attrByPath (p ++ [ "enable" ]) null config.${name};
+                in
+                if node == false then
+                  false
+                else if p == [ ] then
+                  true
+                else
+                  isEnabledAncestor (init p);
+            in config.${name}.enable && isEnabledAncestor pl;
+      # set config :
+      mkConfig = c: lib.mkIf enabled (mkPrio c);
+    };
+  };
+
+manifest = import (self + "/modules/manifest.nix") (inputs // {inherit nonOS;});
+
+in mapAttrs (k: v: ( _: { imports = v;}))
+(manifest // { "default" = lib.concatAttrValues manifest;})

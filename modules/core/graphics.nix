@@ -1,15 +1,16 @@
 # graphics.nix
-# define how nonOS gets its nixpkgs
+# define how nonOS handles GPUs (mostly AMD)
+nonOS :
 inputs@{
   config,
-  mod,
   lib,
   pkgs,
   ...
 }:
 with lib;
+with nonOS;
 let
-  os = mod "graphics" inputs;
+  os = mod "graphics" config;
 in
 {
   options = os.mkOptions {

@@ -1,15 +1,15 @@
 # kde.nix
 # enable the kde desktop
+nonOS :
 inputs@{
   config,
-  mod,
   lib,
   pkgs,
   ...
 }:
 with lib;
 let
-  os = mod "desktop.kde" inputs;
+  os = nonOS.mod "desktop.kde" inputs;
 in
 {
   # interface

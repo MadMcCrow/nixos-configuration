@@ -1,15 +1,15 @@
 # storage.nix
 # Define the disk layout using disko
+nonOS :
 inputs@{
   lib,
   config,
-  disko,
-  mod,
   ...
 }:
 with lib;
+with nonOS;
 let
-  os = mod "storage" inputs;
+  os = mod "storage" config;
   persist = os.cfg._dir;
 
   # devices can be specified with :
@@ -33,9 +33,6 @@ let
       false;
 in
 {
-  # import disko
-  imports = [ disko.nixosModules.disko ];
-
   options = os.mkOptions {
     main = mkOption {
       description = "The main disk device to use (e.g., /dev/nvme0n1).";

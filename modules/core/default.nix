@@ -1,16 +1,16 @@
 # system.nix
 # define the update process in NonOS
+nonOS :
 inputs@{
   config,
-  mod,
   lib,
   pkgs,
   ...
-}:
+} :
 with lib;
+with nonOS;
 let
-  os = mod "" inputs;
-  mkPrio = mkOverride 990; # mkDefault but higher priority
+  os = mod "" config;
 in
 {
   options = os.mkOptions {
@@ -18,38 +18,9 @@ in
     customise = mkEnableOption "customise nixOS to ${os.name}" // {
       default = true;
     };
-    # enable secureboot
-    secureboot.enable = mkEnableOption "secureboot" // {
-      default = true;
-    };
-    # yubikey,onlykey, etc..
-    fido.enable =
-      mkEnableOption ""
-        "
-      FIDO2 : https://nixos.org/manual/nixos/stable/#sec-luks-file-systems-fido2
-    "
-        "";
   };
 
   config = os.mkConfig {
-    boot = {
-      initrd.systemd = {
-        enable = true;
-        fido2.enable = os.cfg.fido;
-      };
-      tmp.cleanOnBoot = mkPrio true;
-      loader = {
-        systemd-boot.enable = mkForce (!os.cfg.secureboot.enable);
-        grub.enable = mkForce false;
-      };
-      lanzaboote = mkPrio {
-        inherit (os.cfg.secureboot) enable;
-        pkiBundle = "${config._persist}/secureboot";
-        configurationLimit = 5;
-      };
-      plymouth.enable = mkPrio true;
-      consoleLogLevel = mkPrio 3;
-    };
 
     environment = mkPrio {
       etc."os-release".text = ''
@@ -71,12 +42,8 @@ in
         [
           openssl
           dnsutils
-          sbctl
-          tpm-luks
-          tpm2-tss
           nmap
-        ]
-        ++ (optionals [ libfido2 ]);
+        ];
     };
 
     hardware = {
