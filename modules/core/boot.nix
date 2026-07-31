@@ -1,6 +1,6 @@
 # boot.nix
 # define how nonOS boots
-nonOS :
+nonOS:
 inputs@{
   config,
   lib,
@@ -15,16 +15,13 @@ in
 with os;
 {
   options = mkOptions {
-      # enable secureboot
-      secureboot.enable = mkEnableOption "secureboot" // {
-        default = true;
-      };
-      # yubikey,onlykey, etc..
-      fido.enable =
-        mkEnableOption """
-        FIDO2 : https://nixos.org/manual/nixos/stable/#sec-luks-file-systems-fido2
-          """;
-      };
+    # enable secureboot
+    secureboot.enable = mkEnableOption "secureboot" // {
+      default = true;
+    };
+    # yubikey,onlykey, etc..
+    fido.enable = mkEnableOption "FIDO2 : https://nixos.org/manual/nixos/stable/#sec-luks-file-systems-fido2";
+  };
 
   config = mkConfig {
     boot = {
@@ -39,7 +36,7 @@ with os;
       };
       lanzaboote = mkPrio {
         inherit (os.cfg.secureboot) enable;
-        pkiBundle = "${config._persist}/secureboot";
+        pkiBundle = "${cfg._dir}/secureboot";
         configurationLimit = 5;
       };
       plymouth.enable = mkPrio true;

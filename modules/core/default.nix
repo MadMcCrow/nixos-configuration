@@ -1,12 +1,12 @@
 # system.nix
 # define the update process in NonOS
-nonOS :
+nonOS:
 inputs@{
   config,
   lib,
   pkgs,
   ...
-} :
+}:
 with lib;
 with nonOS;
 let
@@ -21,7 +21,6 @@ in
   };
 
   config = os.mkConfig {
-
     environment = mkPrio {
       etc."os-release".text = ''
         NAME="${os.name}"
@@ -37,13 +36,11 @@ in
       '';
 
       systemPackages = [ nonpkgs.os ];
-      defaultPackages =
-        with pkgs;
-        [
-          openssl
-          dnsutils
-          nmap
-        ];
+      defaultPackages = with pkgs; [
+        openssl
+        dnsutils
+        nmap
+      ];
     };
 
     hardware = {

@@ -7,7 +7,9 @@ inputs@{
 }:
 with builtins;
 let
-  inherit (import ./version.nix inputs) name;
+  version = import ./version.nix inputs;
+
+  inherit (version) name;
 
   # filter globals out of attrs
   filterGlobals = neg: attrs: lib.filterAttrs (n: _: (lib.hasPrefix "_" n) == neg) attrs;
@@ -16,59 +18,64 @@ let
 
   # helper attrset for modules;
   nonOS = {
-
     # provide values
-    inherit (version) version name status;
+    inherit version;
 
     inherit mkPrio;
 
     # added packages
     pkgs = import ./packages.nix inputs;
 
-    mod = prefix: config:
-    let
-      pl = (lib.optionals (prefix != "") (lib.splitString "." prefix));
-    in
-    rec {
-      # cfg getter gets globals and specific
-      cfg = (filterGlobals true config.${name}) // (lib.attrByPath pl { } config.${name});
+    mod =
+      prefix: config:
+      let
+        pl = lib.optionals (prefix != "") (lib.splitString "." prefix);
+      in
+      rec {
+        # cfg getter gets globals and specific
+        cfg = (filterGlobals true config.${name}) // (lib.attrByPath pl { } config.${name});
 
-      # set options :
-      mkOptions = optAttr: {
-        ${name} =
-          # add globals
-          (filterGlobals true optAttr)
-          # and then we add all the other attribute by their path prefixed
-          // (lib.setAttrByPath (lib.traceVal pl) (
-            filterGlobals false optAttr
-            // {
-              enable = lib.mkEnableOption "${name}.${path}" // {
-                default = true;
-              };
-            }
-          ));
+        # set options :
+        mkOptions = optAttr: {
+          ${name} =
+            # add globals
+            (filterGlobals true optAttr)
+            # and then we add all the other attribute by their path prefixed
+            // (lib.setAttrByPath pl (
+              filterGlobals false optAttr
+              // {
+                enable =
+                  let
+                    optPath = lib.concatStringsSep "." ([ name ] ++ pl);
+                  in
+                  lib.mkEnableOption optPath
+                  // {
+                    default = true;
+                  };
+              }
+            ));
+        };
+        # is this module enabled, recursive
+        enabled =
+          let
+            isEnabledAncestor =
+              p:
+              let
+                node = lib.attrByPath (p ++ [ "enable" ]) null config.${name};
+              in
+              if node == false then
+                false
+              else if p == [ ] then
+                true
+              else
+                isEnabledAncestor (lib.init p);
+          in
+          config.${name}.enable && isEnabledAncestor pl;
+        # set config :
+        mkConfig = c: lib.mkIf enabled (mkPrio c);
       };
-      # is this module enabled, recursive
-      enabled = pl:
-            let
-              isEnabledAncestor =
-                p:
-                let
-                  node = lib.attrByPath (p ++ [ "enable" ]) null config.${name};
-                in
-                if node == false then
-                  false
-                else if p == [ ] then
-                  true
-                else
-                  isEnabledAncestor (init p);
-            in config.${name}.enable && isEnabledAncestor pl;
-      # set config :
-      mkConfig = c: lib.mkIf enabled (mkPrio c);
-    };
   };
 
-manifest = import (self + "/modules/manifest.nix") (inputs // {inherit nonOS;});
-
-in mapAttrs (k: v: ( _: { imports = v;}))
-(manifest // { "default" = lib.concatAttrValues manifest;})
+  manifest = import (self + "/modules/manifest.nix") (inputs // { inherit nonOS; });
+in
+mapAttrs (k: v: (_: { imports = v; })) (manifest // { "default" = lib.concatAttrValues manifest; })

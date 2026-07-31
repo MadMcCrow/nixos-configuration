@@ -1,6 +1,6 @@
 # graphics.nix
 # define how nonOS handles GPUs (mostly AMD)
-nonOS :
+nonOS:
 inputs@{
   config,
   lib,

@@ -1,6 +1,6 @@
 # storage.nix
 # Define the disk layout using disko
-nonOS :
+nonOS:
 inputs@{
   lib,
   config,
@@ -32,8 +32,9 @@ let
     else
       false;
 in
+with os;
 {
-  options = os.mkOptions {
+  options = mkOptions {
     main = mkOption {
       description = "The main disk device to use (e.g., /dev/nvme0n1).";
       type =
@@ -45,7 +46,7 @@ in
     };
   };
 
-  config = os.mkConfig {
+  config = mkConfig {
     # filesystems
     fileSystems = {
       "/" = {
@@ -71,7 +72,7 @@ in
         ];
       };
       disk.main = {
-        device = os.cfg.main;
+        device = cfg.main;
         type = "disk";
         content = {
           type = "gpt";
@@ -90,8 +91,8 @@ in
                       "noatime"
                     ];
                   };
-                  "${os.cfg.persist}" = {
-                    mountpoint = "${os.cfg.persist}";
+                  "${persist}" = {
+                    mountpoint = "${persist}";
                     mountOptions = [ "compress=zstd" ];
                   };
                   "/home" = {

@@ -4,17 +4,24 @@ inputs@{
   lib,
   import-tree,
   disko,
+  lanzaboote,
   nonOS,
   ...
 }:
 let
-  mkMod = dir: deps:
-  let
-    modules = (import-tree.leafs dir);
-  in
-   (map (x: lib.modules.importApply x nonOS) modules) ++ deps;
+  mkMod =
+    dir: deps:
+    let
+      modules = import-tree.leafs dir;
+    in
+    (map (x: lib.modules.importApply x nonOS) modules) ++ deps;
 in
 {
-  core = mkMod ./core [ disko.nixosModules.disko ];
-  desktop = mkMod ./desktop [];
+  #  disks, format, boot, networking, updates
+  core = mkMod ./core [
+    disko.nixosModules.disko
+    lanzaboote.nixosModules.lanzaboote
+  ];
+  # desktop environment
+  desktop = mkMod ./desktop [ ];
 }

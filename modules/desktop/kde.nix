@@ -1,6 +1,6 @@
 # kde.nix
 # enable the kde desktop
-nonOS :
+nonOS:
 inputs@{
   config,
   lib,

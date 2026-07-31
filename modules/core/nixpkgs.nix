@@ -1,6 +1,6 @@
 # nixpkgs.nix
 # define how nonOS gets its nixpkgs
-nonOS :
+nonOS:
 inputs@{
   config,
   lib,
@@ -24,7 +24,7 @@ with os;
     # allow moving the configuration folder
     _dir = mkOption {
       description = "configuration directory";
-      default = "/etc/${os.name}";
+      default = "/etc/${nonOS.version.name}";
       type = types.path;
     };
   };
@@ -65,7 +65,8 @@ with os;
     nixpkgs = {
       # help other modules define allowed unfree packages
       config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) config._unfreePackages;
-      pkgs = import (import "${os.cfg.dir}/npins").nixpkgs { };
+      # this should not be done
+      # pkgs = import (import "${cfg._dir}/npins").nixpkgs { };
     };
 
     system = {
