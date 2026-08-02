@@ -1,12 +1,22 @@
+# config.py
+# nixOS/nonOS configuration object
+
+# python
 from os import R_OK, W_OK, access
 from pathlib import Path
 
+# Const
 CONFIG_FILES = ["configuration.nix", "hardware-configuration.nix", "npins"]
 CONFIG_DIRS = ["/etc/nonOS", "/etc/nixOS"]
 
 
 class Config:
-    def __init__(self, dir: Path | str | None):
+    """
+        nixOS/nonOS configuration object
+        only one can exist during execution
+    """
+
+    def __init__(self, dir: Path | str | None = None):
         """
         initialize the config directory
         if no path is provided, search for the correct one

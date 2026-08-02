@@ -6,7 +6,7 @@ from prompt_toolkit.layout import HSplit, Layout, Window
 from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import TextArea
-from tui.progress import Context
+from shared.tui.context import Context
 
 type Coro = Callable | None
 

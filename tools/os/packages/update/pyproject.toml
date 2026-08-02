@@ -1,10 +1,10 @@
 [project]
-name        = "cmd"
+name        = "update"
 version     = "0.0.0"
-description = "cmd"
+description = "update command for ostools"
 requires-python = ">=3.14"
 dependencies    = [
     "shellous >= 0.41.0",
     "aiofiles >= 25.1.0",
-    "tui"
+    "shared"
 ]

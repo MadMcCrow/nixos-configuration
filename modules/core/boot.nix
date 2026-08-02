@@ -31,10 +31,10 @@ with os;
       };
       tmp.cleanOnBoot = mkPrio true;
       loader = {
-        systemd-boot.enable = mkForce (!os.cfg.secureboot.enable);
-        grub.enable = mkForce false;
+        systemd-boot.enable = !os.cfg.secureboot.enable;
+        grub.enable = false;
       };
-      lanzaboote = mkPrio {
+      lanzaboote = {
         inherit (os.cfg.secureboot) enable;
         pkiBundle = "${cfg._dir}/secureboot";
         configurationLimit = 5;

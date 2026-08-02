@@ -7,7 +7,7 @@
 {
   imports = [ nonOS.nixosModules.default ];
   config = {
-    network.hostname = "disabled";
+    networking.hostname = "disabled";
     nonOS = {
       enable = false;
       storage.main = "/dev/nvme0n1";

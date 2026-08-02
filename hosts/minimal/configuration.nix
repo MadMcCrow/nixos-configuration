@@ -8,7 +8,7 @@
   imports = [ nonOS.nixosModules.default ];
 
   config = {
-    network.hostname = "minimal";
+    networking.hostName = "minimal";
     nonOS = {
       storage.main = "/dev/nvme0n1";
     };

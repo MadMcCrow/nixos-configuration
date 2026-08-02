@@ -4,9 +4,10 @@ requires-python = ">=3.14"
 
 [manifest]
 members = [
-    "cmd",
+    "init-config",
+    "install",
     "ostool",
-    "tui",
+    "shared",
 ]
 
 [[package]]
@@ -19,20 +20,37 @@ wheels = [
 ]
 
 [[package]]
-name = "cmd"
+name = "init-config"
 version = "0.0.0"
-source = { editable = "packages/cmd" }
+source = { editable = "packages/init-config" }
 dependencies = [
     { name = "aiofiles" },
+    { name = "shared" },
     { name = "shellous" },
-    { name = "tui" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=25.1.0" },
+    { name = "shared", editable = "packages/shared" },
     { name = "shellous", specifier = ">=0.41.0" },
-    { name = "tui", editable = "packages/tui" },
+]
+
+[[package]]
+name = "install"
+version = "0.0.0"
+source = { editable = "packages/install" }
+dependencies = [
+    { name = "aiofiles" },
+    { name = "shared" },
+    { name = "shellous" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiofiles", specifier = ">=25.1.0" },
+    { name = "shared", editable = "packages/shared" },
+    { name = "shellous", specifier = ">=0.41.0" },
 ]
 
 [[package]]
@@ -61,26 +79,28 @@ name = "ostool"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "cmd" },
-    { name = "tui" },
+    { name = "init-config" },
+    { name = "install" },
+    { name = "shared" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "cmd", editable = "packages/cmd" },
-    { name = "tui", editable = "packages/tui" },
+    { name = "init-config", editable = "packages/init-config" },
+    { name = "install", editable = "packages/install" },
+    { name = "shared", editable = "packages/shared" },
 ]
 
 [[package]]
 name = "prompt-toolkit"
-version = "3.0.52"
+version = "3.0.53"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "wcwidth" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/96/06e01a7b38dce6fe1db213e061a4602dd6032a8a97ef6c1a862537732421/prompt_toolkit-3.0.52.tar.gz", hash = "sha256:28cde192929c8e7321de85de1ddbe736f1375148b02f2e17edd840042b1be855", size = 434198, upload-time = "2025-08-27T15:24:02.057Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/ea/39b988c938f75cb75d7045b5c69f8bfed47ee2152c8837fb403de29d6fb8/prompt_toolkit-3.0.53.tar.gz", hash = "sha256:9ec8a0ad96d5c56148b3f914aa79c1564c3fde5d2e6b876e7bc327e353cf8fa6", size = 435492, upload-time = "2026-07-26T20:56:14.758Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl", hash = "sha256:9aac639a3bbd33284347de5ad8d68ecc044b91a762dc39b7c21095fcd6a19955", size = 391431, upload-time = "2025-08-27T15:23:59.498Z" },
+    { url = "https://files.pythonhosted.org/packages/54/6f/84908cad2d6aa5144abcf7b42709fe4fdb459bc640ec7ac5786e7693dabc/prompt_toolkit-3.0.53-py3-none-any.whl", hash = "sha256:01c0891d7f9237d5e339f7d3e42cdae80b7534abb1c7c0e3352efba6231492f2", size = 392288, upload-time = "2026-07-26T20:56:12.512Z" },
 ]
 
 [[package]]
@@ -106,27 +126,31 @@ wheels = [
 ]
 
 [[package]]
-name = "shellous"
-version = "0.41.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a2/b9/ed170ac278346e4d9cd29392d4da8d8eea3ecc7f7daff6365ea961b2677a/shellous-0.41.0.tar.gz", hash = "sha256:c99c4c023b56a1cfd262d8c882f9e0f2bd57372cb97845758b4d7b6c5f066545", size = 47223, upload-time = "2026-07-19T01:26:46.755Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/01/24d2f4ede868a76e77e696cefe9f0afa102e41d06bbf116fd8e835fa9126/shellous-0.41.0-py3-none-any.whl", hash = "sha256:dc8cfe6d06d41ecfc6d670d456ffcdc53dcfe615fb84e72324f8950525d3f803", size = 52260, upload-time = "2026-07-19T01:26:45.405Z" },
-]
-
-[[package]]
-name = "tui"
+name = "shared"
 version = "0.0.0"
-source = { editable = "packages/tui" }
+source = { editable = "packages/shared" }
 dependencies = [
+    { name = "aiofiles" },
     { name = "prompt-toolkit" },
     { name = "rich" },
+    { name = "shellous" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "aiofiles", specifier = ">=25.1.0" },
     { name = "prompt-toolkit", specifier = ">=3.0.0" },
     { name = "rich", specifier = ">=15.0.0" },
+    { name = "shellous", specifier = ">=0.41.0" },
+]
+
+[[package]]
+name = "shellous"
+version = "0.42.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/6f/60ff7c491b8ded4063d07afcd1ec601825242a1c31090910756ec9059b58/shellous-0.42.0.tar.gz", hash = "sha256:6a0e59188840622f22fdbedcb37009bb0efb06b3e8b37aa1b2b7120c8b6b21d3", size = 56160, upload-time = "2026-07-30T22:32:25.875Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/22/b3/40591e14edfc8bc0962336a2c0a3259f066cbf8e08fb3422453a89f9f6c2/shellous-0.42.0-py3-none-any.whl", hash = "sha256:ceefc9d170a87bc85ee904a76bdcbc7d6959f06a49e2ab7803c399ec77d7b43c", size = 53859, upload-time = "2026-07-30T22:32:24.535Z" },
 ]
 
 [[package]]

@@ -1,9 +1,0 @@
-[project]
-name        = "tui"
-version     = "0.0.0"
-description = "tui"
-requires-python = ">=3.14"
-dependencies    = [
-    "rich >= 15.0.0",
-    "prompt_toolkit>= 3.0.0"
-]

@@ -1,32 +1,31 @@
+# hardware_config.py :
+# generate hardware config for init of config
 # need nix package "nixos-install-tools" and "nixos-install"
 
 # python
 from asyncio import sleep
-
-# ours
-from cmd.awaitable import Awaitable
-from cmd.exceptions import ShellException, assert_cmd
-from cmd.nixformat import nixformat
 from pathlib import Path
 from re import DOTALL, MULTILINE, sub
-from sys import argv
 from typing import Any
 
+# uv
+from shared import APPNAME
+from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
 from aiofiles import open  # pyright: ignore [reportMissingImports]
 
-# uv
-from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
-from tui import Progress
+# ours
+from shared import Awaitable
+from shared.exceptions import ShellException, assert_cmd
+from shared.cmd.nixformat import nixformat
+from shared.tui import Progress
 
-APPNAME = argv[0]
 
 
-class nixos_generate_config(Awaitable):
+
+class GenerateHardwareConfig(Awaitable):
     def __init__(self, file: Path | str = "", display: bool = True) -> None:
         """
         'nixos-generate-config --show-hardware-config --no-filesystems'
-        this command does not really take any time. but for consistency,
-        we run it async
         """
         assert_cmd("nixos-generate-config")
         self.file = Path(file).resolve()
@@ -45,7 +44,7 @@ class nixos_generate_config(Awaitable):
                 raise ShellException(cmd, exc)
 
         async def _pre_write_fixup(nix: str) -> str:
-            """remove commentns and imports before writing to file"""
+            """remove comments and imports before writing to file """
             nix = sub(
                 r"imports\s*=\s*\[(?:.*?)\]\s*;", "", nix, flags=DOTALL
             )  # remove imports from installer

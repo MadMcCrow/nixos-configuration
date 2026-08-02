@@ -6,11 +6,10 @@ from pathlib import Path
 from sys import argv
 
 # ours
-from commands.awaitable import Awaitable
+from shared.awaitable import Awaitable
 
 # uv
 from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
-
 
 class nixformat(Awaitable):
     """
@@ -33,8 +32,7 @@ class nixformat(Awaitable):
             try:
                 await sh(f)
             except ResultError as exc:
-                print(exc)
-                pass  # ignore formatter errors
+                print(exc) # ignore formatter errors
 
 
 async def main():
