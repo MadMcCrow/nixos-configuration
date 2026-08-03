@@ -58,21 +58,18 @@ let
   nonFunc = "mkSystem";
   # Todo : add the aliases "os-install" == "os install" (and same for update)
   #
-  nixrev = (fromJSON (readFile self + "./flake.lock")).nodes.nixpkgs.locked.rev;
+  nixrev = (fromJSON (readFile (self + "/flake.lock"))).nodes.nixpkgs.locked.rev;
 in
 symlinkJoin {
   name = "ostool";
   version = "0.0"; # nonlib.version;
-  paths = [
-    os-unwrapped
-  ]
-  ++ nixdeps;
+  paths = [ os-unwrapped ];
   buildInputs = [ makeWrapper ];
   postBuild = ''
     wrapProgram $out/bin/os \
       --set-default TEMPLATE_CONFIG ${config} \
       --set-default NIXPKGS_TAG  ${nixrev} \
-      --prefix PATH : ${lib.makeBinPath nixdeps}
+      --prefix PATH:${lib.makeBinPath nixdeps}
   '';
   meta = {
     mainProgram = "os";

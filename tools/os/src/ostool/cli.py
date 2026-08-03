@@ -11,7 +11,7 @@ def main():
 
     # shared options
     common_options = ArgumentParser(add_help=False)
-    common_options.add_argument("--config", "-c", help="config directory", default="/etc/nixOS")
+    common_options.add_argument("--config", "-c", help="config directory", default="/etc/nonOS")
     common_options.add_argument("--quiet", "-q", action="store_true")
     # app parser
     parser = ArgumentParser(
@@ -33,6 +33,6 @@ def main():
 
     args = parser.parse_args()
     if hasattr(args, "func"):
-        run(args.func(**vars(args)))
+        run(args.func(args))
     else:
         parser.print_help()
