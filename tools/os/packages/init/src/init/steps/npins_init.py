@@ -5,7 +5,7 @@ from shlex import split
 from shared import Awaitable
 from shared.cmd.npins import npins
 
-NIXPKGS_TAG = getenv("NIXPKGS_TAG")
+NIXPKGS_TAG = getenv("NIXPKGS_TAG", None)
 
 class InitNpins(Awaitable):
 

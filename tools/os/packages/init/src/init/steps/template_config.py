@@ -20,8 +20,6 @@ class GenerateHostConfig(Awaitable):
     def __init__(self, dir, hostname : str |None = None, display : bool = True):
         c = Config(dir)
         self.target = c["configuration.nix"]
-        if self.target.exists():
-            raise FileExistsError(self.target)
         self.display = display
         self.hostname = hostname
 
@@ -33,20 +31,23 @@ class GenerateHostConfig(Awaitable):
                 async for line in temp :
                     if self.hostname is not None :
                         line = sub(_pattern, self.hostname, line)
-                        await target.write(f"{line.strip()}/n")
+                    await target.write(f"{line.strip()}/n")
         async def format():
             await nixformat(self.target)
 
-        steps = [(copyinplace(), "init template"), (format(), "format nix configuration")]
+        steps = []
+        if not self.target.exists():
+            steps.append((copyinplace, "init template"))
+        steps.append((format, "format nix configuration"))
 
         if self.display :
             async with Progress("generating host configuration") as progress :
                 for step, description in steps :
                     with progress.info(description) :
-                        await step
+                        await step()
         else :
             for step, _ in steps :
-                    await step
+                    await step()
 
 
 
