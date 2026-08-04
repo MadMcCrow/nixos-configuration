@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from asyncio import run
 from os import uname
-from init_config import init_config_args
+from init import init_config_args
 from shared import APPNAME
 
 

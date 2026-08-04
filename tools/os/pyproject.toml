@@ -6,7 +6,7 @@ authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
 # TODO : add a readme in docs !
 # readme      = "README.md"
 requires-python = ">=3.14"
-dependencies    = [ "shared", "install", "init-config"]
+dependencies    = [ "shared", "install", "init"]
 
 
 [project.scripts]
@@ -23,10 +23,10 @@ compile-bytecode = true
 members = ["packages/*"]
 
 [tool.uv.sources]
-shared      = { workspace = true}
-init-config = { workspace = true}
-install     = { workspace = true}
-update      = { workspace = true}
+shared  = { workspace = true }
+init    = { workspace = true }
+install = { workspace = true }
+update  = { workspace = true }
 
 [tool.ruff]
 line-length = 100

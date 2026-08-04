@@ -1,7 +1,7 @@
 # python
 from asyncio import TaskGroup
 from shared import Awaitable, Config
-from init_config.steps import GenerateHardwareConfig, GenerateHostConfig, InitNpins
+from init.steps import GenerateHardwareConfig, GenerateHostConfig, InitNpins
 
 async def init_config(dir: str | None, hostname: str|None, edit: bool, quiet: bool = False):
     """
@@ -15,10 +15,13 @@ async def init_config(dir: str | None, hostname: str|None, edit: bool, quiet: bo
         InitNpins(c["npins"], not quiet)
     ]
 
+    async def wrap_coro( awaitable : Awaitable):
+        return await awaitable
+
     # run concurrenlty :
     async with TaskGroup() as tg:
         for f in coros :
-            tg.create_task(await f)
+            tg.create_task(wrap_coro(f))
 
 
 

@@ -1,6 +1,6 @@
 from argparse import Namespace
 from asyncio import run
-from init_config.init_config import init_config
+from init.init_config import init_config
 
 def init_config_args(args : Namespace) :
     """ wrap init config in an sync call and extract the arguments from kvargs """

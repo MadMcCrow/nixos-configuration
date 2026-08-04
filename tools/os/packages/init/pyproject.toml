@@ -1,5 +1,5 @@
 [project]
-name        = "init-config"
+name        = "init"
 version     = "0.0.0"
 description = "init config for ostool"
 requires-python = ">=3.14"

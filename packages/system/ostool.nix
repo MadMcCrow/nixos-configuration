@@ -3,6 +3,7 @@
 {
   self,
   lib,
+  stdenvNoCC,
   callPackage,
   callPackages,
   symlinkJoin,
@@ -60,17 +61,22 @@ let
   #
   nixrev = (fromJSON (readFile (self + "/flake.lock"))).nodes.nixpkgs.locked.rev;
 in
-symlinkJoin {
+stdenvNoCC.mkDerivation {
   name = "ostool";
-  version = "0.0"; # nonlib.version;
-  paths = [ os-unwrapped ];
-  buildInputs = [ makeWrapper ];
-  postBuild = ''
+  version = "0.0";
+  dontUnpack = true;
+  buildInputs = [ os-unwrapped ];
+  nativeBuildInputs = [ makeWrapper ];
+
+  installPhase = ''
+    mkdir -p $out/bin
+    cp ${os-unwrapped}/bin/os $out/bin/os
     wrapProgram $out/bin/os \
       --set-default TEMPLATE_CONFIG ${config} \
-      --set-default NIXPKGS_TAG  ${nixrev} \
-      --prefix PATH:${lib.makeBinPath nixdeps}
+      --set-default NIXPKGS_TAG ${nixrev} \
+      --prefix PATH : ${lib.makeBinPath nixdeps}
   '';
+
   meta = {
     mainProgram = "os";
     licence = lib.licenses.mit;
