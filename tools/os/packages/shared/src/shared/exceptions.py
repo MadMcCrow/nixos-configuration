@@ -13,6 +13,9 @@ class ShellException(Exception):
         self.message = message  # without this you may get DeprecationWarning
         self.cmd = cmd
 
+    def __str__(self) -> str:
+        return f"{type(self).__name__} occured running {self.cmd} :\n{self.message}"
+
 
 class CommandNotFoundException(ShellException):
     """

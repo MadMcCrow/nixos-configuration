@@ -12,7 +12,7 @@ from shared.tui import Progress
 TEMPLATE = getenv("TEMPLATE_CONFIG") or ""
 assert TEMPLATE != "", "template config not found"
 
-_pattern = r'(?<=[A-Za-z0-9_.-]+\.hostname\s*=\s*")[^"]*(?=";)'
+_pattern = r'([A-Za-z0-9_.-]+\.hostname\s*=\s*")[^"]*(?=";)'
 
 class GenerateHostConfig(Awaitable):
     """ copy the configuration template """
@@ -31,7 +31,7 @@ class GenerateHostConfig(Awaitable):
                 async for line in temp :
                     if self.hostname is not None :
                         line = sub(_pattern, self.hostname, line)
-                    await target.write(f"{line.strip()}/n")
+                    await target.write(f"{line.strip()}\n")
         async def format():
             await nixformat(self.target)
 

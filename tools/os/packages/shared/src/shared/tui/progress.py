@@ -120,21 +120,18 @@ class Progress:
         self._done = True
         self._success = success
         self._sublines.clear()
-        if final_message:
+        if final_message is not None:
             self.description = final_message
         self._refresh()
         Context().stop(self)
 
-    def fail(self, final_message: str | None = None) -> None:
-        """Shortcut for complete(success=False, ...)."""
-        self.complete(success=False, final_message=final_message)
 
     async def __aenter__(self) -> Self:
         return self.start()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> bool:
         if exc_type is not None:
-            self.fail(f"{self.description} ({exc_val})")
+            self.complete(success=False, final_message = f"{self.description} ({exc_val})")
         else:
             self.complete(success=True)
         return False  # never suppress exceptions
