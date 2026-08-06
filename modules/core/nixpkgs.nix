@@ -27,10 +27,30 @@ with os;
       default = "/etc/${nonOS.version.name}";
       type = types.path;
     };
+    sources = mkOption {
+      description = ''
+        the npins source of nixpkgs
+        use :
+              ```
+                let sources = import ./npins;
+                ...
+                nonOS.nixpkgs.sources = sources.nixpkgs;
+              ```
+        to use the pins nixpkgs
+      '';
+      type = with types; nullOr path;
+      default = null;
+    };
   };
 
   config = mkConfig {
     nix = {
+      registry.nixpkgs.to =
+        mkIf cfg.sources != null {
+          type = "path";
+          path = cfg.sources;
+        };
+
       nixPath = [
         "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
         "/nix/var/nix/profiles/per-user/root/channels"

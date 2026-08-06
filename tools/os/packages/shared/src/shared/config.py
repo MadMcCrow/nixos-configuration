@@ -12,8 +12,8 @@ CONFIG_DIRS = ["/etc/nonOS", "/etc/nixOS"]
 
 class Config:
     """
-        nixOS/nonOS configuration object
-        only one can exist during execution
+    nixOS/nonOS configuration object
+    only one can exist during execution
     """
 
     def __init__(self, dir: Path | str | None = None):

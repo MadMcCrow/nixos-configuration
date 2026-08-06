@@ -12,6 +12,7 @@ from rich.text import Text
 # ours
 from shared.tui.context import Context
 
+
 class _Info:
     """
     class for describing a subline in our progress TUI
@@ -125,13 +126,12 @@ class Progress:
         self._refresh()
         Context().stop(self)
 
-
     async def __aenter__(self) -> Self:
         return self.start()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> bool:
         if exc_type is not None:
-            self.complete(success=False, final_message = f"{self.description} ({exc_val})")
+            self.complete(success=False, final_message=f"{self.description} ({exc_val})")
         else:
             self.complete(success=True)
         return False  # never suppress exceptions

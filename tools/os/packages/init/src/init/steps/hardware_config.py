@@ -8,18 +8,15 @@ from pathlib import Path
 from re import DOTALL, MULTILINE, sub
 from typing import Any
 
-# uv
-from shared import APPNAME
-from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
 from aiofiles import open  # pyright: ignore [reportMissingImports]
 
 # ours
-from shared import Awaitable
-from shared.exceptions import ShellException, assert_cmd
+# uv
+from shared import APPNAME, Awaitable
 from shared.cmd.nixformat import nixformat
+from shared.exceptions import ShellException, assert_cmd
 from shared.tui import Progress
-
-
+from shellous import ResultError, sh  # pyright: ignore [reportMissingImports]
 
 
 class GenerateHardwareConfig(Awaitable):
@@ -44,7 +41,7 @@ class GenerateHardwareConfig(Awaitable):
                 raise ShellException(cmd, exc)
 
         async def _pre_write_fixup(nix: str) -> str:
-            """remove comments and imports before writing to file """
+            """remove comments and imports before writing to file"""
             nix = sub(
                 r"imports\s*=\s*\[(?:.*?)\]\s*;", "", nix, flags=DOTALL
             )  # remove imports from installer

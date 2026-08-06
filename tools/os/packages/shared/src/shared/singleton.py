@@ -1,10 +1,11 @@
 # python imports
-from typing import ClassVar, Any
 from threading import Lock
+from typing import Any, ClassVar
 
 
 class SingletonMeta(type):
-    """ Singleton meta class for building singleton classes that works with multithreading """
+    """Singleton meta class for building singleton classes that works with multithreading"""
+
     _lock: ClassVar[Lock] = Lock()
     _instances: ClassVar[dict] = {}
 

@@ -1,8 +1,9 @@
 # context.py
 # Context for showing or hiding progress
-from shared.singleton import SingletonMeta
 from rich.console import Console, Group, RenderableType
 from rich.live import Live
+from shared.singleton import SingletonMeta
+
 
 class Context(metaclass=SingletonMeta):
     def __init__(self):

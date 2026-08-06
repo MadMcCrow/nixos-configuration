@@ -13,14 +13,12 @@ let
   inherit (import ./systems.nix inputs) mkSystem;
 
   mksysPair = mod: rec {
-    name = unsafeDiscardStringContext (baseNameOf (dirOf mod));
+    name = unsafeDiscardStringContext (baseNameOf (removeSuffix ".nix" mod));
     value = mkSystem { modules = [ mod ]; };
   };
 
   # find all configurations
-  configurations = import-tree (i: i.initFilter (x: match ("configuration.nix" x) != null)) (
-    i: i.leafs (self + "/hosts")
-  );
+  configurations = import-tree.leafs (self + "/checks");
 in
 # build attrset
 listToAttrs (map mksysPair configurations)

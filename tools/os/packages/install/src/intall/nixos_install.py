@@ -4,6 +4,7 @@
 from shared.awaitable import Awaitable
 from shared.tui.progress import Progress
 
+
 class nixos_install(Awaitable):
     async def _exec(self, display: bool = True):
         """call nixos-install and generates the corresponding progress infos"""

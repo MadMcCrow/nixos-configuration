@@ -3,6 +3,7 @@
 from argparse import ArgumentParser
 from asyncio import run
 from os import uname
+
 from init import init_config_args
 from shared import APPNAME
 
@@ -24,12 +25,12 @@ def main():
     init.add_argument("--edit", "-e", action="store_true")
     init.set_defaults(func=init_config_args)
     # install a config
-    #installer = subparsers.add_parser("install", parents=[common_options])
-    #installer.add_argument("--dry-run", "-n", help="perform a dry run install, but do not install")
-    #installer.set_defaults(func=ostool.install)
+    # installer = subparsers.add_parser("install", parents=[common_options])
+    # installer.add_argument("--dry-run", "-n", help="perform a dry run install, but do not install")
+    # installer.set_defaults(func=ostool.install)
     # update a config
-    #updater = subparsers.add_parser("update", parents=[common_options])
-    #updater.set_defaults(func=ostool.update)
+    # updater = subparsers.add_parser("update", parents=[common_options])
+    # updater.set_defaults(func=ostool.update)
 
     args = parser.parse_args()
     if hasattr(args, "func"):

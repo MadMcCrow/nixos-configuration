@@ -1,10 +1,10 @@
 # system configuration
 # Edit this file to customize your machine
-{
-  config,
-  nonOS,
-  ...
-}:
+{ config, ... }:
+let
+  sources = import ./npins;
+  nonOS = with builtins; getFlake (toString sources.nonOS);
+in
 {
   imports = [
     nonOS.nixosModules.default
@@ -16,6 +16,8 @@
   config = {
     # regular nixOS options are valid
     networking.hostName = "defaulthost";
+
+    nixpkgs.sources = sources.nixpkgs;
 
     # nonOS is enabled by default, you can disable it
     # by setting it to false
