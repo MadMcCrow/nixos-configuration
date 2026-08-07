@@ -3,47 +3,60 @@
 from rich.console import Console, Group, RenderableType
 from rich.live import Live
 from shared.singleton import SingletonMeta
+from atexit import register
 
 
 class Context(metaclass=SingletonMeta):
     def __init__(self):
         self._console: Console = Console()
         self._renderable: dict[object, RenderableType] = {}
-        self._active: set[object] = set()
         self._live = Live(
             None,
             console=self._console,
             refresh_per_second=25,
-            transient=False,
+            transient=True,
         )
         self._paused = False
+        register(self.close) # register with atexit
+
+    def _ensure_started(self):
+        if not self._paused and not self._live.is_started:
+            self._live.start()
 
     def refresh(self):
-        """build the display"""
-        group = Group(*self._renderable.values())
+        """rebuild the live area from currently *active* renderables only"""
+        self._ensure_started()
         if not self._paused:
-            if not self._live._started:
-                self._live.start()
-            self._live.update(group)
+            self._live.update(Group(*self._renderable.values()))
 
     def update(self, owner: object, renderable: RenderableType):
-        """activate owner, group our renderables, and update display"""
-        self._active.add(owner)
+        """update an in-progress owner's renderable (spinner overwrites itself)"""
         self._renderable[owner] = renderable
         self.refresh()
 
-    def stop(self, owner):
-        "deactivate owner and stop display if necessary"
-        if owner in self._active:
-            self._active.remove(owner)
-        if len(self._active) == 0 and self._live.is_started:
-            self._live.stop()
+    def finish(self, owner: object, renderable: RenderableType):
+        """
+        finalize owner: print its final state permanently (above the live
+        area) and drop it from the live-updating set, so it's never
+        redrawn/duplicated.
+        """
+        self._renderable.pop(owner, None)
+        self._ensure_started()
+        self._console.print(renderable)  # Rich handles this above the live region
+        self.refresh()
 
     def pause(self):
         self._paused = True
-        self._live.stop()
+        if self._live.is_started:
+            self._live.stop()
 
     def unpause(self):
         self._paused = False
-        self._live.start()
         self.refresh()
+
+    def close(self):
+        """call once at real program exit, or before handing off the
+        terminal entirely (e.g. to Editor)."""
+        if self._live.is_started:
+            self._live.stop()
+        self._renderable.clear()

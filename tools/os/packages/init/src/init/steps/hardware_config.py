@@ -55,16 +55,11 @@ class GenerateHardwareConfig(Awaitable):
                 await f.write(nix)
                 return nix
 
-        async def _pos_write_fixup(*args):
-            await nixformat(self.file)
-            async with open(self.file, "r") as f:
-                return await f.read()
 
         steps: list[tuple[str, Any]] = [
             ("generating config", _generate_config),
             ("removing imports", _pre_write_fixup),
             ("writing to file", _write_config),
-            ("cleaning file", _pos_write_fixup),
         ]
         if self._display:
             async with Progress("auto-detecting hardware config") as progress:
@@ -72,7 +67,9 @@ class GenerateHardwareConfig(Awaitable):
                     with progress.info(step[0]):
                         hardwareconfig = await step[1](hardwareconfig)
                         await sleep(0.1)
+                await nixformat(self.file, description="formatting auto-generated config")
         else:
             # no display, no need to sleep for beautiful display
             for step in steps:
                 await step[1](hardwareconfig)
+            await nixformat(self.file, display=False)

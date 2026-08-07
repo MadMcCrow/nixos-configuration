@@ -123,8 +123,7 @@ class Progress:
         self._sublines.clear()
         if final_message is not None:
             self.description = final_message
-        self._refresh()
-        Context().stop(self)
+        Context().finish(self, self._render())
 
     async def __aenter__(self) -> Self:
         return self.start()
