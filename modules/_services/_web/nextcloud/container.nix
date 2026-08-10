@@ -42,9 +42,7 @@ in
           # set nextcloud settings
           nc.hostName = "${cfg.subDomain}.${config.nixos.server.domain}";
           # import the let's encrypt certificate from host
-          security.acme = {
-            inherit (config.security.acme) acceptTerms defaults;
-          };
+          security.acme = { inherit (config.security.acme) acceptTerms defaults; };
 
           networking.domain = config.networking.domain;
           networking.useHostResolvConf = true;

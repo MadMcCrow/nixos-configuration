@@ -4,21 +4,19 @@ inputs@{
   pkgs,
   lib,
   import-tree,
-  self,
   ...
 }:
 let
-  collect = p : import-tree
-  (i: i.map (x: pkgs.callPackage x inputs))
-  (i: i.leafs p);
+  collect = p: import-tree (i: i.map (x: pkgs.callPackage x inputs)) (i: i.leafs p);
 
   # collect all packages
-  packages = lib.flatten (map collect [
-    ./plasma
-    ./misc
-    ./zfs
-  ]);
-
+  packages = lib.flatten (
+    map collect [
+      ./plasma
+      ./misc
+      ./zfs
+    ]
+  );
 in
 builtins.listToAttrs (
   map (pkg: {

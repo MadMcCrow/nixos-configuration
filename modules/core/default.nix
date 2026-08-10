@@ -1,7 +1,7 @@
 # system.nix
 # define the update process in NonOS
 nonOS:
-inputs@{
+{
   config,
   lib,
   pkgs,

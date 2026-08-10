@@ -1,7 +1,7 @@
 # storage.nix
 # Define the disk layout using disko
 nonOS:
-inputs@{
+{
   lib,
   config,
   ...

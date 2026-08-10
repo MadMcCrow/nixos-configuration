@@ -1,7 +1,7 @@
 # graphics.nix
 # define how nonOS handles GPUs (mostly AMD)
 nonOS:
-inputs@{
+{
   config,
   lib,
   pkgs,
@@ -13,9 +13,7 @@ let
   os = mod "graphics" config;
 in
 {
-  options = os.mkOptions {
-    amd.enable = mkEnableOption "AMD Specific optimisations";
-  };
+  options = os.mkOptions { amd.enable = mkEnableOption "AMD Specific optimisations"; };
 
   config = os.mkConfig {
     hardware = {
@@ -52,9 +50,7 @@ in
             ];
           };
         in
-        [
-          "L+    /opt/rocm   -    -    -     -    ${rocmEnv}"
-        ];
+        [ "L+    /opt/rocm   -    -    -     -    ${rocmEnv}" ];
 
       # enable lact daemon
       packages = with pkgs; [ lact ];

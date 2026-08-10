@@ -3,7 +3,6 @@
 {
   name ? "llm-openai",
   useGPU ? true,
-  lib,
   callPackage,
   writeShellApplication,
   pkgs,

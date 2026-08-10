@@ -1,7 +1,7 @@
 # boot.nix
 # define how nonOS boots
 nonOS:
-inputs@{
+{
   config,
   lib,
   pkgs,

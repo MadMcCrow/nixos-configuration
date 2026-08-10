@@ -1,6 +1,6 @@
 # manifest file : ignored by import tree
 # but useful for building the module list
-inputs@{
+{
   lib,
   import-tree,
   disko,

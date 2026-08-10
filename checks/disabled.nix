@@ -1,4 +1,4 @@
-# a nonOS host is just a nixOS host ;)
+# disabled.
 { config, ... }:
 let
   sources = import ../npins;

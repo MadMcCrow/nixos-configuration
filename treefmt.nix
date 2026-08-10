@@ -1,5 +1,5 @@
 # specify how to format the nonOS repository
-{ pkgs, ... }: {
+_: {
   # Used to find the project root
   # projectRootFile = "flake.nix";
   projectRootFile = "treefmt.nix";

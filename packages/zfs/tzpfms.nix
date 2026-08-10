@@ -3,7 +3,6 @@
 {
   lib,
   stdenv,
-  fetchgit,
   pkg-config,
   shellcheck,
   zfs,

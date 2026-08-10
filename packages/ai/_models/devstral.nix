@@ -1,5 +1,5 @@
 # unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF
-args@{ callPackage, ... }:
+{ callPackage, ... }:
 callPackage ./hf.nix {
   owner = "unsloth";
   name = "Devstral-Small-2-24B-Instruct-2512-GGUF";

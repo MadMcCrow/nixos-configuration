@@ -3,9 +3,8 @@
 {
   lib,
   pkgs,
-  fetchFromGitHub,
   ...
-}@args:
+}:
 let
   pname = "Linux-Arctis-Manager";
   sources = import ../_npins;

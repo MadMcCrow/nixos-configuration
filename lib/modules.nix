@@ -48,10 +48,7 @@ let
                   let
                     optPath = lib.concatStringsSep "." ([ name ] ++ pl);
                   in
-                  lib.mkEnableOption optPath
-                  // {
-                    default = true;
-                  };
+                  lib.mkEnableOption optPath // { default = true; };
               }
             ));
         };
@@ -78,4 +75,4 @@ let
 
   manifest = import (self + "/modules/manifest.nix") (inputs // { inherit nonOS; });
 in
-mapAttrs (k: v: (_: { imports = v; })) (manifest // { "default" = lib.concatAttrValues manifest; })
+mapAttrs (_k: v: (_: { imports = v; })) (manifest // { "default" = lib.concatAttrValues manifest; })

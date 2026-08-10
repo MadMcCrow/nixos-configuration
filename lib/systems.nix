@@ -1,6 +1,6 @@
 # modules.nix
 # use import-tree magic to make our custom TOML parser
-inputs@{
+{
   self,
   lib,
   nixpkgs,
@@ -11,7 +11,6 @@ with lib;
   # nixosSystem wrapped
   mkSystem =
     args@{
-      modules,
       system ? "x86_64-linux",
       ...
     }:
@@ -28,7 +27,7 @@ with lib;
     );
 
   # make a custom appliance system (ie. no nix store)
-  mkAppliance = { nixpkgs, ... }: throw "not implemented yet !";
+  mkAppliance = _: throw "not implemented yet !";
 
   # create a symlinked output of a nixosSystem
   joinSystemOutputs =

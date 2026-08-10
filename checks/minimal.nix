@@ -1,5 +1,5 @@
 # a nonOS host is just a nixOS host ;)
-{ config, ... }:
+_:
 let
   sources = import ../npins;
   nonOS = with builtins; getFlake (toString sources.nonOS);

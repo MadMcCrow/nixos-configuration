@@ -1,7 +1,7 @@
 # nixpkgs.nix
 # define how nonOS gets its nixpkgs
 nonOS:
-inputs@{
+{
   config,
   lib,
   pkgs,

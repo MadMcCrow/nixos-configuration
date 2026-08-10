@@ -1,7 +1,6 @@
 # llama-cpp
 # a wrapper around llama-cpp for simpler deployment
 {
-  lib,
   pkgs,
   name ? "llm-ollama",
   model ? "yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF",
