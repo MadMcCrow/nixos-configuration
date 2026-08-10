@@ -41,61 +41,57 @@
     };
   };
 
-  outputs =
-    inputs@{
-      flake-parts,
-      nixpkgs,
-      self,
-      import-tree,
-      treefmt-nix,
-      ...
-    }:
-    flake-parts.lib.mkFlake { inherit inputs; } (
-      { lib, ... }: {
+  outputs = inputs @ {
+    flake-parts,
+    nixpkgs,
+    self,
+    import-tree,
+    treefmt-nix,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} (
+      {lib, ...}: {
         # this is done to avoid spamming until things are stabilized
         systems = [
           "x86_64-linux"
           "aarch64-darwin"
         ]; # lib.systems.flakeExposed;
 
-        imports = [ treefmt-nix.flakeModule ];
+        imports = [treefmt-nix.flakeModule];
 
-        flake =
-          let
-            args = inputs // {
+        flake = let
+          args =
+            inputs
+            // {
               inherit lib;
             };
-          in
-          {
-            # expose functions
-            lib = import ./lib/systems.nix args;
-            # expose modules
-            nixosModules = import ./lib/modules.nix args;
-            # check hosts
-            nixosConfigurations = import ./lib/configurations.nix args;
-          };
+        in {
+          # expose functions
+          lib = import ./lib/systems.nix args;
+          # expose modules
+          nixosModules = import ./lib/modules.nix args;
+          # check hosts
+          nixosConfigurations = import ./lib/configurations.nix args;
+        };
 
-        perSystem =
-          args@{
-            config,
-            system,
-            pkgs,
-            lib,
-            ...
-          }:
-          with pkgs;
-          let
+        perSystem = args @ {
+          config,
+          system,
+          pkgs,
+          lib,
+          ...
+        }:
+          with pkgs; let
             fmtEval = (treefmt-nix.lib.evalModule pkgs ./treefmt.nix).config.build;
-          in
-          {
+          in {
             # For standardised reproducible formatting with `nix fmt`
             formatter = fmtEval.wrapper;
 
             treefmt = import ./treefmt.nix args;
 
             # import everything in the `packages` folder, based on its path
-            packages = lib.optionalAttrs pkgs.stdenv.isLinux (import ./lib/packages.nix (inputs // args));
-            devShells.default = import ./shell.nix { inherit pkgs; };
+            packages = lib.optionalAttrs pkgs.stdenv.isLinux (import (self + "/packages") (inputs // args));
+            devShells = import ./devshells (inputs // args);
 
             checks = {
               formatting = fmtEval.check self;

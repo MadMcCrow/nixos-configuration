@@ -1,0 +1,34 @@
+set quiet
+
+_ensure_dir dir :
+    # make sure directory exists
+    mkdir -p "{{dir}}" && true
+
+_format dir:
+    #!/usr/bin/env sh
+    echo "format files in {{dir}} using nix tools"
+    files=$(find "{{dir}}" -type f -name '*.nix' -print)
+    deadnix -eq  $files
+    alejandra -q $files
+    nixfmt -sq   $files
+
+_hardware-config dir : (_ensure_dir dir)
+    echo "Generating hardware config at {{dir}}"
+    touch "{{dir}}/hardware-configuration.nix"
+    # generate config, clean it and save it to file
+    sudo env PATH="$PATH" nixos-generate-config --no-filesystems --show-hardware-config \
+      | sed \
+        -e 's/, modulesPath//' \
+        -e 's/(modulesPath + "\/installer\/scan\/not-detected.nix")//' \
+      > "{{dir}}/hardware-configuration.nix"
+
+_template-config dir : (_ensure_dir dir)
+    #!/usr/bin/env sh
+    root=$(git rev-parse --show-toplevel)
+    tmpl="$root/tools/init/template/etc"
+    cp $tmpl "{{dir}}"/ -Rf
+
+[parallel]
+_generate dir: (_template-config dir) (_hardware-config dir)
+
+init dir: (_generate dir) (_format dir)

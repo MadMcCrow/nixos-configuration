@@ -8,11 +8,17 @@ inputs@{
   ...
 }:
 let
+  collect = p : import-tree
+  (i: i.map (x: pkgs.callPackage x inputs))
+  (i: i.leafs p);
+
   # collect all packages
-  packages = import-tree (i: i.map (x: pkgs.callPackage x inputs)) (i: i.withLib lib) (
-    i: i.leafs (self + "/packages")
-  );
-  # mapping function to import and wrap packages
+  packages = lib.flatten (map collect [
+    ./plasma
+    ./misc
+    ./zfs
+  ]);
+
 in
 builtins.listToAttrs (
   map (pkg: {

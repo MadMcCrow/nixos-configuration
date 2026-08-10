@@ -24,7 +24,7 @@ let
     inherit mkPrio;
 
     # added packages
-    pkgs = import ./packages.nix inputs;
+    pkgs = import (self + "/packages") inputs;
 
     mod =
       prefix: config:
