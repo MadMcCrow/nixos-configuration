@@ -1,7 +1,8 @@
 # disabled.
-{ config, ... }:
+{ self, config, ... }:
 let
-  sources = import ../npins;
+  inherit (import (self + "ostool")) template;
+  sources = import ("${template}/npins");
   nonOS = with builtins; getFlake (toString sources.nonOS);
 in
 {

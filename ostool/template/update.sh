@@ -2,7 +2,7 @@
 
 # find the template and root folder
 root=$(git rev-parse --show-toplevel)
-tmpl_npins="$root/tools/init/template/npins"
+tmpl_npins="$root/ostool/template/src/npins"
 
 # migrate schema if npins format changed
 npins -d "$tmpl_npins" upgrade

@@ -2,13 +2,13 @@
 {
   writeShellApplication,
   npins,
-  rootDir ? "./",
   ...
 }:
 writeShellApplication {
   name = "update-sources";
   runtimeInputs = [ npins ];
   text = ''
-    npins -d${rootDir}packages/_npins update
+    root=$(git rev-parse --show-toplevel)
+    npins -d "$root/packages/_npins" update
   '';
 }

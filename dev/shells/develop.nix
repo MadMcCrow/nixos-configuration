@@ -1,41 +1,37 @@
 # shell to work on the whole project
 inputs@{
   pkgs ? import <nixpkgs> { },
+  self ? ../..,
   ...
 }:
 with builtins;
 with pkgs;
 let
-  # local llm
-  servai = callPackage ../packages/ai/llama-cpp.nix inputs;
   # update packages pins
-  pkgsupd = callPackage ../packages/_npins/update.nix inputs;
+  pkgsupd = callPackage (self + "/packages/_npins/update.nix") inputs;
   # update template pins
-  tpltupd = callPackage ../tools/init/template/update.nix inputs;
+  tpltupd = (callPackage (self + "/ostool/template") inputs).update-template;
 in
 mkShellNoCC {
   packages = [
-    # python dev
-    uv
-    python314
-    ruff
-    # nix dev
     deadnix
-    statix
     nixfmt-tree
     npins
-    # shell
     just
     shellcheck
-    # deadnix
+    deadnix
     statix
     nixfmt-tree
     nixos-install-tools
     npins
     just
-    # our tools :
-    servai
     pkgsupd
     tpltupd
   ];
+
+    shellHook = ''
+      ${pkgs.lib.getExe pkgsupd}
+      ${pkgs.lib.getExe tpltupd}
+    '';
+
 }

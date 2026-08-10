@@ -1,5 +1,6 @@
 # provide the template and the updater script as packages
-{
+inputs@{
+  self,
   writeShellApplication,
   stdenvNoCC,
   npins,
@@ -14,10 +15,9 @@ in
   # the template config
   template = stdenvNoCC.mkDerivation {
     name = basename;
-    version = "0.0";
-    src = "./template";
+    inherit (import (self + /lib/version.nix) inputs) version;
+    src = "./src";
     dontBuild = true;
-    nativeBuildInputs = [ makeWrapper ];
     installPhase = ''
       mkdir -p $out
       cp -r . $out

@@ -8,27 +8,6 @@
 }:
 with lib;
 {
-  # nixosSystem wrapped
-  mkSystem =
-    args@{
-      system ? "x86_64-linux",
-      ...
-    }:
-    nixpkgs.lib.nixosSystem (
-      args
-      // {
-        inherit system;
-        specialArgs = {
-          # expose our own flake outputs
-          nonOS = self.outputs;
-        }
-        // (args.specialArgs or { });
-      }
-    );
-
-  # make a custom appliance system (ie. no nix store)
-  mkAppliance = _: throw "not implemented yet !";
-
   # create a symlinked output of a nixosSystem
   joinSystemOutputs =
     system:

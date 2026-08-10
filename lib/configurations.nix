@@ -12,9 +12,14 @@ let
   # use our wrapper to build the nixOS hosts
   inherit (import ./systems.nix inputs) mkSystem;
 
+
   mksysPair = mod: rec {
     name = unsafeDiscardStringContext (baseNameOf (removeSuffix ".nix" mod));
-    value = mkSystem { modules = [ mod ]; };
+    value = lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = { inherit self; };
+      modules = [ mod ];
+    };
   };
 
   # find all configurations

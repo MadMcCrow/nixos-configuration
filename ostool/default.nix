@@ -7,11 +7,8 @@ inputs@{
   ...
 }:
 let
-  mkjustpkgs =
-    name: src:
-    let
-      datadir = "/share/ostool";
-    in
+
+  mkjustpkgs = {name, src, extraWrapperCmd, RuntimeDependencies, datadir ? "/share/ostool"} :
     stdenvNoCC.mkDerivation {
       inherit name src;
       inherit (import (self + /lib/version.nix) inputs) version;
@@ -23,13 +20,31 @@ let
         mkdir -p $out/bin
         makeWrapper ${lib.getExe just} $out/bin/${name} \
            --add-flags "--working-directory $out/${datadir}"   \
-           --add-flags "--justfile $out/${datadir}/.justfile"
+           --add-flags "--justfile $out/${datadir}/.justfile" ${extraWrapperCmd}
       '';
       meta.mainProgram = "${name}";
     };
 in
+rec
 {
-  init = mkjustpkgs "os-init" ./init;
-  install = mkjustpkgs "os-install" ./install;
-  update = mkjustpkgs "os-update" ./update;
+  # inherit template app
+  inherit  (import ./template inputs) template;
+
+  init =  mkjustpkgs {
+    name = "os-init";
+    src = ./init;
+    RuntimeDependencies = [ template ];
+    extraWrapperCmd = ''--set OS_TEMPLATE ${template}''
+  };
+
+  install = mkjustpkgs {
+    name = "os-install"
+    src = ./install;
+  };
+
+  update = mkjustpkgs {
+    name = "os-update";
+    src = ./update;
+  };
 }
+

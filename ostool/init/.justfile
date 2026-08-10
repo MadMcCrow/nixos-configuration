@@ -1,6 +1,8 @@
 set quiet
 
 cwd := invocation_dir_native() + "/.config"
+template := env("OS_TEMPLATE", "../template/src")
+
 
 [no-cd]
 default : (dir cwd)
@@ -28,7 +30,8 @@ _hardware-config d : (_ensure_dir d)
       > "{{d}}/hardware-configuration.nix"
 
 _template-config d : (_ensure_dir d)
-    cp "./template/etc/" "{{d}}"/ -Rf
+    cp "{{template}}/configuration.nix" "{{d}}" -Rf
+    cp "{{template}}/npins" "{{d}}" -Rf
 
 [parallel]
 _generate d: (_template-config d) (_hardware-config d)
