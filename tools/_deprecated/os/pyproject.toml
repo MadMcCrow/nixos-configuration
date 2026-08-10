@@ -8,7 +8,6 @@ authors = [{ name = "MadMcCrow", email = "do-not-mail.me@please.com" }]
 requires-python = ">=3.14"
 dependencies    = [ "shared", "install", "init"]
 
-
 [project.scripts]
 os = "ostool:main"
 
@@ -26,7 +25,6 @@ members = ["packages/*"]
 shared  = { workspace = true }
 init    = { workspace = true }
 install = { workspace = true }
-update  = { workspace = true }
 
 [tool.ruff]
 line-length = 100
