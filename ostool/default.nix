@@ -1,17 +1,31 @@
 inputs@{
-  pkgs,
+  lib,
   self,
   stdenvNoCC,
   writeShellScript,
+  makeWrapper,
   just,
+  nixos-install-tools,
+  nom,
   ...
 }:
+with builtins;
 let
+  # import our descriptor
+  osversion = import (self + /lib/version.nix) inputs;
 
-  mkjustpkgs = {name, src, extraWrapperCmd, RuntimeDependencies, datadir ? "/share/ostool"} :
+  # helper packaging function for just recipes
+  mkjustpkgs =
+    {
+      name,
+      src,
+      envars ? { },
+      runtimeInputs,
+      datadir ? "/share/ostool",
+    }:
     stdenvNoCC.mkDerivation {
       inherit name src;
-      inherit (import (self + /lib/version.nix) inputs) version;
+      inherit (osversion) version;
       dontBuild = true;
       nativeBuildInputs = [ makeWrapper ];
       installPhase = ''
@@ -19,27 +33,40 @@ let
         cp -r . $out/${datadir}
         mkdir -p $out/bin
         makeWrapper ${lib.getExe just} $out/bin/${name} \
-           --add-flags "--working-directory $out/${datadir}"   \
-           --add-flags "--justfile $out/${datadir}/.justfile" ${extraWrapperCmd}
-      '';
-      meta.mainProgram = "${name}";
-    };
-in
-rec
-{
-  # inherit template app
-  inherit  (import ./template inputs) template;
+           --add-flags "--working-directory $out/${datadir}"  \
+           --add-flags "--justfile $out/${datadir}/.justfile" \
+           --prefix PATH : "${lib.makeBinPath runtimeInputs}" \
+      ''
+      + (concatStringsSep "\\\n" (map (x: ''--set ${x.name} "${x.value}"\'') (attrsToList envars)));
 
-  init =  mkjustpkgs {
+      meta = {
+        mainProgram = "${name}";
+        inherit (osversion) licence;
+      };
+    };
+
+  inherit (import ./template inputs) template;
+in
+{
+  init = mkjustpkgs {
     name = "os-init";
     src = ./init;
-    RuntimeDependencies = [ template ];
-    extraWrapperCmd = ''--set OS_TEMPLATE ${template}''
+    runtimeInputs = [
+      template
+      nixos-install-tools
+    ];
+    envars = {
+      "OS_TEMPLATE" = template;
+    };
   };
 
   install = mkjustpkgs {
-    name = "os-install"
+    name = "os-install";
     src = ./install;
+    runtimeInputs = [
+      nom
+      nixos-install-tools
+    ];
   };
 
   update = mkjustpkgs {
@@ -47,4 +74,3 @@ rec
     src = ./update;
   };
 }
-

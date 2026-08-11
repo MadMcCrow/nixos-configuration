@@ -1,8 +1,8 @@
 # a nonOS host is just a nixOS host ;)
-{ self, ... } :
+{ self, ... }:
 let
   inherit (import (self + "ostool")) template;
-  sources = import ("${template}/npins");
+  sources = import "${template}/npins";
   nonOS = with builtins; getFlake (toString sources.nonOS);
 in
 {

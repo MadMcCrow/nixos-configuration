@@ -12,7 +12,6 @@ let
   # use our wrapper to build the nixOS hosts
   inherit (import ./systems.nix inputs) mkSystem;
 
-
   mksysPair = mod: rec {
     name = unsafeDiscardStringContext (baseNameOf (removeSuffix ".nix" mod));
     value = lib.nixosSystem {
