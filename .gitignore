@@ -10,11 +10,12 @@ result
 # ignore built virtual machines
 *.qcow2
 
-# ignore hidden files (except git, just)
+# ignore hidden files (except git, just and env files)
 .*
 !.git*
 !.pre-commit*
-!.justfile
+!.just*
+!.env
 
 # log files
 *.log

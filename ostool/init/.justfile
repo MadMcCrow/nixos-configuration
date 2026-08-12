@@ -7,9 +7,10 @@ template := env("OS_TEMPLATE", "../template/src")
 [no-cd]
 default : (dir cwd)
 
-_ensure_dir d :
-    # make sure directory exists
+_init_dir d :
+    # make sure directory exists and is empty
     mkdir -p "{{d}}" && true
+    rm -rf "{{d}}/.*" && true
 
 _format d:
     #!/usr/bin/env sh
@@ -19,7 +20,7 @@ _format d:
     alejandra -q $files
     nixfmt -sq   $files
 
-_hardware-config d : (_ensure_dir d)
+_hardware-config d : (_init_dir d)
     echo "generating hardware config"
     touch "{{d}}/hardware-configuration.nix"
     # generate config, clean it and save it to file
@@ -29,9 +30,9 @@ _hardware-config d : (_ensure_dir d)
         -e 's/(modulesPath + "\/installer\/scan\/not-detected.nix")//' \
       > "{{d}}/hardware-configuration.nix"
 
-_template-config d : (_ensure_dir d)
-    cp "{{template}}/configuration.nix" "{{d}}" -Rf
-    cp "{{template}}/npins" "{{d}}" -Rf
+_template-config d : (_init_dir d)
+    cp --no-preserve=mode,ownership "{{template}}/configuration.nix" "{{d}}" -Rf
+    cp --no-preserve=mode,ownership "{{template}}/npins" "{{d}}" -Rf
 
 [parallel]
 _generate d: (_template-config d) (_hardware-config d)

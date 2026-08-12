@@ -16,7 +16,7 @@ in
   template = stdenvNoCC.mkDerivation {
     name = basename;
     inherit (import (self + /lib/version.nix) inputs) version;
-    src = "./src";
+    src = ./src;
     dontBuild = true;
     installPhase = ''
       mkdir -p $out

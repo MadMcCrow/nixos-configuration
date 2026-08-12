@@ -7,7 +7,7 @@
          n: v:
          nameValuePair ("os-" + n) {
            type = "app";
-           program = value;
+           program = v;
          }
        ) (pkgs.callPackages ../ostool inputs);
     };

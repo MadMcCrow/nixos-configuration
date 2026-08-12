@@ -2,10 +2,14 @@ inputs@{
   lib,
   self,
   stdenvNoCC,
+  callPackage,
   writeShellScript,
   makeWrapper,
   just,
   nixos-install-tools,
+  alejandra,
+  deadnix,
+  nixfmt,
   nom,
   ...
 }:
@@ -30,22 +34,22 @@ let
       nativeBuildInputs = [ makeWrapper ];
       installPhase = ''
         mkdir -p $out/${datadir}
-        cp -r . $out/${datadir}
+        cp -rT . $out/${datadir}
         mkdir -p $out/bin
         makeWrapper ${lib.getExe just} $out/bin/${name} \
            --add-flags "--working-directory $out/${datadir}"  \
            --add-flags "--justfile $out/${datadir}/.justfile" \
            --prefix PATH : "${lib.makeBinPath runtimeInputs}" \
       ''
-      + (concatStringsSep "\\\n" (map (x: ''--set ${x.name} "${x.value}"\'') (attrsToList envars)));
+      + (concatStringsSep "\\\n" (map (x: ''--set ${x.name} "${x.value}"'') (lib.attrsToList envars)));
 
       meta = {
         mainProgram = "${name}";
         inherit (osversion) licence;
       };
     };
-
-  inherit (import ./template inputs) template;
+  # only necessary for init
+  inherit (callPackage ./template inputs) template;
 in
 {
   init = mkjustpkgs {
@@ -54,6 +58,9 @@ in
     runtimeInputs = [
       template
       nixos-install-tools
+      alejandra
+      deadnix
+      nixfmt
     ];
     envars = {
       "OS_TEMPLATE" = template;
