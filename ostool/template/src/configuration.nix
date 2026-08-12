@@ -3,7 +3,7 @@
 _ :
 let
   sources = import ./npins;
-  nonOS = builtins.getFlake sources.nonOS.outPath;
+  nonOS = import sources.nonOS;
 in
 {
   imports = [
