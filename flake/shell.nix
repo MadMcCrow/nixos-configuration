@@ -1,19 +1,17 @@
 # flake part module for dev shells
-{ withSystem, inputs, ... }: {
+{ self, withSystem, inputs, ... }: {
   perSystem = { pkgs, lib, system, ... } :
   with builtins;
   with pkgs;
 let
-  # local llm support
+  # local llm support :not recommended because it's heavy
   llmserver = callPackage (self + "/packages/ai/llama-cpp.nix") inputs;
-  # update packages pins
-  pkgsupd = callPackage (self + "/packages/_npins/update.nix") inputs;
-  # update template pins
-  ostemplate = callPackage (self + "/ostool/template") inputs;
 in
   {
     # built dev shell with everything
-    devShells.default = mkShellNoCC {
+    devShells  = {
+      # default is for common dev
+      default = mkShellNoCC {
       packages = [
         deadnix
         nixfmt-tree
@@ -26,15 +24,25 @@ in
         nixos-install-tools
         npins
         just
-        pkgsupd
-        ostemplate.update-template
-        llmserver
       ];
 
       shellHook = ''
-        ${pkgs.lib.getExe pkgsupd}
-        ${pkgs.lib.getExe ostemplate.update-template }
+        git_root="$(git rev-parse --show-toplevel)"
+        echo "updating every pin in $git_root"
+        cd $git_root
+        ${pkgs.lib.getExe pkgs.just}
+      '';
+    };
+
+    llm = mkShellNoCC {
+      packages = [
+          llmserver
+      ];
+      shellHook = ''
+        echo "starting llm server"
+        ${pkgs.lib.getExe llmserver} &
       '';
     };
   };
+   };
 }

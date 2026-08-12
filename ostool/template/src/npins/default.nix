@@ -227,10 +227,11 @@ let
           imageName = image_name;
           imageDigest = image_digest;
           finalImageTag = image_tag;
-          inherit hash;
+          hash = hash;
         }
-        // (if args.arch or null != null then { inherit (args) arch; } else { })
+        // (if args.arch or null != null then { arch = args.arch; } else { })
       );
+
 in
 mkFunctor (
   {
@@ -250,7 +251,7 @@ mkFunctor (
         input
       else
         throw "Unsupported input type ${builtins.typeOf input}, must be a path or an attrset";
-    inherit (data) version;
+    version = data.version;
   in
   if version == 8 then
     builtins.mapAttrs (name: spec: mkFunctor (mkSource name spec)) data.pins

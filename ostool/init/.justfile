@@ -33,6 +33,7 @@ _hardware-config d : (_init_dir d)
 _template-config d : (_init_dir d)
     cp --no-preserve=mode,ownership "{{template}}/configuration.nix" "{{d}}" -Rf
     cp --no-preserve=mode,ownership "{{template}}/npins" "{{d}}" -Rf
+    chmod 755 -R "{{d}}"
 
 [parallel]
 _generate d: (_template-config d) (_hardware-config d)

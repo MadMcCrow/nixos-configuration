@@ -1,9 +1,9 @@
 # system configuration
 # Edit this file to customize your machine
-_:
+_ :
 let
   sources = import ./npins;
-  nonOS = with builtins; getFlake (toString sources.nonOS);
+  nonOS = builtins.getFlake sources.nonOS.outPath;
 in
 {
   imports = [

@@ -23,14 +23,4 @@ in
       cp -r . $out
     '';
   };
-  # update script, packaged, use in shell
-  update-template = writeShellApplication {
-    name = "${basename}-update";
-    runtimeInputs = [
-      npins
-      jq
-      git
-    ];
-    text = builtins.readFile ./update.sh;
-  };
 }

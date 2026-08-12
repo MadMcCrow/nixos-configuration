@@ -1,16 +1,11 @@
 inputs@{
   lib,
   self,
+  pkgs,
   stdenvNoCC,
   callPackage,
   writeShellScript,
   makeWrapper,
-  just,
-  nixos-install-tools,
-  alejandra,
-  deadnix,
-  nixfmt,
-  nom,
   ...
 }:
 with builtins;
@@ -36,7 +31,7 @@ let
         mkdir -p $out/${datadir}
         cp -rT . $out/${datadir}
         mkdir -p $out/bin
-        makeWrapper ${lib.getExe just} $out/bin/${name} \
+        makeWrapper ${lib.getExe pkgs.just} $out/bin/${name} \
            --add-flags "--working-directory $out/${datadir}"  \
            --add-flags "--justfile $out/${datadir}/.justfile" \
            --prefix PATH : "${lib.makeBinPath runtimeInputs}" \
@@ -55,7 +50,7 @@ in
   init = mkjustpkgs {
     name = "os-init";
     src = ./init;
-    runtimeInputs = [
+    runtimeInputs = with pkgs; [
       template
       nixos-install-tools
       alejandra
@@ -70,8 +65,9 @@ in
   install = mkjustpkgs {
     name = "os-install";
     src = ./install;
-    runtimeInputs = [
+    runtimeInputs = with pkgs; [
       nom
+      nixos-rebuild-ng
       nixos-install-tools
     ];
   };
