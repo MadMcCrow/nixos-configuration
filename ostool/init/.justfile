@@ -35,7 +35,17 @@ _template-config d : (_init_dir d)
     cp --no-preserve=mode,ownership "{{template}}/npins" "{{d}}" -Rf
     chmod 755 -R "{{d}}"
 
+_update-pin d:
+    npins -d "{{d}}/npins" update nonOS
+
+# parrallel generation : copy template and call nixos-generate-config simultaneously
 [parallel]
 _generate d: (_template-config d) (_hardware-config d)
 
-dir d: (_generate d) (_format d)
+# parrallel fixup : _update-pin updates json, _format works on nix only
+[parallel]
+_fixup d : (_format d) (_update-pin d)
+
+
+# serial approach
+dir d: (_generate d) (_fixup d)

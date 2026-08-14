@@ -52,6 +52,7 @@ in
     src = ./init;
     runtimeInputs = with pkgs; [
       template
+      npins
       nixos-install-tools
       alejandra
       deadnix

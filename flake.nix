@@ -19,7 +19,11 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    git-hooks-nix.url = "github:cachix/git-hooks.nix";
+    git-hooks-nix ={
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows ="flake-compat";
+    };
 
     # nixos installation
     disko = {
@@ -33,6 +37,7 @@
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit.inputs.flake-compat.follows ="flake-compat";
     };
 
     # python

@@ -1,11 +1,7 @@
-mod init
-mod install
-mod update
-
 git_root:="$(git rev-parse --show-toplevel)"
-tmpl_npins:="./template/src/npins"
+tmpl_npins:="./src/npins"
 
-update_template : _upgrade _update
+update : _upgrade _update
 
 [script("sh")]
 _upgrade :
