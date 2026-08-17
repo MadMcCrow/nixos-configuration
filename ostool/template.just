@@ -1,14 +1,9 @@
 git_root:="$(git rev-parse --show-toplevel)"
-tmpl_npins:="./src/npins"
-
-update : _upgrade _update
+tmpl_npins:="./template/npins"
 
 [script("sh")]
-_upgrade :
+update:
     npins -d "{{tmpl_npins}}" upgrade
-
-[script("sh")]
-_update:
     nixpkgs_rev=$(jq -r '.nodes.nixpkgs.locked.rev' "{{git_root}}/flake.lock")
     nonos_rev=$(git -C "{{git_root}}" rev-parse HEAD)
     nonos_branch=$(git -C "{{git_root}}" rev-parse --abbrev-ref HEAD)

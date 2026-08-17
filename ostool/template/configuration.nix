@@ -1,6 +1,6 @@
 # system configuration
 # Edit this file to customize your machine
-_ :
+_:
 let
   sources = import ./npins;
   nonOS = import sources.nonOS;

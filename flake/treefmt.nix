@@ -1,33 +1,44 @@
 # specify how to format the nonOS repository
 # flake part module for apps
-{ withSystem, inputs, ... }: {
+{
+  withSystem,
+  inputs,
+  ...
+}:
+{
   imports = [ inputs.treefmt-nix.flakeModule ];
-  perSystem = { pkgs, lib, system, ... } : {
-  # treefmt settings
-  treefmt = {
-    # Used to find the project root
-    # projectRootFile = "flake.nix";
-    projectRootFile = "treefmt.nix";
+  perSystem =
+    {
+      pkgs,
+      lib,
+      system,
+      ...
+    }:
+    {
+      # treefmt settings
+      treefmt = {
+        # Used to find the project root
+        projectRootFile = "flake.nix";
 
-    programs = {
-      autocorrect.enable = true;
-      # all the nix formatter
-      nixfmt.enable = true;
-      statix.enable = true;
-      deadnix = {
-        enable = false;
-        no-lambda-arg = false;
-        no-lambda-pattern-names = true;
-        no-underscore = true;
+        programs = {
+          autocorrect.enable = true;
+          # all the nix formatter
+          nixfmt.enable = true;
+          statix.enable = true;
+          deadnix = {
+            enable = false;
+            no-lambda-arg = false;
+            no-lambda-pattern-names = true;
+            no-underscore = true;
+          };
+          alejandra.enable = true;
+          # python formatter
+          ruff-check.enable = true;
+          ruff-format.enable = true;
+          isort.enable = true;
+          # shell formatter
+          shellcheck.enable = true;
+        };
       };
-      alejandra.enable = true;
-      # python formatter
-      ruff-check.enable = true;
-      ruff-format.enable = true;
-      isort.enable = true;
-      # shell formatter
-      shellcheck.enable = true;
     };
-  };
-};
 }

@@ -1,0 +1,3 @@
+# patched by nix
+OS_TEMPLATE=./template
+OS_CMD=./cmd.sh

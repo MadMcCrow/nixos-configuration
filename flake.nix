@@ -19,10 +19,10 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    git-hooks-nix ={
+    git-hooks-nix = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-compat.follows ="flake-compat";
+      inputs.flake-compat.follows = "flake-compat";
     };
 
     # nixos installation
@@ -37,7 +37,7 @@
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit.inputs.flake-compat.follows ="flake-compat";
+      inputs.pre-commit.inputs.flake-compat.follows = "flake-compat";
     };
 
     # python
@@ -56,6 +56,11 @@
       inputs.uv2nix.follows = "uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # just command runner
+    just = {
+      url = "github:casey/just";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -68,7 +73,7 @@
       git-hooks-nix,
       ...
     }:
-    flake-parts.lib.mkFlake {inherit inputs; } (
+    flake-parts.lib.mkFlake { inherit inputs; } (
       { lib, ... }: {
         # this is done to avoid spamming until things are stabilized
         systems = [

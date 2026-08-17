@@ -4,77 +4,119 @@ inputs@{
   pkgs,
   stdenvNoCC,
   callPackage,
+  runCommandWith,
   writeShellScript,
   makeWrapper,
   ...
 }:
 with builtins;
 let
-  # import our descriptor
-  osversion = import (self + /lib/version.nix) inputs;
+  # TODO : change this if it gets problematic
+  basename = "os";
 
-  # helper packaging function for just recipes
-  mkjustpkgs =
-    {
-      name,
-      src,
-      envars ? { },
-      runtimeInputs,
-      datadir ? "/share/ostool",
-    }:
-    stdenvNoCC.mkDerivation {
-      inherit name src;
-      inherit (osversion) version;
-      dontBuild = true;
-      nativeBuildInputs = [ makeWrapper ];
-      installPhase = ''
-        mkdir -p $out/${datadir}
-        cp -rT . $out/${datadir}
-        mkdir -p $out/bin
-        makeWrapper ${lib.getExe pkgs.just} $out/bin/${name} \
-           --add-flags "--working-directory $out/${datadir}"  \
-           --add-flags "--justfile $out/${datadir}/.justfile" \
-           --prefix PATH : "${lib.makeBinPath runtimeInputs}" \
-      ''
-      + (concatStringsSep "\\\n" (map (x: ''--set ${x.name} "${x.value}"'') (lib.attrsToList envars)));
+  # TODO : autocompletion for commands
+  # https://just.systems/man/en/shell-completion-scripts.html
+  #
 
-      meta = {
-        mainProgram = "${name}";
-        inherit (osversion) licence;
-      };
-    };
-  # only necessary for init
-  inherit (callPackage ./template inputs) template;
+  fileSource = path : lib.fileset.toSource { root = ./.; fileset = path; };
+
+  # shared derivation args
+  mkDerivation =
+    args:
+    let
+      osversion = import (self + /lib/version.nix) inputs;
+    in
+    stdenvNoCC.mkDerivation (
+      lib.recursiveUpdate {
+        dontBuild = true;
+        buildInputs = [makeWrapper];
+        meta = {
+          inherit (osversion) licence;
+        };
+        inherit (osversion) version;
+      } args
+    );
+
+  # we package the shell script separately
+  shellcommands = mkDerivation {
+    name = "${basename}-sh";
+    src = fileSource ./cmd.sh;
+    installPhase = ''
+      mkdir -p $out/bin
+      install -m755 cmd.sh $out/bin/cmd
+      wrapProgram $out/bin/cmd \
+           --prefix PATH : ${
+             lib.makeBinPath (with pkgs; [
+               npins
+               alejandra
+               deadnix
+               nixfmt
+               git
+             ]
+             ++
+               # not available on MacOS, but we still can run some of
+               # the commands to initialize or build configs
+               lib.optionals stdenv.hostPlatform.isLinux [ nixos-install-tools ])
+           }
+    '';
+  };
+
+  # the template config
+  template = mkDerivation {
+    name = "${basename}-scripts";
+    src = fileSource ./template;
+    installPhase = ''
+      mkdir -p $out/share
+      cp -rT . $out/share/template
+    '';
+  };
+
+  # package environment
+  envfile = mkDerivation {
+    name = "${basename}-env";
+    src = fileSource ./env;
+    installPhase = ''
+      mkdir -p $out/share
+      cp -r . $out/share
+      substituteInPlace $out/share/env \
+        --replace-fail "./template" "${template}/share/template/" \
+        --replace-fail "./cmd.sh" "${shellcommands}/bin/cmd"
+    '';
+  };
+
+  # package all just recipes
+  recipes = mkDerivation {
+    src = filterSource
+      (path: type:
+        let
+          name = baseNameOf path;
+        in
+          name == "justfile"
+          || name == ".justfile"
+          || match ".*\\.just" name != null
+      ) ./.;
+    name = "${basename}-just";
+    installPhase = ''
+      mkdir -p $out/share
+      cp -r .  $out/share/
+      substituteInPlace $out/share/justfile --replace "mod template" "# no template"
+    '';
+  };
+
+
 in
-{
-  init = mkjustpkgs {
-    name = "os-init";
-    src = ./init;
-    runtimeInputs = with pkgs; [
-      template
-      npins
-      nixos-install-tools
-      alejandra
-      deadnix
-      nixfmt
-    ];
-    envars = {
-      "OS_TEMPLATE" = template;
+runCommandWith
+  {
+    name = basename;
+    derivationArgs = {
+      nativeBuildInputs = [ makeWrapper ];
+       meta.mainProgram = "${basename}";   # add getExe support
     };
-  };
-
-  install = mkjustpkgs {
-    name = "os-install";
-    src = ./install;
-    runtimeInputs = with pkgs; [
-      nom
-      nixos-rebuild-ng
-      nixos-install-tools
-    ];
-  };
-
-  update = mkjustpkgs {
-    name = "os-update";
-    src = ./update;
-  };
-}
+  }
+  ''
+    mkdir -p $out/bin
+    makeWrapper ${lib.getExe pkgs.just} $out/bin/${basename} \
+      --add-flags "--justfile ${recipes}/share/justfile" \
+      --add-flags "--dotenv-path ${envfile}/share/justfile" \
+      --add-flags "--one"
+  ''
