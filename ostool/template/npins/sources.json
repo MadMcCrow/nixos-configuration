@@ -9,9 +9,9 @@
       },
       "branch": "nixos-unstable",
       "submodules": false,
-      "revision": "e8273b29fe1390ec8d4603f2477357555291432e",
-      "url": "https://github.com/NixOS/nixpkgs/archive/e8273b29fe1390ec8d4603f2477357555291432e.tar.gz",
-      "hash": "sha256-ETYnV9U7Sr+A45dohzZdfCZKOss4qrTkO+wgNZNvEc0="
+      "revision": "e5bdc4a41d4c072fe1e3787eaa0320a384741d44",
+      "url": "https://github.com/NixOS/nixpkgs/archive/e5bdc4a41d4c072fe1e3787eaa0320a384741d44.tar.gz",
+      "hash": "sha256-FBJRXmbGXiSUDvYEbfLYRkckayyZ6SK1UEqhCrIZ2Cs="
     },
     "nonOS": {
       "type": "Git",
@@ -22,9 +22,9 @@
       },
       "branch": "nonOS",
       "submodules": false,
-      "revision": "20fe5fcdaffc081b7da945437ba08b186f416a88",
-      "url": "https://github.com/MadMcCrow/nonOS/archive/20fe5fcdaffc081b7da945437ba08b186f416a88.tar.gz",
-      "hash": "sha256-2guatTHBq4pRgyzxAVX+nSYL+bmPY6EBj/xpp6AUzVM="
+      "revision": "71bad2ab4e0a96f14401c0e9d65b0ffb6982c63f",
+      "url": "https://github.com/MadMcCrow/nonOS/archive/71bad2ab4e0a96f14401c0e9d65b0ffb6982c63f.tar.gz",
+      "hash": "sha256-w3tCHgZf1yPYUYvzAXvS3QQO4bY+jAXgm2VjFOBnGrA="
     }
   },
   "version": 8
