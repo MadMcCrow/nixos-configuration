@@ -22,9 +22,9 @@
       },
       "branch": "nonOS",
       "submodules": false,
-      "revision": "71bad2ab4e0a96f14401c0e9d65b0ffb6982c63f",
-      "url": "https://github.com/MadMcCrow/nonOS/archive/71bad2ab4e0a96f14401c0e9d65b0ffb6982c63f.tar.gz",
-      "hash": "sha256-w3tCHgZf1yPYUYvzAXvS3QQO4bY+jAXgm2VjFOBnGrA="
+      "revision": "81b6bcfa484826490e5c9ffdafabd4331d360752",
+      "url": "https://github.com/MadMcCrow/nonOS/archive/81b6bcfa484826490e5c9ffdafabd4331d360752.tar.gz",
+      "hash": "sha256-ThwK7fm5Ovq8cNrZfv9cJc1E8XHOCXB3vcFncAksIJE="
     }
   },
   "version": 8
