@@ -84,21 +84,6 @@
         imports = [
           (import-tree ./flake)
         ];
-
-        flake =
-          let
-            args = inputs // {
-              inherit lib;
-            };
-          in
-          {
-            # expose functions
-            lib = import ./lib/systems.nix args;
-            # expose modules
-            nixosModules = import ./lib/modules.nix args;
-            # check hosts
-            nixosConfigurations = import ./lib/configurations.nix args;
-          };
       }
     );
 }

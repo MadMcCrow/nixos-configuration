@@ -1,4 +1,4 @@
-# flake part module for apps
+# flake part module for ostool
 {
   withSystem,
   inputs,

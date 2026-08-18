@@ -41,6 +41,6 @@
         };
       };
       # add formatter package
-      packages.formatter = inputs.treefmt-nix.mkWrapper pkgs treefmt;
+      packages.formatter = inputs.treefmt-nix.lib.mkWrapper pkgs treefmt;
     };
 }

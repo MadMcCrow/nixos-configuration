@@ -1,5 +1,5 @@
-# modules.nix
-# exposes all of our modules
+# nonOS.nix
+# helper attrset for modules;
 inputs@{
   self,
   lib,
@@ -16,8 +16,8 @@ let
 
   mkPrio = lib.mkOverride 990; # mkDefault but higher priority
 
-  # helper attrset for modules;
-  nonOS = {
+
+in {
     # provide values
     inherit version;
 
@@ -72,7 +72,3 @@ let
         mkConfig = c: lib.mkIf enabled (mkPrio c);
       };
   };
-
-  manifest = import (self + "/modules/manifest.nix") (inputs // { inherit nonOS; });
-in
-mapAttrs (_k: v: (_: { imports = v; })) (manifest // { "default" = lib.concatAttrValues manifest; })
