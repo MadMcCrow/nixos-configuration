@@ -32,7 +32,7 @@ init d="":
     {{rejust}} _generate $target
     #   3.a) correct the pinned version of nonOS and nixpkgs
     #   3.b) format the nix files
-    {{rejust}} _format $target
+    {{rejust}} format $target
 
 # build target configuration locally
 [no-cd, script]

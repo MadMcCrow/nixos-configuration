@@ -17,7 +17,7 @@ in
     # regular nixOS options are valid
     networking.hostName = "defaulthost";
 
-    nixpkgs.sources = sources.nixpkgs;
+    nixpkgs.flake.source = sources.nixpkgs;
 
     # nonOS is enabled by default, you can disable it
     # by setting it to false
