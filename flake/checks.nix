@@ -8,7 +8,9 @@ with builtins;
 with inputs.nixpkgs.lib;
 let
   # use template pins (slightly outdated) :
-  sources = import (self + "/ostool/template/npins");
+  sources = (import (self + "/ostool/template/npins")) // {
+    nonOS = self;
+  };
   # map outputs
   mksysPair = mod: {
     name = unsafeDiscardStringContext (baseNameOf (removeSuffix ".nix" mod));
