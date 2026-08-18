@@ -1,9 +1,7 @@
 # disabled.
-{ self, ... }:
+sources: _:
 let
-  inherit (import (self + "ostool")) template;
-  sources = import "${template}/npins";
-  nonOS = with builtins; getFlake (toString sources.nonOS);
+  nonOS = import sources.nonOS;
 in
 {
   imports = [ nonOS.nixosModules.default ];

@@ -16,9 +16,9 @@
     {
       pre-commit.settings.hooks = {
         nixpkgs-fmt.enable = true;
-
+        # TODO :
         update-flake = {
-          enable = true;
+          enable = false;
           name = "update-packages";
           description = "Run MyTool on all files in the project";
           files = "\\.mtl$";

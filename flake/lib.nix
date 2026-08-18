@@ -12,7 +12,5 @@ let
   };
 in
 {
-  flake.lib = inputs.import-tree
-  (i: i.map mksysPair)
-  (i: i.leafs (self + "/lib"));
+  flake.lib = inputs.import-tree (i: i.map mksysPair) (i: i.leafs (self + "/lib"));
 }

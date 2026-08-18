@@ -1,9 +1,7 @@
-# a nonOS host is just a nixOS host ;)
-{ self, ... }:
+# a minimal host config that should be possible to build
+sources: _:
 let
-  inherit (import (self + "ostool")) template;
-  sources = import "${template}/npins";
-  nonOS = with builtins; getFlake (toString sources.nonOS);
+  nonOS = import sources.nonOS;
 in
 {
   imports = [ nonOS.nixosModules.default ];

@@ -16,15 +16,15 @@ let
   basename = "os";
 
   # add a nice formatter to simplify formatting
-  formatter = (treefmt-nix.lib.mkWrapper pkgs {
-    programs =  {
+  formatter = treefmt-nix.lib.mkWrapper pkgs {
+    programs = {
       # all the nix formatter
       nixfmt.enable = true;
       statix.enable = true;
       deadnix.enable = false;
       alejandra.enable = true;
     };
-  });
+  };
 
   # all scripting dependencies
   runtimeInputs =
@@ -114,7 +114,7 @@ let
 
   # package all just recipes
   recipes = mkDerivation {
-    src =fileSource ./os.just;
+    src = fileSource ./os.just;
     name = "${basename}-just";
     installPhase = ''
       mkdir -p $out/share

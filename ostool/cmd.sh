@@ -124,6 +124,7 @@ build_config() {
     #nix_features:= "--extra-experimental-features 'nix-command flakes'"
     conf="$(get_config "$1")"
     echo "building configuration \"$conf\""
+    # shellcheck disable=SC2086 # we want the flags to unpack actually
     nixos-rebuild build $nixos_build_options -I nixos-config="$conf"  # 2>&1 | nom
     # nix-build '<nixpkgs/nixos>' -A system -I nixos-config="$conf"
 }
