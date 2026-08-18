@@ -1,5 +1,6 @@
 inputs@{
   lib,
+  treefmt-nix,
   self,
   pkgs,
   stdenvNoCC,
@@ -14,11 +15,46 @@ let
   # TODO : change this if it gets problematic
   basename = "os";
 
+  # add a nice formatter to simplify formatting
+  formatter = (treefmt-nix.lib.mkWrapper pkgs {
+    programs =  {
+      # all the nix formatter
+      nixfmt.enable = true;
+      statix.enable = true;
+      deadnix.enable = false;
+      alejandra.enable = true;
+    };
+  });
+
+  # all scripting dependencies
+  runtimeInputs =
+    with pkgs;
+    [
+      formatter
+      just
+      fzf
+      nix-output-monitor
+      npins
+      git
+      fd
+    ]
+    ++
+      # not available on MacOS, but we still can run some of
+      # the commands to initialize or build configs
+      (lib.optionals stdenv.hostPlatform.isLinux [
+        nixos-install-tools
+        nixos-rebuild
+      ]);
+
   # TODO : autocompletion for commands
   # https://just.systems/man/en/shell-completion-scripts.html
-  #
 
-  fileSource = path : lib.fileset.toSource { root = ./.; fileset = path; };
+  fileSource =
+    path:
+    lib.fileset.toSource {
+      root = dirOf path;
+      fileset = path;
+    };
 
   # shared derivation args
   mkDerivation =
@@ -29,7 +65,7 @@ let
     stdenvNoCC.mkDerivation (
       lib.recursiveUpdate {
         dontBuild = true;
-        buildInputs = [makeWrapper];
+        buildInputs = [ makeWrapper ];
         meta = {
           inherit (osversion) licence;
         };
@@ -45,19 +81,7 @@ let
       mkdir -p $out/bin
       install -m755 cmd.sh $out/bin/cmd
       wrapProgram $out/bin/cmd \
-           --prefix PATH : ${
-             lib.makeBinPath (with pkgs; [
-               npins
-               alejandra
-               deadnix
-               nixfmt
-               git
-             ]
-             ++
-               # not available on MacOS, but we still can run some of
-               # the commands to initialize or build configs
-               lib.optionals stdenv.hostPlatform.isLinux [ nixos-install-tools ])
-           }
+           --prefix PATH : ${lib.makeBinPath runtimeInputs}
     '';
   };
 
@@ -67,56 +91,50 @@ let
     src = fileSource ./template;
     installPhase = ''
       mkdir -p $out/share
-      cp -rT . $out/share/template
+      cp -r . $out/share
     '';
   };
 
   # package environment
   envfile = mkDerivation {
     name = "${basename}-env";
-    src = fileSource ./env;
+    src = fileSource ./.env;
     installPhase = ''
       mkdir -p $out/share
+      # fix template and script path
+      sed -i \
+        -e 's|OS_TEMPLATE=.*|OS_TEMPLATE=${template}/share/template/|' \
+        -e 's|OS_CMD=.*|OS_CMD=${shellcommands}/bin/cmd|' \
+        -e 's|FORMATTER=.*|FORMATTER=${formatter}/bin/treefmt|' \
+        .env
+      cat .env
       cp -r . $out/share
-      substituteInPlace $out/share/env \
-        --replace-fail "./template" "${template}/share/template/" \
-        --replace-fail "./cmd.sh" "${shellcommands}/bin/cmd"
     '';
   };
 
   # package all just recipes
   recipes = mkDerivation {
-    src = filterSource
-      (path: type:
-        let
-          name = baseNameOf path;
-        in
-          name == "justfile"
-          || name == ".justfile"
-          || match ".*\\.just" name != null
-      ) ./.;
+    src =fileSource ./os.just;
     name = "${basename}-just";
     installPhase = ''
       mkdir -p $out/share
       cp -r .  $out/share/
-      substituteInPlace $out/share/justfile --replace "mod template" "# no template"
     '';
   };
-
-
 in
 runCommandWith
   {
     name = basename;
     derivationArgs = {
       nativeBuildInputs = [ makeWrapper ];
-       meta.mainProgram = "${basename}";   # add getExe support
+      meta.mainProgram = "${basename}"; # add getExe support
     };
   }
   ''
     mkdir -p $out/bin
     makeWrapper ${lib.getExe pkgs.just} $out/bin/${basename} \
-      --add-flags "--justfile ${recipes}/share/justfile" \
-      --add-flags "--dotenv-path ${envfile}/share/justfile" \
-      --add-flags "--one"
+      --add-flags "--justfile ${recipes}/share/os.just" \
+      --add-flags "--dotenv-path ${envfile}/share/.env" \
+      --add-flags "--one" \
+      --prefix PATH : ${lib.makeBinPath runtimeInputs}
   ''

@@ -1,5 +1,5 @@
 git_root:="$(git rev-parse --show-toplevel)"
-tmpl_npins:="./template/npins"
+tmpl_npins:=  env("OS_TEMPLATE", "./") + "/npins"
 
 [script("sh")]
 update:

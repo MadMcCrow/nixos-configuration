@@ -1,6 +1,26 @@
 #!/usr/bin/env sh
+# shellcheck disable=SC2204,SC2205
 set +x
 
+# pick a directory if none is provided
+pick_dir() {
+    if [ -z "$1" ]; then
+        result=$(
+            fzf --walker=dir,hidden \
+                --print-query \
+                --query="${1:-}" \
+                --prompt='init directory > '
+        )
+        query=$(printf '%s\n' "$result" | sed -n '1p')
+        selected=$(printf '%s\n' "$result" | sed -n '2p')
+        printf '%s\n' "$(echo "${selected:-$query}" | sed 's:/*$::')"
+    else
+        printf '%s\n' "$1"
+    fi
+}
+
+
+# find the configuration file within a directory
 _configuration() {
     if [ -f "$1/configuration.nix" ]; then
         printf '%s\n' "$1/configuration.nix"
@@ -9,6 +29,7 @@ _configuration() {
     return 1
 }
 
+# find the configuration file within a directory
 get_config() {
     if [ "$#" -gt 0 ]; then
         path=$1
@@ -24,6 +45,7 @@ get_config() {
 
     for path in \
         "/etc/nonOS" \
+        "/etc/nonos" \
         "/etc/nixos" \
         "$HOME/.config/nonOS" \
         "$HOME/.config/nix" \
@@ -39,11 +61,37 @@ get_config() {
     return 1
 }
 
+init_pin() {
+    npins_dir="$1/npins"
+    echo "updating nonOS pin"
+    npins -d "$npins_dir" update nonOS
 
-init_dir() {
-    # make sure directory exists and is empty
-    mkdir -p "$1" && true
-    rm -rf "$1/.*" && true
+    nonos_path=$(nix eval --raw --impure --expr "(import $npins_dir {}).nonOS.outPath")
+    locked_rev=$(jq -r '.nodes.nixpkgs.locked.rev' "$nonos_path/flake.lock")
+    current_rev=$(jq -r '.pins.nixpkgs.revision' "$npins_dir/sources.json")
+
+    if [ "$locked_rev" = "$current_rev" ]; then
+        echo "nixpkgs already up to date ($current_rev)"
+        return 0
+    fi
+
+    git_nixpkgs="https://github.com/NixOS/nixpkgs.git"
+    cache=$(mktemp -d)
+    git -C "$cache" init -q
+    git -C "$cache" fetch -q --depth 1 $git_nixpkgs "$current_rev"
+    current_ts=$(git -C "$cache" log -1 --format=%ct FETCH_HEAD)
+
+    git -C "$cache" fetch -q --depth 1 $git_nixpkgs "$locked_rev"
+    locked_ts=$(git -C "$cache" log -1 --format=%ct FETCH_HEAD)
+
+    rm -rf "$cache"
+
+    if [ "$locked_ts" -gt "$current_ts" ]; then
+        echo "nonOS's nixpkgs ($locked_rev) is newer, updating"
+        npins -d "$npins_dir" add github NixOS nixpkgs --branch nixos-unstable --at "$locked_rev" --name nixpkgs
+    else
+        echo "local nixpkgs already newer or equal, skipping"
+    fi
 }
 
 hardware_config() {
@@ -70,33 +118,17 @@ copy_template() {
     chmod 755 -R "$2"
 }
 
-format() {
-    # TODO : treefmt !
-    echo "format files in $1 using nix tools"
-    files=$(find "$1" -type f -name '*.nix' -print)
-    # deadnix
-    if command -v deadnix >/dev/null 2>&1; then
-        printf "\rdeadnix formatting"
-        deadnix -eq  "$files"
-    fi
-    # alejandra
-    if command -v alejandra >/dev/null 2>&1; then
-        printf "\ralejandra formatting"
-        alejandra -q  "$files"
-    fi
-    # nixfmt
-    if command -v nixfmt >/dev/null 2>&1; then
-        printf "\rnixfmt formatting"
-        nixfmt -q  "$files"
-    fi
+build_config() {
+    # nix_build_options="--log-format raw --impure" # internal-json
+    nixos_build_options="--no-reexec --impure --show-trace"
+    #nix_features:= "--extra-experimental-features 'nix-command flakes'"
+    conf="$(get_config "$1")"
+    echo "building configuration \"$conf\""
+    nixos-rebuild build $nixos_build_options -I nixos-config="$conf"  # 2>&1 | nom
+    # nix-build '<nixpkgs/nixos>' -A system -I nixos-config="$conf"
 }
 
-build() {
-    nix_build_options="--log-format raw --impure" # internal-json
-    #nix_features:= "--extra-experimental-features 'nix-command flakes'"
-    conf="$(./config.sh "$@")"
-    nixos-rebuild build --file "$conf" "$nix_build_options" # 2>&1 | nom
-}
+
 
 # Check if the function exists (bash specific)
 if command -v "$1" >/dev/null 2>&1

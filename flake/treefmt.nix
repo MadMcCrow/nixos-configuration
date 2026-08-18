@@ -14,7 +14,7 @@
       system,
       ...
     }:
-    {
+    rec {
       # treefmt settings
       treefmt = {
         # Used to find the project root
@@ -40,5 +40,7 @@
           shellcheck.enable = true;
         };
       };
+      # add formatter package
+      packages.formatter = inputs.treefmt-nix.mkWrapper pkgs treefmt;
     };
 }
