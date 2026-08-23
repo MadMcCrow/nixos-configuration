@@ -46,7 +46,7 @@ with os;
   config = mkConfig {
     nix = {
       registry.nixpkgs.to =
-        mkIf cfg.sources != null {
+        mkIf (cfg.sources != null) {
           type = "path";
           path = cfg.sources;
         };

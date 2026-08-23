@@ -29,9 +29,9 @@ with os;
     boot = {
       initrd.systemd = {
         enable = true;
-        fido2.enable = os.cfg.fido;
+        fido2.enable = os.cfg.fido.enable;
       };
-      tmp.cleanOnBoot = mkPrio true;
+      tmp.cleanOnBoot = true;
       loader = {
         systemd-boot.enable = !os.cfg.secureboot.enable;
         grub.enable = false;
@@ -41,22 +41,22 @@ with os;
         pkiBundle = "${cfg._dir}/secureboot";
         configurationLimit = 5;
       };
-      plymouth.enable = mkPrio true;
-      consoleLogLevel = mkPrio 3;
+      plymouth.enable = true;
+      consoleLogLevel = 3;
     };
 
-    environment = mkPrio {
+    environment = {
       defaultPackages =
         with pkgs;
         [
           openssl
           dnsutils
           sbctl
-          tpm-luks
+          # tpm-luks -> removed due to lack of maintenance
           tpm2-tss
           nmap
         ]
-        ++ (optionals cfg.fido [ libfido2 ]);
+        ++ (optionals cfg.fido.enable [ libfido2 ]);
     };
 
     hardware = {

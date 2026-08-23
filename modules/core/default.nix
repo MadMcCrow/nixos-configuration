@@ -8,25 +8,24 @@ nonOS:
   ...
 }:
 with lib;
-with nonOS;
 let
-  os = mod "" config;
+  os = nonOS.mod "" config;
 in
 {
   options = os.mkOptions {
     # rename the OS
-    customise = mkEnableOption "customise nixOS to ${os.name}" // {
+    customise = mkEnableOption "customise nixOS to ${nonOS.name}" // {
       default = true;
     };
   };
 
   config = os.mkConfig {
-    environment = mkPrio {
-      etc."os-release".text = ''
-        NAME="${os.name}"
-        PRETTY_NAME="${os.name}"
-        VERSION_ID="${os.version}"
-        VERSION="${os.version}-${os.status}"
+    environment = {
+      etc."os-release".text = with nonOS.meta; ''
+        NAME="${name}"
+        PRETTY_NAME="${name}"
+        VERSION_ID="${version}"
+        VERSION="${version}-${status}"
         ID=nixos
         BUILD_ID="rolling"
         ANSI_COLOR="1;32"
@@ -35,7 +34,7 @@ in
         BUG_REPORT_URL="${flake_url}/issues"
       '';
 
-      systemPackages = [ nonpkgs.os ];
+      systemPackages = [ os.pkgs.ostool ];
       defaultPackages = with pkgs; [
         openssl
         dnsutils
@@ -55,12 +54,12 @@ in
 
     programs = {
       # zsh is the far superior shell in my opinion
-      zsh.enable = mkPrio true;
-      bash.enable = mkPrio false;
+      zsh.enable = true;
+      bash.enable = false;
     };
 
     services = {
-      openssh = mkPrio {
+      openssh = {
         enable = true;
         ports = [ 8323 ];
         settings = {
@@ -72,24 +71,24 @@ in
       };
     };
 
-    system = {
+    system = with nonOS.meta; {
       # let the user specify the state version themselves
       # but forgetting defining it shouldn't matter
-      stateVersion = mkDefault "26.05";
+      stateVersion = "26.05";
       # We customise the
-      nixos.label = "${os.name}";
-      nixos.variantName = "${os.name}";
+      nixos.label = "${name}";
+      nixos.variantName = "${name}";
     };
 
     time = {
       # we default to Paris
-      timeZone = mkPrio "Europe/Paris";
+      timeZone = "Europe/Paris";
     };
 
     users = {
-      defaultUserShell = mkPrio pkgs.zsh;
+      defaultUserShell = pkgs.zsh;
       # enable mutable users if no user is set to admin
-      mutableUsers = !(any (x: x.admin == true) (attrValues config.users.users));
+      mutableUsers = !(any (u: u.group == "wheel" || (any (g: g == "wheel") u.extraGroups)) (attrValues config.users.users));
     };
   };
 }

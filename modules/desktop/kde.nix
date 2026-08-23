@@ -9,7 +9,7 @@ inputs@{
 }:
 with lib;
 let
-  os = nonOS.mod "desktop.kde" inputs;
+  os = nonOS.mod "desktop.kde" config;
 in
 {
   # interface

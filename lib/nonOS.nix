@@ -9,9 +9,9 @@ with builtins;
 rec {
   # provide values and shortcuts
   inherit inputs;
-  inherit (import ./version.nix inputs) name version;
+  meta = (import ./meta.nix inputs);
+  inherit (meta) name;
   mkPrio = lib.mkOverride 990; # mkDefault but higher priority
-  pkgs = self.packages;   # added packages
 
   mod =
     prefix: config:
@@ -26,7 +26,7 @@ rec {
           isEnabledAncestor =
             p:
             let
-              node = lib.attrByPath (p ++ [ "enable" ]) null config.${name};
+              node = lib.attrByPath (p ++ [ "enable" ]) null config.${meta.name};
             in
             if node == false then
               false
@@ -39,6 +39,8 @@ rec {
     in
     {
       inherit enabled;
+
+      pkgs = self.packages.${config.nixpkgs.hostPlatform.system};
 
       # cfg getter gets globals and specific
       cfg = (filterGlobals true config.${name}) // (lib.attrByPath pl { } config.${name});
@@ -62,6 +64,6 @@ rec {
       };
 
       # set config :
-      mkConfig = c: lib.mkIf enabled (mkPrio c);
+      mkConfig = c: lib.mkIf enabled c;
     };
 }

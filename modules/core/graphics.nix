@@ -19,7 +19,7 @@ in
     hardware = {
       # amd specific :
       amdgpu = mkIf os.cfg.amd.enable {
-        initrd.enable = mkDefault true;
+        initrd.enable = true;
         opencl.enable = true;
       };
       # enable graphics :
@@ -58,6 +58,6 @@ in
     };
 
     # force enable rocm support if amd gpu is present
-    nixpkgs.config.rocmSupport = mkDefault os.cfg.amd.enable;
+    nixpkgs.config.rocmSupport = os.cfg.amd.enable;
   };
 }

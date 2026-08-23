@@ -60,16 +60,16 @@ let
   mkDerivation =
     args:
     let
-      osversion = import (self + /lib/version.nix) inputs;
+      osmeta = import (self + /lib/meta.nix) inputs;
     in
     stdenvNoCC.mkDerivation (
       lib.recursiveUpdate {
         dontBuild = true;
         buildInputs = [ makeWrapper ];
         meta = {
-          inherit (osversion) licence;
+          inherit (osmeta) licence;
         };
-        inherit (osversion) version;
+        inherit (osmeta) version;
       } args
     );
 
