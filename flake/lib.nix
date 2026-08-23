@@ -2,13 +2,15 @@
 {
   inputs,
   self,
+  lib,
   ...
 }:
 with builtins;
 let
+  inherit (inputs.nixpkgs) lib;
   mksysPair = mod: {
-    name = unsafeDiscardStringContext (baseNameOf (removeSuffix ".nix" mod));
-    value = import mod inputs;
+    name = unsafeDiscardStringContext (baseNameOf (lib.removeSuffix ".nix" mod));
+    value = import mod (inputs // { inherit lib; });
   };
 in
 {

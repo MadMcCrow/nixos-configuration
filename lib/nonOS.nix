@@ -6,31 +6,41 @@ inputs@{
   ...
 }:
 with builtins;
-let
-  version = import ./version.nix inputs;
-
-  inherit (version) name;
-
-  # filter globals out of attrs
-  filterGlobals = neg: attrs: lib.filterAttrs (n: _: (lib.hasPrefix "_" n) == neg) attrs;
-
-  mkPrio = lib.mkOverride 990; # mkDefault but higher priority
-in
-{
-  # provide values
-  inherit version;
-
+rec {
+  # provide values and shortcuts
+  inherit inputs;
+  inherit (import ./version.nix inputs) name version;
   inherit mkPrio;
-
-  # added packages
-  pkgs = import (self + "/packages") inputs;
+  pkgs = self.packages;   # added packages
 
   mod =
     prefix: config:
     let
+      # filter globals out of attrs
+      filterGlobals = neg: attrs: lib.filterAttrs (n: _: (lib.hasPrefix "_" n) == neg) attrs;
       pl = lib.optionals (prefix != "") (lib.splitString "." prefix);
+      mkPrio = lib.mkOverride 990; # mkDefault but higher priority
+
+      # is this module enabled, recursive
+      enabled =
+        let
+          isEnabledAncestor =
+            p:
+            let
+              node = lib.attrByPath (p ++ [ "enable" ]) null config.${name};
+            in
+            if node == false then
+              false
+            else if p == [ ] then
+              true
+            else
+              isEnabledAncestor (lib.init p);
+        in
+        config.${name}.enable && isEnabledAncestor pl;
     in
-    rec {
+    {
+      inherit enabled;
+
       # cfg getter gets globals and specific
       cfg = (filterGlobals true config.${name}) // (lib.attrByPath pl { } config.${name});
 
@@ -51,22 +61,7 @@ in
             }
           ));
       };
-      # is this module enabled, recursive
-      enabled =
-        let
-          isEnabledAncestor =
-            p:
-            let
-              node = lib.attrByPath (p ++ [ "enable" ]) null config.${name};
-            in
-            if node == false then
-              false
-            else if p == [ ] then
-              true
-            else
-              isEnabledAncestor (lib.init p);
-        in
-        config.${name}.enable && isEnabledAncestor pl;
+
       # set config :
       mkConfig = c: lib.mkIf enabled (mkPrio c);
     };

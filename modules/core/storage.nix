@@ -11,38 +11,25 @@ with nonOS;
 let
   os = mod "storage" config;
   persist = os.cfg._dir;
-
-  # devices can be specified with :
-  # - a path (e.g. /dev/sda1)
-  # - a device name (e.g. sda1)
-  # - a UUID
-  # - a label
-  # - a partlabel
-  # - a device path with UUID (e.g. /dev/disk/by-uuid/)
-  # - a device path with label (e.g. /dev/disk/by-label/)
-  # - a device path with partlabel (e.g. /dev/disk/by-partlabel/)
-  isDevice =
-    x:
-    if x == null then
-      true
-    else if isPath x then
-      true
-    else if isString x then
-      true
-    else
-      false;
 in
 with os;
 {
+  imports = [ nonOS.inputs.disko.nixosModules.disko ];
+
   options = mkOptions {
+    encrypted = mkEnableOption "disk encryption" // {
+      default = true;
+    };
+
+    # main disk option :
     main = mkOption {
       description = "The main disk device to use (e.g., /dev/nvme0n1).";
       type =
         with types;
-        addCheck (oneOf [
+        oneOf [
           str
           path
-        ]) isDevice;
+        ];
     };
   };
 
@@ -64,6 +51,7 @@ with os;
 
     # use disko :
     disko.devices = {
+      # TMPFS
       nodev."/" = {
         fsType = "tmpfs";
         mountOptions = [
@@ -71,39 +59,71 @@ with os;
           "mode=755"
         ];
       };
+      # main disk format
       disk.main = {
-        device = cfg.main;
         type = "disk";
+        device = cfg.main;
+
         content = {
           type = "gpt";
+
+          # partitions
           partitions = {
             ESP = {
-              size = "512M";
+              size = "512MiB";
               type = "EF00";
+              priority = 1;
               content = {
-                type = "btrfs";
-                extraArgs = [ "-f" ];
-                subvolumes = {
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [
-                      "compress=zstd"
-                      "noatime"
-                    ];
-                  };
-                  "${persist}" = {
-                    mountpoint = "${persist}";
-                    mountOptions = [ "compress=zstd" ];
-                  };
-                  "/home" = {
-                    mountpoint = "/home";
-                    mountOptions = [ "compress=zstd" ];
-                  };
-                };
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                mountOptions = [ "umask=0077" ];
               };
             };
+
+            "${nonOS.name}" =
+              let
+                btrfsPartition = {
+                  type = "btrfs";
+                  extraArgs = [ "-f" ];
+                  # volumes
+                  subvolumes = {
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
+                    };
+                    "${persist}" = {
+                      mountpoint = "${persist}";
+                      mountOptions = [ "compress=zstd" ];
+                    };
+                    "/home" = {
+                      mountpoint = "/home";
+                      mountOptions = [ "compress=zstd" ];
+                    };
+                  };
+                  # ~ volumes
+                };
+              in
+              {
+                type = "8300"; # GPT Linux filesystem
+                size = "100%";
+                priority = 2;
+                content =
+                  if cfg.encrypted then
+                    {
+                      type = "luks";
+                      name = "crypted"; # container name in /dev/mapper/
+                      content = btrfsPartition;
+                    }
+                  else
+                    btrfsPartition;
+              };
           };
         };
+        # ~ partitions
       };
     };
   };

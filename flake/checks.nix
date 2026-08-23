@@ -8,7 +8,9 @@ with builtins;
 with inputs.nixpkgs.lib;
 let
   # use template pins (slightly outdated) :
-  sources = (import (self + "/ostool/template/npins")) // {
+  #  (import (self + "/ostool/template/npins")) //
+  sources = {
+    inherit (inputs) nixpkgs;
     nonOS = self;
   };
   # map outputs

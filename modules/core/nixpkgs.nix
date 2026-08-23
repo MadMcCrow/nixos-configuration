@@ -24,7 +24,7 @@ with os;
     # allow moving the configuration folder
     _dir = mkOption {
       description = "configuration directory";
-      default = "/etc/${nonOS.version.name}";
+      default = "/etc/${nonOS.name}";
       type = types.path;
     };
     sources = mkOption {

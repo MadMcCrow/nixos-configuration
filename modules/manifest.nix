@@ -3,25 +3,15 @@
 {
   lib,
   import-tree,
-  disko,
-  lanzaboote,
   nonOS,
   ...
 }:
 let
-  mkMod =
-    dir: deps:
-    let
-      modules = import-tree.leafs dir;
-    in
-    (map (x: lib.modules.importApply x nonOS) modules) ++ deps;
+  mkMod = dir: (map (x: lib.modules.importApply x nonOS) (import-tree.leafs dir));
 in
 {
   #  disks, format, boot, networking, updates
-  core = mkMod ./core [
-    disko.nixosModules.disko
-    lanzaboote.nixosModules.lanzaboote
-  ];
+  core = mkMod ./core;
   # desktop environment
-  desktop = mkMod ./desktop [ ];
+  desktop = mkMod ./desktop;
 }

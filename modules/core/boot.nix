@@ -14,6 +14,8 @@ let
 in
 with os;
 {
+  imports = [ nonOS.inputs.lanzaboote.nixosModules.lanzaboote ];
+
   options = mkOptions {
     # enable secureboot
     secureboot.enable = mkEnableOption "secureboot" // {
