@@ -10,7 +10,7 @@ rec {
   # provide values and shortcuts
   inherit inputs;
   inherit (import ./version.nix inputs) name version;
-  inherit mkPrio;
+  mkPrio = lib.mkOverride 990; # mkDefault but higher priority
   pkgs = self.packages;   # added packages
 
   mod =
@@ -19,7 +19,6 @@ rec {
       # filter globals out of attrs
       filterGlobals = neg: attrs: lib.filterAttrs (n: _: (lib.hasPrefix "_" n) == neg) attrs;
       pl = lib.optionals (prefix != "") (lib.splitString "." prefix);
-      mkPrio = lib.mkOverride 990; # mkDefault but higher priority
 
       # is this module enabled, recursive
       enabled =
