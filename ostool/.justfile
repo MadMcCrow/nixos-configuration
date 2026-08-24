@@ -2,6 +2,6 @@
 # .justfile :
 #       wrapper for non packaged ostool
 #
-# import? './cmd.just'
+# import './os.just'
 mod os
 mod template

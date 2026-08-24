@@ -7,9 +7,9 @@ set quiet # do not echo commands
 set lazy # do not evaluate parameters if you don't need them
 
 # recall immediately the same file with same binary
-rejust := quote(just_executable()) + " --justfile " + quote(justfile())
-template := env("OS_TEMPLATE", "./template/src")
-commands := env("OS_CMD", module_directory() + "/cmd.sh")
+rejust := quote(just_executable()) + " --justfile " + quote(module_file())
+template := env("OS_TEMPLATE", module_dir() + "/template")
+commands := env("OS_CMD", module_dir() + "/cmd.sh")
 
 
 # default command is interactive
@@ -32,7 +32,7 @@ init d="":
     {{rejust}} _generate $target
     #   3.a) correct the pinned version of nonOS and nixpkgs
     #   3.b) format the nix files
-    {{rejust}} format $target
+    {{rejust}} nixfmt $target
 
 # build target configuration locally
 [no-cd, script]
@@ -43,16 +43,28 @@ build d="":
     # will call nixos-rebuild
     "{{commands}}" build_config $target
 
-# format files in a directory if formatter is defined
+# run disko script
 [no-cd, script]
-format d="" :
+disko d="" +FLAGS='--dry-run':
     #!/usr/bin/env sh
     # handle interactivity :
     target=$("{{commands}}" "pick_dir" "{{d}}")
-    # call formatter if available
-    if [ -n "{{env("FORMATTER", "")}}" ]; then
+    #nix build .#nixosConfigurations.<host>.config.system.build.diskoScript
+    #nix build --apply 'x: x.system.config.system.build.diskoScript'
+    "{{commands}}" disko $target "{{FLAGS}}"
+
+# format files in a directory if formatter is defined
+[no-cd, script]
+nixfmt d="" :
+    #!/usr/bin/env sh
+    # handle interactivity :
+    target=$("{{commands}}" "pick_dir" "{{d}}")
+    formatter='{{env("FORMATTER", "")}}'
+    if [ -n "$formatter" ]; then
         echo "formatting files"
-        "{{env("FORMATTER")}}" $target -qc
+        "$formatter" $target -qc
+    else
+        echo "no nix formatter defined"
     fi
 
 
@@ -86,4 +98,4 @@ _generate d: (_template-config d) (_hardware-config d)
 
 
 [no-cd, parallel]
-_init_fixup d : (format d) (_init-pin d)
+_init_fixup d : (nixfmt d) (_init-pin d)

@@ -20,6 +20,8 @@ pick_dir() {
 }
 
 
+
+
 # find the configuration file within a directory
 _configuration() {
     if [ -f "$1/configuration.nix" ]; then
@@ -52,7 +54,7 @@ get_config() {
         "$HOME/.config/nixos" \
         ".config"
     do
-        if _configuration "$path"; then
+        if _configuration "$path" 2>/dev/null; then
             return 0
         fi
     done
@@ -127,6 +129,20 @@ build_config() {
     # shellcheck disable=SC2086 # we want the flags to unpack actually
     nixos-rebuild build $nixos_build_options -I nixos-config="$conf"  # 2>&1 | nom
     # nix-build '<nixpkgs/nixos>' -A system -I nixos-config="$conf"
+}
+
+disko() {
+    conf=
+    nix-build -E "
+      let
+        sources = import $1/npins;
+        nixpkgs = sources.nixpkgs;
+      in
+      (import \"\${nixpkgs}/nixos/lib/eval-config.nix\" {
+        system = \"x86_64-linux\";
+        modules = [ $(get_config "$1") ];
+      }).config.system.build.diskoScript
+    ";
 }
 
 
